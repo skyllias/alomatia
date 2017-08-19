@@ -11,8 +11,8 @@ import org.skyllias.alomatia.filter.hsb.*;
 public class FixedFilterFactory implements FilterFactory
 {
   private static final String NO_FILTER_NAME         = "filter.selector.none";
-  private static final String LIGHTER_FILTER_NAME    = "filter.demo.brighter.name";
-  private static final String DARKER_FILTER_NAME     = "filter.demo.darker.name";
+//  private static final String LIGHTER_FILTER_NAME    = "filter.demo.brighter.name";
+//  private static final String DARKER_FILTER_NAME     = "filter.demo.darker.name";
   private static final String RGBR_FILTER_NAME       = "filter.demo.gbr.name";
   private static final String BGRB_FILTER_NAME       = "filter.demo.brg.name";
   private static final String GREY_FILTER_NAME       = "filter.demo.greys.name";
@@ -22,7 +22,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String REDLESS_FILTER_NAME    = "filter.demo.redless.name";
   private static final String GREENLESS_FILTER_NAME  = "filter.demo.greenless.name";
   private static final String BLUELESS_FILTER_NAME   = "filter.demo.blueless.name";
-  private static final String INVERT_FILTER_NAME     = "filter.demo.invert.name";
+  private static final String NEGATIVE_FILTER_NAME   = "filter.demo.invert.name";
   private static final String DEC_SAT_XL_FILTER_NAME = "filter.demo.saturation-xl.name";
   private static final String DEC_SAT_L_FILTER_NAME  = "filter.demo.saturation-l.name";
   private static final String DEC_SAT_M_FILTER_NAME  = "filter.demo.saturation-m.name";
@@ -43,6 +43,16 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_HUE_M_FILTER_NAME  = "filter.demo.hue+m.name";
   private static final String INC_HUE_S_FILTER_NAME  = "filter.demo.hue+s.name";
   private static final String INC_HUE_XS_FILTER_NAME = "filter.demo.hue+xs.name";
+  private static final String DEC_BRI_XL_FILTER_NAME = "filter.demo.brightness-xl.name";
+  private static final String DEC_BRI_L_FILTER_NAME  = "filter.demo.brightness-l.name";
+  private static final String DEC_BRI_M_FILTER_NAME  = "filter.demo.brightness-m.name";
+  private static final String DEC_BRI_S_FILTER_NAME  = "filter.demo.brightness-s.name";
+  private static final String DEC_BRI_XS_FILTER_NAME = "filter.demo.brightness-xs.name";
+  private static final String INC_BRI_XL_FILTER_NAME = "filter.demo.brightness+xl.name";
+  private static final String INC_BRI_L_FILTER_NAME  = "filter.demo.brightness+l.name";
+  private static final String INC_BRI_M_FILTER_NAME  = "filter.demo.brightness+m.name";
+  private static final String INC_BRI_S_FILTER_NAME  = "filter.demo.brightness+s.name";
+  private static final String INC_BRI_XS_FILTER_NAME = "filter.demo.brightness+xs.name";
 
 //==============================================================================
 
@@ -52,9 +62,9 @@ public class FixedFilterFactory implements FilterFactory
     Collection<NamedFilter> filters = new LinkedList<>();
 
     filters.add(new NamedFilter(null,                         NO_FILTER_NAME));
-    filters.add(new NamedFilter(new NegativeFilter(),        INVERT_FILTER_NAME));
-    filters.add(new NamedFilter(new BrighterFilter(),         LIGHTER_FILTER_NAME));
-    filters.add(new NamedFilter(new DarkerFilter(),           DARKER_FILTER_NAME));
+    filters.add(new NamedFilter(new NegativeFilter(),         NEGATIVE_FILTER_NAME));
+//    filters.add(new NamedFilter(new BrighterFilter(),         LIGHTER_FILTER_NAME));
+//    filters.add(new NamedFilter(new DarkerFilter(),           DARKER_FILTER_NAME));
     filters.add(new NamedFilter(new RtoGtoBtoRFilter(),       RGBR_FILTER_NAME));
     filters.add(new NamedFilter(new BtoGtoRtoBFilter(),       BGRB_FILTER_NAME));
     filters.add(new NamedFilter(new GreyScaleFilter(),        GREY_FILTER_NAME));
@@ -84,6 +94,16 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueShiftFilter(0.03f),    INC_HUE_M_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(0.05f),    INC_HUE_L_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(0.1f),     INC_HUE_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(-1.5),     DEC_BRI_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(-0.8),     DEC_BRI_L_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(-0.4),   DEC_BRI_M_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(-0.1),   DEC_BRI_S_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(-0.05),   DEC_BRI_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(0.05),    INC_BRI_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(0.1),    INC_BRI_S_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(0.4),    INC_BRI_M_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(0.8),      INC_BRI_L_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessFilter(1.5),      INC_BRI_XL_FILTER_NAME));
 
     return filters;
   }
