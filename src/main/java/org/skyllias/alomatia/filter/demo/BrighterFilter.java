@@ -5,7 +5,7 @@ import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that makes the image lighter. */
+/** Demo filter that makes the image lighter according to the AWT implementation. */
 
 public class BrighterFilter extends BasicColorFilter
 {

@@ -5,7 +5,7 @@ import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that makes the image darker. */
+/** Demo filter that makes the image darker according to the AWT implementation. */
 
 public class DarkerFilter extends BasicColorFilter
 {

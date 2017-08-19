@@ -52,7 +52,7 @@ public class FixedFilterFactory implements FilterFactory
     Collection<NamedFilter> filters = new LinkedList<>();
 
     filters.add(new NamedFilter(null,                         NO_FILTER_NAME));
-    filters.add(new NamedFilter(new RGBInvertFilter(),        INVERT_FILTER_NAME));
+    filters.add(new NamedFilter(new NegativeFilter(),        INVERT_FILTER_NAME));
     filters.add(new NamedFilter(new BrighterFilter(),         LIGHTER_FILTER_NAME));
     filters.add(new NamedFilter(new DarkerFilter(),           DARKER_FILTER_NAME));
     filters.add(new NamedFilter(new RtoGtoBtoRFilter(),       RGBR_FILTER_NAME));
