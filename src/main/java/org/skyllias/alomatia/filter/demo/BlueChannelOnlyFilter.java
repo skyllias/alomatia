@@ -14,9 +14,8 @@ public class BlueChannelOnlyFilter extends BasicColorFilter
   @Override
   public Color filterColor(Color original)
   {
-    int alpha = original.getAlpha();
-    int blue  = original.getBlue();
-    return new Color(0, 0, blue, alpha);
+    int blue = original.getBlue();
+    return new Color(0, 0, blue);
   }
 
 //------------------------------------------------------------------------------

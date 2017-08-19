@@ -14,10 +14,9 @@ public class RedlessFilter extends BasicColorFilter
   @Override
   public Color filterColor(Color original)
   {
-    int alpha = original.getAlpha();
     int green = original.getGreen();
     int blue  = original.getBlue();
-    return new Color(0, green, blue, alpha);
+    return new Color(0, green, blue);
   }
 
 //------------------------------------------------------------------------------

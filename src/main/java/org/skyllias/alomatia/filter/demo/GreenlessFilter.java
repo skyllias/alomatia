@@ -14,10 +14,9 @@ public class GreenlessFilter extends BasicColorFilter
   @Override
   public Color filterColor(Color original)
   {
-    int alpha = original.getAlpha();
     int red   = original.getRed();
     int blue  = original.getBlue();
-    return new Color(red, 0, blue, alpha);
+    return new Color(red, 0, blue);
   }
 
 //------------------------------------------------------------------------------

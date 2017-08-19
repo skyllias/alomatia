@@ -15,11 +15,10 @@ public class BtoGtoRtoBFilter extends BasicColorFilter
   @Override
   public Color filterColor(Color original)
   {
-    int alpha = original.getAlpha();
     int red   = original.getRed();
     int green = original.getGreen();
     int blue  = original.getBlue();
-    return new Color(green, blue, red, alpha);
+    return new Color(green, blue, red);
   }
 
 //------------------------------------------------------------------------------
