@@ -1,2 +1,2 @@
-# alomatia
-GUI to apply filters to images.
+# Alomatia
+Yet another GUI to apply filters to images.
