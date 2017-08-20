@@ -23,7 +23,8 @@ public class UnitFactor
    *  <li> With large negative numbers (3 and above), the magnitude becomes almost 0.
    *  <li> With large positive numbers (3 and above), the magnitude becmoes almost 1.
    *  <li> The first noticeable differences occur with absolute values of the order of 0.1.
-   *  </ul> */
+   *  </ul>
+   *  When avoidZeroJump is true */
 
   public UnitFactor(double openFactor)
   {
@@ -32,18 +33,34 @@ public class UnitFactor
 
 //==============================================================================
 
-  /** Applies the factor to the magnitude (which must be inside the [0, 1]
-   *  interval) avoiding results outside [0, 1] by:
-   *  If the open factor was below 0, multiplying its exponential by the magnitude.
-   *  If the open factor was above 1, multiplying the inverse of its exponential
-   *  by the "lack of magnitude" (ie by (1 - magnitude) and substracting that from 1).
-   *  TODO Use a different algorithm in the second case, since low magnitudes
-   *  grow too sharply. */
+  /** Same as apply(false, magnitude);. */
 
   public float apply(float magnitude)
   {
-    if (innerFactor <= 1) return (float) (innerFactor * magnitude);
-    else                  return (float) (1 - (1 - magnitude) / innerFactor);
+    return apply(false, magnitude);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Applies the factor to the magnitude (which must be inside the [0, 1]
+   *  interval) avoiding results outside [0, 1] by:
+   *  If the open factor was below 0, multiplying its exponential by the magnitude.
+   *  If the open factor was above 1 and avoidZeroBoost is false, multiplying the
+   *  inverse of its exponential by the "lack of magnitude" (ie by (1 - magnitude)
+   *  and substracting that from 1).
+   *  If the open factor was above 1 and avoidZeroBoost is true, "small" magnitudes
+   *  are linearly multiplied by the exponential of the open factor, while "big"
+   *  magnitudes are handled like when avoidZeroBoost is false. "Small" and "big"
+   *  are defined so that the function is continuous.
+   *  This avoids problems when magnitude represents for example saturation:
+   *  a perfect gray shade cannot be turned deterministically into any hue. */
+
+  public float apply(boolean avoidZeroBoost, float magnitude)
+  {
+    boolean useLinear = (innerFactor <= 1) ||
+                        (avoidZeroBoost && magnitude <= 1 / innerFactor);
+    if (useLinear) return (float) (innerFactor * magnitude);
+    else           return (float) (1 - (1 - magnitude) / innerFactor);
   }
 
 //------------------------------------------------------------------------------
