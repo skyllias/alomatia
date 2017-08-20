@@ -29,14 +29,12 @@ public class SaturationFilter extends BasicHSBFilter
   /** Applies the factor to the original saturation avoiding results outside [0, 1] by:
    *  If the factor is below 1, multiplying the original saturation by it.
    *  If the factor is over 1, multiplying its inverse by the "insaturation" (ie
-   *  by (1 - saturation) and substracting that from 1).
-   *  TODO Use a different algorithm for the insaturation, since now low-saturated
-   *  colours saturate too sharply. */
+   *  by (1 - saturation) and substracting that from 1). */
 
   @Override
   protected float getNewSaturation(float hue, float saturation, float brightness)
   {
-    return unitFactor.apply(saturation);
+    return unitFactor.apply(true, saturation);
   }
 
 //------------------------------------------------------------------------------

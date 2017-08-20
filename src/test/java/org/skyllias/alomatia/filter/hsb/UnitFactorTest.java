@@ -15,6 +15,13 @@ public class UnitFactorTest
   }
 
   @Test
+  public void shouldRemainZeroWhenOriginalMagnitudeIsZeroAndBoostIsAvoided()
+  {
+    UnitFactor factor = new UnitFactor(14);
+    assertEquals("The magnitude should remain zero when a boost is avoided", 0, factor.apply(true, 0), 0.0001);
+  }
+
+  @Test
   public void shouldNotRemainZeroWhenOriginalMagnitudeIsZeroAndFactorIsPositive()
   {
     UnitFactor factor = new UnitFactor(14);
