@@ -19,7 +19,9 @@ import org.skyllias.alomatia.ui.DisplayFrameManager.*;
  *  This takes care of the UI, while a {@link DisplayFrameManager} is in charge
  *  of the logic.
  *  <p>
- *  Some configurations are stored as user preferences. */
+ *  Some configurations are stored as user preferences.
+ *  <p>
+ *  This class adds a global key listener to open windows when Ctrl + N is pressed. */
 
 @SuppressWarnings("serial")
 public class WindowControlPanel extends BasicControlPanel
@@ -67,6 +69,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     addAdditionComponents();
     addRearrangeComponents();
+    addNewDisplayKeyListener();
 
     SwingUtilities.invokeLater(new Runnable()
     {
@@ -119,6 +122,27 @@ public class WindowControlPanel extends BasicControlPanel
     firstRow.add(amountLabel);
     firstRow.add(addButton);
     add(firstRow);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Adds a global listener that invokes getNewDisplayFrame() when Ctrl + N is pressed. */
+
+  private void addNewDisplayKeyListener()
+  {
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    manager.addKeyEventDispatcher(new KeyEventDispatcher()
+    {
+      @Override
+      public boolean dispatchKeyEvent(KeyEvent e)
+      {
+        if(e.getID() == KeyEvent.KEY_PRESSED && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
+        {
+          if (e.getKeyCode() == KeyEvent.VK_N) getNewDisplayFrame();
+        }
+        return false;                                                           // allow the event to be redispatched
+      }
+    });
   }
 
 //------------------------------------------------------------------------------

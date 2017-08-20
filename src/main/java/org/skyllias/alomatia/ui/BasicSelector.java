@@ -110,14 +110,35 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
    *  <p>
    *  If the selection changes, this will end up firing {@link #onSelectionChanged(SELECTABLE)}.
    *  <p>
-   *  {@link #setSelection(SELECTABLE)} is prefered over this, wihch is reserved to cases
-   *  where the selected object cannot be obtained (like in Preferences). */
+   *  {@link #setSelection(SELECTABLE)} is prefered over this, which is reserved to
+   *  cases where the selected object cannot be obtained (like in Preferences). */
 
   protected void setSelectionByActionCommand(String newSelectionCommand)
   {
     SELECTABLE newlySelectedObject = commandObjects.get(newSelectionCommand);
     if (newlySelectedObject != null) setSelection(newlySelectedObject);
 
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Changes the selection to the radio at the passed position, being 0 the first one.
+   *  If index is below zero or above the amount of filters, nothing happens.
+   *  <p>
+   *  If the selection changes, this will end up firing {@link #onSelectionChanged(SELECTABLE)}.
+   *  <p>
+   *  {@link #setSelection(SELECTABLE)} is prefered over this. */
+
+  protected void setSelectionByIndex(int index)
+  {
+    if (index >= 0 && index < objectRadios.size())
+    {
+      Enumeration<AbstractButton> radioButtons = radioGroup.getElements();
+      AbstractButton selectedRadio             = null;
+      int currentIndex                         = 0;
+      while (radioButtons.hasMoreElements() && currentIndex++ <= index) selectedRadio = radioButtons.nextElement();
+      if (selectedRadio != null) selectedRadio.doClick();
+    }
   }
 
 //------------------------------------------------------------------------------
