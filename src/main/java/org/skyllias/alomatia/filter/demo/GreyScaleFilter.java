@@ -1,27 +1,21 @@
 
 package org.skyllias.alomatia.filter.demo;
 
-import java.awt.*;
+/** Demo filter that converts all colours to grey tones, with all channels
+ *  contributing equally. */
 
-import org.skyllias.alomatia.filter.*;
-
-/** Demo filter that converts all colours to grey tones. */
-
-public class GreyScaleFilter extends BasicColorFilter
+public class GreyScaleFilter extends WheighedGreyScaleFilter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
-  {
-    int red   = original.getRed();
-    int green = original.getGreen();
-    int blue  = original.getBlue();
+  protected int getRedWheight() {return 1;}
 
-    int totalLight = 1 + red + green + blue;                                    // the extra 1 makes the division round instead of truncate
-    int average    = totalLight / 3;
-    return new Color(average, average, average);
-  }
+  @Override
+  protected int getGreenWheight() {return 1;}
+
+  @Override
+  protected int getBlueWheight() {return 1;}
 
 //------------------------------------------------------------------------------
 
