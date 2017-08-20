@@ -37,6 +37,17 @@ public class FilterSelector extends BasicSelector<NamedFilter>
 
 //==============================================================================
 
+  /** Changes the selection to the named filter at the passed position, being 0
+   *  the first one.
+   *  If index is below zero or above the amount of filters, nothing happens. */
+
+  public void selectFilterAt(int index)
+  {
+    setSelectionByIndex(index);
+  }
+
+//------------------------------------------------------------------------------
+
   /** Sets the selected filter to the image display. */
 
   @Override

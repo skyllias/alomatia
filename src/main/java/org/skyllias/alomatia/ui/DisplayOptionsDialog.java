@@ -38,6 +38,8 @@ public class DisplayOptionsDialog extends JDialog
 
   private LabelLocalizer labelLocalizer;
 
+  private FilterSelector filterSelector;
+
 //==============================================================================
 
   static
@@ -54,8 +56,8 @@ public class DisplayOptionsDialog extends JDialog
 
     labelLocalizer = localizer;
 
-    FilterSelector filterSelector = new FilterSelector(labelLocalizer, ownerFrame, filterFactory);
-    ZoomSelector zoomSelector     = new ZoomSelector(labelLocalizer, ownerFrame.getDisplayPanel());
+    filterSelector            = new FilterSelector(labelLocalizer, ownerFrame, filterFactory);
+    ZoomSelector zoomSelector = new ZoomSelector(labelLocalizer, ownerFrame.getDisplayPanel());
 
     JPanel selectorsPanel     = new JPanel();
     JScrollPane filtersScroll = new JScrollPane(filterSelector);
@@ -87,6 +89,13 @@ public class DisplayOptionsDialog extends JDialog
   }
 
 //==============================================================================
+
+  /** Returns the contained FilterSelector.
+   *  TODO Reconsider this since it exposes the inner structure of this class. */
+
+  public FilterSelector getFilterSelector() {return filterSelector;}
+
+//------------------------------------------------------------------------------
 
   /* Returns the preferences where the selection is stored. */
 
