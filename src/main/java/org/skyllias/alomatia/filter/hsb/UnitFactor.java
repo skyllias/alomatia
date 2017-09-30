@@ -23,8 +23,7 @@ public class UnitFactor
    *  <li> With large negative numbers (3 and above), the magnitude becomes almost 0.
    *  <li> With large positive numbers (3 and above), the magnitude becmoes almost 1.
    *  <li> The first noticeable differences occur with absolute values of the order of 0.1.
-   *  </ul>
-   *  When avoidZeroJump is true */
+   *  </ul>  */
 
   public UnitFactor(double openFactor)
   {
