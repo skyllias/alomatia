@@ -34,6 +34,7 @@ public class DisplayFrame extends BasicAlomatiaWindow
   private DisplayPanel displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
+  private FilterSelector filterSelector;                                        // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
 
 //==============================================================================
 
@@ -55,7 +56,8 @@ public class DisplayFrame extends BasicAlomatiaWindow
                                                                   this, filterFactory);
     panel.addMouseListener(new DisplayPanelClickListener(optionsDialog));
 
-    setUpFilterKeyListeners(optionsDialog.getFilterSelector());
+    filterSelector = optionsDialog.getFilterSelector();
+    setUpFilterKeyListeners(filterSelector);
   }
 
 //==============================================================================
@@ -89,6 +91,14 @@ public class DisplayFrame extends BasicAlomatiaWindow
   /** Returns the panel contained in this window. */
 
   public DisplayPanel getDisplayPanel() {return displayPanel;}
+
+//------------------------------------------------------------------------------
+
+  /** Changes the selection to the named filter at the passed position, being 0
+   *  the first one.
+   *  If index is below zero or above the amount of filters, nothing happens. */
+
+  public void applyFilterAt(int index) {filterSelector.selectFilterAt(index);}
 
 //------------------------------------------------------------------------------
 
@@ -128,7 +138,7 @@ public class DisplayFrame extends BasicAlomatiaWindow
       getRootPane().getActionMap().put(actionName, new AbstractAction()
       {
         @Override
-        public void actionPerformed(ActionEvent event) {filterSelector.selectFilterAt(index);}
+        public void actionPerformed(ActionEvent event) {filterSelector.selectFilterAt(index);}  // same as applyFilterAt(index)
       });
     }
   }

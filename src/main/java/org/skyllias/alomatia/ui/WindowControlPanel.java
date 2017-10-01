@@ -8,6 +8,7 @@ import java.text.*;
 import java.util.prefs.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.plaf.basic.*;
 
 import org.skyllias.alomatia.display.*;
@@ -34,15 +35,20 @@ public class WindowControlPanel extends BasicControlPanel
   private static final String COLUMNS_LABEL   = "frame.control.arrange.columns";
   private static final String ROWS_LABEL      = "frame.control.arrange.rows";
   private static final String REARRANGE_LABEL = "frame.control.arrange.rearrange";
+  private static final String AUTOAPPLY_LABEL = "frame.control.filters.autoapply";
+  private static final String REAPPLY_LABEL   = "frame.control.filters.reapply";
 
   protected static final String AMOUNT_LABEL_NAME     = "label.amount";         // name for the components
   protected static final String ADD_BUTTON_NAME       = "button.add";
   protected static final String LINES_SPINNER_NAME    = "spinner.lines";
   protected static final String COMBO_HORIZONTAL_NAME = "combobox.horizontal";
   protected static final String ARRANGE_BUTTON_NAME   = "button.arrange";
+  protected static final String AUTOAPPLY_FILTER_NAME = "checkbox.autoapply";
+  protected static final String REFILTER_BUTTON_NAME  = "button.refilter";
 
-  private static final String PREFKEY_HORIZONTAL = "arrangeHorizontally";
-  private static final String PREFKEY_LINES      = "amountOfLinesToRearrangeIn";
+  private static final String PREFKEY_HORIZONTAL  = "arrangeHorizontally";
+  private static final String PREFKEY_LINES       = "amountOfLinesToRearrangeIn";
+  private static final String PREFKEY_APPLYFILTER = "applySequentialFilterToNewWindow";
 
   private DisplayFrameManager manager;
 
@@ -51,6 +57,8 @@ public class WindowControlPanel extends BasicControlPanel
   private DropTargetListener dropListener;                                      // may be null. Otherwise, used to dispatch drops on the display frames
 
   private JLabel amountLabel;                                                   // label displaying the amount of open windows
+
+  private boolean applySequentialFilters = false;
 
 //==============================================================================
 
@@ -69,6 +77,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     addAdditionComponents();
     addRearrangeComponents();
+    addRefilterComponents();
     addNewDisplayKeyListener();
 
     SwingUtilities.invokeLater(new Runnable()
@@ -98,6 +107,13 @@ public class WindowControlPanel extends BasicControlPanel
   {
     amountLabel.setText(getAmountOfWindowsText(frameManager));
   }
+
+//------------------------------------------------------------------------------
+
+  /** Returns true if new {@link DisplayFrame} instances get a filter automatically
+   *  selected when open, or false otherwise. */
+
+  public boolean isAutomaticallyApplyingFilters() {return applySequentialFilters;}
 
 //------------------------------------------------------------------------------
 
@@ -202,6 +218,44 @@ public class WindowControlPanel extends BasicControlPanel
 
 //------------------------------------------------------------------------------
 
+  /* Sets up the components used to automatically apply filters to display frames.
+   * The preferences are read and updated conveniently.
+   * To be called just once. */
+
+  private void addRefilterComponents()
+  {
+    applySequentialFilters = getPreferences().getBoolean(PREFKEY_APPLYFILTER, false);
+
+    final JCheckBox checkBox = new JCheckBox(getLabelLocalizer().getString(AUTOAPPLY_LABEL),
+                                             applySequentialFilters);
+    checkBox.setName(AUTOAPPLY_FILTER_NAME);
+    checkBox.addChangeListener(new ChangeListener()
+    {
+      @Override
+      public void stateChanged(ChangeEvent e)
+      {
+        applySequentialFilters = checkBox.isSelected();
+        getPreferences().putBoolean(PREFKEY_APPLYFILTER, applySequentialFilters);
+      }
+    });
+
+    JButton filterButton = new JButton(getLabelLocalizer().getString(REAPPLY_LABEL));
+    filterButton.setName(REFILTER_BUTTON_NAME);
+    filterButton.addActionListener(new ActionListener()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e) {manager.applySequentialFilters();}
+    });
+
+    JPanel thirdRow = new JPanel();
+    thirdRow.setLayout(new BoxLayout(thirdRow, BoxLayout.X_AXIS));
+    thirdRow.add(checkBox);
+    thirdRow.add(filterButton);
+    add(thirdRow);
+  }
+
+//------------------------------------------------------------------------------
+
   /* Instantiates a new frame through the manager and adds its panel to the
    * repeater, so that it receives images from sources.
    * This frame is added as close listener in order to remove the panels from
@@ -211,7 +265,7 @@ public class WindowControlPanel extends BasicControlPanel
 
   private void getNewDisplayFrame()
   {
-    DisplayFrame frame        = manager.getNewDisplayFrame();
+    DisplayFrame frame        = manager.getNewDisplayFrame(applySequentialFilters);
     DisplayPanel displayPanel = frame.getDisplayPanel();
 
     repeaterDisplay.addReceiver(displayPanel);
