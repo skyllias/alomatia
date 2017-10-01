@@ -42,7 +42,7 @@ public class WindowControlPanelTest
   {
     MockitoAnnotations.initMocks(this);
     when(displayFrame.getDisplayPanel()).thenReturn(displayPanel);
-    when(displayFrameManager.getNewDisplayFrame()).thenReturn(displayFrame);
+    when(displayFrameManager.getNewDisplayFrame(any(Boolean.class))).thenReturn(displayFrame);
 
     windowControlPanel = GuiActionRunner.execute(new Callable<WindowControlPanel>()
     {
@@ -66,16 +66,43 @@ public class WindowControlPanelTest
   @Test
   public void shouldAddDisplayPanelWhenStarting()
   {
-    verify(repeater, times(1)).addReceiver(displayPanel);
+    verify(repeater).addReceiver(displayPanel);
   }
 
   @Test
-  public void shouldOpenNewWindowWhenButtonClicked()
+  public void shouldOpenNewWindowWithFilterWhenButtonClickedWithCheckbox()
   {
-    verify(displayFrameManager, times(1)).getNewDisplayFrame();                 // the one opened when starting
+    boolean initiallyWithFilters   = windowControlPanel.isAutomaticallyApplyingFilters();
+    int expectedTimesWithFilter    = 0;
+    int expectedTimesWithoutFilter = 0;
+    if (initiallyWithFilters) expectedTimesWithFilter++;
+    else                      expectedTimesWithoutFilter++;
+    verify(displayFrameManager).getNewDisplayFrame(initiallyWithFilters);       // the one opened when starting
 
+    frameFixture.checkBox(WindowControlPanel.AUTOAPPLY_FILTER_NAME).check(true);
+    expectedTimesWithFilter++;
     frameFixture.button(WindowControlPanel.ADD_BUTTON_NAME).click();
-    verify(displayFrameManager, times(2)).getNewDisplayFrame();
+
+    verify(displayFrameManager, times(expectedTimesWithFilter)).getNewDisplayFrame(true);
+    verify(displayFrameManager, times(expectedTimesWithoutFilter)).getNewDisplayFrame(false);
+  }
+
+  @Test
+  public void shouldOpenNewWindowWithoutFilterWhenButtonClickedWithoutCheckbox()
+  {
+    boolean initiallyWithFilters   = windowControlPanel.isAutomaticallyApplyingFilters();
+    int expectedTimesWithFilter    = 0;
+    int expectedTimesWithoutFilter = 0;
+    if (initiallyWithFilters) expectedTimesWithFilter++;
+    else                      expectedTimesWithoutFilter++;
+    verify(displayFrameManager).getNewDisplayFrame(initiallyWithFilters);       // the one opened when starting
+
+    frameFixture.checkBox(WindowControlPanel.AUTOAPPLY_FILTER_NAME).check(false);
+    expectedTimesWithoutFilter++;
+    frameFixture.button(WindowControlPanel.ADD_BUTTON_NAME).click();
+
+    verify(displayFrameManager, times(expectedTimesWithFilter)).getNewDisplayFrame(true);
+    verify(displayFrameManager, times(expectedTimesWithoutFilter)).getNewDisplayFrame(false);
   }
 
   @Test
@@ -100,7 +127,7 @@ public class WindowControlPanelTest
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("6");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(0);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager, times(1)).rearrangeWindows(eq(6), any(Rectangle.class), eq(true));
+    verify(displayFrameManager).rearrangeWindows(eq(6), any(Rectangle.class), eq(true));
   }
 
   @Test
@@ -109,6 +136,13 @@ public class WindowControlPanelTest
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("5");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(1);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager, times(1)).rearrangeWindows(eq(5), any(Rectangle.class), eq(false));
+    verify(displayFrameManager).rearrangeWindows(eq(5), any(Rectangle.class), eq(false));
+  }
+
+  @Test
+  public void shouldReapplyFiltersWhenButtonClicked()
+  {
+    frameFixture.button(WindowControlPanel.REFILTER_BUTTON_NAME).click();
+    verify(displayFrameManager).applySequentialFilters();
   }
 }

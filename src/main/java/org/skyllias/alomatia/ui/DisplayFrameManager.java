@@ -41,14 +41,27 @@ public class DisplayFrameManager
 
 //==============================================================================
 
-  /** Creates a new window and returns it, so that it can be used for example to
-   * register other DisplayFrameCloseListener. */
+  /** Creates a new window and returns it without setting any initial filter. */
 
   public DisplayFrame getNewDisplayFrame()
+  {
+    return getNewDisplayFrame(false);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Creates a new window and returns it, so that it can be used for example to
+   * register other DisplayFrameCloseListener.
+   * If applySequentialFilter, the nth filter is automatically selected in the
+   * new instance, with n being the amount of DisplayFrames that already existed. */
+
+  public DisplayFrame getNewDisplayFrame(boolean applySequentialFilter)
   {
     DisplayPanel displayPanel = new DisplayPanel();
     DisplayFrame frame        = new DisplayFrame(localizer, displayPanel, filterFactory);
     frame.addListener(new DisplayFrameCloseListener());
+
+    if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());
 
     existingFrames.add(frame);
     notifyListeners();
@@ -115,6 +128,20 @@ public class DisplayFrameManager
         }
       }
     }
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Changes the selected filter in each of the currently open DisplayFrames so
+   *  that the first window gets the first filter and so on.
+   *  <p>
+   *  If there are more windows than filters, the last ones may not be changed.
+   *  However, that is something outside this manager's control. */
+
+  public void applySequentialFilters()
+  {
+    int currentIndex = 0;
+    for (DisplayFrame currentWindow : existingFrames) currentWindow.applyFilterAt(currentIndex++);
   }
 
 //------------------------------------------------------------------------------
