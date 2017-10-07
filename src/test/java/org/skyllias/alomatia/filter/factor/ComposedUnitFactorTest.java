@@ -7,28 +7,28 @@ import org.junit.*;
 
 public class ComposedUnitFactorTest
 {
-//  @Test
+  @Test
   public void shouldNotChangeWhenOriginalMagnitudeIsLowAndFactorIsZero()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(0);
     assertEquals("The magnitude should remain the same when zero factor is applied", 0.3, factor.apply(0.3f), 0.000001);
   }
 
-//  @Test
+  @Test
   public void shouldNotChangeWhenOriginalMagnitudeIsHighAndFactorIsZero()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(0);
     assertEquals("The magnitude should remain the same when zero factor is applied", 0.7, factor.apply(0.7f), 0.000001);
   }
 
-//  @Test
+  @Test
   public void shouldRemainZeroWhenOriginalMagnitudeIsZeroAndFactorIsNegative()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(-14);
     assertEquals("The magnitude should remain zero when a decreasing factor is applied", 0, factor.apply(0), 0.000001);
   }
 
-//  @Test
+  @Test
   public void shouldRemainZeroWhenOriginalMagnitudeIsZeroAndFactorIsPositive()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(14);
@@ -42,14 +42,14 @@ public class ComposedUnitFactorTest
     assertEquals("The magnitude should remain one when a decreasing factor is applied", 1, factor.apply(1), 0.000001);
   }
 
-//  @Test
+  @Test
   public void shouldRemainOneWhenOriginalMagnitudeIsOneAndFactorIsPositive()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(14);
     assertEquals("The magnitude should remain one when an increasing factor is applied", 1, factor.apply(1), 0.000001);
   }
 
-//  @Test
+  @Test
   public void shouldRemainHalfWhenOriginalMagnitudeIsHalfAndFactorIsNegative()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(-14);
@@ -63,28 +63,28 @@ public class ComposedUnitFactorTest
     assertEquals("The magnitude should remain half when an increasing factor is applied", 0.5, factor.apply(0.5f), 0.000001);
   }
 
-//  @Test
+  @Test
   public void shouldIncreaseWhenOriginalMagnitudeIsLowAndFactorIsNegative()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(-14);
     assertTrue("The magnitude should increase when a negative factor is applied", 0.3 < factor.apply(0.3f));
   }
 
-//  @Test
+  @Test
   public void shouldDecreaseWhenOriginalMagnitudeIsHighAndFactorIsNegative()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(-14);
     assertTrue("The magnitude should decrease when a negative factor is applied", 0.7 > factor.apply(0.7f));
   }
 
-//  @Test
+  @Test
   public void shouldDecreaseWhenOriginalMagnitudeIsLowAndFactorIsPositive()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(14);
     assertTrue("The magnitude should decrease when a positive factor is applied", 0.3 > factor.apply(0.3f));
   }
 
-//  @Test
+  @Test
   public void shouldIncreaseWhenOriginalMagnitudeIsHighAndFactorIsPositive()
   {
     ComposedUnitFactor factor = new ComposedUnitFactor(14);

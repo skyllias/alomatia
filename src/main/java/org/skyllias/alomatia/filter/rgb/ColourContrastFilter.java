@@ -50,9 +50,9 @@ public class ColourContrastFilter extends BasicColorFilter
 
   private int getModifiedValue(int original)
   {
-    float MAX_CHANNEL = 255f;
+    float MAX_CHANNEL = 256f;
 
-    return Math.round(MAX_CHANNEL * factor.apply(original / MAX_CHANNEL));
+    return (int) Math.floor(MAX_CHANNEL * factor.apply(original / MAX_CHANNEL));
   }
 
 //------------------------------------------------------------------------------
