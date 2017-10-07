@@ -5,7 +5,8 @@ import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that removes the red component of each colour. */
+/** Demo filter that removes the red component of each colour.
+ *  TODO move. */
 
 public class BluelessFilter extends BasicColorFilter
 {

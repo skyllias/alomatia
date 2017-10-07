@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.factor;
 
 import static org.junit.Assert.*;
 

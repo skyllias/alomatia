@@ -1,6 +1,8 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
+import org.skyllias.alomatia.filter.factor.*;
+
 /** Filter that increases or decreases the saturation of the colours in an image
  *  by a non-linear factor. */
 
@@ -21,7 +23,7 @@ public class SaturationFilter extends BasicHSBFilter
 
   public SaturationFilter(double saturationFactor)
   {
-    unitFactor = new UnitFactor(saturationFactor);
+    unitFactor = new AntiBoostingFactor(saturationFactor);
   }
 
 //==============================================================================
@@ -34,7 +36,7 @@ public class SaturationFilter extends BasicHSBFilter
   @Override
   protected float getNewSaturation(float hue, float saturation, float brightness)
   {
-    return unitFactor.apply(true, saturation);
+    return unitFactor.apply(saturation);
   }
 
 //------------------------------------------------------------------------------
