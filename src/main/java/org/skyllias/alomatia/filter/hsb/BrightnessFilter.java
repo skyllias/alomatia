@@ -1,6 +1,8 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
+import org.skyllias.alomatia.filter.factor.*;
+
 /** Filter that increases or decreases the brightness of the colours in an image
  *  by a non-linear factor. */
 
@@ -21,7 +23,7 @@ public class BrightnessFilter extends BasicHSBFilter
 
   public BrightnessFilter(double brightnessFactor)
   {
-    unitFactor = new UnitFactor(brightnessFactor);
+    unitFactor = new SimpleFactor(brightnessFactor);
   }
 
 //==============================================================================

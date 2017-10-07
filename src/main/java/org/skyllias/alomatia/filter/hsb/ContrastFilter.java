@@ -1,6 +1,8 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
+import org.skyllias.alomatia.filter.factor.*;
+
 /** Filter that increases the difference in brightness of the colours in an image.
  *  <p>
  *  Of course brightness cannot be greater than 1 or smaller than 0, so the
@@ -11,8 +13,7 @@ package org.skyllias.alomatia.filter.hsb;
 
 public class ContrastFilter extends BasicHSBFilter
 {
-  private UnitFactor directFactor;                                              // the factor applied to the half of brightness values that have to increase with positive values
-  private UnitFactor inverseFactor;                                             // the factor applied to the half of brightness values that have to increase with negative values... these explanations suck
+  private ComposedUnitFactor factor;
 
 //==============================================================================
 
@@ -26,11 +27,10 @@ public class ContrastFilter extends BasicHSBFilter
    *  - With large negative numbers (3 and above), everything becomes solarized.
    *  - With large positive numbers (3 and above), everything becomes almost black or white.
    *  - The first noticeable differences occur with absolute values of the order of 0.1. */
-double contrast;
+
   public ContrastFilter(double contrastFactor)
   {
-    directFactor  = new UnitFactor(contrastFactor);
-    inverseFactor = new UnitFactor(-contrastFactor);
+    factor = new ComposedUnitFactor(contrastFactor);
   }
 
 //==============================================================================
@@ -42,13 +42,7 @@ double contrast;
   @Override
   protected float getNewBrightness(float hue, float saturation, float brightness)
   {
-    final float MID_BRIGHTNESS = 0.5f;
-
-    boolean isHighBrightness = (brightness > MID_BRIGHTNESS);
-    UnitFactor factorToApply = isHighBrightness? directFactor: inverseFactor;
-
-    if (isHighBrightness) return MID_BRIGHTNESS * (1 + factorToApply.apply(true, brightness / MID_BRIGHTNESS - 1));
-    else                  return MID_BRIGHTNESS * factorToApply.apply(true, brightness / MID_BRIGHTNESS);
+    return factor.apply(brightness);
   }
 
 //------------------------------------------------------------------------------
