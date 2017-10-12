@@ -26,27 +26,39 @@ import org.skyllias.alomatia.filter.*;
  *  <p>
  *  com.intellij.ide.ui.DaltonizationFilter and related classes by Sergey Malenkov
  *  do similar things, but finally apply the corrections mentioned above.
+ *
+ *  All in all, this filter does not enforce the LMS colour-space. This is so
+ *  because the LMS projectors found here and there
+ *  (https://stacks.stanford.edu/file/druid:yj296hj2790/Woods_Assisting_Color_Blind_Viewers.pdf)
+ *  work reasonably well for protanopia and deuteranopia, but not convincingly at
+ *  all for tritanopia. On the other hand, here and there can be found projections
+ *  for protanomaly, deuteranomaly and tritanomaly in the XYZ space, but not in
+ *  the LMS space. So, the filter is design so that it only cares about the
+ *  projection to apply, and converting to and from a suitable {@link ProjectableColour},
+ *  whatever the space they are defined for.
  */
 
 public abstract class BasicDaltonizingFilter extends BasicColorFilter
 {
 //==============================================================================
 
-  /** See the class description. */
+  /** The colour component fixing mentioned in the class description must be
+   *  cared of internally by {@link ProjectableColour}. */
 
   @Override
   protected Color filterColor(Color original)
   {
-    LmsColour lmsColour = new LmsColour(original);
-    lmsColour.project(getLmsProjector());
-    return lmsColour.getColor();
+    ColourProjector projector           = getProjector();
+    ProjectableColour projectableColour = new ProjectableColour(projector.getSpace(), original);
+    projectableColour.project(projector);
+    return projectableColour.getColor();
   }
 
 //------------------------------------------------------------------------------
 
-  /** Returns the LmsProjector to apply by this filter. */
+  /** Returns the ColourProjector to apply by this filter. */
 
-  protected abstract LmsProjector getLmsProjector();
+  protected abstract ColourProjector getProjector();
 
 //------------------------------------------------------------------------------
 

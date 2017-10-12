@@ -1,18 +1,18 @@
 
 package org.skyllias.alomatia.filter.daltonism;
 
-/** Filter that simulates tritanopia. */
+/** Filter that simulates deuteranopia working on the LMS space. */
 
-public class TritanopiaFilter extends BasicDaltonizingFilter
+public class LmsDeuteranopiaFilter extends BasicDaltonizingFilter
 {
   private static LmsProjectorFactory projectorFactory = new LmsProjectorFactory();
 
 //==============================================================================
 
   @Override
-  protected LmsProjector getLmsProjector()
+  protected ColourProjector getProjector()
   {
-    return projectorFactory.getTritanopiaProjector();
+    return projectorFactory.getDeuteranopiaProjector();
   }
 
 //------------------------------------------------------------------------------

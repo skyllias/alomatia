@@ -1,16 +1,16 @@
 
 package org.skyllias.alomatia.filter.daltonism;
 
-/** Filter that simulates protanopia. */
+/** Filter that simulates protanopia working on the LMS space. */
 
-public class ProtanopiaFilter extends BasicDaltonizingFilter
+public class LmsProtanopiaFilter extends BasicDaltonizingFilter
 {
   private static LmsProjectorFactory projectorFactory = new LmsProjectorFactory();
 
 //==============================================================================
 
   @Override
-  protected LmsProjector getLmsProjector()
+  protected ColourProjector getProjector()
   {
     return projectorFactory.getProtanopiaProjector();
   }

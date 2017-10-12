@@ -5,11 +5,11 @@ import java.awt.*;
 
 /** Representation of a colour in the LMS colour-space.
  *  <p>
- *  Instances can be derived either a {@link Color} instance and modified by
+ *  Instances can be derived from a {@link Color} instance and then modified by
  *  applying a projection (matrix multiplication) with an LmsProjector.
  *  See https://stacks.stanford.edu/file/druid:yj296hj2790/Woods_Assisting_Color_Blind_Viewers.pdf.
  *  This class is not thread-safe. */
-
+@Deprecated
 public class LmsColour
 {
   private static final double[][] RGB_TO_LMS_CONVERSOR = new double[][] {{17.8824, 43.5161, 4.11935},

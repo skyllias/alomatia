@@ -8,6 +8,7 @@ package org.skyllias.alomatia.filter.daltonism;
  *  The xToY items are to be interpreted as the factor to multiply the original
  *  x to contribute to the resulting y. */
 
+@Deprecated
 public class LmsProjector
 {
   private double lToL, lToM, lToS, mToL, mToM, mToS, sToL, sToM, sToS;

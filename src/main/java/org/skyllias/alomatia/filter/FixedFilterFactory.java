@@ -4,6 +4,7 @@ package org.skyllias.alomatia.filter;
 import java.util.*;
 
 import org.skyllias.alomatia.filter.convolve.*;
+import org.skyllias.alomatia.filter.daltonism.*;
 import org.skyllias.alomatia.filter.demo.*;
 import org.skyllias.alomatia.filter.hsb.*;
 
@@ -64,6 +65,11 @@ public class FixedFilterFactory implements FilterFactory
     Collection<NamedFilter> filters = new LinkedList<>();
 
     filters.add(new NamedFilter(null,                         NO_FILTER_NAME));
+
+    filters.add(new NamedFilter(new LmsProtanopiaFilter(), "aaaaaaaa LMS pro"));    // TODO i18n
+    filters.add(new NamedFilter(new LmsDeuteranopiaFilter(), "bbbbbbbb LMS deu"));
+    filters.add(new NamedFilter(new LmsTritanopiaFilter(), "cccccccc LMS tri"));
+
 
     filters.add(new NamedFilter(new NegativeFilter(),         NEGATIVE_FILTER_NAME));
 
