@@ -4,6 +4,7 @@ package org.skyllias.alomatia.filter;
 import java.util.*;
 
 import org.skyllias.alomatia.filter.convolve.*;
+import org.skyllias.alomatia.filter.daltonism.*;
 import org.skyllias.alomatia.filter.demo.*;
 import org.skyllias.alomatia.filter.hsb.*;
 import org.skyllias.alomatia.filter.rgb.*;
@@ -13,6 +14,17 @@ import org.skyllias.alomatia.filter.rgb.*;
 public class FixedFilterFactory implements FilterFactory
 {
   private static final String NO_FILTER_NAME         = "filter.selector.none";
+  private static final String LMSPROPIA_FILTER_NAME  = "filter.dalton.lms.protanopia.name";
+  private static final String LMSDEUPIA_FILTER_NAME  = "filter.dalton.lms.deuteranopia.name";
+  private static final String LMSTRIPIA_FILTER_NAME  = "filter.dalton.lms.tritanopia.name";
+  private static final String XYZPROPIA_FILTER_NAME  = "filter.dalton.xyz.protanopia.name";
+  private static final String XYZPROMALY_FILTER_NAME = "filter.dalton.xyz.protanomaly.name";
+  private static final String XYZDEUPIA_FILTER_NAME  = "filter.dalton.xyz.deuteranopia.name";
+  private static final String XYZDEUMALY_FILTER_NAME = "filter.dalton.xyz.deuteranomaly.name";
+  private static final String XYZTRIPIA_FILTER_NAME  = "filter.dalton.xyz.tritanopia.name";
+  private static final String XYZTRIMALY_FILTER_NAME = "filter.dalton.xyz.tritanomaly.name";
+  private static final String XYZACHSIA_FILTER_NAME  = "filter.dalton.xyz.achromatopsia.name";
+  private static final String XYZACHMALY_FILTER_NAME = "filter.dalton.xyz.achromatomaly.name";
   private static final String RGBR_FILTER_NAME       = "filter.demo.gbr.name";
   private static final String BGRB_FILTER_NAME       = "filter.demo.brg.name";
   private static final String GREY_FILTER_NAME       = "filter.demo.greys.name";
@@ -86,9 +98,21 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(null, NO_FILTER_NAME));
 
-//    filters.add(new NamedFilter(new ProtanopiaFilter(),   "protanopiaaaaaaaaaaa"));
-//    filters.add(new NamedFilter(new DeuteranopiaFilter(), "deuteranopiaaaaaaaaaaa"));
-//    filters.add(new NamedFilter(new TritanopiaFilter(),   "tritanopiaaaaaaaaaaa"));
+    filters.add(new NamedFilter(new XyzProtanopiaFilter(),    XYZPROPIA_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzProtanomalyFilter(),   XYZPROMALY_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzDeuteranopiaFilter(),  XYZDEUPIA_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzDeuteranomalyFilter(), XYZDEUMALY_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzTritanopiaFilter(),    XYZTRIPIA_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzTritanomalyFilter(),   XYZTRIMALY_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzAchromatopsiaFilter(), XYZACHSIA_FILTER_NAME));
+    filters.add(new NamedFilter(new XyzAchromatomalyFilter(), XYZACHMALY_FILTER_NAME));
+
+    filters.add(new NamedFilter(new LmsProtanopiaFilter(),   LMSPROPIA_FILTER_NAME));
+    filters.add(new NamedFilter(new LmsDeuteranopiaFilter(), LMSDEUPIA_FILTER_NAME));
+    filters.add(new NamedFilter(new LmsTritanopiaFilter(),   LMSTRIPIA_FILTER_NAME));
+
+
+    filters.add(new NamedFilter(new NegativeFilter(),         NEGATIVE_FILTER_NAME));
 
     filters.add(new NamedFilter(new NegativeFilter(), NEGATIVE_FILTER_NAME));
 
