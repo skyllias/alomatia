@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 /** Filter that turns all colours to greys considering that the human eye is
  *  more sensitive to green and less to blue (at least, according to
