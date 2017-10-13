@@ -110,7 +110,7 @@ public class WindowControlPanelTest
   {
     String originalText = frameFixture.label(WindowControlPanel.AMOUNT_LABEL_NAME).text();
 
-    when(displayFrameManager.getAmountOfOpenDisplayFrames()).thenReturn(6);
+    when(displayFrameManager.getAmountOfOpenDisplayFrames()).thenReturn(6666);
     GuiActionRunner.execute(new GuiTask()
     {
       @Override
@@ -124,19 +124,27 @@ public class WindowControlPanelTest
   @Test
   public void shouldRearrangeWindowsHorizontallyWhenColumnsSelected()
   {
-    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("6");
+    String previousContents = frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).text();
+    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("17");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(0);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager).rearrangeWindows(eq(6), any(Rectangle.class), eq(true));
+    verify(displayFrameManager).rearrangeWindows(eq(17), any(Rectangle.class), eq(true));
+
+    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText(previousContents);  // could be moved to tearDown
+    frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
   }
 
   @Test
   public void shouldRearrangeWindowsVerticallyWhenRowsSelected()
   {
-    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("5");
+    String previousContents = frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).text();
+    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("19");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(1);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager).rearrangeWindows(eq(5), any(Rectangle.class), eq(false));
+    verify(displayFrameManager).rearrangeWindows(eq(19), any(Rectangle.class), eq(false));
+
+    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText(previousContents);  // could be moved to tearDown
+    frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
   }
 
   @Test
