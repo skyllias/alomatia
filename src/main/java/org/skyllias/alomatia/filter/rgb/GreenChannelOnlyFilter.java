@@ -1,20 +1,21 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that makes the image darker according to the AWT implementation. */
+/** Demo filter that leaves only the green component of each colour. */
 
-public class DarkerFilter extends BasicColorFilter
+public class GreenChannelOnlyFilter extends BasicColorFilter
 {
 //==============================================================================
 
   @Override
   public Color filterColor(Color original)
   {
-    return original.darker();
+    int green = original.getGreen();
+    return new Color(0, green, 0);
   }
 
 //------------------------------------------------------------------------------

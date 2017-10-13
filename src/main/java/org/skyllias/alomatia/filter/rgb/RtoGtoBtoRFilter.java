@@ -1,22 +1,24 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that removes the red component of each colour. */
+/** Demo filter that rotates the colour components: Red is set as green,
+ *  green is set as blue and blue is set as red. */
 
-public class RedlessFilter extends BasicColorFilter
+public class RtoGtoBtoRFilter extends BasicColorFilter
 {
 //==============================================================================
 
   @Override
   public Color filterColor(Color original)
   {
+    int red   = original.getRed();
     int green = original.getGreen();
     int blue  = original.getBlue();
-    return new Color(0, green, blue);
+    return new Color(blue, red, green);
   }
 
 //------------------------------------------------------------------------------

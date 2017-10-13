@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 /** Demo filter that converts all colours to grey tones, with all channels
  *  contributing equally. */

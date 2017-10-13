@@ -1,21 +1,20 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that leaves only the blue component of each colour. */
+/** Demo filter that makes the image lighter according to the AWT implementation. */
 
-public class BlueChannelOnlyFilter extends BasicColorFilter
+public class BrighterFilter extends BasicColorFilter
 {
 //==============================================================================
 
   @Override
   public Color filterColor(Color original)
   {
-    int blue = original.getBlue();
-    return new Color(0, 0, blue);
+    return original.brighter();
   }
 
 //------------------------------------------------------------------------------

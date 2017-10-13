@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.*;
 

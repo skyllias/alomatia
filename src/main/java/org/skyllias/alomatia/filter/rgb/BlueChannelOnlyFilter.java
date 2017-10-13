@@ -1,21 +1,21 @@
 
-package org.skyllias.alomatia.filter.demo;
+package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that leaves only the green component of each colour. */
+/** Demo filter that leaves only the blue component of each colour. */
 
-public class GreenChannelOnlyFilter extends BasicColorFilter
+public class BlueChannelOnlyFilter extends BasicColorFilter
 {
 //==============================================================================
 
   @Override
   public Color filterColor(Color original)
   {
-    int green = original.getGreen();
-    return new Color(0, green, 0);
+    int blue = original.getBlue();
+    return new Color(0, 0, blue);
   }
 
 //------------------------------------------------------------------------------
