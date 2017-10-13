@@ -117,6 +117,7 @@ public class DisplayFrame extends BasicAlomatiaWindow
     setUpNumberKeyListeners(filterSelector, 0, 0);
     setUpNumberKeyListeners(filterSelector, 10, KeyEvent.SHIFT_DOWN_MASK);
     setUpNumberKeyListeners(filterSelector, 20, KeyEvent.ALT_DOWN_MASK);
+    setUpNumberKeyListeners(filterSelector, 30, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK);
   }
 
 //------------------------------------------------------------------------------
