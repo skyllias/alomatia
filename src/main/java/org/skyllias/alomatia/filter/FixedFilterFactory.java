@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
-import org.skyllias.alomatia.filter.demo.*;
+//import org.skyllias.alomatia.filter.demo.*;
 import org.skyllias.alomatia.filter.hsb.*;
 import org.skyllias.alomatia.filter.rgb.*;
 

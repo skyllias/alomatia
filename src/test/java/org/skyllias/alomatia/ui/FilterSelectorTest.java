@@ -13,7 +13,7 @@ import org.junit.*;
 import org.mockito.*;
 import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.filter.demo.*;
+import org.skyllias.alomatia.filter.rgb.*;
 import org.skyllias.alomatia.i18n.*;
 
 public class FilterSelectorTest
