@@ -67,7 +67,7 @@ public class LanguagePanel extends BasicControlPanel
 
 //******************************************************************************
 
-  /** Comparator of Locales that uses their dispaly name to sort them. */
+  /** Comparator of Locales that uses their display name to sort them. */
 
   private class LocaleComparator implements Comparator<Locale>
   {

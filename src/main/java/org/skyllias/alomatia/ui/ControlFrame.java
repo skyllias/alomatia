@@ -43,9 +43,10 @@ public class ControlFrame extends BasicAlomatiaWindow
     getContentPane().add(controlsPane, BorderLayout.CENTER);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setVisible(true);
     setExtendedState(NORMAL);                                                   // this is forced because some desktop managers maximize all windows by default, and this looks better if really packed
     pack();
+    setResizable(false);
+    setVisible(true);                                                           // do this at the end, when the size has been fixed
   }
 
 //==============================================================================
