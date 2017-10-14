@@ -4,7 +4,7 @@
 
   <groupId>org.skyllias</groupId>
   <artifactId>alomatia</artifactId>
-  <version>0.8.6</version>
+  <version>0.8.0</version>
   <packaging>jar</packaging>
 
   <name>alomatia</name>
