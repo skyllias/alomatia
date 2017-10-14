@@ -41,6 +41,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
   private static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
 
   private ImageSource previousSource;
+  private JPanel optionsContainer = new JPanel();                               // no idea why, but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space
 
 //==============================================================================
 
@@ -51,15 +52,19 @@ public class SourceSelector extends BasicSelector<ImageSource>
   {
     super(localizer, SOURCE_LABEL);
 
+    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));                           // all this stuff is required for the SourceSelector to be centered
+    optionsContainer.setLayout(new BoxLayout(optionsContainer, BoxLayout.Y_AXIS));
+    add(optionsContainer);
+
     VoidSource voidSource = catalogue.get(VoidSource.class);                    // TODO make it more OO by getting a component for each type of source
-    if (voidSource != null) addRadioObject(NO_SOURCE_LABEL, voidSource, this);
+    if (voidSource != null) addRadioObject(NO_SOURCE_LABEL, voidSource, optionsContainer);
 
     DropSource dropSource = catalogue.get(DropSource.class);
-    if (dropSource != null) addRadioObject(DND_SOURCE_LABEL, dropSource, this);
+    if (dropSource != null) addRadioObject(DND_SOURCE_LABEL, dropSource, optionsContainer);
 
 
     ClipboardSource clipboardSource = catalogue.get(ClipboardSource.class);
-    if (clipboardSource != null) addRadioObject(CLIPBOARD_SOURCE_LABEL, clipboardSource, this);
+    if (clipboardSource != null) addRadioObject(CLIPBOARD_SOURCE_LABEL, clipboardSource, optionsContainer);
 
     initScreenSelector(catalogue);
     initSingleFileSelector(catalogue);
@@ -102,7 +107,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
       ButtonSource wrapperSource = new ButtonSource(screenSource, screenButton);
       addRadioObject(SCREEN_SOURCE_LABEL, wrapperSource, configPanel);
       configPanel.add(screenButton);
-      add(configPanel);
+      optionsContainer.add(configPanel);
     }
   }
 
@@ -200,7 +205,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
     addRadioObject(sourceLabel, wrapperSource, configPanel);
     configPanel.add(pathField);
     configPanel.add(fileButton);
-    add(configPanel);
+    optionsContainer.add(configPanel);
   }
 
 //------------------------------------------------------------------------------
