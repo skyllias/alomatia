@@ -31,6 +31,8 @@ public class DisplayFrame extends BasicAlomatiaWindow
   private static final String TITLE_PATTERN = "display.window.title.filtered";
   private static final String PANEL_TOOLTIP = "display.panel.tooltip";
 
+  private static final Dimension DEFAULT_SIZE = new Dimension(600, 400);
+
   private DisplayPanel displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
@@ -58,6 +60,10 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
     filterSelector = optionsDialog.getFilterSelector();
     setUpFilterKeyListeners(filterSelector);
+
+    setSize(DEFAULT_SIZE);                                                      // some windows managers will use a 0 by 0 size if this is not forced
+    setExtendedState(NORMAL);
+    setVisible(true);
   }
 
 //==============================================================================
