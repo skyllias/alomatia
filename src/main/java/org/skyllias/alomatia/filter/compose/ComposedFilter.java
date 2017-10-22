@@ -41,7 +41,6 @@ public class ComposedFilter extends ImageFilter
       List<ImageFilter> reversedFilters = new LinkedList<>(filters);            // the filters are looped from last to first to linked them
       Collections.reverse(reversedFilters);
 
-      ;
       for (ImageFilter currentFilter : reversedFilters)
       {
         consumerInstance = currentFilter.getFilterInstance(imageConsumer);

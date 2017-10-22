@@ -3,6 +3,7 @@ package org.skyllias.alomatia.filter;
 
 import java.util.*;
 
+import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
 //import org.skyllias.alomatia.filter.demo.*;
@@ -88,6 +89,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BLUR_SMALL_FILTER_NAME = "filter.blur.small.name";
   private static final String BLUR_BIG_FILTER_NAME   = "filter.blur.big.name";
   private static final String SHARPEN_FILTER_NAME    = "filter.blur.sharpen.name";
+  private static final String EDGEDETECT_FILTER_NAME = "filter.convolve.edgedetection.name";
 
 //==============================================================================
 
@@ -169,6 +171,8 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(5)),  BLUR_SMALL_FILTER_NAME));
     filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(11)), BLUR_BIG_FILTER_NAME));
     filters.add(new NamedFilter(new ConvolutingFilter(new NeighbourSharpKernelDataFactory()),   SHARPEN_FILTER_NAME));
+
+    filters.add(new NamedFilter(new OpaqueFilter(new ConvolutingFilter(new EdgeDetectingKernelDataFactory())), EDGEDETECT_FILTER_NAME));
 
     filters.add(new NamedFilter(new NegativeFilter(), NEGATIVE_FILTER_NAME));
 

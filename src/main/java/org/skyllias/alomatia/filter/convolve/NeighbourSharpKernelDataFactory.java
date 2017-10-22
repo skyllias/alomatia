@@ -6,7 +6,7 @@ package org.skyllias.alomatia.filter.convolve;
 
 public class NeighbourSharpKernelDataFactory implements KernelDataFactory
 {
-  private static final float DEFAULT_NEIGHBOUR_WEIGHT = 0.2f;
+  private static final float DEFAULT_NEIGHBOUR_WEIGHT = 0.25f;
 
   private float neighbourWeight;
 
