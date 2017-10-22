@@ -31,10 +31,11 @@ public class SourceSelector extends BasicSelector<ImageSource>
   protected static final String FILE_SOURCE_LABEL      = "source.file.name";
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
   protected static final String SCREEN_SOURCE_LABEL    = "source.screen.name";
+  protected static final String URL_SOURCE_LABEL       = "source.url.name";
   private static final String CAPTURE_LABEL            = "source.selector.screen.button";
   private static final String FILE_LABEL               = "source.selector.file.button";
   private static final String DIR_LABEL                = "source.selector.directory.button";
-  private static final String IMAGE_FILES_FILTER       = "source.selector.directory.button";
+  private static final String IMAGE_FILES_FILTER       = "source.selector.file.filter";
 
   private static final String PREFKEY_SOURCECOMMAND = "sourceCommandName";
   private static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
@@ -67,6 +68,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
     if (clipboardSource != null) addRadioObject(CLIPBOARD_SOURCE_LABEL, clipboardSource, optionsContainer);
 
     initScreenSelector(catalogue);
+    initUrlSelector(catalogue);
     initSingleFileSelector(catalogue);
     initDirFileSelector(catalogue);
 
@@ -99,14 +101,39 @@ public class SourceSelector extends BasicSelector<ImageSource>
         @Override
         public void actionPerformed(ActionEvent e)
         {
-          screenSource.setActive(false);                                          // always disable capture when the capture frame is open
+          screenSource.setActive(false);                                        // always disable capture when the capture frame is open
           new CaptureFrame(getLabelLocalizer(), captureListener);
         }
       });
 
-      ButtonSource wrapperSource = new ButtonSource(screenSource, screenButton);
+      ButtonSource wrapperSource = new ButtonSource(screenSource,
+                                                    new ButtonEnabable(screenButton));
       addRadioObject(SCREEN_SOURCE_LABEL, wrapperSource, configPanel);
       configPanel.add(screenButton);
+      optionsContainer.add(configPanel);
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up the asynchronous URL selector radio and button, reading and writing
+   * preferences to remember the last selection between executions. */
+
+  private void initUrlSelector(SourceCatalogue catalogue)
+  {
+    final AsynchronousUrlSource urlSource = catalogue.get(AsynchronousUrlSource.class);
+    if (urlSource != null)
+    {
+      UrlDownloadComponent downloadComponent = new UrlDownloadComponent(getLabelLocalizer(),
+                                                                        urlSource);
+      JPanel configPanel = new JPanel();
+      configPanel.setAlignmentX(LEFT_ALIGNMENT);
+      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
+
+      ButtonSource wrapperSource = new ButtonSource(urlSource, downloadComponent, false);
+      addRadioObject(URL_SOURCE_LABEL, wrapperSource, configPanel);
+      configPanel.add(downloadComponent.getTextField());
+      configPanel.add(downloadComponent.getButton());
       optionsContainer.add(configPanel);
     }
   }
@@ -201,7 +228,9 @@ public class SourceSelector extends BasicSelector<ImageSource>
       }
     });
 
-    ButtonSource wrapperSource = new ButtonSource(fileSource, fileButton, false);
+    ButtonSource wrapperSource = new ButtonSource(fileSource,
+                                                  new ButtonEnabable(fileButton),
+                                                  false);
     addRadioObject(sourceLabel, wrapperSource, configPanel);
     configPanel.add(pathField);
     configPanel.add(fileButton);
@@ -274,7 +303,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
         screenSource.setScreenBounds(bounds);
         screenSource.setActive(true);
       }
-      catch (AWTException awte) {awte.printStackTrace();}     // TODO log
+      catch (AWTException awte) {awte.printStackTrace();}                       // TODO log
     }
 
   }
@@ -295,6 +324,30 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
 //******************************************************************************
 
+  /** Wrapper around a component that can be enabled.
+   *  It should be better explained and designed. */
+
+  public interface Enabable
+  {
+    void setEnabled(boolean active);
+  }
+
+//******************************************************************************
+
+  /* Wrapper around a JButton. */
+
+  private class ButtonEnabable implements Enabable
+  {
+    private JButton button;
+
+    public ButtonEnabable(JButton jButton) {button = jButton;}
+
+    @Override
+    public void setEnabled(boolean active) {button.setEnabled(active);}
+  }
+
+//******************************************************************************
+
   /* Fake source wrapping a real one that instead of activating it directly
    * enables a JButton that may eventually activate the delegate source. This
    * "delay", though, can be turned off.
@@ -304,15 +357,15 @@ public class SourceSelector extends BasicSelector<ImageSource>
   private class ButtonSource implements ImageSource
   {
     private ImageSource realSource;
-    private JButton button;
+    private Enabable button;
     private boolean delay = true;
 
-    public ButtonSource(ImageSource wrappedSource, JButton enablyButton)
+    public ButtonSource(ImageSource wrappedSource, Enabable enablyButton)
     {
       this(wrappedSource, enablyButton, true);
     }
 
-    public ButtonSource(ImageSource wrappedSource, JButton enablyButton, boolean delaySourceActivation)
+    public ButtonSource(ImageSource wrappedSource, Enabable enablyButton, boolean delaySourceActivation)
     {
       realSource = wrappedSource;
       button     = enablyButton;
