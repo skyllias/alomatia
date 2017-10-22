@@ -18,12 +18,13 @@ public class FixedCatalogueGenerator
   {
     SourceCatalogue catalogue = new SourceCatalogue();
 
-    catalogue.add(VoidSource.class,       new VoidSource());
-    catalogue.add(DropSource.class,       new DropSource());
-    catalogue.add(ClipboardSource.class,  new ClipboardSource());
-    catalogue.add(ScreenSource.class,     new ScreenSource());
-    catalogue.add(SingleFileSource.class, new SingleFileSource());
-    catalogue.add(DirFileSource.class,    new DirFileSource());
+    catalogue.add(VoidSource.class,            new VoidSource());
+    catalogue.add(DropSource.class,            new DropSource());
+    catalogue.add(ClipboardSource.class,       new ClipboardSource());
+    catalogue.add(ScreenSource.class,          new ScreenSource());
+    catalogue.add(AsynchronousUrlSource.class, new AsynchronousUrlSource());
+    catalogue.add(SingleFileSource.class,      new SingleFileSource());
+    catalogue.add(DirFileSource.class,         new DirFileSource());
 
     setDisplay(catalogue, display);
     return catalogue;
