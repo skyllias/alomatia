@@ -10,14 +10,14 @@ public class ConvolutingFilter extends BufferedImageFilter
 {
 //==============================================================================
 
-  public ConvolutingFilter(Kernel kernel) {super(new ConvolveOp(kernel));}
+  public ConvolutingFilter(Kernel kernel) {super(new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null));}
 
 //------------------------------------------------------------------------------
 
   /** Creates a new filter that uses a {@link Kernel} derived from the kernel
    *  data provided by dataFactory. */
 
-  public ConvolutingFilter(KernelDataFactory dataFactory) {super(new ConvolveOp(getKernel(dataFactory.getKernelData())));}
+  public ConvolutingFilter(KernelDataFactory dataFactory) {this(getKernel(dataFactory.getKernelData()));}
 
 //==============================================================================
 
