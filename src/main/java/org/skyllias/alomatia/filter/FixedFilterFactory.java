@@ -90,6 +90,8 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BLUR_BIG_FILTER_NAME   = "filter.blur.big.name";
   private static final String SHARPEN_FILTER_NAME    = "filter.blur.sharpen.name";
   private static final String EDGEDETECT_FILTER_NAME = "filter.convolve.edgedetection.name";
+  private static final String LAYEMBOSS_FILTER_NAME  = "filter.convolve.emboss.layered.name";
+  private static final String SMTHEMBOSS_FILTER_NAME = "filter.convolve.emboss.smooth.name";
 
 //==============================================================================
 
@@ -173,6 +175,9 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new ConvolutingFilter(new NeighbourSharpKernelDataFactory()),   SHARPEN_FILTER_NAME));
 
     filters.add(new NamedFilter(new OpaqueFilter(new ConvolutingFilter(new EdgeDetectingKernelDataFactory())), EDGEDETECT_FILTER_NAME));
+
+    filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
+    filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
 
     filters.add(new NamedFilter(new NegativeFilter(), NEGATIVE_FILTER_NAME));
 
