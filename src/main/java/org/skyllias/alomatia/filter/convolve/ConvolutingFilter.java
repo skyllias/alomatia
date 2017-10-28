@@ -27,15 +27,14 @@ public class ConvolutingFilter extends BufferedImageFilter
 
   private static Kernel getKernel(float[][] matrixData)
   {
-    int width          = matrixData.length;
-    int height         = matrixData[0].length;
+    int width          = matrixData[0].length;
+    int height         = matrixData.length;
     int total          = width * height;
     float[] linearData = new float[total];
-
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < height; i++)
     {
-      for (int j = 0; j < height; j++) linearData[i * width + j] = matrixData[i][j];
-    }
+      for (int j = 0; j < width; j++) linearData[i * width + j] = matrixData[i][j];
+      }
     return new Kernel(width, height, linearData);
   }
 
