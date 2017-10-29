@@ -10,8 +10,7 @@ import org.skyllias.alomatia.display.*;
  *  It is meant to cancatenate in order two or more different filters (all
  *  complying the requirements described at {@link FilterableDisplay#setImageFilter(ImageFilter)}),
  *  producing aggregated effects. Two filters applied in different order may
- *  produce significantly different results.
- *  TODO unit test */
+ *  produce significantly different results. */
 
 public class ComposedFilter extends ImageFilter
 {
