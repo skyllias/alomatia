@@ -14,17 +14,33 @@ public class LinearBlurKernelDataFactory implements KernelDataFactory
 {
   private float length;
   private double angle;
+  private BlurLineProfile blurPorfile;
 
 //==============================================================================
 
   /** blurLength should be greater than 2.
-   *  motionAngle must be in radians. The result of angle + {@link Math.PI} is
-   *  the same as angle.  */
+   *  motionAngle must be in radians.
+   *  The result of angle + {@link Math.PI} is the same as angle because a
+   *  uniform {@link BlurLineProfile} is used. */
 
   public LinearBlurKernelDataFactory(float blurLength, double motionAngle)
   {
-    length = blurLength;
-    angle  = motionAngle;
+    this(blurLength, motionAngle, new UniformedBlurLineProfile());
+  }
+
+//------------------------------------------------------------------------------
+
+  /** blurLength should be greater than 2.
+   *  motionAngle must be in radians.
+   *  blurLineProfile determines how each pixel along the line contributes.
+   *  The result of angle + 2 * {@link Math.PI} is the same as angle.  */
+
+  public LinearBlurKernelDataFactory(float blurLength, double motionAngle,
+                                     BlurLineProfile blurLineProfile)
+  {
+    length      = blurLength;
+    angle       = motionAngle;
+    blurPorfile = blurLineProfile;
   }
 
 //==============================================================================
@@ -50,13 +66,21 @@ public class LinearBlurKernelDataFactory implements KernelDataFactory
     int width        = isMainlyHorizontal? longestSide: shortestSide;
     int height       = isMainlyHorizontal? shortestSide: longestSide;
 
-    float contributionPerPixel = 1f / longestSide;
+    if (shortestSide == 1) invertSlope = false;
+    boolean invertProfile = (shortestSide == 1 && !isMainlyHorizontal && Math.sin(angle) > 0) ||
+                            (Math.cos(angle) < 0 && (isMainlyHorizontal || shortestSide > 1));
+
+    float[] pixelContributions = blurPorfile.getProfile(longestSide);
     float[][] kernel           = new float[height][width];
     for (int mainCoordinate = 0; mainCoordinate < longestSide; mainCoordinate++)
     {
+      int profileIndex        = invertProfile? (longestSide - mainCoordinate - 1):
+                                               mainCoordinate;
+      float pixelContribution = pixelContributions[profileIndex];
+
       int oppositeCoordinate = (int) (smallestRatio * mainCoordinate);
       int x, y;
-      if (isMainlyHorizontal)   // TODO consider negative angles
+      if (isMainlyHorizontal)
       {
         x = mainCoordinate;
         y = oppositeCoordinate;
@@ -67,7 +91,7 @@ public class LinearBlurKernelDataFactory implements KernelDataFactory
         y = mainCoordinate;
       }
       if (invertSlope) y = height - y - 1;
-      kernel[y][x] = contributionPerPixel;
+      kernel[y][x] = pixelContribution;
     }
     return kernel;
   }
