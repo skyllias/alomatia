@@ -30,6 +30,8 @@ public class SourceSelectorTest
   private SingleFileSource fileSource;
   @Mock
   private DirFileSource dirSource;
+  @Mock
+  private AsynchronousUrlSource urlSource;
 
   private SourceCatalogue catalogue;
 
@@ -105,6 +107,12 @@ public class SourceSelectorTest
   public void shouldActivateDirSourceWhenDirSelected()
   {
     selectDirectlyActiveSource(DirFileSource.class, dirSource, SourceSelector.DIR_SOURCE_LABEL);
+  }
+
+  @Test
+  public void shouldActivateUrlSourceWhenUrlSelected()
+  {
+    selectDirectlyActiveSource(AsynchronousUrlSource.class, urlSource, SourceSelector.URL_SOURCE_LABEL);
   }
 
   /* For the sources that become active when the button is selected. */

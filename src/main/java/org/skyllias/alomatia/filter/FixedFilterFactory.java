@@ -1,8 +1,11 @@
 
 package org.skyllias.alomatia.filter;
 
+import java.awt.image.*;
 import java.util.*;
 
+import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
 //import org.skyllias.alomatia.filter.demo.*;
@@ -87,7 +90,18 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_CCT_XS_FILTER_NAME = "filter.rgb.colourcontrast+xs.name";
   private static final String BLUR_SMALL_FILTER_NAME = "filter.blur.small.name";
   private static final String BLUR_BIG_FILTER_NAME   = "filter.blur.big.name";
+  private static final String MOTION_S0_FILTER_NAME  = "filter.blur.motion.slow.horizontal.name";
+  private static final String MOTION_S90_FILTER_NAME = "filter.blur.motion.slow.vertical.name";
+  private static final String MOTION_S45_FILTER_NAME = "filter.blur.motion.slow.oblique.name";
+  private static final String MOTION_L0_FILTER_NAME  = "filter.blur.motion.fast.horizontal.name";
+  private static final String MOTION_L90_FILTER_NAME = "filter.blur.motion.fast.vertical.name";
+  private static final String MOTION_L45_FILTER_NAME = "filter.blur.motion.fast.oblique.name";
   private static final String SHARPEN_FILTER_NAME    = "filter.blur.sharpen.name";
+  private static final String EDGEDETECT_FILTER_NAME = "filter.convolve.edgedetection.name";
+  private static final String LAYEMBOSS_FILTER_NAME  = "filter.convolve.emboss.layered.name";
+  private static final String SMTHEMBOSS_FILTER_NAME = "filter.convolve.emboss.smooth.name";
+  private static final String MEDIAN_XS_FILTER_NAME  = "filter.median.xs.name";
+  private static final String MEDIAN_M_FILTER_NAME   = "filter.median.m.name";
 
 //==============================================================================
 
@@ -166,9 +180,23 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new ColourContrastFilter(1),    INC_CCT_L_FILTER_NAME));
     filters.add(new NamedFilter(new ColourContrastFilter(2),    INC_CCT_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(5)),  BLUR_SMALL_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(11)), BLUR_BIG_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new NeighbourSharpKernelDataFactory()),   SHARPEN_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
+
+    filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(5)),                                        BLUR_SMALL_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(11)),                                       BLUR_BIG_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(20, Math.PI / 2)),                              MOTION_S90_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(30, 0, new SquareBlurLineProfile())),           MOTION_L0_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(30, Math.PI / 4, new SquareBlurLineProfile())), MOTION_L45_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())), MOTION_L90_FILTER_NAME));
+    filters.add(new NamedFilter(new ConvolutingFilter(new NeighbourSharpKernelDataFactory()),                                         SHARPEN_FILTER_NAME));
+
+    filters.add(new NamedFilter(new OpaqueFilter(new ConvolutingFilter(new EdgeDetectingKernelDataFactory())), EDGEDETECT_FILTER_NAME));
+
+    filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
+    filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
 
     filters.add(new NamedFilter(new NegativeFilter(), NEGATIVE_FILTER_NAME));
 

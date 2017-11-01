@@ -5,19 +5,15 @@ import java.awt.*;
 
 import org.skyllias.alomatia.filter.*;
 
-/** Demo filter that removes the red component of each colour. */
+/** Demo filter that does not alter colours.
+ *  However, as it extends BasicColorFilter, the alpha channel is lost. */
 
-public class BluelessFilter extends BasicColorFilter
+public class VoidFilter extends BasicColorFilter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
-  {
-    int red   = original.getRed();
-    int green = original.getGreen();
-    return new Color(red, green, 0);
-  }
+  public Color filterColor(Color original) {return original;}
 
 //------------------------------------------------------------------------------
 

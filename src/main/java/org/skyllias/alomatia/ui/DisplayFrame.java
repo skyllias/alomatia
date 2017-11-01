@@ -3,6 +3,7 @@ package org.skyllias.alomatia.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import java.text.*;
 import java.util.*;
 
@@ -31,6 +32,8 @@ public class DisplayFrame extends BasicAlomatiaWindow
   private static final String TITLE_PATTERN = "display.window.title.filtered";
   private static final String PANEL_TOOLTIP = "display.panel.tooltip";
 
+  private static final Dimension DEFAULT_SIZE = new Dimension(600, 400);
+
   private DisplayPanel displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
@@ -58,6 +61,10 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
     filterSelector = optionsDialog.getFilterSelector();
     setUpFilterKeyListeners(filterSelector);
+
+    setSize(DEFAULT_SIZE);                                                      // some windows managers will use a 0 by 0 size if this is not forced
+    setExtendedState(NORMAL);
+    setVisible(true);
   }
 
 //==============================================================================
@@ -71,17 +78,13 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
 //------------------------------------------------------------------------------
 
-  /** The window title is updated and the panel gets the ImageFilter.
-   *  The icon could also be updated in the future. */
+  /** The window title and icon are updated and the panel gets the ImageFilter. */
 
   @Override
   public void setImageFilter(NamedFilter namedFilter)
   {
-    LabelLocalizer localizer  = getLabelLocalizer();
-    String filterName         = localizer.getString(namedFilter.getNameKey());
-    MessageFormat titleFormat = new MessageFormat(localizer.getString(TITLE_PATTERN));
-    String title              = titleFormat.format(new Object[] {filterName});
-    setTitle(title);
+    applyFilterToTitle(namedFilter);
+    applyFilterToIcon(namedFilter.getFilter());
 
     displayPanel.setImageFilter(namedFilter.getFilter());
   }
@@ -142,6 +145,34 @@ public class DisplayFrame extends BasicAlomatiaWindow
         public void actionPerformed(ActionEvent event) {filterSelector.selectFilterAt(index);}  // same as applyFilterAt(index)
       });
     }
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Changes the window title by including the localized name of filter. */
+
+  private void applyFilterToTitle(NamedFilter filter)
+  {
+    LabelLocalizer localizer  = getLabelLocalizer();
+    String filterName         = localizer.getString(filter.getNameKey());
+    MessageFormat titleFormat = new MessageFormat(localizer.getString(TITLE_PATTERN));
+    String title              = titleFormat.format(new Object[] {filterName});
+    setTitle(title);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Changes the window icon by applying filter to the default logo. */
+
+  private void applyFilterToIcon(ImageFilter filter)
+  {
+    Image logo = getDefaultLogo();
+    if (filter != null)
+    {
+      ImageProducer producer = new FilteredImageSource(logo.getSource(), filter);
+      logo                   = createImage(producer);
+    }
+    setIconImage(logo);
   }
 
 //------------------------------------------------------------------------------

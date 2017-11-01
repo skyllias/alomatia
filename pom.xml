@@ -4,7 +4,7 @@
 
   <groupId>org.skyllias</groupId>
   <artifactId>alomatia</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.1</version>
   <packaging>jar</packaging>
 
   <name>alomatia</name>
@@ -39,6 +39,11 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
     </dependency>
 
     <dependency>
@@ -85,6 +90,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+        </configuration>
       </plugin>
     </plugins>
   </build>

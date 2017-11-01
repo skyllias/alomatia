@@ -1,6 +1,8 @@
 
 package org.skyllias.alomatia.ui;
 
+import java.awt.*;
+
 import javax.swing.*;
 
 import org.skyllias.alomatia.i18n.*;
@@ -27,7 +29,7 @@ public abstract class BasicAlomatiaWindow extends JFrame
 
     labelLocalizer = localizer;
 
-    setIconImage(new LogoProducer().createImage(ICON_WIDTH, ICON_HEIGHT));      // dynamically generated instead of reading it from file: it is not such a big overhead
+    setIconImage(getDefaultLogo());
   }
 
 //==============================================================================
@@ -35,6 +37,17 @@ public abstract class BasicAlomatiaWindow extends JFrame
   /** Returns the localizer from which UI labels can be obtained. */
 
   protected LabelLocalizer getLabelLocalizer() {return labelLocalizer;}
+
+//------------------------------------------------------------------------------
+
+  /** Returns the logo used in "normal" application windows.
+   *  Subclasses may use it to apply filters to it if wanted and afterwards
+   *  invoke {@link #setIconImage(Image)}. */
+
+  protected Image getDefaultLogo()
+  {
+    return new LogoProducer().createImage(ICON_WIDTH, ICON_HEIGHT);             // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
+  }
 
 //------------------------------------------------------------------------------
 
