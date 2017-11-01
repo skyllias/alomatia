@@ -16,15 +16,14 @@ import org.skyllias.alomatia.source.*;
  *  and downloading.
  *  Errors are flagged with a tooltip over the URL field.
  *  It takes care of enabling, disabling and feeding the related field.
- *  This favours composition over inheritance and does not extend any Swing class.
- *  TODO Unit test. */
+ *  It favours composition over inheritance and does not extend any Swing class. */
 
 public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListener,
                                              SourceSelector.Enabable
 {
-  private static final String BUTTON_READY_LABEL   = "source.selector.url.button.ready";
-  private static final String BUTTON_CANCEL_LABEL  = "source.selector.url.button.cancel";
-  private static final String ERROR_TOOLTIP_PREFIX = "source.selector.url.field.tooltip.error.";
+  protected static final String BUTTON_READY_LABEL   = "source.selector.url.button.ready";
+  protected static final String BUTTON_CANCEL_LABEL  = "source.selector.url.button.cancel";
+  protected static final String ERROR_TOOLTIP_PREFIX = "source.selector.url.field.tooltip.error.";
 
   private static final String PREFKEY_DEFAULTURL = "defaultSourceUrl";
 
@@ -44,14 +43,15 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
     button   = new JButton();
     urlField = new UrlTextField();
 
-    setEnabled(false);                                                          // this sets the button label, see below
+    enableComponents(false);
+    button.setText(labelLocalizer.getString(BUTTON_READY_LABEL));
 
     String initialUrl = getPreferences().get(PREFKEY_DEFAULTURL, null);
     if (initialUrl != null) urlField.setText(initialUrl);
 
     Action urlAction = new UrlAction();
     button.addActionListener(urlAction);
-    urlField.addActionListener(urlAction);
+    urlField.addActionListener(urlAction);                                      // a JTextField action listener is automatically fired when the enter key is pressed
   }
 
 //==============================================================================
@@ -65,15 +65,20 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
   @Override
   public void setEnabled(boolean active)
   {
+    enableComponents(active);
+
+    if (active) startDownload(getUrl());
+    else        cancelDownload();
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Changes the enable status of the button and field. */
+
+  private void enableComponents(boolean active)
+  {
     button.setEnabled(active);
     urlField.setEnabled(active);
-
-    if (active)
-    {
-      String url = urlField.getText().trim();
-      if (StringUtils.isNotBlank(url)) startDownload(url);
-    }
-    else cancelDownload();
   }
 
 //------------------------------------------------------------------------------
@@ -82,12 +87,15 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
 
   private void startDownload(String url)
   {
-    button.setText(labelLocalizer.getString(BUTTON_CANCEL_LABEL));
-    isDownloading = true;
-    urlSource.setUrl(url, this);
+    if (StringUtils.isNotBlank(url))
+    {
+      button.setText(labelLocalizer.getString(BUTTON_CANCEL_LABEL));
+      isDownloading = true;
+      urlSource.setUrl(url, this);
 
-    button.requestFocusInWindow();
-    urlField.setToolTipText(null);
+      button.requestFocusInWindow();
+      urlField.setToolTipText(null);
+    }
   }
 
 //------------------------------------------------------------------------------
@@ -98,8 +106,14 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
     isDownloading = false;
     urlSource.cancel();
 
-    urlField.requestFocusInWindow();
+    urlField.requestFocusInWindow();                                            // this will not have any effect when this method is called from setEnabled(false)
   }
+
+//------------------------------------------------------------------------------
+
+  /* Returns the contents of the URL field. */
+
+  private String getUrl() {return urlField.getText().trim();}
 
 //------------------------------------------------------------------------------
 
@@ -178,7 +192,7 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
       if (isDownloading) cancelDownload();
       else
       {
-        String url = urlField.getText().trim();
+        String url = getUrl();
         startDownload(url);
 
         getPreferences().put(PREFKEY_DEFAULTURL, url);
