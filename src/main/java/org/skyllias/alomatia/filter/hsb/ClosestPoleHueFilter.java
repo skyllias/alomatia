@@ -5,35 +5,19 @@ import java.awt.*;
 
 /** Filter that shifts hue towards the closest of one or more poles. */
 
-public class ClosestPoleHueFilter extends BasicHSBFilter
+public class ClosestPoleHueFilter extends BasicPoleHueFilter
 {
-  private HueDistance distance = new HueDistance();
-
-  private Attraction attraction;
-  private float[] poles;
-
 //==============================================================================
 
   /** Creates a filter that modifies the hue of images by finding the closest
    *  from the hues of poles and then applying the passed attraction.
    *  A pole passed twice makes no difference.
    *  A colour with saturation 0 may have unexpected effects over the inner
-   *  calculations, since the hue is then indeterministically defined. However,
-   *  the resulting hue is irrelevant because the saturation is 0 and the
-   *  corresponding colour will be the same shade of grey. */
+   *  calculations, since the hue is then indeterministically defined. */
 
   public ClosestPoleHueFilter(Attraction attraction, Color... colourPoles)
   {
-    this.attraction = attraction;
-
-    this.poles = new float[colourPoles.length];
-    for (int i = 0; i < poles.length; i++)
-    {
-      Color currentColour = colourPoles[i];
-      poles[i]            = Color.RGBtoHSB(currentColour.getRed(),
-                                           currentColour.getGreen(),
-                                           currentColour.getBlue(), null)[0];
-    }
+    super(attraction, colourPoles);
   }
 
 //==============================================================================
@@ -44,8 +28,7 @@ public class ClosestPoleHueFilter extends BasicHSBFilter
   protected float getNewHue(float hue, float saturation, float brightness)
   {
     float closestPole = findClosestPole(hue);
-    float difference  = distance.difference(closestPole, hue);
-    return hue - attraction.attract(difference);
+    return hue - getAttraction(closestPole, hue);
   }
 
 //------------------------------------------------------------------------------
@@ -57,9 +40,9 @@ public class ClosestPoleHueFilter extends BasicHSBFilter
   {
     float closestPole      = 0;
     float smallestDistance = 1;
-    for (float currentPole : poles)
+    for (float currentPole : getAllPoles())
     {
-      float currentDistance = distance.calculate(currentPole, hue);
+      float currentDistance = getDistance(currentPole, hue);
       if (currentDistance < smallestDistance)
       {
         closestPole      = currentPole;
