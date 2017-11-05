@@ -6,10 +6,23 @@ package org.skyllias.alomatia.filter.hsb;
 
 public class DistantAttraction implements Attraction
 {
+  private static final float DEFAULT_STRENGTH = 1;
+
   private float strength;
   private float range;
 
 //==============================================================================
+
+  /** @param strength Multiplicative factor for the result. A value of 1
+   *  complies with d(attract(x)) / dx <= 1
+   *  @param range The farthest distance where the attraction has any effect. */
+
+  public DistantAttraction(float range)
+  {
+    this(DEFAULT_STRENGTH, range);
+  }
+
+//------------------------------------------------------------------------------
 
   /** @param strength Multiplicative factor for the result. A value of 1
    *  complies with d(attract(x)) / dx <= 1
