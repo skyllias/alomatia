@@ -10,8 +10,10 @@ package org.skyllias.alomatia.filter.hsb;
  *  <li> attract(x) = -attract(-x) (the function is antisymmetric, which implies
  *       the condition above)
  *  <li> attract(x) * x >= 0 (poles attract)
- *  <li> attract(x) <= x (attract is moderate, preventing the huw from trespassing
- *       the pole)
+ *  <li> attract(x) <= x (the shift is moderate, preventing the hue from
+ *       trespassing the pole)
+ *  <li> d(attract(x)) / dx <= 1 (two different hues are shifted to two different
+ *       values)
  *  <li> attract(x + y) - attract(x) <= 0 for y > 0 and x > some value (attraction
  *       intensity decreases for distant hues)
  *  </ul> */
