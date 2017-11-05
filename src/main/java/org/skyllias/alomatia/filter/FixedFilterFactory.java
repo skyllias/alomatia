@@ -1,6 +1,7 @@
 
 package org.skyllias.alomatia.filter;
 
+import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
 
@@ -102,6 +103,15 @@ public class FixedFilterFactory implements FilterFactory
   private static final String SMTHEMBOSS_FILTER_NAME = "filter.convolve.emboss.smooth.name";
   private static final String MEDIAN_XS_FILTER_NAME  = "filter.median.xs.name";
   private static final String MEDIAN_M_FILTER_NAME   = "filter.median.m.name";
+  private static final String ORANGEPHIL_FILTER_NAME = "filter.phile.orange.name";
+  private static final String GREENPHIL_FILTER_NAME  = "filter.phile.green.name";
+  private static final String PURPLEPHIL_FILTER_NAME = "filter.phile.purple.name";
+  private static final String REDPHOB_FILTER_NAME    = "filter.phobic.red.name";
+  private static final String GREENPHOB_FILTER_NAME  = "filter.phobic.green.name";
+  private static final String BLUEPHOB_FILTER_NAME   = "filter.phobic.blue.name";
+  private static final String YELLOWPHOB_FILTER_NAME = "filter.phobic.yellow.name";
+  private static final String CYANPHOB_FILTER_NAME   = "filter.phobic.cyan.name";
+  private static final String MAGENTPHOB_FILTER_NAME = "filter.phobic.magenta.name";
 
 //==============================================================================
 
@@ -201,6 +211,17 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new NegativeFilter(), NEGATIVE_FILTER_NAME));
 
     filters.add(new NamedFilter(new GreyScaleFilter(), GREY_FILTER_NAME));
+
+    filters.add(new NamedFilter(new ClosestPoleHueFilter(new DistantAttraction(0.2f), new Color(255, 128, 0)), ORANGEPHIL_FILTER_NAME));
+    filters.add(new NamedFilter(new ClosestPoleHueFilter(new DistantAttraction(0.2f), new Color(43, 255, 0)),  GREENPHIL_FILTER_NAME));
+    filters.add(new NamedFilter(new ClosestPoleHueFilter(new DistantAttraction(0.2f), new Color(149, 0, 255)), PURPLEPHIL_FILTER_NAME));
+
+    filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(255, 0, 0)),   REDPHOB_FILTER_NAME));
+    filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(0, 255, 0)),   GREENPHOB_FILTER_NAME));
+    filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(0, 0, 255)),   BLUEPHOB_FILTER_NAME));
+    filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(255, 255, 0)), YELLOWPHOB_FILTER_NAME));
+    filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(0, 255, 255)), CYANPHOB_FILTER_NAME));
+    filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(255, 0, 255)), MAGENTPHOB_FILTER_NAME));
 
     filters.add(new NamedFilter(new RtoGtoBtoRFilter(),       RGBR_FILTER_NAME));
     filters.add(new NamedFilter(new BtoGtoRtoBFilter(),       BGRB_FILTER_NAME));
