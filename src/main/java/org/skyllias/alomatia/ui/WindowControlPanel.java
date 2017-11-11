@@ -13,7 +13,7 @@ import javax.swing.plaf.basic.*;
 
 import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.DisplayFrame.*;
+import org.skyllias.alomatia.ui.DisplayFrame.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.*;
 
 /** Panel to manage display frames: Create, count and rearrange them.
@@ -31,6 +31,7 @@ public class WindowControlPanel extends BasicControlPanel
   private static final String TITLE_LABEL     = "frame.control.title";
   private static final String AMOUNT_LABEL    = "frame.control.amount";
   private static final String ADD_LABEL       = "frame.control.add";
+  private static final String AUTOOPEN_LABEL  = "frame.control.autoopen";
   private static final String LINES_LABEL     = "frame.control.arrange.info";
   private static final String COLUMNS_LABEL   = "frame.control.arrange.columns";
   private static final String ROWS_LABEL      = "frame.control.arrange.rows";
@@ -38,17 +39,19 @@ public class WindowControlPanel extends BasicControlPanel
   private static final String AUTOAPPLY_LABEL = "frame.control.filters.autoapply";
   private static final String REAPPLY_LABEL   = "frame.control.filters.reapply";
 
-  protected static final String AMOUNT_LABEL_NAME     = "label.amount";         // name for the components
-  protected static final String ADD_BUTTON_NAME       = "button.add";
-  protected static final String LINES_SPINNER_NAME    = "spinner.lines";
-  protected static final String COMBO_HORIZONTAL_NAME = "combobox.horizontal";
-  protected static final String ARRANGE_BUTTON_NAME   = "button.arrange";
-  protected static final String AUTOAPPLY_FILTER_NAME = "checkbox.autoapply";
-  protected static final String REFILTER_BUTTON_NAME  = "button.refilter";
+  protected static final String AMOUNT_LABEL_NAME      = "label.amount";         // name for the components
+  protected static final String ADD_BUTTON_NAME        = "button.add";
+  protected static final String AUTOOPEN_CHECKBOX_NAME = "checkbox.autoopen";
+  protected static final String LINES_SPINNER_NAME     = "spinner.lines";
+  protected static final String COMBO_HORIZONTAL_NAME  = "combobox.horizontal";
+  protected static final String ARRANGE_BUTTON_NAME    = "button.arrange";
+  protected static final String AUTOAPPLY_FILTER_NAME  = "checkbox.autoapply";
+  protected static final String REFILTER_BUTTON_NAME   = "button.refilter";
 
   private static final String PREFKEY_HORIZONTAL  = "arrangeHorizontally";
   private static final String PREFKEY_LINES       = "amountOfLinesToRearrangeIn";
   private static final String PREFKEY_APPLYFILTER = "applySequentialFilterToNewWindow";
+  private static final String PREFKEY_AUTOOPEN    = "automaticallyOpenNewWindowOnStartup";
 
   private DisplayFrameManager manager;
 
@@ -80,11 +83,7 @@ public class WindowControlPanel extends BasicControlPanel
     addRefilterComponents();
     addNewDisplayKeyListener();
 
-    SwingUtilities.invokeLater(new Runnable()
-    {
-      @Override
-      public void run() {getNewDisplayFrame();}                                 // open the display window after this one's, or else it appears before and separated from the subsequent windows in the task bar
-    });
+    openNewWindow();
   }
 
 //==============================================================================
@@ -117,6 +116,33 @@ public class WindowControlPanel extends BasicControlPanel
 
 //------------------------------------------------------------------------------
 
+  /* Returns true if the preferences contain a value with which the user requests
+   * that a new display frame is automatically opened on startup. */
+
+  private boolean isAutoOpenOn() {return getPreferences().getBoolean(PREFKEY_AUTOOPEN, false);}
+
+//------------------------------------------------------------------------------
+
+  /* Opens a new display frame but only if the preferences contain a value
+   * requesting it.
+   * If a new window is opened, it is done after all the other processing in the
+   * current thread. Otherwise, the display frame appears before this one and
+   * separated from the subsequent windows in the task bar. */
+
+  private void openNewWindow()
+  {
+    if (isAutoOpenOn())
+    {
+      SwingUtilities.invokeLater(new Runnable()
+      {
+        @Override
+        public void run() {getNewDisplayFrame();}
+      });
+    }
+  }
+
+//------------------------------------------------------------------------------
+
   /* Sets up the components used to display the amount of windows and create new ones.
    * To be called just once. */
 
@@ -133,10 +159,16 @@ public class WindowControlPanel extends BasicControlPanel
       public void actionPerformed(ActionEvent e) {getNewDisplayFrame();}
     });
 
+    JCheckBox checkBox = new JCheckBox(getLabelLocalizer().getString(AUTOOPEN_LABEL),
+                                       isAutoOpenOn());
+    checkBox.addChangeListener(new AutoopenCheckBoxAutoopenChangeListener());
+    checkBox.setName(AUTOOPEN_CHECKBOX_NAME);
+
     JPanel firstRow = new JPanel();
     firstRow.setLayout(new BoxLayout(firstRow, BoxLayout.X_AXIS));
     firstRow.add(amountLabel);
     firstRow.add(addButton);
+    firstRow.add(checkBox);
     add(firstRow);
   }
 
@@ -354,5 +386,22 @@ public class WindowControlPanel extends BasicControlPanel
                                                            isSelected, cellHasFocus);
     }
   }
+
+//******************************************************************************
+
+  /* Saver of the new autoopen value in the preferences. */
+
+  private class AutoopenCheckBoxAutoopenChangeListener implements ChangeListener
+  {
+    @Override
+    public void stateChanged(ChangeEvent event)
+    {
+      JCheckBox sourceCheckbox = (JCheckBox) event.getSource();
+      boolean autoOpenNextTime = sourceCheckbox.isSelected();
+      getPreferences().putBoolean(PREFKEY_AUTOOPEN, autoOpenNextTime);
+    }
+  }
+
+//******************************************************************************
 
 }
