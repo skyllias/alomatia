@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
 
+import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
@@ -112,6 +113,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String YELLOWPHOB_FILTER_NAME = "filter.phobic.yellow.name";
   private static final String CYANPHOB_FILTER_NAME   = "filter.phobic.cyan.name";
   private static final String MAGENTPHOB_FILTER_NAME = "filter.phobic.magenta.name";
+  private static final String HORIZONTAL_FILTER_NAME = "filter.affine.horizontal.name";
+  private static final String VERTICAL_FILTER_NAME   = "filter.affine.vertical.name";
+  private static final String ROTATION_FILTER_NAME   = "filter.affine.rotation.name";
 
 //==============================================================================
 
@@ -231,6 +235,10 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new RedlessFilter(),          REDLESS_FILTER_NAME));
     filters.add(new NamedFilter(new GreenlessFilter(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(new BluelessFilter(),         BLUELESS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
 
     return filters;
   }
