@@ -4,6 +4,7 @@ package org.skyllias.alomatia.source;
 import java.awt.image.*;
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.*;
 
 import javax.imageio.*;
 
@@ -31,6 +32,7 @@ import org.apache.commons.io.*;
 public class AsynchronousUrlSource extends BasicSource
 {
   private Downloader currentDownload;
+  private Executor executor = Executors.newCachedThreadPool();
 
 //==============================================================================
 
@@ -44,7 +46,7 @@ public class AsynchronousUrlSource extends BasicSource
     cancel(true);
 
     currentDownload = new Downloader(url, listener);
-    new Thread(currentDownload).start();
+    executor.execute(currentDownload);
   }
 
 //------------------------------------------------------------------------------
@@ -65,6 +67,13 @@ public class AsynchronousUrlSource extends BasicSource
   {
     if (currentDownload != null) currentDownload.cancel(silently);
   }
+
+//------------------------------------------------------------------------------
+
+  /** Modifies the executor used to run the download tasks.
+   *  This will be used seldom, but anyway here it is. */
+
+  public void setExecutor(Executor newExecutor) {executor = newExecutor;}
 
 //------------------------------------------------------------------------------
 
