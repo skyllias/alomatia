@@ -113,6 +113,14 @@ public class FixedFilterFactory implements FilterFactory
   private static final String YELLOWPHOB_FILTER_NAME = "filter.phobic.yellow.name";
   private static final String CYANPHOB_FILTER_NAME   = "filter.phobic.cyan.name";
   private static final String MAGENTPHOB_FILTER_NAME = "filter.phobic.magenta.name";
+  private static final String WHITEDYE_FILTER_NAME   = "filter.dye.white.name";
+  private static final String BLACKDYE_FILTER_NAME   = "filter.dye.black.name";
+  private static final String REDDYE_FILTER_NAME     = "filter.dye.red.name";
+  private static final String GREENDYE_FILTER_NAME   = "filter.dye.green.name";
+  private static final String BLUEDYE_FILTER_NAME    = "filter.dye.blue.name";
+  private static final String YELLOWDYE_FILTER_NAME  = "filter.dye.yellow.name";
+  private static final String CYANDYE_FILTER_NAME    = "filter.dye.cyan.name";
+  private static final String MAGENTADYE_FILTER_NAME = "filter.dye.magenta.name";
   private static final String HORIZONTAL_FILTER_NAME = "filter.affine.horizontal.name";
   private static final String VERTICAL_FILTER_NAME   = "filter.affine.vertical.name";
   private static final String ROTATION_FILTER_NAME   = "filter.affine.rotation.name";
@@ -235,6 +243,15 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new RedlessFilter(),          REDLESS_FILTER_NAME));
     filters.add(new NamedFilter(new GreenlessFilter(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(new BluelessFilter(),         BLUELESS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),    GREENDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
 
     filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
