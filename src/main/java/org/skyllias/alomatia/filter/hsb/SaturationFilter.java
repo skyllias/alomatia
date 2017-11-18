@@ -4,7 +4,9 @@ package org.skyllias.alomatia.filter.hsb;
 import org.skyllias.alomatia.filter.factor.*;
 
 /** Filter that increases or decreases the saturation of the colours in an image
- *  by a non-linear factor. */
+ *  by a non-linear factor.
+ *  <p>
+ *  This could be a particular case of {@link HueDependingSaturationFactorFilter}. */
 
 public class SaturationFilter extends BasicHSBFilter
 {
@@ -28,10 +30,8 @@ public class SaturationFilter extends BasicHSBFilter
 
 //==============================================================================
 
-  /** Applies the factor to the original saturation avoiding results outside [0, 1] by:
-   *  If the factor is below 1, multiplying the original saturation by it.
-   *  If the factor is over 1, multiplying its inverse by the "insaturation" (ie
-   *  by (1 - saturation) and substracting that from 1). */
+  /** Applies an {@link AntiBoostingFactor} to the original saturation avoiding
+   *  results outside [0, 1]. */
 
   @Override
   protected float getNewSaturation(float hue, float saturation, float brightness)
