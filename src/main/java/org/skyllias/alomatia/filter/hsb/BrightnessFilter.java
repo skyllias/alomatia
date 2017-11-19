@@ -4,7 +4,9 @@ package org.skyllias.alomatia.filter.hsb;
 import org.skyllias.alomatia.filter.factor.*;
 
 /** Filter that increases or decreases the brightness of the colours in an image
- *  by a non-linear factor. */
+ *  by a non-linear factor.
+ *  <p>
+ *  This could be a particular case of {@link HueDependingBrightnessFilter}. */
 
 public class BrightnessFilter extends BasicHSBFilter
 {
@@ -28,10 +30,8 @@ public class BrightnessFilter extends BasicHSBFilter
 
 //==============================================================================
 
-  /** Applies the factor to the original brightness avoiding results outside [0, 1] by:
-   *  If the factor is below 1, multiplying the original brightness by it.
-   *  If the factor is over 1, multiplying its inverse by the "darkness" (ie
-   *  by (1 - brightness) and substracting that from 1). */
+  /** Applies a {@link SimpleFactor} to the original brightness avoiding results
+   *  outside [0, 1]. */
 
   @Override
   protected float getNewBrightness(float hue, float saturation, float brightness)
