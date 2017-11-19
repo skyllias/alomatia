@@ -17,16 +17,15 @@ public class HueDependingBrightnessFilter extends BasicHSBFilter
 //==============================================================================
 
   /** Applies a {@link SimpleFactor} to the result of the function with the
-   *  original brightness, but only if saturation is not 0 (because in this case
-   *  the hue is undefined). */
+   *  original brightness, but only if saturation and brightness are not too low
+   *  (because in these cases the hue is undefined or similar shades of black
+   *  can lead to very different tones). */
 
   @Override
   protected float getNewBrightness(float hue, float saturation, float brightness)
   {
-    if (saturation == 0) return brightness;
-
     double functionFactor = hueFunction.getValue(hue);
-    UnitFactor unitFactor = new SimpleFactor(functionFactor);
+    UnitFactor unitFactor = new SimpleFactor(functionFactor * saturation * brightness);
     return unitFactor.apply(brightness);
   }
 
