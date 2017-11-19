@@ -80,6 +80,18 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_CTR_M_FILTER_NAME  = "filter.hsb.lightcontrast+m.name";
   private static final String INC_CTR_S_FILTER_NAME  = "filter.hsb.lightcontrast+s.name";
   private static final String INC_CTR_XS_FILTER_NAME = "filter.hsb.lightcontrast+xs.name";
+  private static final String INC_RED_BR_FILTER_NAME = "filter.hsb.red.brightness.up.name";
+  private static final String DEC_RED_BR_FILTER_NAME = "filter.hsb.red.brightness.down.name";
+  private static final String INC_GRN_BR_FILTER_NAME = "filter.hsb.green.brightness.up.name";
+  private static final String DEC_GRN_BR_FILTER_NAME = "filter.hsb.green.brightness.down.name";
+  private static final String INC_BLU_BR_FILTER_NAME = "filter.hsb.blue.brightness.up.name";
+  private static final String DEC_BLU_BR_FILTER_NAME = "filter.hsb.blue.brightness.down.name";
+  private static final String INC_RED_SA_FILTER_NAME = "filter.hsb.red.saturation.up.name";
+  private static final String DEC_RED_SA_FILTER_NAME = "filter.hsb.red.saturation.down.name";
+  private static final String INC_GRN_SA_FILTER_NAME = "filter.hsb.green.saturation.up.name";
+  private static final String DEC_GRN_SA_FILTER_NAME = "filter.hsb.green.saturation.down.name";
+  private static final String INC_BLU_SA_FILTER_NAME = "filter.hsb.blue.saturation.up.name";
+  private static final String DEC_BLU_SA_FILTER_NAME = "filter.hsb.blue.saturation.down.name";
   private static final String DEC_CCT_XL_FILTER_NAME = "filter.rgb.colourcontrast-xl.name";
   private static final String DEC_CCT_L_FILTER_NAME  = "filter.rgb.colourcontrast-l.name";
   private static final String DEC_CCT_M_FILTER_NAME  = "filter.rgb.colourcontrast-m.name";
@@ -247,11 +259,25 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),    GREENDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),   GREENDYE_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
+
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7))),                                    INC_RED_BR_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7)), -1)),      DEC_RED_BR_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0.333f, 1, -7))),                               INC_GRN_BR_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.333f, 1, -7)), -1)), DEC_GRN_BR_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7))),                               INC_BLU_BR_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7)), -1)), DEC_BLU_BR_FILTER_NAME));
+
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.95f, 0.05f)),  INC_RED_SA_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.9f, 0.1f)),   DEC_RED_SA_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.25f, 0.4f)),   INC_GRN_SA_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.2f, 0.45f)),  DEC_GRN_SA_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_NAME));
 
     filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
