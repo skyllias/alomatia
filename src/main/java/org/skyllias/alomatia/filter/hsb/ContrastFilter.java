@@ -37,7 +37,7 @@ public class ContrastFilter extends BasicHSBFilter
 
   /** Applies the factor to the original brightness avoiding results outside [0, 1].
    *  If the brightness graph is divided in quadrants, the lowert left and the
-   *  upper right get a difeerent {@link UnitFactor} applied. */
+   *  upper right get a different {@link UnitFactor} applied. */
 
   @Override
   protected float getNewBrightness(float hue, float saturation, float brightness)
