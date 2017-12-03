@@ -22,6 +22,13 @@ public class UnitQuantizerTest
   }
 
   @Test
+  public void shouldNotReturnZeroWhenInputIsZeroAndTwoBucketsAndCenter()
+  {
+    UnitQuantizer quantizer = new UnitQuantizer(2, true);
+    assertEquals("The quantization of zero should not be zero", 0.25, quantizer.getQuantized(0), 0.001);
+  }
+
+  @Test
   public void shouldReturnOneWhenInputIsOneAndTwoBucketsAndNoCenter()
   {
     UnitQuantizer quantizer = new UnitQuantizer(2, false);
@@ -33,6 +40,13 @@ public class UnitQuantizerTest
   {
     UnitQuantizer quantizer = new UnitQuantizer(20, false);
     assertEquals("The quantization of one should be one", 1, quantizer.getQuantized(1), 0);
+  }
+
+  @Test
+  public void shouldNotReturnOneWhenInputIsOneAndTwoBucketsAndCenter()
+  {
+    UnitQuantizer quantizer = new UnitQuantizer(2, true);
+    assertEquals("The quantization of one should not be one", 0.75, quantizer.getQuantized(1), 0.001);
   }
 
   @Test

@@ -40,11 +40,6 @@ public class FixedFilterFactory implements FilterFactory
   private static final String GREENLESS_FILTER_NAME  = "filter.rgb.greenless.name";
   private static final String BLUELESS_FILTER_NAME   = "filter.rgb.blueless.name";
   private static final String NEGATIVE_FILTER_NAME   = "filter.rgb.invert.name";
-  private static final String POSTER_XL_FILTER_NAME  = "filter.rgb.posterize.xl.name";
-  private static final String POSTER_L_FILTER_NAME   = "filter.rgb.posterize.l.name";
-  private static final String POSTER_M_FILTER_NAME   = "filter.rgb.posterize.m.name";
-  private static final String POSTER_S_FILTER_NAME   = "filter.rgb.posterize.s.name";
-  private static final String POSTER_XS_FILTER_NAME  = "filter.rgb.posterize.xs.name";
   private static final String DEC_SAT_XL_FILTER_NAME = "filter.hsb.saturation-xl.name";
   private static final String DEC_SAT_L_FILTER_NAME  = "filter.hsb.saturation-l.name";
   private static final String DEC_SAT_M_FILTER_NAME  = "filter.hsb.saturation-m.name";
@@ -141,6 +136,17 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HORIZONTAL_FILTER_NAME = "filter.affine.horizontal.name";
   private static final String VERTICAL_FILTER_NAME   = "filter.affine.vertical.name";
   private static final String ROTATION_FILTER_NAME   = "filter.affine.rotation.name";
+  private static final String POSTER_XL_FILTER_NAME  = "filter.rgb.posterize.xl.name";
+  private static final String POSTER_L_FILTER_NAME   = "filter.rgb.posterize.l.name";
+  private static final String POSTER_M_FILTER_NAME   = "filter.rgb.posterize.m.name";
+  private static final String POSTER_S_FILTER_NAME   = "filter.rgb.posterize.s.name";
+  private static final String POSTER_XS_FILTER_NAME  = "filter.rgb.posterize.xs.name";
+  private static final String BPOSTER_XL_FILTER_NAME = "filter.hsb.posterize.brightness.xl.name";
+  private static final String BPOSTER_L_FILTER_NAME  = "filter.hsb.posterize.brightness.l.name";
+  private static final String BPOSTER_M_FILTER_NAME  = "filter.hsb.posterize.brightness.m.name";
+  private static final String BPOSTER_S_FILTER_NAME  = "filter.hsb.posterize.brightness.s.name";
+  private static final String BPOSTER_XS_FILTER_NAME = "filter.hsb.posterize.brightness.xs.name";
+  private static final String SATPOSTER_FILTER_NAME  = "filter.hsb.posterize.saturation.name";
 
 //==============================================================================
 
@@ -289,6 +295,14 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new RgbPosterizer(6),  POSTER_M_FILTER_NAME));
     filters.add(new NamedFilter(new RgbPosterizer(12), POSTER_S_FILTER_NAME));
     filters.add(new NamedFilter(new RgbPosterizer(20), POSTER_XS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(2, false),  BPOSTER_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(3, false),  BPOSTER_L_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(6, false),  BPOSTER_M_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(10, false), BPOSTER_S_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(20, false), BPOSTER_XS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SaturationPosterizerFilter(2, false), SATPOSTER_FILTER_NAME));
 
     filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
