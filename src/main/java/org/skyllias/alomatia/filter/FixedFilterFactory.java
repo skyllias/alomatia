@@ -10,7 +10,6 @@ import org.skyllias.alomatia.filter.buffered.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
-//import org.skyllias.alomatia.filter.demo.*;
 import org.skyllias.alomatia.filter.hsb.*;
 import org.skyllias.alomatia.filter.rgb.*;
 
@@ -147,6 +146,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BPOSTER_S_FILTER_NAME  = "filter.hsb.posterize.brightness.s.name";
   private static final String BPOSTER_XS_FILTER_NAME = "filter.hsb.posterize.brightness.xs.name";
   private static final String SATPOSTER_FILTER_NAME  = "filter.hsb.posterize.saturation.name";
+  private static final String HPOSTER_L0_FILTER_NAME = "filter.hsb.posterize.hue.l0.name";
+  private static final String HPOSTER_L1_FILTER_NAME = "filter.hsb.posterize.hue.l1.name";
+  private static final String HPOSTER_M0_FILTER_NAME = "filter.hsb.posterize.hue.m0.name";
+  private static final String HPOSTER_M1_FILTER_NAME = "filter.hsb.posterize.hue.m1.name";
+  private static final String HPOSTER_S0_FILTER_NAME = "filter.hsb.posterize.hue.s0.name";
+  private static final String HPOSTER_S1_FILTER_NAME = "filter.hsb.posterize.hue.s1.name";
 
 //==============================================================================
 
@@ -301,6 +306,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new BrightnessPosterizerFilter(6, false),  BPOSTER_M_FILTER_NAME));
     filters.add(new NamedFilter(new BrightnessPosterizerFilter(10, false), BPOSTER_S_FILTER_NAME));
     filters.add(new NamedFilter(new BrightnessPosterizerFilter(20, false), BPOSTER_XS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new HuePosterizerFilter(3, 0),         HPOSTER_L0_FILTER_NAME));
+    filters.add(new NamedFilter(new HuePosterizerFilter(3, 0.16667f),  HPOSTER_L1_FILTER_NAME));
+    filters.add(new NamedFilter(new HuePosterizerFilter(6, 0),         HPOSTER_M0_FILTER_NAME));
+    filters.add(new NamedFilter(new HuePosterizerFilter(6, 0.083333f), HPOSTER_M1_FILTER_NAME));
+    filters.add(new NamedFilter(new HuePosterizerFilter(12, 0),        HPOSTER_S0_FILTER_NAME));
+    filters.add(new NamedFilter(new HuePosterizerFilter(12, 0.04167f), HPOSTER_S1_FILTER_NAME));
 
     filters.add(new NamedFilter(new SaturationPosterizerFilter(2, false), SATPOSTER_FILTER_NAME));
 
