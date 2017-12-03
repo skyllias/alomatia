@@ -40,6 +40,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String GREENLESS_FILTER_NAME  = "filter.rgb.greenless.name";
   private static final String BLUELESS_FILTER_NAME   = "filter.rgb.blueless.name";
   private static final String NEGATIVE_FILTER_NAME   = "filter.rgb.invert.name";
+  private static final String POSTER_XL_FILTER_NAME  = "filter.rgb.posterize.xl.name";
+  private static final String POSTER_L_FILTER_NAME   = "filter.rgb.posterize.l.name";
+  private static final String POSTER_M_FILTER_NAME   = "filter.rgb.posterize.m.name";
+  private static final String POSTER_S_FILTER_NAME   = "filter.rgb.posterize.s.name";
+  private static final String POSTER_XS_FILTER_NAME  = "filter.rgb.posterize.xs.name";
   private static final String DEC_SAT_XL_FILTER_NAME = "filter.hsb.saturation-xl.name";
   private static final String DEC_SAT_L_FILTER_NAME  = "filter.hsb.saturation-l.name";
   private static final String DEC_SAT_M_FILTER_NAME  = "filter.hsb.saturation-m.name";
@@ -278,6 +283,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.2f, 0.45f)),  DEC_GRN_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_NAME));
+
+    filters.add(new NamedFilter(new RgbPosterizer(2),  POSTER_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(3),  POSTER_L_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(6),  POSTER_M_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(12), POSTER_S_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(20), POSTER_XS_FILTER_NAME));
 
     filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
