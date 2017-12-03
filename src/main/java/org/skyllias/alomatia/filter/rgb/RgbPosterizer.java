@@ -16,6 +16,15 @@ public class RgbPosterizer extends BasicColorFilter
 
 //==============================================================================
 
+  /** Same as RgbPosterizer(amountOfBuckets, false); */
+
+  public RgbPosterizer(int amountOfBuckets)
+  {
+    this(amountOfBuckets, false);
+  }
+
+//------------------------------------------------------------------------------
+
   /** Creates a posterizer with amountOfBuckets divisions in each channel. The
    *  amount should be at least 2 (producing at most 8 different colours) and
    *  smaller than 255 (producing exactly the same input colours), with the most
@@ -28,12 +37,12 @@ public class RgbPosterizer extends BasicColorFilter
 
   public RgbPosterizer(int amountOfBuckets, boolean centerValue)
   {
-    final float MAX_VALUE = 255f;
+    final float FULL_RANGE = 256f;                                              // considering the interval [0, 256). See getQuantized
 
     buckets = amountOfBuckets;
     center  = centerValue;
 
-    bucketSize = MAX_VALUE / amountOfBuckets;
+    bucketSize = FULL_RANGE / amountOfBuckets;
   }
 
 //==============================================================================
@@ -54,12 +63,14 @@ public class RgbPosterizer extends BasicColorFilter
 
   private int getQuantized(int value)
   {
-    int correspondingBucket = value / buckets;
+    final int MAX_VALUE = 255;                                                  // because the interval above was [0, 256)
+
+    int correspondingBucket = (int) (value / bucketSize);
 
     float bucketStart          = bucketSize * correspondingBucket;
     float positionInsideBucket = center? (bucketSize / 2):                                    // the middle
                                          (bucketSize * correspondingBucket) / (buckets - 1);  // moved according to the corresponding bucket
-    return Math.round(bucketStart + positionInsideBucket);
+    return Math.min(MAX_VALUE, Math.round(bucketStart + positionInsideBucket));
   }
 
 //------------------------------------------------------------------------------
