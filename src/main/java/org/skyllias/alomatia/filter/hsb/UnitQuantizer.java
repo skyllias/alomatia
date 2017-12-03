@@ -46,6 +46,7 @@ public class UnitQuantizer
   public float getQuantized(float value)
   {
     int correspondingBucket = (int) (value / bucketSize);
+    if (correspondingBucket >= buckets) correspondingBucket = buckets - 1;      // this happens when value == 1
 
     float bucketStart          = bucketSize * correspondingBucket;
     float positionInsideBucket = center? (bucketSize / 2):                                    // the middle
