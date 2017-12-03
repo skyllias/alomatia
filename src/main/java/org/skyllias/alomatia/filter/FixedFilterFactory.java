@@ -136,6 +136,17 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HORIZONTAL_FILTER_NAME = "filter.affine.horizontal.name";
   private static final String VERTICAL_FILTER_NAME   = "filter.affine.vertical.name";
   private static final String ROTATION_FILTER_NAME   = "filter.affine.rotation.name";
+  private static final String POSTER_XL_FILTER_NAME  = "filter.rgb.posterize.xl.name";
+  private static final String POSTER_L_FILTER_NAME   = "filter.rgb.posterize.l.name";
+  private static final String POSTER_M_FILTER_NAME   = "filter.rgb.posterize.m.name";
+  private static final String POSTER_S_FILTER_NAME   = "filter.rgb.posterize.s.name";
+  private static final String POSTER_XS_FILTER_NAME  = "filter.rgb.posterize.xs.name";
+  private static final String BPOSTER_XL_FILTER_NAME = "filter.hsb.posterize.brightness.xl.name";
+  private static final String BPOSTER_L_FILTER_NAME  = "filter.hsb.posterize.brightness.l.name";
+  private static final String BPOSTER_M_FILTER_NAME  = "filter.hsb.posterize.brightness.m.name";
+  private static final String BPOSTER_S_FILTER_NAME  = "filter.hsb.posterize.brightness.s.name";
+  private static final String BPOSTER_XS_FILTER_NAME = "filter.hsb.posterize.brightness.xs.name";
+  private static final String SATPOSTER_FILTER_NAME  = "filter.hsb.posterize.saturation.name";
 
 //==============================================================================
 
@@ -278,6 +289,20 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.2f, 0.45f)),  DEC_GRN_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_NAME));
+
+    filters.add(new NamedFilter(new RgbPosterizer(2),  POSTER_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(3),  POSTER_L_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(6),  POSTER_M_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(12), POSTER_S_FILTER_NAME));
+    filters.add(new NamedFilter(new RgbPosterizer(20), POSTER_XS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(2, false),  BPOSTER_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(3, false),  BPOSTER_L_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(6, false),  BPOSTER_M_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(10, false), BPOSTER_S_FILTER_NAME));
+    filters.add(new NamedFilter(new BrightnessPosterizerFilter(20, false), BPOSTER_XS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SaturationPosterizerFilter(2, false), SATPOSTER_FILTER_NAME));
 
     filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
