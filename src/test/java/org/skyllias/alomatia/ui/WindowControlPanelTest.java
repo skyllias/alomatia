@@ -52,7 +52,7 @@ public class WindowControlPanelTest
       @Override
       public WindowControlPanel call() throws Exception
       {
-        return new WindowControlPanel(preferences, new StartupLabelLocalizer(),
+        return new WindowControlPanel(preferences, new StartupLabelLocalizer(), // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
                                       repeater, dropTargetListener, displayFrameManager);
       }
     });
