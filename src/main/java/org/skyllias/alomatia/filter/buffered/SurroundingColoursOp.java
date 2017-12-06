@@ -36,7 +36,7 @@ public class SurroundingColoursOp extends BasicBufferedImageOp
    *  dest or a new image if null. */
 
   @Override
-  public BufferedImage doFilter(BufferedImage src, BufferedImage dest)
+  public void doFilter(BufferedImage src, BufferedImage dest)
   {
     for (int i = 0; i < src.getWidth(); i++)
     {
@@ -47,7 +47,6 @@ public class SurroundingColoursOp extends BasicBufferedImageOp
         dest.setRGB(i, j, pickedColour.getRGB());
       }
     }
-    return dest;
   }
 
 //------------------------------------------------------------------------------

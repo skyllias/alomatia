@@ -73,7 +73,8 @@ public abstract class BasicBufferedImageOp implements BufferedImageOp
   {
     if (dest == null) dest = createCompatibleDestImage(src, null);
 
-    return doFilter(src, dest);
+    doFilter(src, dest);
+    return dest;
   }
 
 //------------------------------------------------------------------------------
@@ -81,7 +82,7 @@ public abstract class BasicBufferedImageOp implements BufferedImageOp
   /** Does the filtering from the original image src into the destination image dest
    *  without caring about the nullness of the latter. */
 
-  protected abstract BufferedImage doFilter(BufferedImage src, BufferedImage dest);
+  protected abstract void doFilter(BufferedImage src, BufferedImage dest);
 
 //------------------------------------------------------------------------------
 
