@@ -18,14 +18,14 @@ public abstract class FixedSizeAffineTransformImageOp extends BasicBufferedImage
 //==============================================================================
 
   @Override
-  public BufferedImage filter(BufferedImage src, BufferedImage dst)
+  public void doFilter(BufferedImage src, BufferedImage dst)
   {
     int width  = src.getWidth();
     int height = src.getHeight();
 
     AffineTransform transform    = getTransform(width, height);
     AffineTransformOp delegateOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);   // at least initially, there is no perspective of transformations that require interpolation
-    return delegateOp.filter(src, dst);
+    delegateOp.filter(src, dst);
   }
 
 //------------------------------------------------------------------------------

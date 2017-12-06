@@ -6,7 +6,7 @@ import java.awt.geom.*;
 import java.awt.image.*;
 
 /** Superclass for the {@link BufferedImageOp} that keep the image size.
- *  Subclasses must implement filter(BufferedImage, BufferedImage). */
+ *  Subclasses must implement doFilter(BufferedImage, BufferedImage). */
 
 public abstract class BasicBufferedImageOp implements BufferedImageOp
 {
@@ -63,6 +63,26 @@ public abstract class BasicBufferedImageOp implements BufferedImageOp
 
   @Override
   public RenderingHints getRenderingHints() {return null;}
+
+//------------------------------------------------------------------------------
+
+  /** Just calls doFilter ensuring that the destination is not null. */
+
+  @Override
+  public BufferedImage filter(BufferedImage src, BufferedImage dest)
+  {
+    if (dest == null) dest = createCompatibleDestImage(src, null);
+
+    doFilter(src, dest);
+    return dest;
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Does the filtering from the original image src into the destination image dest
+   *  without caring about the nullness of the latter. */
+
+  protected abstract void doFilter(BufferedImage src, BufferedImage dest);
 
 //------------------------------------------------------------------------------
 
