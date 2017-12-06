@@ -4,7 +4,6 @@ package org.skyllias.alomatia.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.prefs.*;
 
 import javax.swing.*;
 
@@ -159,12 +158,6 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
   /** Invoked whenever a change occurs in the selected object. */
 
   protected abstract void onSelectionChanged(SELECTABLE selectedObject);
-
-//------------------------------------------------------------------------------
-
-  /** Shortcut method to get preferences by subclasses that store the last user selection. */
-
-  protected Preferences getPreferences() {return Preferences.userNodeForPackage(getClass());}
 
 //------------------------------------------------------------------------------
 

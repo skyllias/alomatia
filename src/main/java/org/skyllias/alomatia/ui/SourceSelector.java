@@ -4,6 +4,7 @@ package org.skyllias.alomatia.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.prefs.*;
 
 import javax.imageio.*;
 import javax.swing.*;
@@ -44,6 +45,8 @@ public class SourceSelector extends BasicSelector<ImageSource>
   private ImageSource previousSource;
   private JPanel optionsContainer = new JPanel();                               // no idea why, but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space
 
+  private Preferences preferences;
+
 //==============================================================================
 
   /** Creates a new selector to choose from the known types in the catalogue.
@@ -51,7 +54,18 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
   public SourceSelector(LabelLocalizer localizer, SourceCatalogue catalogue)
   {
+    this(getDefaultPreferences(), localizer, catalogue);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Only meant for preferences injection in tests. */
+
+  protected SourceSelector(Preferences prefs, LabelLocalizer localizer, SourceCatalogue catalogue)
+  {
     super(localizer, SOURCE_LABEL);
+
+    preferences = prefs;
 
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));                           // all this stuff is required for the SourceSelector to be centered
     optionsContainer.setLayout(new BoxLayout(optionsContainer, BoxLayout.Y_AXIS));
@@ -280,6 +294,18 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
     getPreferences().put(PREFKEY_SOURCECOMMAND, getCurrentSelectionAsActionCommand());
   }
+
+//------------------------------------------------------------------------------
+
+  /* Shortcut method to get preferences by subclasses that store the last URL. */
+
+  private Preferences getPreferences() {return preferences;}
+
+//------------------------------------------------------------------------------
+
+  /* Returns the preferences to use when they are not externally injected. */
+
+  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(SourceSelector.class);}
 
 //------------------------------------------------------------------------------
 
