@@ -152,6 +152,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HPOSTER_M1_FILTER_NAME = "filter.hsb.posterize.hue.m1.name";
   private static final String HPOSTER_S0_FILTER_NAME = "filter.hsb.posterize.hue.s0.name";
   private static final String HPOSTER_S1_FILTER_NAME = "filter.hsb.posterize.hue.s1.name";
+  private static final String PIXEL_XS_FILTER_NAME   = "filter.pixelize.xs.name";
+  private static final String PIXEL_S_FILTER_NAME    = "filter.pixelize.s.name";
+  private static final String PIXEL_M_FILTER_NAME    = "filter.pixelize.m.name";
+  private static final String PIXEL_L_FILTER_NAME    = "filter.pixelize.l.name";
+  private static final String PIXEL_XL_FILTER_NAME   = "filter.pixelize.xl.name";
 
 //==============================================================================
 
@@ -294,6 +299,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.2f, 0.45f)),  DEC_GRN_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_NAME));
+
+    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(10)), PIXEL_M_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
+    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(new RgbPosterizer(2),  POSTER_XL_FILTER_NAME));
     filters.add(new NamedFilter(new RgbPosterizer(3),  POSTER_L_FILTER_NAME));
