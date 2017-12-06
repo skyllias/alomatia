@@ -36,10 +36,8 @@ public class SurroundingColoursOp extends BasicBufferedImageOp
    *  dest or a new image if null. */
 
   @Override
-  public BufferedImage filter(BufferedImage src, BufferedImage dest)
+  public BufferedImage doFilter(BufferedImage src, BufferedImage dest)
   {
-    if (dest == null) dest = createCompatibleDestImage(src, null);              // else sizes should be checked, but bah...
-
     for (int i = 0; i < src.getWidth(); i++)
     {
       for (int j = 0; j < src.getHeight(); j++)

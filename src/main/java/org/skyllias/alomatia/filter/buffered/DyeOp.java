@@ -36,10 +36,8 @@ public class DyeOp extends BasicBufferedImageOp
   /** Copies src and fills a rectangle of the inner dye all over it. */
 
   @Override
-  public BufferedImage filter(BufferedImage src, BufferedImage dest)
+  public BufferedImage doFilter(BufferedImage src, BufferedImage dest)
   {
-    if (dest == null) dest = createCompatibleDestImage(src, null);
-
     Graphics2D graphics = dest.createGraphics();
     graphics.drawImage(src, 0, 0, null);
     graphics.setColor(dye);
