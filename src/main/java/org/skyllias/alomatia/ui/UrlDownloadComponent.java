@@ -32,11 +32,23 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
   private UrlTextField urlField;
   private boolean isDownloading = false;
   private LabelLocalizer labelLocalizer;
+  private Preferences preferences;
 
 //==============================================================================
 
   public UrlDownloadComponent(LabelLocalizer localizer, AsynchronousUrlSource source)
   {
+    this(getDefaultPreferences(), localizer, source);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Only meant for preferences injection in tests. */
+
+  protected UrlDownloadComponent(Preferences prefs, LabelLocalizer localizer, AsynchronousUrlSource source)
+  {
+    preferences = prefs;
+
     labelLocalizer = localizer;
     urlSource       = source;
 
@@ -159,7 +171,13 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
 
   /* Shortcut method to get preferences by subclasses that store the last URL. */
 
-  private Preferences getPreferences() {return Preferences.userNodeForPackage(getClass());}
+  private Preferences getPreferences() {return preferences;}
+
+//------------------------------------------------------------------------------
+
+  /* Returns the preferences to use when they are not externally injected. */
+
+  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(UrlDownloadComponent.class);}
 
 //------------------------------------------------------------------------------
 
