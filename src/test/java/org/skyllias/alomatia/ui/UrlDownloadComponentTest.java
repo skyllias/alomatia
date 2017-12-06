@@ -5,6 +5,7 @@ import static org.assertj.swing.fixture.Containers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.concurrent.*;
+import java.util.prefs.*;
 
 import javax.swing.*;
 
@@ -18,7 +19,8 @@ import org.skyllias.alomatia.source.AsynchronousUrlSource.*;
 
 /** AssertJ does not support writing strings with chars that are typed with
  *  modifiers (shift, alt, etc.), so there is not much effort placed in restoring
- *  previous values or using realistic URLs. */
+ *  previous values or using realistic URLs.
+ *  TODO Consider testing Preferences. */
 
 public class UrlDownloadComponentTest
 {
@@ -28,6 +30,8 @@ public class UrlDownloadComponentTest
   private FrameFixture frameFixture;
   @Mock
   private AsynchronousUrlSource source;
+  @Mock
+  private Preferences preferences;
   private UrlDownloadComponent downloadComponent;
 
   @BeforeClass
@@ -46,7 +50,7 @@ public class UrlDownloadComponentTest
       @Override
       public JPanel call() throws Exception
       {
-        downloadComponent   = new UrlDownloadComponent(new KeyLabelLocalizer(), source);
+        downloadComponent   = new UrlDownloadComponent(preferences, new KeyLabelLocalizer(), source);
         JButton button      = downloadComponent.getButton();
         JTextField urlField = downloadComponent.getTextField();
         JPanel container    = new JPanel();
@@ -99,7 +103,6 @@ public class UrlDownloadComponentTest
       {
         downloadComponent.setEnabled(true);
         downloadComponent.onSuccess();                                          // simulate the end of the download fired by setEnabled(true)
-        Mockito.reset(source);                                                  // this is a code smell, but setEnabled may or may not invoke setUrl depending on the previous values in preferences
       }
     });
     frameFixture.textBox(FIELD_NAME).deleteText();
@@ -117,7 +120,6 @@ public class UrlDownloadComponentTest
       {
         downloadComponent.setEnabled(true);
         downloadComponent.onSuccess();                                          // simulate the end of the download fired by setEnabled(true)
-        Mockito.reset(source);                                                  // this is a code smell, but setEnabled may or may not invoke setUrl depending on the previous values in preferences
       }
     });
     frameFixture.textBox(FIELD_NAME).deleteText();
@@ -126,10 +128,6 @@ public class UrlDownloadComponentTest
 
     verify(source, times(1)).setUrl("whatever", downloadComponent);
     frameFixture.button(BUTTON_NAME).requireText(UrlDownloadComponent.BUTTON_CANCEL_LABEL);
-
-    downloadComponent.onSuccess();                                              // restore the status to ready so that the next click resets the preferences
-    frameFixture.textBox(FIELD_NAME).deleteText();                              // remove "whatever" from user preferences
-    frameFixture.button(BUTTON_NAME).click();
   }
 
   @Test
@@ -149,8 +147,5 @@ public class UrlDownloadComponentTest
     frameFixture.button(BUTTON_NAME).click();                                   // cancel download
 
     verify(source, times(1)).cancel();
-
-    frameFixture.textBox(FIELD_NAME).deleteText();                              // remove "whatever" from user preferences
-    frameFixture.button(BUTTON_NAME).click();
   }
 }

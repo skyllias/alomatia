@@ -63,6 +63,8 @@ public class WindowControlPanel extends BasicControlPanel
 
   private boolean applySequentialFilters = false;
 
+  private Preferences preferences;
+
 //==============================================================================
 
   /** Automatically opens a new display window after creation. */
@@ -70,7 +72,20 @@ public class WindowControlPanel extends BasicControlPanel
   public WindowControlPanel(LabelLocalizer localizer, Repeater displayRepeater,
                             DropTargetListener dropTargetListener, DisplayFrameManager frameManager)
   {
+    this(getDefaultPreferences(), localizer, displayRepeater,
+         dropTargetListener, frameManager);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Only meant for preferences injection in tests. */
+
+  protected WindowControlPanel(Preferences prefs, LabelLocalizer localizer, Repeater displayRepeater,
+                               DropTargetListener dropTargetListener, DisplayFrameManager frameManager)
+  {
     super(localizer, TITLE_LABEL);
+
+    preferences = prefs;
 
     repeaterDisplay = displayRepeater;
     manager         = frameManager;
@@ -208,7 +223,9 @@ public class WindowControlPanel extends BasicControlPanel
 
     JLabel infoLabel = new JLabel(getLabelLocalizer().getString(LINES_LABEL));      // TODO add margin
 
-    int initialLinesValue       = getPreferences().getInt(PREFKEY_LINES, DEF_LINES);
+    int initialLinesValue = getPreferences().getInt(PREFKEY_LINES, DEF_LINES);
+    if (initialLinesValue < MIN_LINES) initialLinesValue = MIN_LINES;
+    if (initialLinesValue > MAX_LINES) initialLinesValue = MAX_LINES;
     final JSpinner linesSpinner = new JSpinner(new SpinnerNumberModel(initialLinesValue, MIN_LINES,
                                                                       MAX_LINES, STEP_LINES));
     linesSpinner.setName(LINES_SPINNER_NAME);
@@ -362,9 +379,15 @@ public class WindowControlPanel extends BasicControlPanel
 
 //------------------------------------------------------------------------------
 
-  /** Shortcut method to get preferences by subclasses that store the last user selection. */
+  /* Shortcut method to get preferences by subclasses that store the last URL. */
 
-  protected Preferences getPreferences() {return Preferences.userNodeForPackage(getClass());}
+  private Preferences getPreferences() {return preferences;}
+
+//------------------------------------------------------------------------------
+
+  /* Returns the preferences to use when they are not externally injected. */
+
+  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(WindowControlPanel.class);}
 
 //------------------------------------------------------------------------------
 

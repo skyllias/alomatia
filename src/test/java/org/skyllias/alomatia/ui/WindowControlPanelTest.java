@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.util.concurrent.*;
+import java.util.prefs.*;
 
 import org.assertj.swing.edt.*;
 import org.assertj.swing.fixture.*;
@@ -29,6 +30,8 @@ public class WindowControlPanelTest
   private DisplayFrame displayFrame;
   @Mock
   private DisplayFrameManager displayFrameManager;
+  @Mock
+  private Preferences preferences;
   private WindowControlPanel windowControlPanel;
 
   @BeforeClass
@@ -49,7 +52,8 @@ public class WindowControlPanelTest
       @Override
       public WindowControlPanel call() throws Exception
       {
-        return new WindowControlPanel(new StartupLabelLocalizer(), repeater, dropTargetListener, displayFrameManager);
+        return new WindowControlPanel(preferences, new StartupLabelLocalizer(), // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
+                                      repeater, dropTargetListener, displayFrameManager);
       }
     });
     frameFixture = showInFrame(windowControlPanel);
@@ -64,45 +68,29 @@ public class WindowControlPanelTest
 //------------------------------------------------------------------------------
 
   @Test
-  public void shouldAddDisplayPanelWhenStarting()
+  public void shouldNotAddDisplayPanelWhenStarting()
   {
-    verify(repeater).addReceiver(displayPanel);
+    verify(repeater, never()).addReceiver(displayPanel);                        // this relies on assertFalse(preferences.getBoolean(s, false)). The counterpart when they return true should be tested too, but to reinitialize the framwFirxter is a big deal
   }
 
   @Test
   public void shouldOpenNewWindowWithFilterWhenButtonClickedWithCheckbox()
   {
-    boolean initiallyWithFilters   = windowControlPanel.isAutomaticallyApplyingFilters();
-    int expectedTimesWithFilter    = 0;
-    int expectedTimesWithoutFilter = 0;
-    if (initiallyWithFilters) expectedTimesWithFilter++;
-    else                      expectedTimesWithoutFilter++;
-    verify(displayFrameManager).getNewDisplayFrame(initiallyWithFilters);       // the one opened when starting
-
     frameFixture.checkBox(WindowControlPanel.AUTOAPPLY_FILTER_NAME).check(true);
-    expectedTimesWithFilter++;
     frameFixture.button(WindowControlPanel.ADD_BUTTON_NAME).click();
 
-    verify(displayFrameManager, times(expectedTimesWithFilter)).getNewDisplayFrame(true);
-    verify(displayFrameManager, times(expectedTimesWithoutFilter)).getNewDisplayFrame(false);
+    verify(displayFrameManager, times(1)).getNewDisplayFrame(true);
+    verify(displayFrameManager, times(0)).getNewDisplayFrame(false);
   }
 
   @Test
   public void shouldOpenNewWindowWithoutFilterWhenButtonClickedWithoutCheckbox()
   {
-    boolean initiallyWithFilters   = windowControlPanel.isAutomaticallyApplyingFilters();
-    int expectedTimesWithFilter    = 0;
-    int expectedTimesWithoutFilter = 0;
-    if (initiallyWithFilters) expectedTimesWithFilter++;
-    else                      expectedTimesWithoutFilter++;
-    verify(displayFrameManager).getNewDisplayFrame(initiallyWithFilters);       // the one opened when starting
-
     frameFixture.checkBox(WindowControlPanel.AUTOAPPLY_FILTER_NAME).check(false);
-    expectedTimesWithoutFilter++;
     frameFixture.button(WindowControlPanel.ADD_BUTTON_NAME).click();
 
-    verify(displayFrameManager, times(expectedTimesWithFilter)).getNewDisplayFrame(true);
-    verify(displayFrameManager, times(expectedTimesWithoutFilter)).getNewDisplayFrame(false);
+    verify(displayFrameManager, times(0)).getNewDisplayFrame(true);
+    verify(displayFrameManager, times(1)).getNewDisplayFrame(false);
   }
 
   @Test
@@ -118,33 +106,26 @@ public class WindowControlPanelTest
     });
     String modifiedText = frameFixture.label(WindowControlPanel.AMOUNT_LABEL_NAME).text();
 
-    assertNotEquals("Label should change when amount of windows changed", originalText, modifiedText);
+    assertNotEquals("Label should change when amount of windows changed",
+                    originalText, modifiedText);
   }
 
   @Test
   public void shouldRearrangeWindowsHorizontallyWhenColumnsSelected()
   {
-    String previousContents = frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).text();
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("17");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(0);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
     verify(displayFrameManager).rearrangeWindows(eq(17), any(Rectangle.class), eq(true));
-
-    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText(previousContents);  // could be moved to tearDown
-    frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
   }
 
   @Test
   public void shouldRearrangeWindowsVerticallyWhenRowsSelected()
   {
-    String previousContents = frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).text();
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("19");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(1);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
     verify(displayFrameManager).rearrangeWindows(eq(19), any(Rectangle.class), eq(false));
-
-    frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText(previousContents);  // could be moved to tearDown
-    frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
   }
 
   @Test

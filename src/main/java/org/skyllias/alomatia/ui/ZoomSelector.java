@@ -4,6 +4,7 @@ package org.skyllias.alomatia.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.prefs.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -13,7 +14,8 @@ import org.skyllias.alomatia.i18n.*;
 
 /** Selector of the zoom to apply to the displayed image.
  *  <p>
- *  The last selected fit policy and slider values are stored as user preferences. */
+ *  The last selected fit policy and slider values are stored as user preferences.
+ *  TODO Unit test */
 
 @SuppressWarnings("serial")
 public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
@@ -38,13 +40,26 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
 
   private ResizableDisplay resizableDisplay;
 
+  private Preferences preferences;
+
 //==============================================================================
 
   /** Creates a new selector that will modify the passed display's zoom. */
 
   public ZoomSelector(LabelLocalizer localizer, ResizableDisplay imageDisplay)
   {
+    this(getDefaultPreferences(), localizer, imageDisplay);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Only meant for preferences injection in tests. */
+
+  protected ZoomSelector(Preferences prefs, LabelLocalizer localizer, ResizableDisplay imageDisplay)
+  {
     super(localizer, ZOOM_LABEL);
+
+    preferences = prefs;
 
     resizableDisplay = imageDisplay;
 
@@ -198,6 +213,18 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
       }
     });
   }
+
+//------------------------------------------------------------------------------
+
+  /* Shortcut method to get preferences by subclasses that store the last URL. */
+
+  private Preferences getPreferences() {return preferences;}
+
+//------------------------------------------------------------------------------
+
+  /* Returns the preferences to use when they are not externally injected. */
+
+  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(ZoomSelector.class);}
 
 //------------------------------------------------------------------------------
 
