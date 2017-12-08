@@ -181,9 +181,10 @@ public class WindowControlPanel extends BasicControlPanel
 
     JPanel firstRow = new JPanel();
     firstRow.setLayout(new BoxLayout(firstRow, BoxLayout.X_AXIS));
+    firstRow.add(checkBox);
+    firstRow.add(Box.createHorizontalGlue());
     firstRow.add(amountLabel);
     firstRow.add(addButton);
-    firstRow.add(checkBox);
     add(firstRow);
   }
 
@@ -229,16 +230,14 @@ public class WindowControlPanel extends BasicControlPanel
     final JSpinner linesSpinner = new JSpinner(new SpinnerNumberModel(initialLinesValue, MIN_LINES,
                                                                       MAX_LINES, STEP_LINES));
     linesSpinner.setName(LINES_SPINNER_NAME);
-    linesSpinner.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                                              linesSpinner.getPreferredSize().height));   // prevent it from stretching vertically
+    linesSpinner.setMaximumSize(linesSpinner.getPreferredSize());               // prevent it from stretching
 
     boolean initialHorizontal                   = getPreferences().getBoolean(PREFKEY_HORIZONTAL, true);
     final JComboBox<Boolean> horizontalCombobox = new JComboBox<>(new Boolean[] {true, false});
     horizontalCombobox.setName(COMBO_HORIZONTAL_NAME);
     horizontalCombobox.setSelectedItem(initialHorizontal);
     horizontalCombobox.setRenderer(new HorizontalCellRenderer());
-    horizontalCombobox.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                                                    horizontalCombobox.getPreferredSize().height));   // prevent it from stretching vertically
+    horizontalCombobox.setMaximumSize(horizontalCombobox.getPreferredSize());   // prevent it from stretching
 
     JButton arrangeButton = new JButton(getLabelLocalizer().getString(REARRANGE_LABEL));
     arrangeButton.setName(ARRANGE_BUTTON_NAME);
@@ -258,6 +257,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     JPanel secondRow = new JPanel();
     secondRow.setLayout(new BoxLayout(secondRow, BoxLayout.X_AXIS));
+    secondRow.add(Box.createHorizontalGlue());
     secondRow.add(infoLabel);
     secondRow.add(linesSpinner);
     secondRow.add(horizontalCombobox);
@@ -299,6 +299,7 @@ public class WindowControlPanel extends BasicControlPanel
     JPanel thirdRow = new JPanel();
     thirdRow.setLayout(new BoxLayout(thirdRow, BoxLayout.X_AXIS));
     thirdRow.add(checkBox);
+    thirdRow.add(Box.createHorizontalGlue());
     thirdRow.add(filterButton);
     add(thirdRow);
   }
