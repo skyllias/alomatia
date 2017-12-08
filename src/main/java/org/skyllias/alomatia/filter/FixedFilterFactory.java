@@ -157,6 +157,16 @@ public class FixedFilterFactory implements FilterFactory
   private static final String PIXEL_M_FILTER_NAME    = "filter.pixelize.m.name";
   private static final String PIXEL_L_FILTER_NAME    = "filter.pixelize.l.name";
   private static final String PIXEL_XL_FILTER_NAME   = "filter.pixelize.xl.name";
+  private static final String HIGHSRED_FILTER_NAME   = "filter.highlight.saturation.red.name";
+  private static final String HIGHSYELOW_FILTER_NAME = "filter.highlight.saturation.yellow.name";
+  private static final String HIGHSGREEN_FILTER_NAME = "filter.highlight.saturation.green.name";
+  private static final String HIGHSBLUE_FILTER_NAME  = "filter.highlight.saturation.blue.name";
+  private static final String HIGHSPURPL_FILTER_NAME = "filter.highlight.saturation.purple.name";
+  private static final String HIGHBRED_FILTER_NAME   = "filter.highlight.brightness.red.name";
+  private static final String HIGHBYELOW_FILTER_NAME = "filter.highlight.brightness.yellow.name";
+  private static final String HIGHBGREEN_FILTER_NAME = "filter.highlight.brightness.green.name";
+  private static final String HIGHBBLUE_FILTER_NAME  = "filter.highlight.brightness.blue.name";
+  private static final String HIGHBPURPL_FILTER_NAME = "filter.highlight.brightness.purple.name";
 
 //==============================================================================
 
@@ -293,12 +303,24 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7))),                               INC_BLU_BR_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7)), -1)), DEC_BLU_BR_FILTER_NAME));
 
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.9f, 0.1f)), HIGHBRED_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.1f, 0.3f)), HIGHBYELOW_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.3f, 0.5f)), HIGHBGREEN_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.5f, 0.7f)), HIGHBBLUE_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.7f, 0.9f)), HIGHBPURPL_FILTER_NAME));
+
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.95f, 0.05f)),  INC_RED_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.9f, 0.1f)),   DEC_RED_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.25f, 0.4f)),   INC_GRN_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.2f, 0.45f)),  DEC_GRN_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_NAME));
+
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.9f, 0.1f)), HIGHSRED_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.1f, 0.3f)), HIGHSYELOW_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.3f, 0.5f)), HIGHSGREEN_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.5f, 0.7f)), HIGHSBLUE_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.7f, 0.9f)), HIGHSPURPL_FILTER_NAME));
 
     filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
     filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
