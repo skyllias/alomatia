@@ -12,6 +12,7 @@ import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
 import org.skyllias.alomatia.filter.hsb.*;
 import org.skyllias.alomatia.filter.rgb.*;
+import org.skyllias.alomatia.filter.rgb.lookup.*;
 
 /** FilterFactory with a hardcoded set of available filters. */
 
@@ -167,6 +168,17 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HIGHBGREEN_FILTER_NAME = "filter.highlight.brightness.green.name";
   private static final String HIGHBBLUE_FILTER_NAME  = "filter.highlight.brightness.blue.name";
   private static final String HIGHBPURPL_FILTER_NAME = "filter.highlight.brightness.purple.name";
+  private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
+  private static final String INST_EARBY_FILTER_NAME = "Earby lird";
+  private static final String INST_TOGAM_FILTER_NAME = "Thogam";
+  private static final String INST_VASHN_FILTER_NAME = "Vashnille";
+  private static final String INST_FEHE_FILTER_NAME  = "Fehe";
+  private static final String INST_MOLO_FILTER_NAME  = "Molo";
+  private static final String INST_VELKN_FILTER_NAME = "Velkin";
+  private static final String INST_1976_FILTER_NAME  = "1976";
+  private static final String INST_SOATR_FILTER_NAME = "Soater";
+  private static final String INST_LAWDN_FILTER_NAME = "Lawden";
+  private static final String INST_PROX_FILTER_NAME  = "Prox";
 
 //==============================================================================
 
@@ -189,6 +201,18 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new LmsProtanopiaFilter(),   LMSPROPIA_FILTER_NAME));
     filters.add(new NamedFilter(new LmsDeuteranopiaFilter(), LMSDEUPIA_FILTER_NAME));
     filters.add(new NamedFilter(new LmsTritanopiaFilter(),   LMSTRIPIA_FILTER_NAME));
+
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forThogam(),    INST_TOGAM_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forProx(),      INST_PROX_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forLawden(),    INST_LAWDN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forFehe(),      INST_FEHE_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forMolo(),      INST_MOLO_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forAllopo(),    INST_ALOPO_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forEarbyLird(), INST_EARBY_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forSoater(),    INST_SOATR_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forVashnille(), INST_VASHN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.for1976(),      INST_1976_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forVelkin(),    INST_VELKN_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueShiftFilter(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(-0.05f), DEC_HUE_L_FILTER_NAME));
