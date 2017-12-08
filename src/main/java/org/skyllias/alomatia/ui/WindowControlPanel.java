@@ -182,6 +182,7 @@ public class WindowControlPanel extends BasicControlPanel
     JPanel firstRow = new JPanel();
     firstRow.setLayout(new BoxLayout(firstRow, BoxLayout.X_AXIS));
     firstRow.add(checkBox);
+    firstRow.add(Box.createHorizontalGlue());
     firstRow.add(amountLabel);
     firstRow.add(addButton);
     add(firstRow);
@@ -256,6 +257,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     JPanel secondRow = new JPanel();
     secondRow.setLayout(new BoxLayout(secondRow, BoxLayout.X_AXIS));
+    secondRow.add(Box.createHorizontalGlue());
     secondRow.add(infoLabel);
     secondRow.add(linesSpinner);
     secondRow.add(horizontalCombobox);
@@ -297,6 +299,7 @@ public class WindowControlPanel extends BasicControlPanel
     JPanel thirdRow = new JPanel();
     thirdRow.setLayout(new BoxLayout(thirdRow, BoxLayout.X_AXIS));
     thirdRow.add(checkBox);
+    thirdRow.add(Box.createHorizontalGlue());
     thirdRow.add(filterButton);
     add(thirdRow);
   }

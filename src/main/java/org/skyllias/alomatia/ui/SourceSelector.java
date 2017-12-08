@@ -45,7 +45,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
   private static final int TEXT_FIELD_COLUMNS = 40;                             // used to prevent text fields from trying to fit the whole text with its preferred size
 
   private ImageSource previousSource;
-  private JPanel optionsContainer = new JPanel();                               // no idea why, but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space
+  private JPanel optionsContainer = new JPanel();                               // no idea why (well, probably due to the use of alignments, see https://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#features), but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space. TODO fix this
 
   private Preferences preferences;
 
