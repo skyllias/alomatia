@@ -163,7 +163,7 @@ public class WindowControlPanel extends BasicControlPanel
 
   private void addAdditionComponents()
   {
-    amountLabel = new JLabel(getAmountOfWindowsText(manager));   // TODO add margin
+    amountLabel = new BorderedLabel(getAmountOfWindowsText(manager));
     amountLabel.setName(AMOUNT_LABEL_NAME);
 
     JButton addButton = new JButton(getLabelLocalizer().getString(ADD_LABEL));
@@ -221,7 +221,7 @@ public class WindowControlPanel extends BasicControlPanel
     final int MAX_LINES  = 20;
     final int DEF_LINES  = MIN_LINES;
 
-    JLabel infoLabel = new JLabel(getLabelLocalizer().getString(LINES_LABEL));      // TODO add margin
+    JLabel infoLabel = new BorderedLabel(getLabelLocalizer().getString(LINES_LABEL));
 
     int initialLinesValue = getPreferences().getInt(PREFKEY_LINES, DEF_LINES);
     if (initialLinesValue < MIN_LINES) initialLinesValue = MIN_LINES;

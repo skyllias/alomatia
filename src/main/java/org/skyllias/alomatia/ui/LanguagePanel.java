@@ -34,7 +34,7 @@ public class LanguagePanel extends BasicControlPanel
     Vector<Locale> availableLocales = new Vector<>(localeProvider.getAvailableLocales());
     Collections.sort(availableLocales, new LocaleComparator());
 
-    JLabel nextLangDescLabel       = new JLabel(getLabelLocalizer().getString(NEXTLANG_LABEL));   // TODO add margin
+    JLabel nextLangDescLabel       = new BorderedLabel(getLabelLocalizer().getString(NEXTLANG_LABEL));
     JComboBox<Locale> langSelector = new JComboBox<Locale>(availableLocales);
     langSelector.setName(LANG_SELECTOR_NAME);
     langSelector.setMaximumSize(new Dimension(Integer.MAX_VALUE,
