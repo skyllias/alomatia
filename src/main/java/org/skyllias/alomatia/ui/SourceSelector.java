@@ -42,6 +42,8 @@ public class SourceSelector extends BasicSelector<ImageSource>
   private static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
   private static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
 
+  private static final int TEXT_FIELD_COLUMNS = 40;                             // used to prevent text fields from trying to fit the whole text with its preferred size
+
   private ImageSource previousSource;
   private JPanel optionsContainer = new JPanel();                               // no idea why, but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space
 
@@ -149,6 +151,8 @@ public class SourceSelector extends BasicSelector<ImageSource>
       configPanel.add(downloadComponent.getTextField());
       configPanel.add(downloadComponent.getButton());
       optionsContainer.add(configPanel);
+
+      downloadComponent.getTextField().setColumns(TEXT_FIELD_COLUMNS);
     }
   }
 
@@ -343,6 +347,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
     public PathTextField()
     {
       setEditable(false);
+      setColumns(TEXT_FIELD_COLUMNS);
       setMaximumSize(new Dimension(Integer.MAX_VALUE,
                                    getPreferredSize().height));                 // prevent the containing layout from streching the field vertically
     }
