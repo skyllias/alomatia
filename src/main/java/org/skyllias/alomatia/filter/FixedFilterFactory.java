@@ -2,7 +2,6 @@
 package org.skyllias.alomatia.filter;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 
 import org.skyllias.alomatia.filter.affine.*;
@@ -269,8 +268,8 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new ColourContrastFilter(1),    INC_CCT_L_FILTER_NAME));
     filters.add(new NamedFilter(new ColourContrastFilter(2),    INC_CCT_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
 
     filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(5)),                                        BLUR_SMALL_FILTER_NAME));
     filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(11)),                                       BLUR_BIG_FILTER_NAME));
@@ -311,14 +310,14 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new GreenlessFilter(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(new BluelessFilter(),         BLUELESS_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),   GREENDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),   GREENDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7))),                                    INC_RED_BR_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7)), -1)),      DEC_RED_BR_FILTER_NAME));
@@ -346,11 +345,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.5f, 0.7f)), HIGHSBLUE_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.7f, 0.9f)), HIGHSPURPL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(10)), PIXEL_M_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(10)), PIXEL_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(new RgbPosterizer(2),  POSTER_XL_FILTER_NAME));
     filters.add(new NamedFilter(new RgbPosterizer(3),  POSTER_L_FILTER_NAME));
@@ -373,9 +372,9 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(new SaturationPosterizerFilter(2, false), SATPOSTER_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
 
     return filters;
   }
