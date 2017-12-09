@@ -172,7 +172,7 @@ public class ChannelLookupFilterFactory
 
 //------------------------------------------------------------------------------
 
-  public static ChannelLookupFilter forVelkin()
+  public static ChannelLookupFilter forKevlin()
   {
     ColourLookup lookup = new ColourLookup()
     {

@@ -3,6 +3,7 @@ package org.skyllias.alomatia.filter.compose;
 
 import java.awt.image.*;
 
+import org.skyllias.alomatia.filter.buffered.*;
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.rgb.*;
 
@@ -30,7 +31,7 @@ public class EmbossFilter extends ComposedFilter
 
   public EmbossFilter(float scale, float offset, float volume, float slope)
   {
-    super(new BufferedImageFilter(new RescaleOp(scale, offset, null)),
+    super(new SingleFrameBufferedImageFilter(new RescaleOp(scale, offset, null)),
           new ConvolutingFilter(new EmbossKernelDataFactory(volume, slope)),
           new GreyScaleFilter());
   }

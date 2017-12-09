@@ -3,10 +3,12 @@ package org.skyllias.alomatia.filter.convolve;
 
 import java.awt.image.*;
 
+import org.skyllias.alomatia.filter.buffered.*;
+
 /** Filter that applies a {@link Kernel}-based convolution.
  *  Mind that convolutions can be very slow with large kernel data. */
 
-public class ConvolutingFilter extends BufferedImageFilter
+public class ConvolutingFilter extends SingleFrameBufferedImageFilter
 {
 //==============================================================================
 
