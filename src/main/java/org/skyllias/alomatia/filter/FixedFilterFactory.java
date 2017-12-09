@@ -173,7 +173,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INST_VASHN_FILTER_NAME = "Vashnille";
   private static final String INST_FEHE_FILTER_NAME  = "Fehe";
   private static final String INST_MOLO_FILTER_NAME  = "Molo";
-  private static final String INST_VELKN_FILTER_NAME = "Velkin";
+  private static final String INST_KEVLN_FILTER_NAME = "Kevlin";
   private static final String INST_1976_FILTER_NAME  = "1976";
   private static final String INST_SOATR_FILTER_NAME = "Soater";
   private static final String INST_LAWDN_FILTER_NAME = "Lawden";
@@ -211,7 +211,7 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forSoater(),    INST_SOATR_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forVashnille(), INST_VASHN_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.for1976(),      INST_1976_FILTER_NAME));
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forVelkin(),    INST_VELKN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forKevlin(),    INST_KEVLN_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueShiftFilter(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(-0.05f), DEC_HUE_L_FILTER_NAME));
