@@ -63,6 +63,8 @@ public class WindowControlPanel extends BasicControlPanel
 
   private boolean applySequentialFilters = false;
 
+  private Preferences preferences;
+
 //==============================================================================
 
   /** Automatically opens a new display window after creation. */
@@ -70,7 +72,20 @@ public class WindowControlPanel extends BasicControlPanel
   public WindowControlPanel(LabelLocalizer localizer, Repeater displayRepeater,
                             DropTargetListener dropTargetListener, DisplayFrameManager frameManager)
   {
+    this(getDefaultPreferences(), localizer, displayRepeater,
+         dropTargetListener, frameManager);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Only meant for preferences injection in tests. */
+
+  protected WindowControlPanel(Preferences prefs, LabelLocalizer localizer, Repeater displayRepeater,
+                               DropTargetListener dropTargetListener, DisplayFrameManager frameManager)
+  {
     super(localizer, TITLE_LABEL);
+
+    preferences = prefs;
 
     repeaterDisplay = displayRepeater;
     manager         = frameManager;
@@ -148,7 +163,7 @@ public class WindowControlPanel extends BasicControlPanel
 
   private void addAdditionComponents()
   {
-    amountLabel = new JLabel(getAmountOfWindowsText(manager));   // TODO add margin
+    amountLabel = new BorderedLabel(getAmountOfWindowsText(manager));
     amountLabel.setName(AMOUNT_LABEL_NAME);
 
     JButton addButton = new JButton(getLabelLocalizer().getString(ADD_LABEL));
@@ -166,9 +181,10 @@ public class WindowControlPanel extends BasicControlPanel
 
     JPanel firstRow = new JPanel();
     firstRow.setLayout(new BoxLayout(firstRow, BoxLayout.X_AXIS));
+    firstRow.add(checkBox);
+    firstRow.add(Box.createHorizontalGlue());
     firstRow.add(amountLabel);
     firstRow.add(addButton);
-    firstRow.add(checkBox);
     add(firstRow);
   }
 
@@ -206,22 +222,22 @@ public class WindowControlPanel extends BasicControlPanel
     final int MAX_LINES  = 20;
     final int DEF_LINES  = MIN_LINES;
 
-    JLabel infoLabel = new JLabel(getLabelLocalizer().getString(LINES_LABEL));      // TODO add margin
+    JLabel infoLabel = new BorderedLabel(getLabelLocalizer().getString(LINES_LABEL));
 
-    int initialLinesValue       = getPreferences().getInt(PREFKEY_LINES, DEF_LINES);
+    int initialLinesValue = getPreferences().getInt(PREFKEY_LINES, DEF_LINES);
+    if (initialLinesValue < MIN_LINES) initialLinesValue = MIN_LINES;
+    if (initialLinesValue > MAX_LINES) initialLinesValue = MAX_LINES;
     final JSpinner linesSpinner = new JSpinner(new SpinnerNumberModel(initialLinesValue, MIN_LINES,
                                                                       MAX_LINES, STEP_LINES));
     linesSpinner.setName(LINES_SPINNER_NAME);
-    linesSpinner.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                                              linesSpinner.getPreferredSize().height));   // prevent it from stretching vertically
+    linesSpinner.setMaximumSize(linesSpinner.getPreferredSize());               // prevent it from stretching
 
     boolean initialHorizontal                   = getPreferences().getBoolean(PREFKEY_HORIZONTAL, true);
     final JComboBox<Boolean> horizontalCombobox = new JComboBox<>(new Boolean[] {true, false});
     horizontalCombobox.setName(COMBO_HORIZONTAL_NAME);
     horizontalCombobox.setSelectedItem(initialHorizontal);
     horizontalCombobox.setRenderer(new HorizontalCellRenderer());
-    horizontalCombobox.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                                                    horizontalCombobox.getPreferredSize().height));   // prevent it from stretching vertically
+    horizontalCombobox.setMaximumSize(horizontalCombobox.getPreferredSize());   // prevent it from stretching
 
     JButton arrangeButton = new JButton(getLabelLocalizer().getString(REARRANGE_LABEL));
     arrangeButton.setName(ARRANGE_BUTTON_NAME);
@@ -241,6 +257,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     JPanel secondRow = new JPanel();
     secondRow.setLayout(new BoxLayout(secondRow, BoxLayout.X_AXIS));
+    secondRow.add(Box.createHorizontalGlue());
     secondRow.add(infoLabel);
     secondRow.add(linesSpinner);
     secondRow.add(horizontalCombobox);
@@ -282,6 +299,7 @@ public class WindowControlPanel extends BasicControlPanel
     JPanel thirdRow = new JPanel();
     thirdRow.setLayout(new BoxLayout(thirdRow, BoxLayout.X_AXIS));
     thirdRow.add(checkBox);
+    thirdRow.add(Box.createHorizontalGlue());
     thirdRow.add(filterButton);
     add(thirdRow);
   }
@@ -362,9 +380,15 @@ public class WindowControlPanel extends BasicControlPanel
 
 //------------------------------------------------------------------------------
 
-  /** Shortcut method to get preferences by subclasses that store the last user selection. */
+  /* Shortcut method to get preferences by subclasses that store the last URL. */
 
-  protected Preferences getPreferences() {return Preferences.userNodeForPackage(getClass());}
+  private Preferences getPreferences() {return preferences;}
+
+//------------------------------------------------------------------------------
+
+  /* Returns the preferences to use when they are not externally injected. */
+
+  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(WindowControlPanel.class);}
 
 //------------------------------------------------------------------------------
 

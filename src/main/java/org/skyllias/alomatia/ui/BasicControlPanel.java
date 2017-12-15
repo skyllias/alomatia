@@ -2,9 +2,8 @@
 package org.skyllias.alomatia.ui;
 
 import javax.swing.*;
-import javax.swing.border.*;
 
-import org.skyllias.alomatia.i18n.*;;
+import org.skyllias.alomatia.i18n.*;
 
 /** Superclass for the panels with a title used to configure something. */
 
@@ -21,7 +20,7 @@ public abstract class BasicControlPanel extends JPanel
   {
     labelLocalizer = localizer;
 
-    setBorder(new TitledBorder(labelLocalizer.getString(legendKey)));
+    setBorder(BorderFactory.createTitledBorder(labelLocalizer.getString(legendKey)));
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }

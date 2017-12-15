@@ -5,6 +5,7 @@ import static org.assertj.swing.fixture.Containers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.concurrent.*;
+import java.util.prefs.*;
 
 import org.assertj.swing.edt.*;
 import org.assertj.swing.fixture.*;
@@ -32,6 +33,8 @@ public class SourceSelectorTest
   private DirFileSource dirSource;
   @Mock
   private AsynchronousUrlSource urlSource;
+  @Mock
+  private Preferences preferences;
 
   private SourceCatalogue catalogue;
 
@@ -59,7 +62,7 @@ public class SourceSelectorTest
       @Override
       public SourceSelector call() throws Exception
       {
-        return new SourceSelector(new KeyLabelLocalizer(), catalogue);
+        return new SourceSelector(preferences, new KeyLabelLocalizer(), catalogue);
       }
     });
     frameFixture = showInFrame(sourceSelector);
