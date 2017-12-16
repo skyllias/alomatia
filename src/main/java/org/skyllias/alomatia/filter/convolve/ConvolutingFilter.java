@@ -6,8 +6,13 @@ import java.awt.image.*;
 import org.skyllias.alomatia.filter.buffered.*;
 
 /** Filter that applies a {@link Kernel}-based convolution.
- *  Mind that convolutions can be very slow with large kernel data. */
+ *  Mind that convolutions can be very slow with large kernel data.
+ *
+ *  @deprecated Since Java's implementation only offers two edge handlings
+ *  (leave them unchanged or zero them -ie, turn them to black), an
+ *  {@link EdgeConvolvingComposedFilter} is recommended instead. */
 
+@Deprecated
 public class ConvolutingFilter extends SingleFrameBufferedImageFilter
 {
 //==============================================================================

@@ -5,10 +5,10 @@ import java.awt.image.*;
 
 import org.skyllias.alomatia.filter.rgb.*;
 
-/** {@link ComposedFilter} that sets forces a value of 1.0 in the alpha channel
- *  of all pixels after another filter is applied.
+/** {@link ComposedFilter} that forces a value of 1.0 in the alpha channel of
+ *  all pixels after another filter is applied.
  *  <p>
- *  Ther same could be achieved in different ways, especially favouring
+ *  The same could be achieved in different ways, especially favouring
  *  composition over inheritance. */
 
 public class OpaqueFilter extends ComposedFilter
