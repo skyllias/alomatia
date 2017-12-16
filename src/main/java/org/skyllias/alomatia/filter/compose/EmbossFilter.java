@@ -24,6 +24,7 @@ public class EmbossFilter extends ComposedFilter
    *       are between 0.05 (below 0.005, the granularity becomes too coarse for
    *       any input) and 1 (above 5, most channel values will become either the
    *       minimum or the maximum). Reasonable values for offset are between 0 and 1.
+   *  <li> A filter that resets the alpha channel to 1.0.
    *  <li> A convolving filter with an embossing kernel with the passed volume
    *       and slope (see {@link EmbossKernelDataFactory}.
    *  <li> A grey scaling filter.
@@ -32,7 +33,8 @@ public class EmbossFilter extends ComposedFilter
   public EmbossFilter(float scale, float offset, float volume, float slope)
   {
     super(new SingleFrameBufferedImageFilter(new RescaleOp(scale, offset, null)),
-          new ConvolutingFilter(new EmbossKernelDataFactory(volume, slope)),
+          new VoidFilter(),
+          new EdgeConvolvingComposedFilter(new EmbossKernelDataFactory(volume, slope)),
           new GreyScaleFilter());
   }
 
