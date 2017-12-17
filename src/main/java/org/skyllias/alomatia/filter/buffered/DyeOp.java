@@ -4,8 +4,8 @@ package org.skyllias.alomatia.filter.buffered;
 import java.awt.*;
 import java.awt.image.*;
 
-/** {@link BufferedImageOp} that paints a semitransparent rectangle in front of
- *  the source image. */
+/** {@link BufferedImageOp} that paints a semitransparent rectangle of certain
+ *  colour in front of the source image. */
 
 public class DyeOp extends BasicBufferedImageOp
 {
@@ -42,6 +42,8 @@ public class DyeOp extends BasicBufferedImageOp
     graphics.drawImage(src, 0, 0, null);
     graphics.setColor(dye);
     graphics.fillRect(0, 0, dest.getWidth(), dest.getHeight());
+
+    graphics.dispose();
   }
 
 //------------------------------------------------------------------------------

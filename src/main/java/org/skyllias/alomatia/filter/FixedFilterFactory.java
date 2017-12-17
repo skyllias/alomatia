@@ -6,6 +6,7 @@ import java.util.*;
 
 import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
@@ -167,6 +168,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HIGHBGREEN_FILTER_NAME = "filter.highlight.brightness.green.name";
   private static final String HIGHBBLUE_FILTER_NAME  = "filter.highlight.brightness.blue.name";
   private static final String HIGHBPURPL_FILTER_NAME = "filter.highlight.brightness.purple.name";
+  private static final String VIGNETTE_R_FILTER_NAME = "filter.vignette.round.name";
+  private static final String VIGNETTE_C_FILTER_NAME = "filter.vignette.cross.name";
+  private static final String VIGNETTE_E_FILTER_NAME = "filter.vignette.edges.name";
   private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
   private static final String INST_EARBY_FILTER_NAME = "Earby lird";
   private static final String INST_TOGAM_FILTER_NAME = "Thogam";
@@ -212,6 +216,10 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forVashnille(), INST_VASHN_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.for1976(),      INST_1976_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forKevlin(),    INST_KEVLN_FILTER_NAME));
+
+    filters.add(new NamedFilter(VignetteFilterFactory.forRound(), VIGNETTE_R_FILTER_NAME));
+    filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_NAME));
+    filters.add(new NamedFilter(VignetteFilterFactory.forEdges(), VIGNETTE_E_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueShiftFilter(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(-0.05f), DEC_HUE_L_FILTER_NAME));
