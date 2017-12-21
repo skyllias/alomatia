@@ -20,8 +20,30 @@ import org.skyllias.alomatia.filter.buffered.*;
 
 public class ResizingVignetteOp extends BasicBufferedImageOp
 {
-  private ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private static ThreadFactory lowerPriorityThreadFactory;
+  private ExecutorService executorService = Executors.newSingleThreadExecutor(lowerPriorityThreadFactory);
   private Future<BufferedImage> futureVignetteImage;                            // the precalculated, semi-transparent image generated from a profile and a colour that is drawn in front of the source image, needs a lot of processing but usually is not immediately required
+
+//==============================================================================
+
+  /* threadFactory could be non-static and initialized in the constructor, or
+   * even inline, but this way it is cleaner and less forgetable.
+   * It uses the instances from the default Executors.defaultThreadFactory() but
+   * lowering their priority. */
+
+  static
+  {
+    lowerPriorityThreadFactory = new ThreadFactory()
+    {
+      @Override
+      public Thread newThread(Runnable runnable)
+      {
+        Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+        thread.setPriority(Thread.MIN_PRIORITY);
+        return thread;
+      }
+    };
+  }
 
 //==============================================================================
 
