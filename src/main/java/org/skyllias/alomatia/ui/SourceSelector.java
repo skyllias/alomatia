@@ -258,7 +258,10 @@ public class SourceSelector extends BasicSelector<ImageSource>
 //------------------------------------------------------------------------------
 
   /* Adds a global listener that makes dirSource show the next or previous file
-   * when the proper keys are pressed: X to go forward, Z to go backward. */
+   * when the proper keys are pressed: Page-Down (or Space, which may lead to
+   * unexpected image changes if in the future the application accepts writing
+   * when the dir source is active -for example to write a file name) to go forward,
+   * Page-Up (or Shift + Space) to go backward. */
 
   private void addNavigationKeyListener(final DirFileSource dirSource)
   {
@@ -270,8 +273,14 @@ public class SourceSelector extends BasicSelector<ImageSource>
       {
         if(e.getID() == KeyEvent.KEY_PRESSED)
         {
-          if (e.getKeyCode() == KeyEvent.VK_X) dirSource.nextImageFile();
-          if (e.getKeyCode() == KeyEvent.VK_Z) dirSource.previousImageFile();
+          int pressedKeyCode  = e.getKeyCode();
+          boolean isShiftDown = e.isShiftDown();
+          boolean isNext      = pressedKeyCode == KeyEvent.VK_PAGE_DOWN ||
+                                (pressedKeyCode == KeyEvent.VK_SPACE && !isShiftDown);
+          boolean isPrevious  = pressedKeyCode == KeyEvent.VK_PAGE_UP ||
+                                (pressedKeyCode == KeyEvent.VK_SPACE && isShiftDown);
+          if      (isNext)     dirSource.nextImageFile();
+          else if (isPrevious) dirSource.previousImageFile();
         }
         return false;                                                           // allow the event to be redispatched
       }
