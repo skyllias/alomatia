@@ -2,16 +2,17 @@
 package org.skyllias.alomatia.filter;
 
 import java.awt.*;
-import java.awt.image.*;
 import java.util.*;
 
 import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
 import org.skyllias.alomatia.filter.daltonism.*;
 import org.skyllias.alomatia.filter.hsb.*;
 import org.skyllias.alomatia.filter.rgb.*;
+import org.skyllias.alomatia.filter.rgb.lookup.*;
 
 /** FilterFactory with a hardcoded set of available filters. */
 
@@ -157,6 +158,30 @@ public class FixedFilterFactory implements FilterFactory
   private static final String PIXEL_M_FILTER_NAME    = "filter.pixelize.m.name";
   private static final String PIXEL_L_FILTER_NAME    = "filter.pixelize.l.name";
   private static final String PIXEL_XL_FILTER_NAME   = "filter.pixelize.xl.name";
+  private static final String HIGHSRED_FILTER_NAME   = "filter.highlight.saturation.red.name";
+  private static final String HIGHSYELOW_FILTER_NAME = "filter.highlight.saturation.yellow.name";
+  private static final String HIGHSGREEN_FILTER_NAME = "filter.highlight.saturation.green.name";
+  private static final String HIGHSBLUE_FILTER_NAME  = "filter.highlight.saturation.blue.name";
+  private static final String HIGHSPURPL_FILTER_NAME = "filter.highlight.saturation.purple.name";
+  private static final String HIGHBRED_FILTER_NAME   = "filter.highlight.brightness.red.name";
+  private static final String HIGHBYELOW_FILTER_NAME = "filter.highlight.brightness.yellow.name";
+  private static final String HIGHBGREEN_FILTER_NAME = "filter.highlight.brightness.green.name";
+  private static final String HIGHBBLUE_FILTER_NAME  = "filter.highlight.brightness.blue.name";
+  private static final String HIGHBPURPL_FILTER_NAME = "filter.highlight.brightness.purple.name";
+  private static final String VIGNETTE_R_FILTER_NAME = "filter.vignette.round.name";
+  private static final String VIGNETTE_C_FILTER_NAME = "filter.vignette.cross.name";
+  private static final String VIGNETTE_E_FILTER_NAME = "filter.vignette.edges.name";
+  private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
+  private static final String INST_EARBY_FILTER_NAME = "Earby lird";
+  private static final String INST_TOGAM_FILTER_NAME = "Thogam";
+  private static final String INST_VASHN_FILTER_NAME = "Vashnille";
+  private static final String INST_FEHE_FILTER_NAME  = "Fehe";
+  private static final String INST_MOLO_FILTER_NAME  = "Molo";
+  private static final String INST_KEVLN_FILTER_NAME = "Kevlin";
+  private static final String INST_1976_FILTER_NAME  = "1976";
+  private static final String INST_SOATR_FILTER_NAME = "Soater";
+  private static final String INST_LAWDN_FILTER_NAME = "Lawden";
+  private static final String INST_PROX_FILTER_NAME  = "Prox";
 
 //==============================================================================
 
@@ -179,6 +204,22 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new LmsProtanopiaFilter(),   LMSPROPIA_FILTER_NAME));
     filters.add(new NamedFilter(new LmsDeuteranopiaFilter(), LMSDEUPIA_FILTER_NAME));
     filters.add(new NamedFilter(new LmsTritanopiaFilter(),   LMSTRIPIA_FILTER_NAME));
+
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forThogam(),    INST_TOGAM_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forProx(),      INST_PROX_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forLawden(),    INST_LAWDN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forFehe(),      INST_FEHE_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forMolo(),      INST_MOLO_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forAllopo(),    INST_ALOPO_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forEarbyLird(), INST_EARBY_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forSoater(),    INST_SOATR_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forVashnille(), INST_VASHN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.for1976(),      INST_1976_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forKevlin(),    INST_KEVLN_FILTER_NAME));
+
+    filters.add(new NamedFilter(VignetteFilterFactory.forRound(), VIGNETTE_R_FILTER_NAME));
+    filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_NAME));
+    filters.add(new NamedFilter(VignetteFilterFactory.forEdges(), VIGNETTE_E_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueShiftFilter(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(-0.05f), DEC_HUE_L_FILTER_NAME));
@@ -235,20 +276,20 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new ColourContrastFilter(1),    INC_CCT_L_FILTER_NAME));
     filters.add(new NamedFilter(new ColourContrastFilter(2),    INC_CCT_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
 
-    filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(5)),                                        BLUR_SMALL_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new ParaboloidBlurKernelDataFactory(11)),                                       BLUR_BIG_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(20, Math.PI / 2)),                              MOTION_S90_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(30, 0, new SquareBlurLineProfile())),           MOTION_L0_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(30, Math.PI / 4, new SquareBlurLineProfile())), MOTION_L45_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())), MOTION_L90_FILTER_NAME));
-    filters.add(new NamedFilter(new ConvolutingFilter(new NeighbourSharpKernelDataFactory()),                                         SHARPEN_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(5)),                                        BLUR_SMALL_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(11)),                                       BLUR_BIG_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, Math.PI / 2)),                              MOTION_S90_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, 0, new SquareBlurLineProfile())),           MOTION_L0_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 4, new SquareBlurLineProfile())), MOTION_L45_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())), MOTION_L90_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NeighbourSharpKernelDataFactory()),                                         SHARPEN_FILTER_NAME));
 
-    filters.add(new NamedFilter(new OpaqueFilter(new ConvolutingFilter(new EdgeDetectingKernelDataFactory())), EDGEDETECT_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new EdgeDetectingKernelDataFactory()), EDGEDETECT_FILTER_NAME));
 
     filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
     filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
@@ -277,14 +318,14 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new GreenlessFilter(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(new BluelessFilter(),         BLUELESS_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),   GREENDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),   GREENDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7))),                                    INC_RED_BR_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7)), -1)),      DEC_RED_BR_FILTER_NAME));
@@ -293,6 +334,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7))),                               INC_BLU_BR_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingBrightnessFilter(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7)), -1)), DEC_BLU_BR_FILTER_NAME));
 
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.9f, 0.1f)), HIGHBRED_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.1f, 0.3f)), HIGHBYELOW_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.3f, 0.5f)), HIGHBGREEN_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.5f, 0.7f)), HIGHBBLUE_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingBrightnessFilter(new PitStepHueFunction(0.7f, 0.9f)), HIGHBPURPL_FILTER_NAME));
+
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.95f, 0.05f)),  INC_RED_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.9f, 0.1f)),   DEC_RED_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.25f, 0.4f)),   INC_GRN_SA_FILTER_NAME));
@@ -300,11 +347,17 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(10)), PIXEL_M_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.9f, 0.1f)), HIGHSRED_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.1f, 0.3f)), HIGHSYELOW_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.3f, 0.5f)), HIGHSGREEN_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.5f, 0.7f)), HIGHSBLUE_FILTER_NAME));
+    filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.7f, 0.9f)), HIGHSPURPL_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(10)), PIXEL_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(new RgbPosterizer(2),  POSTER_XL_FILTER_NAME));
     filters.add(new NamedFilter(new RgbPosterizer(3),  POSTER_L_FILTER_NAME));
@@ -327,9 +380,9 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(new SaturationPosterizerFilter(2, false), SATPOSTER_FILTER_NAME));
 
-    filters.add(new NamedFilter(new BufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
-    filters.add(new NamedFilter(new BufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
 
     return filters;
   }

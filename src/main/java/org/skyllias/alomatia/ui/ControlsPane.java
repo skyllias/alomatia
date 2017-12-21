@@ -24,9 +24,9 @@ public class ControlsPane extends JPanel
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     add(new SourceSelector(localizer, catalogue));
-    add(new LanguagePanel(localizer, new AvailableLocaleProvider()));           // TODO move instantiation upwards
     add(new WindowControlPanel(localizer, displayRepeater,
                                dropTargetListener, frameManager));
+    add(new LanguagePanel(localizer, new AvailableLocaleProvider()));           // TODO move instantiation upwards
   }
 
 //==============================================================================
