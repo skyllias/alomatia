@@ -10,10 +10,10 @@ import org.skyllias.alomatia.ui.*;
 /** Abstraction of a frame (window) containing a {@link DisplayPanel}, so that
  *  the management logic can be independent on how frames are implemented.
  *  Implementations are expected to be as thin as possible, working as wrappers
- *  around some Swing components. They can choose whether the frame is really a
- *  {@link JFrame} or a {@link JInternalFrame}. */
+ *  around some Swing components. For example, they can choose whether the 
+ *  underlying frame is really a {@link JFrame} or a {@link JInternalFrame}. */
 
-public interface DisplayFrame
+public interface FrameAdaptor
 {
   /** Sets the title of the frame without further modification. */
 
