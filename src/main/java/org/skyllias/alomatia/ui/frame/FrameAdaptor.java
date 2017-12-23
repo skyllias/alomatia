@@ -10,7 +10,7 @@ import org.skyllias.alomatia.ui.*;
 /** Abstraction of a frame (window) containing a {@link DisplayPanel}, so that
  *  the management logic can be independent on how frames are implemented.
  *  Implementations are expected to be as thin as possible, working as wrappers
- *  around some Swing components. For example, they can choose whether the 
+ *  around some Swing components. For example, they can choose whether the
  *  underlying frame is really a {@link JFrame} or a {@link JInternalFrame}. */
 
 public interface FrameAdaptor
@@ -34,6 +34,10 @@ public interface FrameAdaptor
   /** Changes the extended state of the frame. */
 
   void setMaximized(boolean maximized);
+
+  /** Changes the visibility of the frame. */
+
+  void setVisible(boolean visible);
 
   /** Returns the InputMap associated to the underlying component for some condition. */
 
