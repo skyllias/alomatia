@@ -1,6 +1,8 @@
 
 package org.skyllias.alomatia.ui.frame;
 
+import java.awt.*;
+
 import javax.swing.*;
 
 import org.skyllias.alomatia.ui.*;
@@ -16,6 +18,8 @@ public class JFrameAdaptorFactory implements FrameAdaptorFactory
   {
     JFrame jFrame = new JFrame();
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    jFrame.getContentPane().add(displayPanel, BorderLayout.CENTER);
+
     return new JFrameAdaptor(jFrame);
   }
 

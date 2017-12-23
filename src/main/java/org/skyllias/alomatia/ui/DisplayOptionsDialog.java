@@ -52,7 +52,7 @@ public class DisplayOptionsDialog extends JDialog
   public DisplayOptionsDialog(LabelLocalizer localizer, DisplayFrame ownerFrame,
                               FilterFactory filterFactory)
   {
-    super(ownerFrame, localizer.getString(TITLE), false);                       // making it modal blocks the opening window, and any subsequent that may be created afterwards, and offers no special advantage in this case
+    super(ownerFrame.getOwnerFrame(), localizer.getString(TITLE), false);       // making it modal blocks the opening window, and any subsequent that may be created afterwards, and offers no special advantage in this case
 
     labelLocalizer = localizer;
 
@@ -84,7 +84,7 @@ public class DisplayOptionsDialog extends JDialog
 
     setVisible(showImmediately);
     pack();
-    setLocationRelativeTo(ownerFrame);
+    setLocationRelativeTo(ownerFrame.getOwnerFrame());
     setResizable(false);
   }
 

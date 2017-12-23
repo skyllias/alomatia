@@ -115,7 +115,7 @@ public class DisplayFrameManager
         int currentIndex = 0;
         for (DisplayFrame currentWindow : existingFrames)
         {
-          currentWindow.setExtendedState(Frame.NORMAL);
+          currentWindow.setMaximized(false);
           currentWindow.setSize(windowWidth, windowHeight);
 
           int column = currentIndex % amountOfColumns;

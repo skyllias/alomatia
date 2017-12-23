@@ -320,7 +320,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     repeaterDisplay.addReceiver(displayPanel);
     frame.addListener(this);
-    addDropTarget(frame);
+    addDropTarget(frame.getOwnerFrame());
   }
 
 //------------------------------------------------------------------------------

@@ -12,21 +12,23 @@ import javax.swing.*;
 import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.filter.*;
 import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.logo.*;
+import org.skyllias.alomatia.ui.frame.*;
 
-/** Window where the contents of the capture frame are drawn after filtering them.
+/** Provider of the logic for windows where the contents of the capture frame
+ *  are drawn after filtering them. The real frame is managed by means of a
+ *  {@link FrameAdaptorFactory}.
  *  <p>
- *  In an application there can be one or more of these windows, all with the
+ *  In an application there can be zero or more of these windows, all with the
  *  same original image but potentially with a different filter applied to each one.
  *  When closed, a DisplayFrameCloseListener is notified and all consumed
  *  resources are freed.
  *  <p>
  *  The display panel gets a listener added so that the options dialog is shown
- *  when clicked.
- *  TODO Apply composition over inheritance in order to work indistinctively with JFrames or JInternalFrames. */
+ *  when clicked. */
 
 @SuppressWarnings("serial")
-public class DisplayFrame extends BasicAlomatiaWindow
-                          implements WindowListener, FilterableDisplay
+public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 {
   private static final String DEFAULT_TITLE = "display.window.title";
   private static final String TITLE_PATTERN = "display.window.title.filtered";
@@ -34,10 +36,14 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
   private static final Dimension DEFAULT_SIZE = new Dimension(600, 400);
 
+  private LabelLocalizer labelLocalizer;
+
   private DisplayPanel displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
   private FilterSelector filterSelector;                                        // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
+
+  private FrameAdaptor frameAdaptor;                                            // the Swing component with the frame
 
 //==============================================================================
 
@@ -45,26 +51,28 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
   public DisplayFrame(LabelLocalizer localizer, DisplayPanel panel, FilterFactory filterFactory)
   {
-    super(localizer, DEFAULT_TITLE);
+    labelLocalizer = localizer;
+    displayPanel   = panel;
 
-    displayPanel = panel;
-    getContentPane().add(displayPanel, BorderLayout.CENTER);
-    displayPanel.setToolTipText(getLabelLocalizer().getString(PANEL_TOOLTIP));
+    FrameAdaptorFactory frameFactory = new JFrameAdaptorFactory();              // TODO inject the adaptor factory
+    frameAdaptor                     = frameFactory.getNewFrame(panel);
+    frameAdaptor.setTitle(DEFAULT_TITLE);
+    frameAdaptor.setIcon(getDefaultLogo());
 
-    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);              // the window will be closed, but TODO only if it is not the last one standing
-    addWindowListener(this);
-    setVisible(true);
+    displayPanel.setToolTipText(labelLocalizer.getString(PANEL_TOOLTIP));
 
-    DisplayOptionsDialog optionsDialog = new DisplayOptionsDialog(getLabelLocalizer(),
+    frameAdaptor.addClosingFrameListener(this);
+
+    DisplayOptionsDialog optionsDialog = new DisplayOptionsDialog(labelLocalizer,
                                                                   this, filterFactory);
     panel.addMouseListener(new DisplayPanelClickListener(optionsDialog));
 
     filterSelector = optionsDialog.getFilterSelector();
     setUpFilterKeyListeners(filterSelector);
 
-    setSize(DEFAULT_SIZE);                                                      // some windows managers will use a 0 by 0 size if this is not forced
-    setExtendedState(NORMAL);
-    setVisible(true);
+    frameAdaptor.setSize(DEFAULT_SIZE.width, DEFAULT_SIZE.height);              // some windows managers will use a 0 by 0 size if this is not forced
+    frameAdaptor.setMaximized(false);
+    frameAdaptor.setVisible(true);
   }
 
 //==============================================================================
@@ -97,6 +105,30 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
 //------------------------------------------------------------------------------
 
+  /** Returns the Frame where this window is contained. */
+
+  public Frame getOwnerFrame() {return frameAdaptor.getOwnerFrame();}
+
+//------------------------------------------------------------------------------
+
+  /** Changes the status of the frame. */
+
+  public void setMaximized(boolean maximized) {frameAdaptor.setMaximized(maximized);}
+
+//------------------------------------------------------------------------------
+
+  /** Changes the size of the frame. */
+
+  public void setSize(int width, int height) {frameAdaptor.setSize(width, height);}
+
+//------------------------------------------------------------------------------
+
+  /** Changes the location of the frame. */
+
+  public void setLocation(int x, int y) {frameAdaptor.setLocation(x, y);}
+
+//------------------------------------------------------------------------------
+
   /** Changes the selection to the named filter at the passed position, being 0
    *  the first one.
    *  If index is below zero or above the amount of filters, nothing happens. */
@@ -105,7 +137,7 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
 //------------------------------------------------------------------------------
 
-  /* Modifies the root pane's input and action maps so that the selection of
+  /* Modifies the frame's input and action maps so that the selection of
    * filterSelector is modified when some key strokes take place.
    * The selected keys try to avoid to violate the principle of consistency. So
    * although the Fx keys are 12, they are not used (moreover, some desktops
@@ -125,7 +157,7 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
 //------------------------------------------------------------------------------
 
-  /* Modifies the root pane's input and action maps so that the number keys,
+  /* Modifies the frame's input and action maps so that the number keys,
    * when pressed with the passed modifiers, selects the (offset + i)th filter
    * in filterSelector. */
 
@@ -138,8 +170,8 @@ public class DisplayFrame extends BasicAlomatiaWindow
       final int index   = offset + i;
       String actionName = i + ACTION_NAME_PREFIX + modifiers;
       KeyStroke stroke  = KeyStroke.getKeyStroke(KeyEvent.VK_0 + i, modifiers);
-      getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, actionName);
-      getRootPane().getActionMap().put(actionName, new AbstractAction()
+      frameAdaptor.getInputMap().put(stroke, actionName);
+      frameAdaptor.getActionMap().put(actionName, new AbstractAction()
       {
         @Override
         public void actionPerformed(ActionEvent event) {filterSelector.selectFilterAt(index);}  // same as applyFilterAt(index)
@@ -153,11 +185,10 @@ public class DisplayFrame extends BasicAlomatiaWindow
 
   private void applyFilterToTitle(NamedFilter filter)
   {
-    LabelLocalizer localizer  = getLabelLocalizer();
-    String filterName         = localizer.getString(filter.getNameKey());
-    MessageFormat titleFormat = new MessageFormat(localizer.getString(TITLE_PATTERN));
+    String filterName         = labelLocalizer.getString(filter.getNameKey());
+    MessageFormat titleFormat = new MessageFormat(labelLocalizer.getString(TITLE_PATTERN));
     String title              = titleFormat.format(new Object[] {filterName});
-    setTitle(title);
+    frameAdaptor.setTitle(title);
   }
 
 //------------------------------------------------------------------------------
@@ -170,44 +201,35 @@ public class DisplayFrame extends BasicAlomatiaWindow
     if (filter != null)
     {
       ImageProducer producer = new FilteredImageSource(logo.getSource(), filter);
-      logo                   = createImage(producer);
+      logo                   = Toolkit.getDefaultToolkit().createImage(producer);
     }
-    setIconImage(logo);
+    frameAdaptor.setIcon(logo);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Returns the logo used when there is no filter applied.
+   *  Copied from BasicAlomatiaWindow. */
+
+  private Image getDefaultLogo()
+  {
+    return new LogoProducer().createImage(BasicAlomatiaWindow.ICON_WIDTH,
+                                          BasicAlomatiaWindow.ICON_HEIGHT);             // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
   }
 
 //------------------------------------------------------------------------------
 //                        WINDOW LISTENER
 //------------------------------------------------------------------------------
 
-  /** Notifies all the listeners and disposes itself. */
+  /** Notifies all the listeners and disposes the frame. */
 
   @Override
-  public void windowClosing(WindowEvent e)
+  public void onClosingFrame(FrameAdaptor adaptor)
   {
     for (DisplayFrameCloseListener currentListener : listeners) currentListener.onDisplayFrameClosed(this);
 
-    dispose();
+    adaptor.dispose();
   }
-
-//------------------------------------------------------------------------------
-
-  @Override
-  public void windowActivated(WindowEvent arg0) {}
-
-  @Override
-  public void windowClosed(WindowEvent arg0) {}
-
-  @Override
-  public void windowDeactivated(WindowEvent e) {}
-
-  @Override
-  public void windowDeiconified(WindowEvent e) {}
-
-  @Override
-  public void windowIconified(WindowEvent e) {}
-
-  @Override
-  public void windowOpened(WindowEvent e) {}
 
 //------------------------------------------------------------------------------
 

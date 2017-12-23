@@ -13,8 +13,8 @@ import org.skyllias.alomatia.logo.*;
 @SuppressWarnings("serial")
 public abstract class BasicAlomatiaWindow extends JFrame
 {
-  private static final int ICON_WIDTH  = 32;
-  private static final int ICON_HEIGHT = 32;
+  public static final int ICON_WIDTH  = 32;
+  public static final int ICON_HEIGHT = 32;
 
   private LabelLocalizer labelLocalizer;
 
