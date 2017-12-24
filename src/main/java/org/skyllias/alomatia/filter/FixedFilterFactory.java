@@ -183,13 +183,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INST_LAWDN_FILTER_NAME = "Lawden";
   private static final String INST_PROX_FILTER_NAME  = "Prox";
 
+  private static Collection<NamedFilter> filters = new LinkedList<>();
+
 //==============================================================================
 
-  @Override
-  public Collection<NamedFilter> getAllAvailableFilters()
+  static
   {
-    Collection<NamedFilter> filters = new LinkedList<>();
-
     filters.add(new NamedFilter(null, NO_FILTER_NAME));
 
     filters.add(new NamedFilter(new XyzProtanopiaFilter(),    XYZPROPIA_FILTER_NAME));
@@ -383,7 +382,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
+  }
 
+//==============================================================================
+
+  @Override
+  public Collection<NamedFilter> getAllAvailableFilters()
+  {
     return filters;
   }
 
