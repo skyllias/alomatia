@@ -7,11 +7,14 @@ import java.util.*;
 
 import org.skyllias.alomatia.filter.*;
 import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.ui.frame.*;
 
 /** Factory for {@link DisplayFrame} instances that keeps track of them. */
 
 public class DisplayFrameManager
 {
+  private FrameAdaptorFactory adaptorFactory;
+
   private List<DisplayFrame> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrame>());  // every new window is added here in order of creation, and removed when closed
 
   private LabelLocalizer localizer;
@@ -21,20 +24,25 @@ public class DisplayFrameManager
 
 //==============================================================================
 
-  public DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory factory)
+  /** frameFactory is used both when getting DisplayFrame instances and when
+   *  rearranging them. */
+
+  public DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory aFilterFactory,
+                             FrameAdaptorFactory frameFactory)
   {
-    localizer     = labelLocalizer;
-    filterFactory = factory;
+    localizer      = labelLocalizer;
+    filterFactory  = aFilterFactory;
+    adaptorFactory = frameFactory;
   }
 
 //------------------------------------------------------------------------------
 
   /** Just for testing purposes, this should NOT be used in real code. */
 
-  protected DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory factory,
-                                List<DisplayFrame> displayFrames)
+  protected DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory filterFactory,
+                                FrameAdaptorFactory frameFactory, List<DisplayFrame> displayFrames)
   {
-    this(labelLocalizer, factory);
+    this(labelLocalizer, filterFactory, frameFactory);
 
     existingFrames.addAll(displayFrames);
   }
@@ -58,7 +66,8 @@ public class DisplayFrameManager
   public DisplayFrame getNewDisplayFrame(boolean applySequentialFilter)
   {
     DisplayPanel displayPanel = new DisplayPanel();
-    DisplayFrame frame        = new DisplayFrame(localizer, displayPanel, filterFactory);
+    FrameAdaptor frameAdaptor = adaptorFactory.getNewFrame(displayPanel);
+    DisplayFrame frame        = new DisplayFrame(localizer, frameAdaptor, displayPanel, filterFactory);
     frame.addListener(new DisplayFrameCloseListener());
 
     if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());
@@ -90,18 +99,21 @@ public class DisplayFrameManager
 //------------------------------------------------------------------------------
 
   /** Resizes and relocates the currently open DisplayFrames so that they cover
-   *  as much of screenBounds without overlapping. They are all supposed to exist
-   *  in the same graphical device, which will be true (since they have been
-   *  instantiated by this object) unless somehow moved externally.
+   *  as much of the rearrangement bounds offered by the adaptor factory without
+   *  overlapping. They are all supposed to exist in the same graphical device,
+   *  which will be true (since they have been instantiated by this object)
+   *  unless somehow moved externally.
    *  <p>
    *  They are arranged in order along a bidimensional matrix with same-sized
    *  cells and amounfOfLines columns (rows if horizontally is false). If the
    *  amount of windows is not a multiple of amounfOfLines, the last rows (no
    *  matter the value of horizontally) may be incomplete. */
 
-  public void rearrangeWindows(int amountOfLines, Rectangle screenBounds, boolean horizontally)
+  public void rearrangeWindows(int amountOfLines, boolean horizontally)
   {
-    if (!existingFrames.isEmpty() && amountOfLines > 0)
+    Rectangle screenBounds = adaptorFactory.getRearrengementBounds();
+
+    if (!existingFrames.isEmpty() && amountOfLines > 0 && screenBounds != null)
     {
       int amountOfWindows      = existingFrames.size();
       int amountOfCounterLines = 1 + (amountOfWindows - 1) / amountOfLines;

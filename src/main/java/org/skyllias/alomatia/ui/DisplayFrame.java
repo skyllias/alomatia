@@ -49,13 +49,13 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   /** Creates a new window containing the passed display panel. */
 
-  public DisplayFrame(LabelLocalizer localizer, DisplayPanel panel, FilterFactory filterFactory)
+  public DisplayFrame(LabelLocalizer localizer, FrameAdaptor adaptor,
+                      DisplayPanel panel, FilterFactory filterFactory)
   {
     labelLocalizer = localizer;
     displayPanel   = panel;
+    frameAdaptor   = adaptor;
 
-    FrameAdaptorFactory frameFactory = new JFrameAdaptorFactory();              // TODO inject the adaptor factory
-    frameAdaptor                     = frameFactory.getNewFrame(panel);
     frameAdaptor.setTitle(DEFAULT_TITLE);
     frameAdaptor.setIcon(getDefaultLogo());
 
@@ -213,8 +213,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   private Image getDefaultLogo()
   {
-    return new LogoProducer().createImage(BasicAlomatiaWindow.ICON_WIDTH,
-                                          BasicAlomatiaWindow.ICON_HEIGHT);             // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
+    return new LogoProducer().createImage(ControlFrame.ICON_WIDTH,
+                                          ControlFrame.ICON_HEIGHT);            // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
   }
 
 //------------------------------------------------------------------------------

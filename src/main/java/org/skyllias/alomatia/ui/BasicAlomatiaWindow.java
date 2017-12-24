@@ -8,13 +8,16 @@ import javax.swing.*;
 import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.logo.*;
 
-/** Superclass for all application windows. */
+/** Superclass for all application windows.
+ *  @deprecated Favouring composition over inheritance, no hierarchy of windows
+ *  is required. The logic has been moved to {@link ControlFrame}. */
 
+@Deprecated
 @SuppressWarnings("serial")
 public abstract class BasicAlomatiaWindow extends JFrame
 {
-  public static final int ICON_WIDTH  = 32;
-  public static final int ICON_HEIGHT = 32;
+  private static final int ICON_WIDTH  = 32;
+  private static final int ICON_HEIGHT = 32;
 
   private LabelLocalizer labelLocalizer;
 

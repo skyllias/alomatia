@@ -3,9 +3,9 @@ package org.skyllias.alomatia.ui;
 
 import static org.assertj.swing.fixture.Containers.*;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.awt.*;
 import java.awt.dnd.*;
 import java.util.concurrent.*;
 import java.util.prefs.*;
@@ -116,7 +116,7 @@ public class WindowControlPanelTest
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("17");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(0);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager).rearrangeWindows(eq(17), any(Rectangle.class), eq(true));
+    verify(displayFrameManager).rearrangeWindows(eq(17), eq(true));
   }
 
   @Test
@@ -125,7 +125,7 @@ public class WindowControlPanelTest
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("19");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(1);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager).rearrangeWindows(eq(19), any(Rectangle.class), eq(false));
+    verify(displayFrameManager).rearrangeWindows(eq(19), eq(false));
   }
 
   @Test

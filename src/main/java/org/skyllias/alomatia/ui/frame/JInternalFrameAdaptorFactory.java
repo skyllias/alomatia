@@ -36,4 +36,14 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 
 //------------------------------------------------------------------------------
 
+  /** Returns the inner bounds of the desktop pane. */
+
+  @Override
+  public Rectangle getRearrengementBounds()
+  {
+    return new Rectangle(0, 0, desktopPane.getWidth(), desktopPane.getHeight());
+  }
+
+//------------------------------------------------------------------------------
+
 }

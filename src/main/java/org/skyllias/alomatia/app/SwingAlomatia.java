@@ -8,6 +8,7 @@ import org.skyllias.alomatia.filter.*;
 import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.source.*;
 import org.skyllias.alomatia.ui.*;
+import org.skyllias.alomatia.ui.frame.*;
 
 import com.jtattoo.plaf.aero.*;
 
@@ -30,8 +31,9 @@ public class SwingAlomatia
 
           FixedCatalogueGenerator catalogueGenerator = new FixedCatalogueGenerator();
           Repeater repeater                          = new Repeater();
+          FramePolicy framePolicy                    = new FramePolicy();
           new ControlFrame(new StartupLabelLocalizer(), catalogueGenerator.getNewCatalogue(repeater),
-                           repeater, new FixedFilterFactory());                 // TODO instead of passing these instances everywhere use an injection framework like Spring
+                           repeater, new FixedFilterFactory(), framePolicy);    // TODO instead of passing these instances everywhere use an injection framework like Spring
         }
         catch (Exception e) {e.printStackTrace();}                              // TODO log
       }

@@ -248,7 +248,7 @@ public class WindowControlPanel extends BasicControlPanel
       {
         int amountOfLines    = (int) linesSpinner.getValue();
         boolean horizontally = (boolean) horizontalCombobox.getSelectedItem();
-        rearrange(amountOfLines, horizontally);
+        manager.rearrangeWindows(amountOfLines, horizontally);
 
         getPreferences().putInt(PREFKEY_LINES, amountOfLines);
         getPreferences().putBoolean(PREFKEY_HORIZONTAL, horizontally);
@@ -342,40 +342,6 @@ public class WindowControlPanel extends BasicControlPanel
 
     MessageFormat messageFormat = new MessageFormat(messagePattern);
     return messageFormat.format(new Object[] {amountOfWindows});
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Resizes and locates the windows from the manager so that they cover as much
-   * of the screen where this component is (unless they have been changed from
-   * device) without overlapping. */
-
-  private void rearrange(int amountOfLines, boolean horizontally)
-  {
-    Rectangle screenBounds = getScreenBounds();
-    manager.rearrangeWindows(amountOfLines, screenBounds, horizontally);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Returns a rectangle whose corners are on the corners of the screen where
-   * this component is, substracting the system's taskbar, if any.
-   * Returns null if theis component has not been added to a parent. */
-
-  private Rectangle getScreenBounds()
-  {
-    GraphicsConfiguration graphicsConfig = getGraphicsConfiguration();
-    if (graphicsConfig == null) return null;
-
-    Rectangle bounds    = graphicsConfig.getBounds();
-    Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(graphicsConfig);
-
-    Rectangle effectiveScreenArea = new Rectangle();
-    effectiveScreenArea.x      = bounds.x + screenInsets.left;
-    effectiveScreenArea.y      = bounds.y + screenInsets.top;
-    effectiveScreenArea.height = bounds.height - screenInsets.top  - screenInsets.bottom;
-    effectiveScreenArea.width  = bounds.width  - screenInsets.left - screenInsets.right;
-    return effectiveScreenArea;
   }
 
 //------------------------------------------------------------------------------
