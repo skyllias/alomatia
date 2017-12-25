@@ -3,9 +3,9 @@ package org.skyllias.alomatia.ui;
 
 import static org.assertj.swing.fixture.Containers.*;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.awt.*;
 import java.awt.dnd.*;
 import java.util.concurrent.*;
 import java.util.prefs.*;
@@ -16,6 +16,7 @@ import org.junit.*;
 import org.mockito.*;
 import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.ui.frame.*;
 
 public class WindowControlPanelTest
 {
@@ -30,6 +31,8 @@ public class WindowControlPanelTest
   private DisplayFrame displayFrame;
   @Mock
   private DisplayFrameManager displayFrameManager;
+  @Mock
+  private FramePolicy framePolicy;
   @Mock
   private Preferences preferences;
   private WindowControlPanel windowControlPanel;
@@ -53,7 +56,8 @@ public class WindowControlPanelTest
       public WindowControlPanel call() throws Exception
       {
         return new WindowControlPanel(preferences, new StartupLabelLocalizer(), // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
-                                      repeater, dropTargetListener, displayFrameManager);
+                                      repeater, dropTargetListener,
+                                      displayFrameManager, framePolicy);
       }
     });
     frameFixture = showInFrame(windowControlPanel);
@@ -70,7 +74,7 @@ public class WindowControlPanelTest
   @Test
   public void shouldNotAddDisplayPanelWhenStarting()
   {
-    verify(repeater, never()).addReceiver(displayPanel);                        // this relies on assertFalse(preferences.getBoolean(s, false)). The counterpart when they return true should be tested too, but to reinitialize the framwFirxter is a big deal
+    verify(repeater, never()).addReceiver(displayPanel);                        // this relies on assertFalse(preferences.getBoolean(s, false)). TODO Test too the counterpart when they return true
   }
 
   @Test
@@ -111,12 +115,21 @@ public class WindowControlPanelTest
   }
 
   @Test
+  public void shouldUpdatePolicyWhenCheckboxChecked()
+  {
+
+    frameFixture.checkBox(WindowControlPanel.INTERNALFRAMES_CHECKBOX_NAME).check(true);
+
+    verify(framePolicy, atLeastOnce()).setUsingInternalFramesNextTime(true);    // checkboxes also change state when hovered
+  }
+
+  @Test
   public void shouldRearrangeWindowsHorizontallyWhenColumnsSelected()
   {
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("17");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(0);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager).rearrangeWindows(eq(17), any(Rectangle.class), eq(true));
+    verify(displayFrameManager).rearrangeWindows(eq(17), eq(true));
   }
 
   @Test
@@ -125,7 +138,7 @@ public class WindowControlPanelTest
     frameFixture.spinner(WindowControlPanel.LINES_SPINNER_NAME).enterText("19");
     frameFixture.comboBox(WindowControlPanel.COMBO_HORIZONTAL_NAME).selectItem(1);  // the API does not support setting a value, so it has to be based on the order of the options
     frameFixture.button(WindowControlPanel.ARRANGE_BUTTON_NAME).click();
-    verify(displayFrameManager).rearrangeWindows(eq(19), any(Rectangle.class), eq(false));
+    verify(displayFrameManager).rearrangeWindows(eq(19), eq(false));
   }
 
   @Test
