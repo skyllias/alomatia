@@ -16,6 +16,7 @@ import org.junit.*;
 import org.mockito.*;
 import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.ui.frame.*;
 
 public class WindowControlPanelTest
 {
@@ -30,6 +31,8 @@ public class WindowControlPanelTest
   private DisplayFrame displayFrame;
   @Mock
   private DisplayFrameManager displayFrameManager;
+  @Mock
+  private FramePolicy framePolicy;
   @Mock
   private Preferences preferences;
   private WindowControlPanel windowControlPanel;
@@ -53,7 +56,8 @@ public class WindowControlPanelTest
       public WindowControlPanel call() throws Exception
       {
         return new WindowControlPanel(preferences, new StartupLabelLocalizer(), // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
-                                      repeater, dropTargetListener, displayFrameManager);
+                                      repeater, dropTargetListener,
+                                      displayFrameManager, framePolicy);
       }
     });
     frameFixture = showInFrame(windowControlPanel);
@@ -70,7 +74,7 @@ public class WindowControlPanelTest
   @Test
   public void shouldNotAddDisplayPanelWhenStarting()
   {
-    verify(repeater, never()).addReceiver(displayPanel);                        // this relies on assertFalse(preferences.getBoolean(s, false)). The counterpart when they return true should be tested too, but to reinitialize the framwFirxter is a big deal
+    verify(repeater, never()).addReceiver(displayPanel);                        // this relies on assertFalse(preferences.getBoolean(s, false)). TODO Test too the counterpart when they return true
   }
 
   @Test
@@ -108,6 +112,15 @@ public class WindowControlPanelTest
 
     assertNotEquals("Label should change when amount of windows changed",
                     originalText, modifiedText);
+  }
+
+  @Test
+  public void shouldUpdatePolicyWhenCheckboxChecked()
+  {
+
+    frameFixture.checkBox(WindowControlPanel.INTERNALFRAMES_CHECKBOX_NAME).check(true);
+
+    verify(framePolicy, atLeastOnce()).setUsingInternalFramesNextTime(true);    // checkboxes also change state when hovered
   }
 
   @Test

@@ -50,7 +50,7 @@ public class ControlFrame
                                                                adaptorFactory);
 
     createControlsFrame(labelLocalizer, catalogue, displayRepeater,
-                        filterFactory, frameManager);
+                        filterFactory, frameManager, framePolicy);
   }
 
 //==============================================================================
@@ -59,7 +59,7 @@ public class ControlFrame
 
   private void createControlsFrame(LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
                                    Repeater displayRepeater, FilterFactory filterFactory,
-                                   DisplayFrameManager frameManager)
+                                   DisplayFrameManager frameManager, FramePolicy framePolicy)
   {
     JFrame frame = getNewFrame();
     frame.setTitle(labelLocalizer.getString(CONTROL_TITLE));
@@ -69,7 +69,7 @@ public class ControlFrame
 
     ControlsPane controlsPane = new ControlsPane(labelLocalizer, catalogue,
                                                  displayRepeater, dropListener,
-                                                 frameManager);
+                                                 frameManager, framePolicy);
     frame.getContentPane().add(controlsPane, BorderLayout.CENTER);
 
     frame.setExtendedState(Frame.NORMAL);                                       // this is forced because some desktop managers maximize all windows by default, and this looks better if really packed

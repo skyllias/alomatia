@@ -15,6 +15,7 @@ import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.ui.DisplayFrame.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.*;
+import org.skyllias.alomatia.ui.frame.*;
 
 /** Panel to manage display frames: Create, count and rearrange them.
  *  This takes care of the UI, while a {@link DisplayFrameManager} is in charge
@@ -28,25 +29,27 @@ import org.skyllias.alomatia.ui.DisplayFrameManager.*;
 public class WindowControlPanel extends BasicControlPanel
                                 implements DisplayFrameCloseListener, DisplayAmountChangeListener
 {
-  private static final String TITLE_LABEL     = "frame.control.title";
-  private static final String AMOUNT_LABEL    = "frame.control.amount";
-  private static final String ADD_LABEL       = "frame.control.add";
-  private static final String AUTOOPEN_LABEL  = "frame.control.autoopen";
-  private static final String LINES_LABEL     = "frame.control.arrange.info";
-  private static final String COLUMNS_LABEL   = "frame.control.arrange.columns";
-  private static final String ROWS_LABEL      = "frame.control.arrange.rows";
-  private static final String REARRANGE_LABEL = "frame.control.arrange.rearrange";
-  private static final String AUTOAPPLY_LABEL = "frame.control.filters.autoapply";
-  private static final String REAPPLY_LABEL   = "frame.control.filters.reapply";
+  private static final String TITLE_LABEL          = "frame.control.title";
+  private static final String AMOUNT_LABEL         = "frame.control.amount";
+  private static final String ADD_LABEL            = "frame.control.add";
+  private static final String AUTOOPEN_LABEL       = "frame.control.autoopen";
+  private static final String INTERNALFRAMES_LABEL = "frame.control.internalframes";
+  private static final String LINES_LABEL          = "frame.control.arrange.info";
+  private static final String COLUMNS_LABEL        = "frame.control.arrange.columns";
+  private static final String ROWS_LABEL           = "frame.control.arrange.rows";
+  private static final String REARRANGE_LABEL      = "frame.control.arrange.rearrange";
+  private static final String AUTOAPPLY_LABEL      = "frame.control.filters.autoapply";
+  private static final String REAPPLY_LABEL        = "frame.control.filters.reapply";
 
-  protected static final String AMOUNT_LABEL_NAME      = "label.amount";         // name for the components
-  protected static final String ADD_BUTTON_NAME        = "button.add";
-  protected static final String AUTOOPEN_CHECKBOX_NAME = "checkbox.autoopen";
-  protected static final String LINES_SPINNER_NAME     = "spinner.lines";
-  protected static final String COMBO_HORIZONTAL_NAME  = "combobox.horizontal";
-  protected static final String ARRANGE_BUTTON_NAME    = "button.arrange";
-  protected static final String AUTOAPPLY_FILTER_NAME  = "checkbox.autoapply";
-  protected static final String REFILTER_BUTTON_NAME   = "button.refilter";
+  protected static final String AMOUNT_LABEL_NAME            = "label.amount";         // name for the components
+  protected static final String ADD_BUTTON_NAME              = "button.add";
+  protected static final String AUTOOPEN_CHECKBOX_NAME       = "checkbox.autoopen";
+  protected static final String INTERNALFRAMES_CHECKBOX_NAME = "checkbox.internalframes";
+  protected static final String LINES_SPINNER_NAME           = "spinner.lines";
+  protected static final String COMBO_HORIZONTAL_NAME        = "combobox.horizontal";
+  protected static final String ARRANGE_BUTTON_NAME          = "button.arrange";
+  protected static final String AUTOAPPLY_FILTER_NAME        = "checkbox.autoapply";
+  protected static final String REFILTER_BUTTON_NAME         = "button.refilter";
 
   private static final String PREFKEY_HORIZONTAL  = "arrangeHorizontally";
   private static final String PREFKEY_LINES       = "amountOfLinesToRearrangeIn";
@@ -54,6 +57,7 @@ public class WindowControlPanel extends BasicControlPanel
   private static final String PREFKEY_AUTOOPEN    = "automaticallyOpenNewWindowOnStartup";
 
   private DisplayFrameManager manager;
+  private FramePolicy framePolicy;
 
   private Repeater repeaterDisplay;
 
@@ -70,10 +74,11 @@ public class WindowControlPanel extends BasicControlPanel
   /** Automatically opens a new display window after creation. */
 
   public WindowControlPanel(LabelLocalizer localizer, Repeater displayRepeater,
-                            DropTargetListener dropTargetListener, DisplayFrameManager frameManager)
+                            DropTargetListener dropTargetListener,
+                            DisplayFrameManager frameManager, FramePolicy policy)
   {
     this(getDefaultPreferences(), localizer, displayRepeater,
-         dropTargetListener, frameManager);
+         dropTargetListener, frameManager, policy);
   }
 
 //------------------------------------------------------------------------------
@@ -81,7 +86,8 @@ public class WindowControlPanel extends BasicControlPanel
   /** Only meant for preferences injection in tests. */
 
   protected WindowControlPanel(Preferences prefs, LabelLocalizer localizer, Repeater displayRepeater,
-                               DropTargetListener dropTargetListener, DisplayFrameManager frameManager)
+                               DropTargetListener dropTargetListener, DisplayFrameManager frameManager,
+                               FramePolicy policy)
   {
     super(localizer, TITLE_LABEL);
 
@@ -90,6 +96,7 @@ public class WindowControlPanel extends BasicControlPanel
     repeaterDisplay = displayRepeater;
     manager         = frameManager;
     dropListener    = dropTargetListener;
+    framePolicy     = policy;
 
     manager.addAmountChangeListener(this);
 
@@ -222,6 +229,19 @@ public class WindowControlPanel extends BasicControlPanel
     final int MAX_LINES  = 20;
     final int DEF_LINES  = MIN_LINES;
 
+    final JCheckBox framesCheckBox = new JCheckBox(getLabelLocalizer().getString(INTERNALFRAMES_LABEL),
+                                                   framePolicy.isUsingInternalFrames());
+    framesCheckBox.addChangeListener(new ChangeListener()
+    {
+      @Override
+      public void stateChanged(ChangeEvent e)
+      {
+        boolean useInternalFramesNextTime = framesCheckBox.isSelected();
+        framePolicy.setUsingInternalFramesNextTime(useInternalFramesNextTime);
+      }
+    });
+    framesCheckBox.setName(INTERNALFRAMES_CHECKBOX_NAME);
+
     JLabel infoLabel = new BorderedLabel(getLabelLocalizer().getString(LINES_LABEL));
 
     int initialLinesValue = getPreferences().getInt(PREFKEY_LINES, DEF_LINES);
@@ -257,6 +277,7 @@ public class WindowControlPanel extends BasicControlPanel
 
     JPanel secondRow = new JPanel();
     secondRow.setLayout(new BoxLayout(secondRow, BoxLayout.X_AXIS));
+    secondRow.add(framesCheckBox);
     secondRow.add(Box.createHorizontalGlue());
     secondRow.add(infoLabel);
     secondRow.add(linesSpinner);
