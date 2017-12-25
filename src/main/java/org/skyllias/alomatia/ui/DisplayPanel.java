@@ -242,7 +242,6 @@ public class DisplayPanel extends JScrollPane
     @Override
     public void paint(Graphics g)
     {
-  //System.out.println("Repainting at " + System.currentTimeMillis());
       if (originalImage != null)
       {
         Image displayedImage = originalImage;
@@ -253,13 +252,16 @@ public class DisplayPanel extends JScrollPane
           filteredImage          = createImage(producer);
           displayedImage         = filteredImage;
         }
-        mustFilter = false;                                                     // no refiltering is required either if the filter was null
+        mustFilter = false;                                                     // no refiltering is required, either, if the filter was null
 
         Dimension scaledDimension = getPreferredSize();
         int scaledHeight = (int) scaledDimension.getHeight();
         int scaledWidth  = (int) scaledDimension.getWidth();
         g.clearRect(0, 0, getWidth(), getHeight());                             // clear the whole panel, not just the region to paint on
+
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));              // what really takes time in slow filters and big images is not the filtering lines above, because the image is not really generated until drawn
         g.drawImage(displayedImage, 0, 0, scaledWidth, scaledHeight, null);     // getHeight() and getWidth() cannot be used because they are larger than the image's size if the viewport is bigger
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
       }
     }
 
