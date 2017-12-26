@@ -23,7 +23,7 @@ public class Repeater implements ImageDisplay
 
 //------------------------------------------------------------------------------
 
-  /** Creates a new repeater without the passed displays receiving the images this one gets.
+  /** Creates a new repeater with all the passed displays receiving the images this one gets.
    *  <p>
    *  They can be removed later on with {@link #removeReceiver(ImageDisplay)}. */
 

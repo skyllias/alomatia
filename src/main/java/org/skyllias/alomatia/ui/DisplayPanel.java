@@ -4,6 +4,7 @@ package org.skyllias.alomatia.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.util.concurrent.*;
 
 import javax.swing.*;
 
@@ -20,17 +21,19 @@ import org.skyllias.alomatia.display.*;
 public class DisplayPanel extends JScrollPane
                           implements ImageDisplay, ResizableDisplay, ComponentListener
 {
-  private static final int UNAVAILABLE_SIZE = -1;                               // value returned by Image.getWidth() and getHeight() when they are still unavailable
+  private static final int UNAVAILABLE_SIZE = -1;                               // value returned by Image.getWidth(ImageObserver) and getHeight() when they are still unavailable
   private static final int SCROLL_INCREMENT = 16;
 
   private ImageFilter filter;
   private Image originalImage;
-  private boolean mustFilter = true;                                            // if true, the filtered image cached in the panel may not be valid and the original image must be filtered; if false, filtered image can be painted
+  private Image filteredImage;                                                  // image after applying filters, if any. Cached because large images take a long time to filter, and it is redundant to filter them whenever a repaint happens
 
   private DisplayFitPolicy fitType = DisplayFitPolicy.FREE;
   private double scale = 1;                                                     // zoom factor: 1: normal size; <1: smaller; >1: bigger
 
   private ImagePanel imagePanel = new ImagePanel();
+
+  private Executor executor = Executors.newSingleThreadExecutor();              // filter application can be very slow, so operations that imply it are thrown in separate threads. Using a single thread ensures that no race conditions will happen, but if this class were to be tested, the Executor implementation could be changed
 
 //==============================================================================
 
@@ -52,14 +55,21 @@ public class DisplayPanel extends JScrollPane
 
 //==============================================================================
 
-  /** A repaint is forced after modification. */
+  /** The filter is applied in a separate thread, so this returns almost immediately. */
 
   public void setImageFilter(ImageFilter imageFilter)
   {
     filter = imageFilter;
 
-    mustFilter = true;
-    imagePanel.repaint();
+    executor.execute(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        filterImage();
+        imagePanel.repaint();
+      }
+    });
   }
 
 //------------------------------------------------------------------------------
@@ -68,16 +78,24 @@ public class DisplayPanel extends JScrollPane
    *  <p>
    *  The pane is resized to the image's size.
    *  <p>
-   *  A repaint is forced after modification. */
+   *  The current filter, if any, is applied in a separate thread, so this
+   *  returns almost immediately. */
 
   @Override
   public void setOriginalImage(Image image)
   {
     originalImage = image;
 
-    mustFilter = true;
-    resizeImageToFit();
-    repaintAfterResize();                                                       // this is redundant for everything but fitType == FREE
+    executor.execute(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        filterImage();
+        resizeImageToFit();
+        repaintAfterResize();                                                   // this is redundant for everything but fitType == FREE
+      }
+    });
   }
 
 //------------------------------------------------------------------------------
@@ -191,6 +209,34 @@ public class DisplayPanel extends JScrollPane
   }
 
 //------------------------------------------------------------------------------
+
+  /* If there is an original image, updates the filtered image by applying the
+   * current filter (if any) to the original one.
+   * This method should be called if and only if the original image or the
+   * filter change.
+   * It can be a consuming calculation, so the cursor is changed while it takes
+   * place. */
+
+  private void filterImage()
+  {
+    if (originalImage != null)
+    {
+      setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+      filteredImage = originalImage;
+      if (filter != null)
+      {
+        ImageProducer producer = new FilteredImageSource(originalImage.getSource(), filter);    // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
+        filteredImage          = createImage(producer);
+      }
+
+      filteredImage.getWidth(null);                                             // what really takes time in slow filters and big images is not the filtering lines above, because the image is not really generated until one method like getWidth() is called
+
+      setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+  }
+
+//------------------------------------------------------------------------------
 //                           COMPONENT LISTENER
 //------------------------------------------------------------------------------
 
@@ -222,7 +268,6 @@ public class DisplayPanel extends JScrollPane
 
   private class ImagePanel extends JPanel
   {
-    private Image filteredImage;                                                // image after applying filters, if any. Cached because large images take a long time to filter, and it is redundant to filter them whenever a repaint happens
 
 //==============================================================================
 
@@ -231,36 +276,21 @@ public class DisplayPanel extends JScrollPane
 
 //------------------------------------------------------------------------------
 
-    /** If there is an original image but no filter, it is drawn at the top left
-     *  corner after deleting the previous contents.
-     *  If there is an image and a filter, the filter is applied and the result is
-     *  drawn at the top left corner.
+    /** The filtered image (which may be the original image if there is no filter)
+     *  is drawn at the top left corner.
      *  <p>
-     *  In all cases, the image is scaled according to the current zoom factor.
+     *  The image is scaled according to the current zoom factor.
      *   */
 
     @Override
     public void paint(Graphics g)
     {
-  //System.out.println("Repainting at " + System.currentTimeMillis());
-      if (originalImage != null)
-      {
-        Image displayedImage = originalImage;
-        if (filteredImage != null && filter != null) displayedImage = filteredImage;
-        if (mustFilter && filter != null)
-        {
-          ImageProducer producer = new FilteredImageSource(originalImage.getSource(), filter);    // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
-          filteredImage          = createImage(producer);
-          displayedImage         = filteredImage;
-        }
-        mustFilter = false;                                                     // no refiltering is required either if the filter was null
+      Dimension scaledDimension = getPreferredSize();
+      int scaledHeight          = (int) scaledDimension.getHeight();
+      int scaledWidth           = (int) scaledDimension.getWidth();
 
-        Dimension scaledDimension = getPreferredSize();
-        int scaledHeight = (int) scaledDimension.getHeight();
-        int scaledWidth  = (int) scaledDimension.getWidth();
-        g.clearRect(0, 0, getWidth(), getHeight());                             // clear the whole panel, not just the region to paint on
-        g.drawImage(displayedImage, 0, 0, scaledWidth, scaledHeight, null);     // getHeight() and getWidth() cannot be used because they are larger than the image's size if the viewport is bigger
-      }
+      g.clearRect(0, 0, getWidth(), getHeight());                               // clear the whole panel, not just the region to paint on
+      g.drawImage(filteredImage, 0, 0, scaledWidth, scaledHeight, null);        // getHeight() and getWidth() cannot be used because they are larger than the image's size if the viewport is bigger
     }
 
 //------------------------------------------------------------------------------
