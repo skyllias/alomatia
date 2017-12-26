@@ -34,8 +34,6 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   private static final String TITLE_PATTERN = "display.window.title.filtered";
   private static final String PANEL_TOOLTIP = "display.panel.tooltip";
 
-  private static final Dimension DEFAULT_SIZE = new Dimension(600, 400);
-
   private LabelLocalizer labelLocalizer;
 
   private DisplayPanel displayPanel;
@@ -70,7 +68,6 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
     filterSelector = optionsDialog.getFilterSelector();
     setUpFilterKeyListeners(filterSelector);
 
-    frameAdaptor.setSize(DEFAULT_SIZE.width, DEFAULT_SIZE.height);              // some windows managers will use a 0 by 0 size if this is not forced
     frameAdaptor.setMaximized(false);
     frameAdaptor.setVisible(true);
   }
