@@ -4,6 +4,7 @@ package org.skyllias.alomatia.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.util.concurrent.*;
 
 import javax.swing.*;
 
@@ -32,6 +33,8 @@ public class DisplayPanel extends JScrollPane
 
   private ImagePanel imagePanel = new ImagePanel();
 
+  private Executor executor = Executors.newSingleThreadExecutor();              // filter application can be very slow, so operations that imply it are thrown in separate threads. Using a single thread ensures that no race conditions will happen, but if this class were to be tested, the Executor implementation could be changed
+
 //==============================================================================
 
   /** Creates a new instance with double buffering enabled to reduce flickering. */
@@ -52,14 +55,21 @@ public class DisplayPanel extends JScrollPane
 
 //==============================================================================
 
-  /** A repaint is forced after modification. */
+  /** The filter is applied in a separate thread, so this returns almost immediately. */
 
   public void setImageFilter(ImageFilter imageFilter)
   {
     filter = imageFilter;
 
-    filterImage();
-    imagePanel.repaint();
+    executor.execute(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        filterImage();
+        imagePanel.repaint();
+      }
+    });
   }
 
 //------------------------------------------------------------------------------
@@ -68,16 +78,24 @@ public class DisplayPanel extends JScrollPane
    *  <p>
    *  The pane is resized to the image's size.
    *  <p>
-   *  A repaint is forced after modification. */
+   *  The current filter, if any, is applied in a separate thread, so this
+   *  returns almost immediately. */
 
   @Override
   public void setOriginalImage(Image image)
   {
     originalImage = image;
 
-    filterImage();
-    resizeImageToFit();
-    repaintAfterResize();                                                       // this is redundant for everything but fitType == FREE
+    executor.execute(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        filterImage();
+        resizeImageToFit();
+        repaintAfterResize();                                                   // this is redundant for everything but fitType == FREE
+      }
+    });
   }
 
 //------------------------------------------------------------------------------
@@ -216,7 +234,6 @@ public class DisplayPanel extends JScrollPane
 
       setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
-
   }
 
 //------------------------------------------------------------------------------
