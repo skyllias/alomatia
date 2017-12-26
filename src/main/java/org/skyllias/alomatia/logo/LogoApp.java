@@ -25,6 +25,7 @@ public class LogoApp
     BufferedImage bufferedImage = new BufferedImage(logo.getWidth(null), logo.getHeight(null), BufferedImage.TYPE_INT_RGB);
     Graphics2D imageGraphics    = bufferedImage.createGraphics();
     imageGraphics.drawImage(logo, null, null);
+    imageGraphics.dispose();
 
     File outputFile = new File(FILE_PATH);
     ImageIO.write(bufferedImage, IMG_FORMAT, outputFile);

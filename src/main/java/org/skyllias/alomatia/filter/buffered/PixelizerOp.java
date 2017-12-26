@@ -42,6 +42,7 @@ public class PixelizerOp extends BasicBufferedImageOp
         filterTile(src, destGraphics, i, j, xOffset, yOffset);
       }
     }
+    destGraphics.dispose();
   }
 
 //------------------------------------------------------------------------------
