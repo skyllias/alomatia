@@ -61,15 +61,11 @@ public class SurroundingColoursOp extends BasicBufferedImageOp
     int minY = Math.max(0, y - boxSize);
     int maxY = Math.min(src.getHeight() - 1, y + boxSize);
 
+    int width    = maxX - minX + 1;
+    int hegiht   = maxY - minY + 1;
+    int[] pixels = src.getRGB(minX, minY, width, hegiht, null, 0, width);       // the last param, scansize, seems to have to be equal to the width from BufferedImage's source code
     Collection<Color> result = new LinkedList<>();
-    for (int i = minX; i <= maxX; i++)
-    {
-      for (int j = minY; j <= maxY; j++)
-      {
-        Color currentPixel = new Color(src.getRGB(i, j));
-        result.add(currentPixel);
-      }
-    }
+    for (int currentRgb : pixels) result.add(new Color(currentRgb, true));
     return result;
   }
 
