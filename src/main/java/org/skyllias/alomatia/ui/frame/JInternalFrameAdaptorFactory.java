@@ -2,6 +2,7 @@
 package org.skyllias.alomatia.ui.frame;
 
 import java.awt.*;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -12,6 +13,8 @@ import org.skyllias.alomatia.ui.*;
 
 public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 {
+  private static final Dimension DEFAULT_SIZE = new Dimension(600, 400);
+
   private JDesktopPane desktopPane;
 
 //==============================================================================
@@ -29,6 +32,10 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
     jInternalFrame.setClosable(true);
     jInternalFrame.setMaximizable(true);
     jInternalFrame.setResizable(true);
+
+    jInternalFrame.setSize(DEFAULT_SIZE);
+    jInternalFrame.setLocation(getRandomLocation());                            // this prevents all the internal frames from stacking
+
     desktopPane.add(jInternalFrame);
 
     return new JInternalFrameAdaptor(jInternalFrame);
@@ -42,6 +49,22 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
   public Rectangle getRearrengementBounds()
   {
     return new Rectangle(0, 0, desktopPane.getWidth(), desktopPane.getHeight());
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns a random point inside the rectangle defined by (0, 0) and
+   * (desktopPane.getWidth() - DEFAULT_SIZE.width, desktopPane.getHeight() - DEFAULT_SIZE.height). */
+
+  private Point getRandomLocation()
+  {
+    int maxX = desktopPane.getWidth() - DEFAULT_SIZE.width;
+    int maxY = desktopPane.getHeight() - DEFAULT_SIZE.height;
+    if (maxX < 0) maxX = 0;
+    if (maxY < 0) maxY = 0;
+
+    Random randomGenerator = new Random();
+    return new Point(randomGenerator.nextInt(maxX), randomGenerator.nextInt(maxY));
   }
 
 //------------------------------------------------------------------------------

@@ -11,16 +11,15 @@ public class MedianChannelCalculator implements SurroundingColoursCalculator
 //==============================================================================
 
   /** If surroundingColours contains an even amount of items, the median is taken
-   *  as the value below the middle. */
+   *  as the value above the middle. */
 
   @Override
   public Color getColour(Collection<Color> surroundingColours)
   {
     int amountOfColours = surroundingColours.size();
-
-    int[] reds   = new int[amountOfColours];
-    int[] greens = new int[amountOfColours];
-    int[] blues  = new int[amountOfColours];
+    int[] reds          = new int[amountOfColours];
+    int[] greens        = new int[amountOfColours];
+    int[] blues         = new int[amountOfColours];
 
     int currentIndex = 0;
     for (Color currentColour : surroundingColours)
