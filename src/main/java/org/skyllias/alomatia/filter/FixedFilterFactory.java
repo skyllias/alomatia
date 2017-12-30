@@ -103,6 +103,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_CCT_S_FILTER_NAME  = "filter.rgb.colourcontrast+s.name";
   private static final String INC_CCT_XS_FILTER_NAME = "filter.rgb.colourcontrast+xs.name";
   private static final String BLUR_SMALL_FILTER_NAME = "filter.blur.small.name";
+  private static final String BLUR_MED_FILTER_NAME   = "filter.blur.medium.name";
   private static final String BLUR_BIG_FILTER_NAME   = "filter.blur.big.name";
   private static final String MOTION_S0_FILTER_NAME  = "filter.blur.motion.slow.horizontal.name";
   private static final String MOTION_S90_FILTER_NAME = "filter.blur.motion.slow.vertical.name";
@@ -279,7 +280,8 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
 
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(5)),                                        BLUR_SMALL_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(11)),                                       BLUR_BIG_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(15)),                                       BLUR_MED_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(31)),                                       BLUR_BIG_FILTER_NAME));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_NAME));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_NAME));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, Math.PI / 2)),                              MOTION_S90_FILTER_NAME));
