@@ -17,7 +17,7 @@ public class StartupLabelLocalizerTest
     localizer.resetLocaleAsAtStartup();
 
     assertEquals("Default language should be English",
-                 "Control window", localizer.getString("control.window.title"));
+                 "Control window - Alomatia", localizer.getString("control.window.title"));
   }
 
   @Test
@@ -28,7 +28,7 @@ public class StartupLabelLocalizerTest
     localizer.resetLocaleAsAtStartup();
 
     assertEquals("Next execution locale 'en' should produce messages in English",
-                 "Control window", localizer.getString("control.window.title"));
+                 "Control window - Alomatia", localizer.getString("control.window.title"));
   }
 
   @Test
@@ -39,7 +39,7 @@ public class StartupLabelLocalizerTest
     localizer.resetLocaleAsAtStartup();
 
     assertEquals("Next execution locale 'es' should produce messages in Spanish",
-                 "Ventana de control", localizer.getString("control.window.title"));
+                 "Ventana de control - Alomatia", localizer.getString("control.window.title"));
   }
 
 }
