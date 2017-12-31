@@ -39,8 +39,8 @@ public class ClipboardSource extends BasicSource
 
 //------------------------------------------------------------------------------
 
-  /** If the mode is auto, reads the contents of the clipboard in search of an
-   *  image. Else, nothing happens.
+  /** If the mode is auto and the source is active, reads the contents of the
+   *  clipboard in search of an image. Else, nothing happens.
    *  To be invoked when the clipboard contents change. The clipboard used is
    *  the one in event. It sohlud be the same used internally to register as
    *  listener, but it is not enforced. */
@@ -48,18 +48,18 @@ public class ClipboardSource extends BasicSource
   @Override
   public void flavorsChanged(FlavorEvent event)
   {
-    if (autoMode) takeImageFromClipboard((Clipboard) event.getSource());
+    if (autoMode && isActive()) takeImageFromClipboard((Clipboard) event.getSource());
   }
 
 //------------------------------------------------------------------------------
 
-  /** If the mode is not auto, reads the contents of the clipboard in search of
-   *  an image. Else, nothing happens.
+  /** If the mode is not auto and the source is active, reads the contents of
+   *  the clipboard in search of an image. Else, nothing happens.
    *  To be invoked when the user wants to paste the image from the clipboard. */
 
   public void readFromClipboard()
   {
-    if (!autoMode) takeImageFromClipboard(clipboard);
+    if (!autoMode && isActive()) takeImageFromClipboard(clipboard);
   }
 
 //------------------------------------------------------------------------------
