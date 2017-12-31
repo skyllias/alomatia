@@ -118,6 +118,44 @@ public class SourceSelectorTest
     selectDirectlyActiveSource(AsynchronousUrlSource.class, urlSource, SourceSelector.URL_SOURCE_LABEL);
   }
 
+  @Test
+  public void shouldSetClipboardSourceAutoModeWhenCheckboxSelected()
+  {
+    doReturn(false).when(preferences).getBoolean(eq(SourceSelector.PREFKEY_CLIPBOARDAUTO),
+                                                 any(Boolean.class));
+    catalogue.add(ClipboardSource.class, clipboardSource);
+    setUpAfterCatalogueInitialization();
+
+    JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelector.CLIPBOARD_SOURCE_LABEL);
+    radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
+    radioButton.check();
+    Mockito.reset(clipboardSource);                                             // bad practice, but the method is called at init time
+    JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelector.CLIPBOARD_AUTOMODE_NAME);
+    checkBox.check(true);
+
+    verify(clipboardSource, atLeastOnce()).setAutoMode(true);
+  }
+
+  @Test
+  public void shouldSetClipboardSourceNotAutoModeWhenCheckboxUnselected()
+  {
+    doReturn(true).when(preferences).getBoolean(eq(SourceSelector.PREFKEY_CLIPBOARDAUTO),
+                                                any(Boolean.class));
+    catalogue.add(ClipboardSource.class, clipboardSource);
+    setUpAfterCatalogueInitialization();
+
+    JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelector.CLIPBOARD_SOURCE_LABEL);
+    radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
+    radioButton.check();
+    Mockito.reset(clipboardSource);                                             // bad practice, but the method is called at init time
+    JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelector.CLIPBOARD_AUTOMODE_NAME);
+    checkBox.check(false);
+
+    verify(clipboardSource, atLeastOnce()).setAutoMode(false);
+  }
+
+//------------------------------------------------------------------------------
+
   /* For the sources that become active when the button is selected. */
 
   private <S extends ImageSource> void selectDirectlyActiveSource(Class<S> sourceClass,
@@ -129,7 +167,7 @@ public class SourceSelectorTest
     JRadioButtonFixture radioButton = frameFixture.radioButton(radioName);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
-    verify(instance, times(1)).setActive(true);
+    verify(instance).setActive(true);
   }
 
   /* For the sources that do not become active when the button is selected. */
