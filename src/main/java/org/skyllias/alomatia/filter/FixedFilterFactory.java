@@ -172,6 +172,14 @@ public class FixedFilterFactory implements FilterFactory
   private static final String VIGNETTE_R_FILTER_NAME = "filter.vignette.round.name";
   private static final String VIGNETTE_C_FILTER_NAME = "filter.vignette.cross.name";
   private static final String VIGNETTE_E_FILTER_NAME = "filter.vignette.edges.name";
+  private static final String MINMAX_BLK_FILTER_NAME = "filter.minnmax.black.name";
+  private static final String MINMAX_RED_FILTER_NAME = "filter.minnmax.red.name";
+  private static final String MINMAX_GRN_FILTER_NAME = "filter.minnmax.green.name";
+  private static final String MINMAX_BLU_FILTER_NAME = "filter.minnmax.blue.name";
+  private static final String MINMAX_CYA_FILTER_NAME = "filter.minnmax.cyan.name";
+  private static final String MINMAX_MGT_FILTER_NAME = "filter.minnmax.magenta.name";
+  private static final String MINMAX_YLW_FILTER_NAME = "filter.minnmax.yellow.name";
+  private static final String MINMAX_WIT_FILTER_NAME = "filter.minnmax.white.name";
   private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
   private static final String INST_EARBY_FILTER_NAME = "Earby lird";
   private static final String INST_TOGAM_FILTER_NAME = "Thogam";
@@ -318,6 +326,15 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new RedlessFilter(),          REDLESS_FILTER_NAME));
     filters.add(new NamedFilter(new GreenlessFilter(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(new BluelessFilter(),         BLUELESS_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, false))), MINMAX_BLK_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))), MINMAX_RED_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, false))), MINMAX_GRN_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, true))), MINMAX_BLU_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, true))), MINMAX_CYA_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, true))), MINMAX_MGT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, false))), MINMAX_YLW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, true))), MINMAX_WIT_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
