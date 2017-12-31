@@ -2,6 +2,7 @@
 package org.skyllias.alomatia.ui;
 
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.text.*;
@@ -43,6 +44,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   private FrameAdaptor frameAdaptor;                                            // the Swing component with the frame
 
+  private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
 //==============================================================================
 
   /** Creates a new window containing the passed display panel. */
@@ -67,6 +70,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
     filterSelector = optionsDialog.getFilterSelector();
     setUpFilterKeyListeners(filterSelector);
+    setOutputKeyListeners();
 
     frameAdaptor.setMaximized(false);
     frameAdaptor.setVisible(true);
@@ -134,6 +138,13 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
 //------------------------------------------------------------------------------
 
+  /** Sets the clipboard where filtered images are to be copied.
+   *  This method should only be called in tests. */
+
+  protected void setClipboard(Clipboard clip) {clipboard = clip;}
+
+//------------------------------------------------------------------------------
+
   /* Modifies the frame's input and action maps so that the selection of
    * filterSelector is modified when some key strokes take place.
    * The selected keys try to avoid to violate the principle of consistency. So
@@ -174,6 +185,27 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
         public void actionPerformed(ActionEvent event) {filterSelector.selectFilterAt(index);}  // same as applyFilterAt(index)
       });
     }
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up key listeners to extract (copy, save...) the filtered image from
+   * the display panel. */
+
+  private void setOutputKeyListeners()
+  {
+    final String COPY_ACTION = "copyImage";
+
+    KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
+    frameAdaptor.getInputMap().put(stroke, COPY_ACTION);
+    frameAdaptor.getActionMap().put(COPY_ACTION, new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event)
+      {
+        clipboard.setContents(new ImageSelection(displayPanel.getFilteredImage()), null);
+      }
+    });
   }
 
 //------------------------------------------------------------------------------
@@ -259,6 +291,31 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
     {
       boolean showDialog = e.getClickCount() > 1 || !SwingUtilities.isLeftMouseButton(e);
       if (showDialog) dialog.setVisible(true);
+    }
+  }
+
+//******************************************************************************
+
+  /* Transferable to put an image in a clipboard. */
+
+  class ImageSelection implements Transferable
+  {
+    private Image image;
+
+    public ImageSelection(Image image) {this.image = image;}
+
+    @Override
+    public DataFlavor[] getTransferDataFlavors() {return new DataFlavor[] {DataFlavor.imageFlavor};}
+
+    @Override
+    public boolean isDataFlavorSupported(DataFlavor flavor) {return DataFlavor.imageFlavor.equals(flavor);}
+
+    @Override
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException
+    {
+      if (!DataFlavor.imageFlavor.equals(flavor)) throw new UnsupportedFlavorException(flavor);
+
+      return image;
     }
   }
 }
