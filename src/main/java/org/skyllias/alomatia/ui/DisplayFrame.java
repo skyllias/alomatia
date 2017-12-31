@@ -203,7 +203,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
       @Override
       public void actionPerformed(ActionEvent event)
       {
-        clipboard.setContents(new ImageSelection(displayPanel.getFilteredImage()), null);
+        Image filteredImage = displayPanel.getFilteredImage();
+        if (filteredImage != null) clipboard.setContents(new ImageSelection(filteredImage), null);
       }
     });
   }
