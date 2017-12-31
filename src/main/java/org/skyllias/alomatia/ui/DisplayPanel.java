@@ -100,6 +100,16 @@ public class DisplayPanel extends JScrollPane
 
 //------------------------------------------------------------------------------
 
+  /** Returns the image with the filter applied.
+   *  It may be null if not yet calculated.
+   *  Usually this will be the image visible in the panel, but if invoked just
+   *  before a repaint or while the filter is being applied, it may not be
+   *  updated yet. */
+
+  public Image getFilteredImage() {return filteredImage;}
+
+//------------------------------------------------------------------------------
+
   /** Modifies the zoom over the painted image and forces a repaint. */
 
   @Override
