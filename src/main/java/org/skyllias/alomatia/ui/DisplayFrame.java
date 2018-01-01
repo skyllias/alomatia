@@ -57,7 +57,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
     displayPanel   = panel;
     frameAdaptor   = adaptor;
 
-    frameAdaptor.setTitle(DEFAULT_TITLE);
+    frameAdaptor.setTitle(labelLocalizer.getString(DEFAULT_TITLE));
     frameAdaptor.setIcon(getDefaultLogo());
 
     displayPanel.setToolTipText(labelLocalizer.getString(PANEL_TOOLTIP));
