@@ -45,12 +45,14 @@ public class ControlFrame
     }
     else adaptorFactory = new JFrameAdaptorFactory();
 
+    FileImageSaver imageSaver        = new FileImageSaver(labelLocalizer);
     DisplayFrameManager frameManager = new DisplayFrameManager(labelLocalizer,
                                                                filterFactory,
-                                                               adaptorFactory);
+                                                               adaptorFactory,
+                                                               imageSaver);
 
     createControlsFrame(labelLocalizer, catalogue, displayRepeater,
-                        filterFactory, frameManager, framePolicy);
+                        filterFactory, frameManager, framePolicy, imageSaver);
   }
 
 //==============================================================================
@@ -59,7 +61,8 @@ public class ControlFrame
 
   private void createControlsFrame(LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
                                    Repeater displayRepeater, FilterFactory filterFactory,
-                                   DisplayFrameManager frameManager, FramePolicy framePolicy)
+                                   DisplayFrameManager frameManager, FramePolicy framePolicy,
+                                   FileImageSaver imageSaver)
   {
     JFrame frame = getNewFrame();
     frame.setTitle(labelLocalizer.getString(CONTROL_TITLE));

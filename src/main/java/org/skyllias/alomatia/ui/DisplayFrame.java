@@ -45,17 +45,21 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   private FrameAdaptor frameAdaptor;                                            // the Swing component with the frame
 
   private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  private ImageSaver imageSaver;
+  private KeyEventDispatcher saveAllEventDispatcher;                            // listener of the key combinations used to save all images, to be removed when the frame is disposed
+  private String currentFilterName = "";
 
 //==============================================================================
 
   /** Creates a new window containing the passed display panel. */
 
   public DisplayFrame(LabelLocalizer localizer, FrameAdaptor adaptor,
-                      DisplayPanel panel, FilterFactory filterFactory)
+                      DisplayPanel panel, FilterFactory filterFactory, ImageSaver saver)
   {
     labelLocalizer = localizer;
     displayPanel   = panel;
     frameAdaptor   = adaptor;
+    imageSaver     = saver;
 
     frameAdaptor.setTitle(DEFAULT_TITLE);
     frameAdaptor.setIcon(getDefaultLogo());
@@ -144,6 +148,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   protected void setClipboard(Clipboard clip) {clipboard = clip;}
 
 //------------------------------------------------------------------------------
+//                            KEY LISTENERS
+//------------------------------------------------------------------------------
 
   /* Modifies the frame's input and action maps so that the selection of
    * filterSelector is modified when some key strokes take place.
@@ -194,6 +200,18 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   private void setOutputKeyListeners()
   {
+    setCopyKeyListeners();
+    setSaveSingleKeyListeners();
+    setSaveAllKeyListeners();
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up key listeners (for Ctrl + C) to copy the filtered image from the
+   * display panel. */
+
+  private void setCopyKeyListeners()
+  {
     final String COPY_ACTION = "copyImage";
 
     KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
@@ -211,13 +229,75 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
 //------------------------------------------------------------------------------
 
+  /* Sets up key listener to save the filtered image from the display panel.
+   * Ctrl + S is used to save the current image with possible user interaction. */
+
+  private void setSaveSingleKeyListeners()
+  {
+    final String SAVE_ACTION = "saveImage";
+
+    KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK);
+    frameAdaptor.getInputMap().put(stroke, SAVE_ACTION);
+    frameAdaptor.getActionMap().put(SAVE_ACTION, new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event)
+      {
+        Image filteredImage = displayPanel.getFilteredImage();
+        if (filteredImage != null) imageSaver.save(filteredImage, currentFilterName, false);
+      }
+    });
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up the key event handlet to save the filtered image from the display panel.
+   * Ctrl + Shift + S is used to silently save all the frames' images.
+   * The listener should be removed when the frame is disposed. */
+
+  private void setSaveAllKeyListeners()
+  {
+    saveAllEventDispatcher = new KeyEventDispatcher()
+    {
+      @Override
+      public boolean dispatchKeyEvent(KeyEvent e)
+      {
+        if(e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.isShiftDown())
+        {
+          if (e.getKeyCode() == KeyEvent.VK_S)
+          {
+            Image filteredImage = displayPanel.getFilteredImage();
+            if (filteredImage != null) imageSaver.save(filteredImage, currentFilterName, true);
+          }
+        }
+        return false;                                                           // allow the event to be redispatched
+      }
+    };
+
+    getKeyboardFocusManager().addKeyEventDispatcher(saveAllEventDispatcher);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns a keyboard manager where global key event dispatchers can be added
+   * upon frame creation and removed upon disposal. */
+
+  private KeyboardFocusManager getKeyboardFocusManager()
+  {
+    return KeyboardFocusManager.getCurrentKeyboardFocusManager();
+  }
+
+//------------------------------------------------------------------------------
+//                          FILTER CHANGE
+//------------------------------------------------------------------------------
+
   /* Changes the window title by including the localized name of filter. */
 
   private void applyFilterToTitle(NamedFilter filter)
   {
-    String filterName         = labelLocalizer.getString(filter.getNameKey());
+    currentFilterName         = labelLocalizer.getString(filter.getNameKey());
     MessageFormat titleFormat = new MessageFormat(labelLocalizer.getString(TITLE_PATTERN));
-    String title              = titleFormat.format(new Object[] {filterName});
+    String title              = titleFormat.format(new Object[] {currentFilterName});
     frameAdaptor.setTitle(title);
   }
 
@@ -258,6 +338,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   {
     for (DisplayFrameCloseListener currentListener : listeners) currentListener.onDisplayFrameClosed(this);
 
+    getKeyboardFocusManager().removeKeyEventDispatcher(saveAllEventDispatcher);
     adaptor.dispose();
   }
 
