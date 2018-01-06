@@ -22,30 +22,20 @@ public class SaveFilePanelComposer
   private static final String CHANGE_LABEL      = "save.control.change";
   private static final String PROMPT_LABEL      = "save.control.prompt";
 
-  protected static final String PROMPT_CHECKBOX_NAME = "checkbox.prompt";       // TODO unit test
+  protected static final String PROMPT_CHECKBOX_NAME = "checkbox.prompt";
 
-  private static final String PREFKEY_DESTINATION = "saveDestinationDirectory";
-  private static final String PREFKEY_PROMPT      = "promptFileToSave";
+  protected static final String PREFKEY_DESTINATION = "saveDestinationDirectory";
+  protected static final String PREFKEY_PROMPT      = "promptFileToSave";
 
   private LabelLocalizer labelLocalizer;
   private FileImageSaver imageSaver;
 
-  private Preferences preferences;
+  private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
   public SaveFilePanelComposer(LabelLocalizer localizer, FileImageSaver saver)
   {
-    this(getDefaultPreferences(), localizer, saver);
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Only meant for preferences injection in tests. */
-
-  protected SaveFilePanelComposer(Preferences prefs, LabelLocalizer localizer, FileImageSaver saver)
-  {
-    preferences    = prefs;
     labelLocalizer = localizer;
     imageSaver     = saver;
   }
@@ -57,9 +47,9 @@ public class SaveFilePanelComposer
 
   public JComponent getComponent()
   {
-    String initialDestinationPath = getPreferences().get(PREFKEY_DESTINATION,
-                                                         System.getProperty(USER_HOME_PROP));
-    boolean initialPrompt         = getPreferences().getBoolean(PREFKEY_PROMPT, true);
+    String initialDestinationPath = preferences.get(PREFKEY_DESTINATION,
+                                                    System.getProperty(USER_HOME_PROP));
+    boolean initialPrompt         = preferences.getBoolean(PREFKEY_PROMPT, true);
     imageSaver.setDestinationDir(new File(initialDestinationPath));
     imageSaver.setPrompt(initialPrompt);
 
@@ -68,6 +58,12 @@ public class SaveFilePanelComposer
     addPromptComponents(savePanel, initialPrompt);
     return savePanel;
   }
+
+//------------------------------------------------------------------------------
+
+  /** Meant only for testing purposes. */
+
+  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +99,7 @@ public class SaveFilePanelComposer
           imageSaver.setDestinationDir(selectedFile);
           pathField.setText(selectedPath);
 
-          getPreferences().put(PREFKEY_DESTINATION, selectedPath);
+          preferences.put(PREFKEY_DESTINATION, selectedPath);
         }
       }
     });
@@ -133,7 +129,7 @@ public class SaveFilePanelComposer
         boolean askUser = promptCheckbox.isSelected();
         imageSaver.setPrompt(askUser);
 
-        getPreferences().putBoolean(PREFKEY_PROMPT, askUser);
+        preferences.putBoolean(PREFKEY_PROMPT, askUser);
       }
     });
     promptCheckbox.setName(PROMPT_CHECKBOX_NAME);
@@ -142,18 +138,6 @@ public class SaveFilePanelComposer
     configPanel.add(Box.createHorizontalGlue());
     savePanel.add(configPanel);
   }
-
-//------------------------------------------------------------------------------
-
-  /* Shortcut method to get preferences by subclasses that store the last URL. */
-
-  private Preferences getPreferences() {return preferences;}
-
-//------------------------------------------------------------------------------
-
-  /* Returns the preferences to use when they are not externally injected. */
-
-  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(SaveFilePanelComposer.class);}
 
 //------------------------------------------------------------------------------
 
