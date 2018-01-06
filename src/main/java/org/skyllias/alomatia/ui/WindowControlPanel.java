@@ -207,9 +207,9 @@ public class WindowControlPanel extends BasicControlPanel
       @Override
       public boolean dispatchKeyEvent(KeyEvent e)
       {
-        if(e.getID() == KeyEvent.KEY_PRESSED && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
+        if(e.getID() == KeyEvent.KEY_PRESSED)
         {
-          if (e.getKeyCode() == KeyEvent.VK_N) getNewDisplayFrame();
+          if (e.getKeyCode() == KeyEvent.VK_N && e.isControlDown()) getNewDisplayFrame();
         }
         return false;                                                           // allow the event to be redispatched
       }

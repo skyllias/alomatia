@@ -30,7 +30,7 @@ public class DisplayFrameManagerTest
 
     DisplayFrame displayFrame   = mock(DisplayFrame.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
-                                                          adaptorFactory, Arrays.asList(displayFrame));
+                                                          adaptorFactory, null, Arrays.asList(displayFrame));
     manager.rearrangeWindows(1, false);
     verify(displayFrame).setLocation(20, 30);
     verify(displayFrame).setSize(500, 200);
@@ -44,7 +44,7 @@ public class DisplayFrameManagerTest
     DisplayFrame frame1         = mock(DisplayFrame.class);
     DisplayFrame frame2         = mock(DisplayFrame.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
-                                                          adaptorFactory, Arrays.asList(frame1, frame2));
+                                                          adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(2, true);
     verify(frame1).setLocation(20, 30);
     verify(frame2).setLocation(270, 30);
@@ -60,7 +60,7 @@ public class DisplayFrameManagerTest
     DisplayFrame frame1         = mock(DisplayFrame.class);
     DisplayFrame frame2         = mock(DisplayFrame.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
-                                                          adaptorFactory, Arrays.asList(frame1, frame2));
+                                                          adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(1, false);
     verify(frame1).setLocation(20, 30);
     verify(frame2).setLocation(270, 30);
@@ -76,7 +76,7 @@ public class DisplayFrameManagerTest
     DisplayFrame frame1         = mock(DisplayFrame.class);
     DisplayFrame frame2         = mock(DisplayFrame.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
-                                                          adaptorFactory, Arrays.asList(frame1, frame2));
+                                                          adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(2, false);
     verify(frame1).setLocation(20, 30);
     verify(frame2).setLocation(20, 130);
@@ -92,7 +92,7 @@ public class DisplayFrameManagerTest
     DisplayFrame frame1         = mock(DisplayFrame.class);
     DisplayFrame frame2         = mock(DisplayFrame.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
-                                                          adaptorFactory, Arrays.asList(frame1, frame2));
+                                                          adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(1, true);
     verify(frame1).setLocation(20, 30);
     verify(frame2).setLocation(20, 130);
@@ -111,7 +111,8 @@ public class DisplayFrameManagerTest
     DisplayFrame frame4         = mock(DisplayFrame.class);
     DisplayFrame frame5         = mock(DisplayFrame.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
-                                                          adaptorFactory, Arrays.asList(frame1, frame2, frame3, frame4, frame5));
+                                                          adaptorFactory, null, Arrays.asList(frame1, frame2, frame3,
+                                                                                              frame4, frame5));
     manager.rearrangeWindows(3, true);
     verify(frame1).setLocation(100, 200);
     verify(frame2).setLocation(300, 200);

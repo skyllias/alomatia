@@ -8,6 +8,7 @@ import java.util.prefs.*;
 
 import javax.imageio.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
 
@@ -33,16 +34,18 @@ public class SourceSelector extends BasicSelector<ImageSource>
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
   protected static final String SCREEN_SOURCE_LABEL    = "source.screen.name";
   protected static final String URL_SOURCE_LABEL       = "source.url.name";
+  private static final String CLIPBOARD_AUTO_LABEL     = "source.selector.clipboard.checkbox";
   private static final String CAPTURE_LABEL            = "source.selector.screen.button";
   private static final String FILE_LABEL               = "source.selector.file.button";
   private static final String DIR_LABEL                = "source.selector.directory.button";
   private static final String IMAGE_FILES_FILTER       = "source.selector.file.filter";
 
-  private static final String PREFKEY_SOURCECOMMAND = "sourceCommandName";
-  private static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
-  private static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
+  protected static final String CLIPBOARD_AUTOMODE_NAME = "checkbox.clipboard.automode";
 
-  private static final int TEXT_FIELD_COLUMNS = 40;                             // used to prevent text fields from trying to fit the whole text with its preferred size
+  protected static final String PREFKEY_SOURCECOMMAND = "sourceCommandName";
+  protected static final String PREFKEY_CLIPBOARDAUTO = "sourceClipboardAuto";
+  protected static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
+  protected static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
 
   private ImageSource previousSource;
   private JPanel optionsContainer = new JPanel();                               // no idea why (well, probably due to the use of alignments, see https://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#features), but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space. TODO fix this
@@ -79,10 +82,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
     DropSource dropSource = catalogue.get(DropSource.class);
     if (dropSource != null) addRadioObject(DND_SOURCE_LABEL, dropSource, optionsContainer);
 
-
-    ClipboardSource clipboardSource = catalogue.get(ClipboardSource.class);
-    if (clipboardSource != null) addRadioObject(CLIPBOARD_SOURCE_LABEL, clipboardSource, optionsContainer);
-
+    initClipboardSelector(catalogue);
     initScreenSelector(catalogue);
     initUrlSelector(catalogue);
     initSingleFileSelector(catalogue);
@@ -96,6 +96,45 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
 //==============================================================================
 
+  /* Sets up the clipboard selector radio and checkbox if the catalogue contains a ClipboardSource. */
+
+  private void initClipboardSelector(SourceCatalogue catalogue)
+  {
+    final ClipboardSource clipboardSource = catalogue.get(ClipboardSource.class);
+    if (clipboardSource != null)
+    {
+      boolean isAutoMode = getPreferences().getBoolean(PREFKEY_CLIPBOARDAUTO, true);
+
+      JPanel configPanel = new JPanel();
+      configPanel.setAlignmentX(LEFT_ALIGNMENT);
+      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
+
+      final JCheckBox autoCheckbox = new JCheckBox(getLabelLocalizer().getString(CLIPBOARD_AUTO_LABEL), isAutoMode);
+      autoCheckbox.setName(CLIPBOARD_AUTOMODE_NAME);
+      autoCheckbox.setEnabled(false);
+      autoCheckbox.addChangeListener(new ChangeListener()
+      {
+        @Override
+        public void stateChanged(ChangeEvent event)
+        {
+          boolean newAutoMode = autoCheckbox.isSelected();
+          clipboardSource.setAutoMode(newAutoMode);
+          getPreferences().putBoolean(PREFKEY_CLIPBOARDAUTO, newAutoMode);
+        }
+      });
+
+      addPasteKeyListener(clipboardSource);
+
+      ButtonSource wrapperSource = new ButtonSource(clipboardSource,
+                                                    new CheckBoxEnabable(autoCheckbox), false);
+      addRadioObject(CLIPBOARD_SOURCE_LABEL, wrapperSource, configPanel);
+      configPanel.add(autoCheckbox);
+      optionsContainer.add(configPanel);
+    }
+  }
+
+//------------------------------------------------------------------------------
+
   /* Sets up the screen selector radio and button if the catalogue contains a ScreenSource. */
 
   private void initScreenSelector(SourceCatalogue catalogue)
@@ -106,7 +145,6 @@ public class SourceSelector extends BasicSelector<ImageSource>
       JPanel configPanel = new JPanel();
       configPanel.setAlignmentX(LEFT_ALIGNMENT);
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-
 
       final CaptureFrameListener captureListener = new CaptureFrameListener(screenSource);
 
@@ -151,8 +189,6 @@ public class SourceSelector extends BasicSelector<ImageSource>
       configPanel.add(downloadComponent.getTextField());
       configPanel.add(downloadComponent.getButton());
       optionsContainer.add(configPanel);
-
-      downloadComponent.getTextField().setColumns(TEXT_FIELD_COLUMNS);
     }
   }
 
@@ -257,6 +293,33 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
 //------------------------------------------------------------------------------
 
+  /* Adds a global listener that makes clipboardSource show the contents of the
+   * clipboard when the proper keys are pressed: Ctrl + V or Shift + Insert. */
+
+  private void addPasteKeyListener(final ClipboardSource clipboardSource)
+  {
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    manager.addKeyEventDispatcher(new KeyEventDispatcher()
+    {
+      @Override
+      public boolean dispatchKeyEvent(KeyEvent e)
+      {
+        if(e.getID() == KeyEvent.KEY_PRESSED)
+        {
+          int pressedKeyCode    = e.getKeyCode();
+          boolean isControlDown = e.isControlDown();
+          boolean isShiftDown   = e.isShiftDown();
+          boolean isPaste = (isControlDown && pressedKeyCode == KeyEvent.VK_V) ||
+                            (isShiftDown && pressedKeyCode == KeyEvent.VK_INSERT);
+          if (isPaste) clipboardSource.readFromClipboard();
+        }
+        return false;                                                           // allow the event to be redispatched
+      }
+    });
+  }
+
+//------------------------------------------------------------------------------
+
   /* Adds a global listener that makes dirSource show the next or previous file
    * when the proper keys are pressed: Page-Down (or Space, which may lead to
    * unexpected image changes if in the future the application accepts writing
@@ -349,21 +412,6 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
 //******************************************************************************
 
-  /* Text field to show paths in. */
-
-  private class PathTextField extends JTextField
-  {
-    public PathTextField()
-    {
-      setEditable(false);
-      setColumns(TEXT_FIELD_COLUMNS);
-      setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                                   getPreferredSize().height));                 // prevent the containing layout from streching the field vertically
-    }
-  }
-
-//******************************************************************************
-
   /** Wrapper around a component that can be enabled.
    *  It should be better explained and designed. */
 
@@ -384,6 +432,20 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
     @Override
     public void setEnabled(boolean active) {button.setEnabled(active);}
+  }
+
+//******************************************************************************
+
+  /* Wrapper around a JCheckBox. */
+
+  private class CheckBoxEnabable implements Enabable
+  {
+    private JCheckBox checkbox;
+
+    public CheckBoxEnabable(JCheckBox jCheckbox) {checkbox = jCheckbox;}
+
+    @Override
+    public void setEnabled(boolean active) {checkbox.setEnabled(active);}
   }
 
 //******************************************************************************
