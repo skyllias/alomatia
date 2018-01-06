@@ -20,13 +20,15 @@ public class ControlsPane extends JPanel
 
   public ControlsPane(LabelLocalizer localizer, SourceCatalogue catalogue,
                       Repeater displayRepeater, DropTargetListener dropTargetListener,
-                      DisplayFrameManager frameManager, FramePolicy framePolicy)
+                      DisplayFrameManager frameManager, FramePolicy framePolicy,
+                      FileImageSaver imageSaver)
   {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     add(new SourceSelector(localizer, catalogue));
     add(new WindowControlPanel(localizer, displayRepeater, dropTargetListener,
                                frameManager, framePolicy));
+    add(new SaveFilePanelComposer(localizer, imageSaver).getComponent());
     add(new LanguagePanel(localizer, new AvailableLocaleProvider()));           // TODO move instantiation upwards
   }
 

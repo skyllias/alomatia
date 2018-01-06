@@ -19,6 +19,7 @@ public class DisplayFrameManager
 
   private LabelLocalizer localizer;
   private FilterFactory filterFactory;
+  private ImageSaver imageSaver;
 
   private Collection<DisplayAmountChangeListener> listeners = new LinkedList<>(); // probably there will be just one, but just in case
 
@@ -28,11 +29,12 @@ public class DisplayFrameManager
    *  rearranging them. */
 
   public DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory aFilterFactory,
-                             FrameAdaptorFactory frameFactory)
+                             FrameAdaptorFactory frameFactory, ImageSaver saver)
   {
     localizer      = labelLocalizer;
     filterFactory  = aFilterFactory;
     adaptorFactory = frameFactory;
+    imageSaver     = saver;
   }
 
 //------------------------------------------------------------------------------
@@ -40,9 +42,10 @@ public class DisplayFrameManager
   /** Just for testing purposes, this should NOT be used in real code. */
 
   protected DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory filterFactory,
-                                FrameAdaptorFactory frameFactory, List<DisplayFrame> displayFrames)
+                                FrameAdaptorFactory frameFactory, ImageSaver saver,
+                                List<DisplayFrame> displayFrames)
   {
-    this(labelLocalizer, filterFactory, frameFactory);
+    this(labelLocalizer, filterFactory, frameFactory, saver);
 
     existingFrames.addAll(displayFrames);
   }
@@ -67,7 +70,8 @@ public class DisplayFrameManager
   {
     DisplayPanel displayPanel = new DisplayPanel();
     FrameAdaptor frameAdaptor = adaptorFactory.getNewFrame(displayPanel);
-    DisplayFrame frame        = new DisplayFrame(localizer, frameAdaptor, displayPanel, filterFactory);
+    DisplayFrame frame        = new DisplayFrame(localizer, frameAdaptor, displayPanel,
+                                                 filterFactory, imageSaver);
     frame.addListener(new DisplayFrameCloseListener());
 
     if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());

@@ -1,7 +1,6 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.util.prefs.*;
 
@@ -186,13 +185,11 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
   /* Text field to write URLs in. */
 
   @SuppressWarnings("serial")
-  private class UrlTextField extends JTextField
+  private class UrlTextField extends PathTextField
   {
     public UrlTextField()
     {
       setEditable(true);
-      setMaximumSize(new Dimension(Integer.MAX_VALUE,
-                                   getPreferredSize().height));                 // prevent the containing layout from streching the field vertically
     }
   }
 
