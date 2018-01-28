@@ -25,4 +25,9 @@ public class KeyLabelLocalizer implements LabelLocalizer
 
 //------------------------------------------------------------------------------
 
+  @Override
+  public Collection<Locale> getAvailableLocales() {return new LinkedList<>();}
+
+//------------------------------------------------------------------------------
+
 }

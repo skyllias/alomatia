@@ -29,7 +29,7 @@ public class ControlsPane extends JPanel
     add(new WindowControlPanel(localizer, displayRepeater, dropTargetListener,
                                frameManager, framePolicy));
     add(new SaveFilePanelComposer(localizer, imageSaver).getComponent());
-    add(new LanguagePanel(localizer, new AvailableLocaleProvider()));           // TODO move instantiation upwards
+    add(new LanguagePanel(localizer));
   }
 
 //==============================================================================

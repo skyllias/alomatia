@@ -18,9 +18,6 @@ import org.skyllias.alomatia.i18n.*;
 public class LanguagePanelTest
 {
   private FrameFixture frameFixture;
-
-  @Mock
-  private AvailableLocaleProvider localeProvider;
   @Mock
   private LabelLocalizer labelLocalizer;
 
@@ -51,7 +48,7 @@ public class LanguagePanelTest
       @Override
       public LanguagePanel call() throws Exception
       {
-        return new LanguagePanel(labelLocalizer, localeProvider);
+        return new LanguagePanel(labelLocalizer);
       }
     });
     frameFixture = showInFrame(languagePanel);
@@ -62,7 +59,7 @@ public class LanguagePanelTest
   @Test
   public void shouldInitializeComboWithCurrentLocale()
   {
-    when(localeProvider.getAvailableLocales()).thenReturn(Arrays.asList(new Locale("es"),
+    when(labelLocalizer.getAvailableLocales()).thenReturn(Arrays.asList(new Locale("es"),
                                                                         new Locale("ca"),
                                                                         new Locale("en"),
                                                                         new Locale("fr")));
@@ -78,7 +75,7 @@ public class LanguagePanelTest
   @Test
   public void shouldChangeLocaleWhenOptionSelected()
   {
-    when(localeProvider.getAvailableLocales()).thenReturn(Arrays.asList(new Locale("es"),
+    when(labelLocalizer.getAvailableLocales()).thenReturn(Arrays.asList(new Locale("es"),
                                                                         new Locale("ca"),
                                                                         new Locale("en"),
                                                                         new Locale("fr")));
