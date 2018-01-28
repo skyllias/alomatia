@@ -214,7 +214,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   {
     final String COPY_ACTION = "copyImage";
 
-    KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
+    KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_C,
+                                              EventUtils.getSystemControlModifier());
     frameAdaptor.getInputMap().put(stroke, COPY_ACTION);
     frameAdaptor.getActionMap().put(COPY_ACTION, new AbstractAction()
     {
@@ -236,7 +237,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   {
     final String SAVE_ACTION = "saveImage";
 
-    KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK);
+    KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                                              EventUtils.getSystemControlModifier());
     frameAdaptor.getInputMap().put(stroke, SAVE_ACTION);
     frameAdaptor.getActionMap().put(SAVE_ACTION, new AbstractAction()
     {
@@ -262,7 +264,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
       @Override
       public boolean dispatchKeyEvent(KeyEvent e)
       {
-        if(e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.isShiftDown())
+        if(e.getID() == KeyEvent.KEY_PRESSED && EventUtils.isControlDown(e) && e.isShiftDown())
         {
           if (e.getKeyCode() == KeyEvent.VK_S)
           {

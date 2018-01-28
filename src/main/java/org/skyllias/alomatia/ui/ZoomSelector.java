@@ -199,7 +199,7 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
       @Override
       public boolean dispatchKeyEvent(KeyEvent e)
       {
-        if(e.getID() == KeyEvent.KEY_PRESSED && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0)
+        if(e.getID() == KeyEvent.KEY_PRESSED && EventUtils.isControlDown(e))
         {
           DisplayFitPolicy newPolicy = null;
           if (e.getKeyCode() == KeyEvent.VK_0) newPolicy = DisplayFitPolicy.FREE;

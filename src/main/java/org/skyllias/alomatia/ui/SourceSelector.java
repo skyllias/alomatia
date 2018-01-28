@@ -307,7 +307,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
         if(e.getID() == KeyEvent.KEY_PRESSED)
         {
           int pressedKeyCode    = e.getKeyCode();
-          boolean isControlDown = e.isControlDown();
+          boolean isControlDown = EventUtils.isControlDown(e);
           boolean isShiftDown   = e.isShiftDown();
           boolean isPaste = (isControlDown && pressedKeyCode == KeyEvent.VK_V) ||
                             (isShiftDown && pressedKeyCode == KeyEvent.VK_INSERT);
@@ -321,9 +321,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
 //------------------------------------------------------------------------------
 
   /* Adds a global listener that makes dirSource show the next or previous file
-   * when the proper keys are pressed: Page-Down (or Space, which may lead to
-   * unexpected image changes if in the future the application accepts writing
-   * when the dir source is active -for example to write a file name) to go forward,
+   * when the proper keys are pressed: Page-Down (or Ctrl + Space) to go forward,
    * Page-Up (or Shift + Space) to go backward. */
 
   private void addNavigationKeyListener(final DirFileSource dirSource)
@@ -338,8 +336,9 @@ public class SourceSelector extends BasicSelector<ImageSource>
         {
           int pressedKeyCode  = e.getKeyCode();
           boolean isShiftDown = e.isShiftDown();
+          boolean isCtrlDown  = e.isControlDown();                              // not EventUtils.isControlDown(e) on purpose
           boolean isNext      = pressedKeyCode == KeyEvent.VK_PAGE_DOWN ||
-                                (pressedKeyCode == KeyEvent.VK_SPACE && !isShiftDown);
+                                (pressedKeyCode == KeyEvent.VK_SPACE && isCtrlDown);
           boolean isPrevious  = pressedKeyCode == KeyEvent.VK_PAGE_UP ||
                                 (pressedKeyCode == KeyEvent.VK_SPACE && isShiftDown);
           if      (isNext)     dirSource.nextImageFile();
