@@ -4,8 +4,9 @@ package org.skyllias.alomatia.i18n;
 import java.util.*;
 
 /** Factory of locales selectable to show the UI in.
- *  It could be interfaced. */
+ *  @deprecated Moved to {@link LabelLocalizer} */
 
+@Deprecated
 public class AvailableLocaleProvider
 {
   public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;

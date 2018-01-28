@@ -23,7 +23,7 @@ public interface LabelLocalizer
 
   String getString(String key);
 
-  /** Returns the locale to which labels are being translated currently.
+  /** Returns the {@link Locale} to which labels are being translated currently.
    *  <p>
    *  This may or may not be affected by a call to {@link #setLocale(Locale)}
    *  (see explanation there). */
@@ -32,7 +32,8 @@ public interface LabelLocalizer
 
   /** Stores the passed locale so that labels obtained from getString are localized in it.
    *  <p>
-   *  A null value means that the default locale should be used.
+   *  A null value means that the default locale should be used. If nextLocale
+   *  is not among {@link #getAvailableLocales()}, the behaviour is unspecified.
    *  <p>
    *  When that really happens is implementation specific: It may be immediate
    *  so that subsequent calls to getString already use nextLocale, or it may be
@@ -40,4 +41,8 @@ public interface LabelLocalizer
    *  would require existing labels to be regenerated to prevent mixing languages. */
 
   void setLocale(Locale nextLocale);
+
+  /** Returns all the supported locales. */
+
+  Collection<Locale> getAvailableLocales();
 }
