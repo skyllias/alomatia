@@ -9,6 +9,9 @@ public interface RadialDistortionProfile
    *  0 means that the point is not shifted, negative values mean that pixels
    *  are moved from the center outwards, and positive values mean that pixels
    *  are moved towards the center.
+   *  Values below -1 translate points from the antipodes, while functions f(r)
+   *  which at some point do not comply with f + rf' > 1 print the same pixels
+   *  in different regions.
    *  referenceRadius can be used to scale the function in an
    *  implementation-dependent way. */
 

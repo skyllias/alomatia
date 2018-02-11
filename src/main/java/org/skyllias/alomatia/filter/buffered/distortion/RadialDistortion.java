@@ -5,8 +5,7 @@ import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
 
 /** {@link Distortion} that enlarges the central region of images with circular
- *  symmetry.
- *  TODO Create a a non-superclass for circular distortions */
+ *  symmetry. */
 
 public class RadialDistortion implements Distortion
 {
