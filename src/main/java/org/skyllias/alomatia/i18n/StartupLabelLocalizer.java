@@ -9,7 +9,7 @@ import javax.swing.*;
 import org.apache.commons.lang.*;
 
 /** LabelLocalizer that applies the same locale over a JVM, retrieving it from
- *  the user properties.
+ *  the user properties. It may be overriden by means of VM arguments.
  *  <p>
  *  The ResourceBundle manipulation is delegated to {@link UIManager}.
  *  <p>
@@ -21,6 +21,8 @@ import org.apache.commons.lang.*;
 public class StartupLabelLocalizer implements LabelLocalizer
 {
   protected static final String PREFKEY_NEXTLANG = "nextExecLocale";
+
+  private static final String VM_ARG_LANGUAGE = "alomatia.language";
 
   private static final String RESOURCE_BUNDLE_NAME = "org.skyllias.alomatia.Labels";
   private static final Locale DEFAULT_LANGUAGE = Locale.ENGLISH;
@@ -99,13 +101,14 @@ public class StartupLabelLocalizer implements LabelLocalizer
 //------------------------------------------------------------------------------
 
   /* Sets the language to use to the value in the preferences (or the system's
-   * default if there are no preferences yet). */
+   * default if there are no preferences yet).
+   * The resulting language from above is overridden by the VM argument, if present. */
 
   private void initLocale()
   {
     String defaultLangId = getDefaultLocaleId();
     String languageId    = preferences.get(PREFKEY_NEXTLANG, defaultLangId);
-    Locale languageToUse = new Locale(languageId);
+    Locale languageToUse = new Locale(getSelectedLocaleId(languageId));
     UIManager.getDefaults().setDefaultLocale(languageToUse);
     Locale.setDefault(languageToUse);                                           // for some reason, Swing built-in components do not use UIManager defaults but this one
     initialized = true;
@@ -119,8 +122,29 @@ public class StartupLabelLocalizer implements LabelLocalizer
   private String getDefaultLocaleId()
   {
     String systemLangId = Locale.getDefault().getLanguage();
-    if (ArrayUtils.contains(langIds, systemLangId)) return systemLangId;
-    else                                            return DEFAULT_LANGUAGE.getLanguage();
+    if (isSupported(systemLangId)) return systemLangId;
+    else                           return DEFAULT_LANGUAGE.getLanguage();
+  }
+
+//------------------------------------------------------------------------------
+
+  /* If the system properties contain a supported language id, it is returned.
+   * Else, alternativeId is returned. */
+
+  private String getSelectedLocaleId(String alternativeId)
+  {
+    String vmArgument = System.getProperty(VM_ARG_LANGUAGE);
+    if (vmArgument == null || !isSupported(vmArgument)) return alternativeId;
+    else                                                return vmArgument;
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns true if languageId is among the supported languages. */
+
+  private boolean isSupported(String languageId)
+  {
+    return ArrayUtils.contains(langIds, languageId);
   }
 
 //------------------------------------------------------------------------------
