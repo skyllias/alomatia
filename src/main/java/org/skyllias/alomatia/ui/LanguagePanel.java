@@ -25,13 +25,13 @@ public class LanguagePanel extends BasicControlPanel
 
   /** Creates a new panel with the components to display and change the language. */
 
-  protected LanguagePanel(LabelLocalizer localizer, AvailableLocaleProvider localeProvider)
+  protected LanguagePanel(LabelLocalizer localizer)
   {
     super(localizer, TITLE_LABEL);
 
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-    Vector<Locale> availableLocales = new Vector<>(localeProvider.getAvailableLocales());
+    Vector<Locale> availableLocales = new Vector<>(localizer.getAvailableLocales());
     Collections.sort(availableLocales, new LocaleComparator());
 
     JLabel nextLangDescLabel       = new BorderedLabel(getLabelLocalizer().getString(NEXTLANG_LABEL));

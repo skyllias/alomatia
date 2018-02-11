@@ -209,7 +209,7 @@ public class WindowControlPanel extends BasicControlPanel
       {
         if(e.getID() == KeyEvent.KEY_PRESSED)
         {
-          if (e.getKeyCode() == KeyEvent.VK_N && e.isControlDown()) getNewDisplayFrame();
+          if (e.getKeyCode() == KeyEvent.VK_N && EventUtils.isControlDown(e)) getNewDisplayFrame();
         }
         return false;                                                           // allow the event to be redispatched
       }

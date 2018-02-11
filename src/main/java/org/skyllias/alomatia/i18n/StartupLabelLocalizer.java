@@ -6,8 +6,10 @@ import java.util.prefs.*;
 
 import javax.swing.*;
 
+import org.apache.commons.lang.*;
+
 /** LabelLocalizer that applies the same locale over a JVM, retrieving it from
- *  the user properties.
+ *  the user properties. It may be overriden by means of VM arguments.
  *  <p>
  *  The ResourceBundle manipulation is delegated to {@link UIManager}.
  *  <p>
@@ -18,21 +20,26 @@ import javax.swing.*;
 
 public class StartupLabelLocalizer implements LabelLocalizer
 {
-  private static final String RESOURCE_BUNDLE_NAME = "org.skyllias.alomatia.Labels";
+  protected static final String PREFKEY_NEXTLANG = "nextExecLocale";
 
-  private static final String PREFKEY_NEXTLANG = "nextExecLocale";
+  private static final String VM_ARG_LANGUAGE = "alomatia.language";
+
+  private static final String RESOURCE_BUNDLE_NAME = "org.skyllias.alomatia.Labels";
+  private static final Locale DEFAULT_LANGUAGE = Locale.ENGLISH;
+
+  private String[] langIds = new String[] {DEFAULT_LANGUAGE.getLanguage(), "es", "el"};   // TODO externalize
+
+  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+
+  private boolean initialized = false;
 
 //==============================================================================
 
-  /* Retrieves the locale to use from the preferences. If not found, the default
-   * locale will be used.
-   * All operations are delegated to UIManager and its UIDefaults. */
+  /* Initializes the ResourceBundle but does nothing with locales yet. */
 
   static
   {
     UIManager.getDefaults().addResourceBundle(RESOURCE_BUNDLE_NAME);
-    loadLocaleAsAtStartup();
-
   }
 
 //==============================================================================
@@ -40,6 +47,8 @@ public class StartupLabelLocalizer implements LabelLocalizer
   @Override
   public String getString(String key)
   {
+    if (!initialized) initLocale();
+
     String localizedValue = UIManager.getString(key);
     if (localizedValue == null) return key;
     else                        return localizedValue;
@@ -62,44 +71,81 @@ public class StartupLabelLocalizer implements LabelLocalizer
   @Override
   public void setLocale(Locale nextLocale)
   {
-    if (nextLocale == null) getPreferences().remove(PREFKEY_NEXTLANG);
-    else                    getPreferences().put(PREFKEY_NEXTLANG, nextLocale.getLanguage());
+    if (nextLocale == null) preferences.remove(PREFKEY_NEXTLANG);
+    else                    preferences.put(PREFKEY_NEXTLANG, nextLocale.getLanguage());
   }
 
 //------------------------------------------------------------------------------
 
-  /** Sets the language to use to the value in the preferences (or the system's
-   *  default if there are no preferences yet).
-   *  <p>
-   *  This should only be called once per execution, or else there is the danger
-   *  to get UI labels with mixed languages. However, it is made semi-publicly
-   *  available (protected) so that it can be invoked to simulate a new language
-   *  whenever that is really required and its consequences are fully assumed. */
+  /** Changing the contents of the collection has no effect. */
 
-  protected void resetLocaleAsAtStartup()
+  @Override
+  public Collection<Locale> getAvailableLocales()
   {
-    loadLocaleAsAtStartup();
+    Collection<Locale> locales = new LinkedList<Locale>();
+    for (String currentLangId : langIds)
+    {
+      Locale currentLocale = new Locale(currentLangId);
+      locales.add(currentLocale);
+    }
+    return locales;
   }
+
+//------------------------------------------------------------------------------
+
+  /** Meant only for testing purposes.
+   *  This must be called before getString. */
+
+  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
   /* Sets the language to use to the value in the preferences (or the system's
-   * default if there are no preferences yet). */
+   * default if there are no preferences yet).
+   * The resulting language from above is overridden by the VM argument, if present. */
 
-  private static void loadLocaleAsAtStartup()
+  private void initLocale()
   {
-    String defaultLangId = AvailableLocaleProvider.DEFAULT_LOCALE.getLanguage();
-    String languageId    = getPreferences().get(PREFKEY_NEXTLANG, defaultLangId);
-    Locale languageToUse = new Locale(languageId);
+    String defaultLangId = getDefaultLocaleId();
+    String languageId    = preferences.get(PREFKEY_NEXTLANG, defaultLangId);
+    Locale languageToUse = new Locale(getSelectedLocaleId(languageId));
     UIManager.getDefaults().setDefaultLocale(languageToUse);
     Locale.setDefault(languageToUse);                                           // for some reason, Swing built-in components do not use UIManager defaults but this one
+    initialized = true;
   }
 
 //------------------------------------------------------------------------------
 
-  /* Returns the preferences where the selection is stored. */
+  /* If the system's locale is supported, its id is returned. Else, a fixed
+   * default supported id is returned. */
 
-  private static Preferences getPreferences() {return Preferences.userNodeForPackage(LabelLocalizer.class);}
+  private String getDefaultLocaleId()
+  {
+    String systemLangId = Locale.getDefault().getLanguage();
+    if (isSupported(systemLangId)) return systemLangId;
+    else                           return DEFAULT_LANGUAGE.getLanguage();
+  }
+
+//------------------------------------------------------------------------------
+
+  /* If the system properties contain a supported language id, it is returned.
+   * Else, alternativeId is returned. */
+
+  private String getSelectedLocaleId(String alternativeId)
+  {
+    String vmArgument = System.getProperty(VM_ARG_LANGUAGE);
+    if (vmArgument == null || !isSupported(vmArgument)) return alternativeId;
+    else                                                return vmArgument;
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns true if languageId is among the supported languages. */
+
+  private boolean isSupported(String languageId)
+  {
+    return ArrayUtils.contains(langIds, languageId);
+  }
 
 //------------------------------------------------------------------------------
 

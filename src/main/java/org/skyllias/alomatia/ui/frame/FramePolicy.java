@@ -9,6 +9,7 @@ import java.util.prefs.*;
 
 public class FramePolicy
 {
+  private static final String VM_ARG_INTERNALFRAMES   = "alomatia.frames.inner";
   private static final String PREFKEY_INTERNALFRAMES  = "useInternalFrames";
   private static final boolean DEFAULT_INTERNALFRAMES = false;
 
@@ -30,10 +31,15 @@ public class FramePolicy
    *  should be separate windows.
    *  This value is modified by means of
    *  {@link FramePolicy#setUsingInternalFramesNextTime(boolean)}, but the
-   *  behaviour should not really change until next execution. */
+   *  behaviour should not really change until next execution.
+   *  If a VM argument is passed, it's boolean value is used; otherwise, the 
+   *  preferences are looked up. */
 
   public boolean isUsingInternalFrames()
   {
+    String vmArgument = System.getProperty(VM_ARG_INTERNALFRAMES);
+    if (vmArgument != null) return Boolean.parseBoolean(vmArgument);
+    
     return preferences.getBoolean(PREFKEY_INTERNALFRAMES, DEFAULT_INTERNALFRAMES);
   }
 
