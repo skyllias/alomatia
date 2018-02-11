@@ -6,6 +6,7 @@ import java.util.*;
 
 import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.buffered.distortion.*;
 import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
@@ -180,6 +181,16 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MINMAX_MGT_FILTER_NAME = "filter.minnmax.magenta.name";
   private static final String MINMAX_YLW_FILTER_NAME = "filter.minnmax.yellow.name";
   private static final String MINMAX_WIT_FILTER_NAME = "filter.minnmax.white.name";
+  private static final String MAGNIFY_XS_FILTER_NAME = "filter.distort.magnifier.xs.name";
+  private static final String MAGNIFY_S_FILTER_NAME  = "filter.distort.magnifier.s.name";
+  private static final String MAGNIFY_M_FILTER_NAME  = "filter.distort.magnifier.m.name";
+  private static final String MAGNIFY_L_FILTER_NAME  = "filter.distort.magnifier.l.name";
+  private static final String MAGNIFY_XL_FILTER_NAME = "filter.distort.magnifier.xl.name";
+  private static final String REDUCE_XS_FILTER_NAME  = "filter.distort.reductor.xs.name";
+  private static final String REDUCE_S_FILTER_NAME   = "filter.distort.reductor.s.name";
+  private static final String REDUCE_M_FILTER_NAME   = "filter.distort.reductor.m.name";
+  private static final String REDUCE_L_FILTER_NAME   = "filter.distort.reductor.l.name";
+  private static final String REDUCE_XL_FILTER_NAME  = "filter.distort.reductor.xl.name";
   private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
   private static final String INST_EARBY_FILTER_NAME = "Earby lird";
   private static final String INST_TOGAM_FILTER_NAME = "Thogam";
@@ -370,6 +381,18 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.3f, 0.5f)), HIGHSGREEN_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.5f, 0.7f)), HIGHSBLUE_FILTER_NAME));
     filters.add(new NamedFilter(new HueDependingSaturationFactorFilter(new PitStepHueFunction(0.7f, 0.9f)), HIGHSPURPL_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.25f, 4f), true), new BilinearInterpolator())), MAGNIFY_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.25f, 6f), true), new BilinearInterpolator())), MAGNIFY_S_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.75f, 2f), true), new BilinearInterpolator())), MAGNIFY_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.75f, 4f), true), new BilinearInterpolator())), MAGNIFY_L_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.75f, 6f), true), new BilinearInterpolator())), MAGNIFY_XL_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(0.5f, 6), true), new BilinearInterpolator())),  REDUCE_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(0.5f, 6), false), new BilinearInterpolator())), REDUCE_S_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(1, 4), true), new BilinearInterpolator())),     REDUCE_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(2, 6), true), new BilinearInterpolator())),     REDUCE_L_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(4, 6), false), new BilinearInterpolator())),    REDUCE_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
