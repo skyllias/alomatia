@@ -18,6 +18,10 @@ public class ControlsPane extends JPanel
 {
 //==============================================================================
 
+  /** If a new window is opened, it is done after all the other processing in the
+   *  current thread. Otherwise, the display frame appears before this one and
+   *  separated from the subsequent windows in the task bar. */
+
   public ControlsPane(LabelLocalizer localizer, SourceCatalogue catalogue,
                       Repeater displayRepeater, DropTargetListener dropTargetListener,
                       DisplayFrameManager frameManager, FramePolicy framePolicy,
@@ -26,10 +30,18 @@ public class ControlsPane extends JPanel
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     add(new SourceSelector(localizer, catalogue));
-    add(new WindowControlPanel(localizer, displayRepeater, dropTargetListener,
-                               frameManager, framePolicy));
+    final WindowControlPanelComposer windowControlComposer = new WindowControlPanelComposer(localizer, displayRepeater,
+                                                                                      dropTargetListener,
+                                                                                      frameManager, framePolicy);
+    add(windowControlComposer.getComponent());
     add(new SaveFilePanelComposer(localizer, imageSaver).getComponent());
     add(new LanguagePanel(localizer));
+
+    SwingUtilities.invokeLater(new Runnable()
+    {
+      @Override
+      public void run() {windowControlComposer.openNewWindowIfRequired();}
+    });
   }
 
 //==============================================================================

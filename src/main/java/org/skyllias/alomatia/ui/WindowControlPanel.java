@@ -23,8 +23,10 @@ import org.skyllias.alomatia.ui.frame.*;
  *  <p>
  *  Some configurations are stored as user preferences.
  *  <p>
- *  This class adds a global key listener to open windows when Ctrl + N is pressed. */
+ *  This class adds a global key listener to open windows when Ctrl + N is pressed.
+ *  @deprecated Use WindowControlPanelComposer instead. */
 
+@Deprecated
 @SuppressWarnings("serial")
 public class WindowControlPanel extends BasicControlPanel
                                 implements DisplayFrameCloseListener, DisplayAmountChangeListener
