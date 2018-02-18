@@ -53,7 +53,7 @@ public class SaveFilePanelComposer
     imageSaver.setDestinationDir(new File(initialDestinationPath));
     imageSaver.setPrompt(initialPrompt);
 
-    SavePanel savePanel = new SavePanel();
+    JPanel savePanel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(TITLE_LABEL));
     addDestinationComponents(savePanel, initialDestinationPath);
     addPromptComponents(savePanel, initialPrompt);
     return savePanel;
@@ -70,7 +70,7 @@ public class SaveFilePanelComposer
   /* Adds a line with a non-editable textfield and a button to display and change
    * the destinationPath. */
 
-  private void addDestinationComponents(SavePanel savePanel, String destinationPath)
+  private void addDestinationComponents(JPanel savePanel, String destinationPath)
   {
     JPanel configPanel = new JPanel();
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
@@ -114,7 +114,7 @@ public class SaveFilePanelComposer
 
   /* Adds a line with a checkbox to display and change the prompt behaviour of imageSaver. */
 
-  private void addPromptComponents(SavePanel savePanel, boolean initialPrompt)
+  private void addPromptComponents(JPanel savePanel, boolean initialPrompt)
   {
     JPanel configPanel = new JPanel();
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
@@ -140,15 +140,5 @@ public class SaveFilePanelComposer
   }
 
 //------------------------------------------------------------------------------
-
-//******************************************************************************
-
-  /* The panel itself, simply setting the title and the label localizer. */
-
-  @SuppressWarnings("serial")
-  private class SavePanel extends BasicControlPanel
-  {
-    protected SavePanel() {super(labelLocalizer, TITLE_LABEL);}
-  }
 
 }

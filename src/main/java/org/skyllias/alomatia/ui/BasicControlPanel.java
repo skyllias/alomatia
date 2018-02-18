@@ -5,8 +5,10 @@ import javax.swing.*;
 
 import org.skyllias.alomatia.i18n.*;
 
-/** Superclass for the panels with a title used to configure something. */
+/** Superclass for the panels with a title used to configure something.
+ *  @deprecated Use BasicControlPanelComposer instead. */
 
+@Deprecated
 @SuppressWarnings("serial")
 public abstract class BasicControlPanel extends JPanel
 {
