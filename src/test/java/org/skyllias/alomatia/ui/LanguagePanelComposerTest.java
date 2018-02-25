@@ -5,9 +5,12 @@ import static org.assertj.swing.fixture.Containers.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.skyllias.alomatia.ui.LanguagePanelComposer.*;
 
 import java.util.*;
 import java.util.concurrent.*;
+
+import javax.swing.*;
 
 import org.assertj.swing.edt.*;
 import org.assertj.swing.fixture.*;
@@ -15,7 +18,7 @@ import org.junit.*;
 import org.mockito.*;
 import org.skyllias.alomatia.i18n.*;
 
-public class LanguagePanelTest
+public class LanguagePanelComposerTest
 {
   private FrameFixture frameFixture;
   @Mock
@@ -43,12 +46,12 @@ public class LanguagePanelTest
 
   private void setUpFixture()
   {
-    LanguagePanel languagePanel = GuiActionRunner.execute(new Callable<LanguagePanel>()
+    JComponent languagePanel = GuiActionRunner.execute(new Callable<JComponent>()
     {
       @Override
-      public LanguagePanel call() throws Exception
+      public JComponent call() throws Exception
       {
-        return new LanguagePanel(labelLocalizer);
+        return new LanguagePanelComposer(labelLocalizer).getComponent();
       }
     });
     frameFixture = showInFrame(languagePanel);
@@ -67,7 +70,7 @@ public class LanguagePanelTest
 
     setUpFixture();
 
-    JComboBoxFixture comboBox = frameFixture.comboBox(LanguagePanel.LANG_SELECTOR_NAME);
+    JComboBoxFixture comboBox = frameFixture.comboBox(LANG_SELECTOR_NAME);
     comboBox.requireItemCount(4);
     assertTrue("Selected language name should contain Catalan", comboBox.selectedItem().contains("català"));
   }
@@ -83,7 +86,7 @@ public class LanguagePanelTest
 
     setUpFixture();
 
-    JComboBoxFixture comboBox = frameFixture.comboBox(LanguagePanel.LANG_SELECTOR_NAME);
+    JComboBoxFixture comboBox = frameFixture.comboBox(LANG_SELECTOR_NAME);
     comboBox.selectItem(3);                                                     // alphabetically in Catalan, this should be French
     verify(labelLocalizer, times(1)).setLocale(new Locale("fr"));
   }

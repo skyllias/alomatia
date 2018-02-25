@@ -35,7 +35,7 @@ public class ControlsPane extends JPanel
                                                                                       frameManager, framePolicy);
     add(windowControlComposer.getComponent());
     add(new SaveFilePanelComposer(localizer, imageSaver).getComponent());
-    add(new LanguagePanel(localizer));
+    add(new LanguagePanelComposer(localizer).getComponent());
 
     SwingUtilities.invokeLater(new Runnable()
     {
