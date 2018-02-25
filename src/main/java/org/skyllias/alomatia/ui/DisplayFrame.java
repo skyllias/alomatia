@@ -68,16 +68,17 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
     frameAdaptor.addClosingFrameListener(this);
 
-    DisplayOptionsDialog optionsDialog = new DisplayOptionsDialog(labelLocalizer,
-                                                                  this, filterFactory);
-    panel.addMouseListener(new DisplayPanelClickListener(optionsDialog));
-
-    filterSelector = optionsDialog.getFilterSelector();
+    filterSelector = new FilterSelector(labelLocalizer, this, filterFactory);
     setUpFilterKeyListeners(filterSelector);
     setOutputKeyListeners();
 
     frameAdaptor.setMaximized(false);
     frameAdaptor.setVisible(true);
+
+    DisplayOptionsDialogComposer dialogComposer = new DisplayOptionsDialogComposer(labelLocalizer,
+                                                                                   this, filterSelector);
+    JDialog optionsDialog                       = dialogComposer.getDialog();
+    panel.addMouseListener(new DisplayPanelClickListener(optionsDialog));
   }
 
 //==============================================================================
@@ -366,9 +367,9 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   private class DisplayPanelClickListener extends MouseAdapter
   {
-    private DisplayOptionsDialog dialog;
+    private JDialog dialog;
 
-    public DisplayPanelClickListener(DisplayOptionsDialog optionsDialog) {dialog = optionsDialog;}
+    public DisplayPanelClickListener(JDialog optionsDialog) {dialog = optionsDialog;}
 
     @Override
     public void mouseClicked(MouseEvent e)

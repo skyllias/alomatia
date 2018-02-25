@@ -9,20 +9,16 @@ import java.util.prefs.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import org.skyllias.alomatia.filter.*;
 import org.skyllias.alomatia.i18n.*;
 
-/** Non-modal dialog with the display options for a given {@link DisplayFrame}.
+/** Composer of non-modal dialog with the display options for a given {@link DisplayFrame}.
  *  <p>
- *  By default it is immediately shown, but it can be configured to hide by
- *  using preferences.
+ *  By default a new instance is immediately shown when {@link #getDialog()} is
+ *  called, but it can be configured to hide by using preferences.
  *  <p>
- *  The dialog can be hidden both with the close button and the ESC key.
- *  @deprecated Use DisplayOptionsDialogComposer instead. */
+ *  The dialog can be hidden both with the close button and the ESC key. */
 
-@Deprecated
-@SuppressWarnings("serial")
-public class DisplayOptionsDialog extends JDialog
+public class DisplayOptionsDialogComposer
 {
   private static final String TITLE                  = "display.options.title";
   private static final String OPEN_IMMEDIATELY_LABEL = "display.options.show";
@@ -34,81 +30,109 @@ public class DisplayOptionsDialog extends JDialog
 
   private static final int SCROLL_UNIT = 16;
 
-  private static boolean showImmediately = SHOW_IMMEDIATELY_DEFAULT;            // static value to be synchronized between all the instances everytime the checkbox value is changed
-
   private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. They should be removed sometime after the dialog disposal
 
+  private DisplayFrame ownerDisplayFrame;
   private LabelLocalizer labelLocalizer;
-
   private FilterSelector filterSelector;
+
+  private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
-  static
+  /** TODO Replace the filter selector with either a composer or a component. */
+
+  public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrame ownerFrame,
+                                      FilterSelector selector)
   {
-    showImmediately = getPreferences().getBoolean(PREFKEY_SHOW, SHOW_IMMEDIATELY_DEFAULT);
+    labelLocalizer    = localizer;
+    ownerDisplayFrame = ownerFrame;
+    filterSelector    = selector;
   }
 
 //==============================================================================
 
-  public DisplayOptionsDialog(LabelLocalizer localizer, DisplayFrame ownerFrame,
-                              FilterFactory filterFactory)
+  /** The dialog is not modal because doing it so blocks the opening window and
+   *  any subsequent that may be created afterwards, and offers no special
+   *  advantage in this case.
+   *  Expected to be called just once. */
+
+  public JDialog getDialog()
   {
-    super(ownerFrame.getOwnerFrame(), localizer.getString(TITLE), false);       // making it modal blocks the opening window, and any subsequent that may be created afterwards, and offers no special advantage in this case
+    boolean showImmediately = preferences.getBoolean(PREFKEY_SHOW, SHOW_IMMEDIATELY_DEFAULT);
 
-    labelLocalizer = localizer;
+    JDialog dialog = new JDialog(ownerDisplayFrame.getOwnerFrame(), labelLocalizer.getString(TITLE), false);
 
-    filterSelector            = new FilterSelector(labelLocalizer, ownerFrame, filterFactory);
-    ZoomSelector zoomSelector = new ZoomSelector(labelLocalizer, ownerFrame.getDisplayPanel());
+    JPanel selectorsPanel = getSelectorsPanel();
+    JPanel optionsPanel   = getOptionsPanel(selectorsPanel, showImmediately);
+    JPanel buttonsPanel   = getButtonsPanel(dialog);
+
+    dialog.getContentPane().add(optionsPanel, BorderLayout.CENTER);
+    dialog.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+
+    dialog.pack();
+    dialog.setLocationRelativeTo(ownerDisplayFrame.getOwnerFrame());
+    dialog.setResizable(false);
+    dialog.setVisible(showImmediately);                                         // do this after setLocationRelativeTo, or the dialog will be left in the upper left corner
+
+    return dialog;
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns a panel containing the filter selector and a zoom selector. */
+
+  private JPanel getSelectorsPanel()
+  {
+    ZoomSelector zoomSelector = new ZoomSelector(labelLocalizer, ownerDisplayFrame.getDisplayPanel());
 
     JPanel selectorsPanel     = new JPanel();
     JScrollPane filtersScroll = new JScrollPane(filterSelector);
     filtersScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     filtersScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-    filtersScroll.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);         // TODO the scroll must be inside the filter selector, not outside
+    filtersScroll.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
     filtersScroll.setPreferredSize(zoomSelector.getPreferredSize());
     selectorsPanel.add(filtersScroll);
     selectorsPanel.add(zoomSelector);
 
-    JPanel optionsPanel = new JPanel();
-    optionsPanel.setLayout(new BorderLayout());
-    optionsPanel.add(selectorsPanel,  BorderLayout.CENTER);
-    optionsPanel.add(getNewShowCheckbox(), BorderLayout.SOUTH);
-    getContentPane().add(optionsPanel, BorderLayout.CENTER);
-
-    JPanel buttonsPanel = new JPanel();
-    buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-    JButton closeButton = new JButton(labelLocalizer.getString(CLOSE_LABEL));
-    closeButton.addActionListener(new CloseListener());
-    registerEscKeyAction();
-    buttonsPanel.add(closeButton);
-    getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
-
-    setVisible(showImmediately);
-    pack();
-    setLocationRelativeTo(ownerFrame.getOwnerFrame());
-    setResizable(false);
+    return selectorsPanel;
   }
-
-//==============================================================================
-
-  /** Returns the contained FilterSelector.
-   *  TODO Reconsider this since it exposes the inner structure of this class. */
-
-  public FilterSelector getFilterSelector() {return filterSelector;}
 
 //------------------------------------------------------------------------------
 
-  /* Returns the preferences where the selection is stored. */
+  /* Returns a panel containing selectorsPanel and a show checkbox. */
 
-  private static Preferences getPreferences() {return Preferences.userNodeForPackage(DisplayOptionsDialog.class);}
+  private JPanel getOptionsPanel(JPanel selectorsPanel, boolean showImmediately)
+  {
+    JPanel optionsPanel = new JPanel();
+    optionsPanel.setLayout(new BorderLayout());
+    optionsPanel.add(selectorsPanel,  BorderLayout.CENTER);
+    optionsPanel.add(getNewShowCheckbox(showImmediately), BorderLayout.SOUTH);
+
+    return optionsPanel;
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns a panel containing a close button. */
+
+  private JPanel getButtonsPanel(JDialog dialog)
+  {
+    JPanel buttonsPanel = new JPanel();
+    buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+    JButton closeButton = new JButton(labelLocalizer.getString(CLOSE_LABEL));
+    closeButton.addActionListener(new CloseListener(dialog));
+    registerEscKeyAction(dialog);
+    buttonsPanel.add(closeButton);
+    return buttonsPanel;
+  }
 
 //------------------------------------------------------------------------------
 
   /* Returns a new checkbox initialized with showImmediately and with a listener
    * that will update all the existing checkboxes when its value changes. */
 
-  private JCheckBox getNewShowCheckbox()
+  private JCheckBox getNewShowCheckbox(boolean showImmediately)
   {
     JCheckBox checkBox = new JCheckBox(labelLocalizer.getString(OPEN_IMMEDIATELY_LABEL),
                                        showImmediately);
@@ -119,19 +143,19 @@ public class DisplayOptionsDialog extends JDialog
 
 //------------------------------------------------------------------------------
 
-  /* Registers the ESC key so that the dialog is hidden when closed.
+  /* Registers the ESC key so that dialog is hidden when closed.
    * It cannot be achieved by adding a key listener because the focus is in the
    * inner components, so the frame's input map (due to the fact that JDialogs
    * do not extend JComponent, it cannot be on its own InputMap) is modified. */
 
-  private void registerEscKeyAction()
+  private void registerEscKeyAction(JDialog dialog)
   {
     final String ACTION_NAME = getClass().getName() + "ESC-ACTION";
 
     KeyStroke escStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    JRootPane rootPane  = getRootPane();
+    JRootPane rootPane  = dialog.getRootPane();
     rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escStroke, ACTION_NAME);
-    rootPane.getActionMap().put(ACTION_NAME, new CloseListener());
+    rootPane.getActionMap().put(ACTION_NAME, new CloseListener(dialog));
   }
 
 //------------------------------------------------------------------------------
@@ -139,22 +163,21 @@ public class DisplayOptionsDialog extends JDialog
 //******************************************************************************
 
   /* Listener notified whenever a show checkbox changes its value, updating
-   * showImmediately and all the other checkboxes. The new value is stored in
-   * the preferences. */
+   * all the other checkboxes. The new value is stored in the preferences. */
 
-  private static class CheckShowBoxChangeListener implements ChangeListener
+  private class CheckShowBoxChangeListener implements ChangeListener
   {
     @Override
     public void stateChanged(ChangeEvent event)
     {
       JCheckBox sourceCheckbox = (JCheckBox) event.getSource();
-      showImmediately          = sourceCheckbox.isSelected();
+      boolean showImmediately  = sourceCheckbox.isSelected();
       for (JCheckBox currentCheckbox : allShowCheckBoxes)
       {
         if (currentCheckbox.isSelected() != showImmediately) currentCheckbox.setSelected(showImmediately);  // probably the verification is redundant and there will not be a cascade of change events, but it does not hurt just in case
       }
 
-      getPreferences().putBoolean(PREFKEY_SHOW, showImmediately);
+      preferences.putBoolean(PREFKEY_SHOW, showImmediately);
     }
   }
 
@@ -163,15 +186,23 @@ public class DisplayOptionsDialog extends JDialog
   /* Listener notified whenever the close button or the ESC key are pressed.
    * The dialog is hidden. */
 
+  @SuppressWarnings("serial")
   private class CloseListener extends AbstractAction
   {
+    private JDialog dialog;
+
+    public CloseListener(JDialog dialog)
+    {
+      this.dialog = dialog;
+    }
+
     @Override
     public void actionPerformed(ActionEvent event)
     {
       hideDialog();
     }
 
-    private void hideDialog() {setVisible(false);}
+    private void hideDialog() {dialog.setVisible(false);}
   }
 
 //******************************************************************************
