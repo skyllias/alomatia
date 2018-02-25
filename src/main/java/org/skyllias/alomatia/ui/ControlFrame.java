@@ -70,11 +70,11 @@ public class ControlFrame
     DropTargetListener dropListener = catalogue.get(DropSource.class);          // if not present it will be null
     if (dropListener != null) new DropTarget(frame, dropListener);
 
-    ControlsPane controlsPane = new ControlsPane(labelLocalizer, catalogue,
-                                                 displayRepeater, dropListener,
-                                                 frameManager, framePolicy,
-                                                 imageSaver);
-    frame.getContentPane().add(controlsPane, BorderLayout.CENTER);
+    ControlsPaneComposer controlsPane = new ControlsPaneComposer(labelLocalizer, catalogue,
+                                                                 displayRepeater, dropListener,
+                                                                 frameManager, framePolicy,
+                                                                 imageSaver);
+    frame.getContentPane().add(controlsPane.getComponent(), BorderLayout.CENTER);
 
     frame.setExtendedState(Frame.NORMAL);                                       // this is forced because some desktop managers maximize all windows by default, and this looks better if really packed
     frame.pack();

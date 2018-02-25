@@ -11,8 +11,10 @@ import org.skyllias.alomatia.source.*;
 import org.skyllias.alomatia.ui.frame.*;
 
 /** Container for the visual controls to choose the options.
- *  It includes a source selector, a filter selector and a display zoom selector. */
+ *  It includes a source selector, a filter selector and a display zoom selector.
+ *  @deprecated User ControlsPaneComposer instead. */
 
+@Deprecated
 @SuppressWarnings("serial")
 public class ControlsPane extends JPanel
 {
