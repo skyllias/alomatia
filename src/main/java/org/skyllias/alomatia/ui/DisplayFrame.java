@@ -64,7 +64,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
     frameAdaptor.setTitle(labelLocalizer.getString(DEFAULT_TITLE));
     frameAdaptor.setIcon(getDefaultLogo());
 
-    displayPanel.setToolTipText(labelLocalizer.getString(PANEL_TOOLTIP));
+    displayPanel.getComponent().setToolTipText(labelLocalizer.getString(PANEL_TOOLTIP));
 
     frameAdaptor.addClosingFrameListener(this);
 
@@ -78,7 +78,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
     DisplayOptionsDialogComposer dialogComposer = new DisplayOptionsDialogComposer(labelLocalizer,
                                                                                    this, filterSelector);
     JDialog optionsDialog                       = dialogComposer.getDialog();
-    panel.addMouseListener(new DisplayPanelClickListener(optionsDialog));
+    displayPanel.getComponent().addMouseListener(new DisplayPanelClickListener(optionsDialog));
   }
 
 //==============================================================================

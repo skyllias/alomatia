@@ -3,7 +3,7 @@ package org.skyllias.alomatia.ui.frame;
 
 import java.awt.*;
 
-import org.skyllias.alomatia.ui.*;
+import javax.swing.*;
 
 /** Provider of new instances of {@link FrameAdaptor}. */
 
@@ -13,7 +13,7 @@ public interface FrameAdaptorFactory
    *  not visible and set up so that it does not close when its close button
    *  is pressed (it only notifies its listeners). */
 
-  FrameAdaptor getNewFrame(DisplayPanel displayPanel);
+  FrameAdaptor getNewFrame(JComponent displayPanel);
 
   /** Returns the bounds available for frames obtained from this factory to
    *  rearrange (ie, relocate and resize). */
