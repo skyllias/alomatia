@@ -14,8 +14,10 @@ import org.skyllias.alomatia.source.ScreenSource.*;
  *  <p>
  *  When the screen region to capture is selected and the button is clicked,
  *  the CaptureBoundsListener received by the constructor gets the bounds and
- *  the windows is closed.  */
+ *  the windows is closed.
+ *  @deprecated Use CaptureFrameComposer instead. */
 
+@Deprecated
 @SuppressWarnings("serial")
 public class CaptureFrame extends BasicAlomatiaWindow
 {

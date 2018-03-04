@@ -51,11 +51,11 @@ public class ControlsPaneComposer
     JPanel panel = new JPanel();
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-    panel.add(new SourceSelector(labelLocalizer, sourceCatalogue));
     final WindowControlPanelComposer windowControlComposer = new WindowControlPanelComposer(labelLocalizer, repeater,
                                                                                             dropListener,
                                                                                             frameManager, framePolicy);
+
+    panel.add(new SourceSelector(labelLocalizer, sourceCatalogue, new CaptureFrameComposer(labelLocalizer)));
     panel.add(windowControlComposer.getComponent());
     panel.add(new SaveFilePanelComposer(labelLocalizer, fileImageSaver).getComponent());
     panel.add(new LanguagePanelComposer(labelLocalizer).getComponent());

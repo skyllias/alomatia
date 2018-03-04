@@ -31,10 +31,11 @@ public class ControlsPane extends JPanel
   {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    add(new SourceSelector(localizer, catalogue));
     final WindowControlPanelComposer windowControlComposer = new WindowControlPanelComposer(localizer, displayRepeater,
                                                                                       dropTargetListener,
                                                                                       frameManager, framePolicy);
+
+    add(new SourceSelector(localizer, catalogue, new CaptureFrameComposer(localizer)));
     add(windowControlComposer.getComponent());
     add(new SaveFilePanelComposer(localizer, imageSaver).getComponent());
     add(new LanguagePanelComposer(localizer).getComponent());

@@ -16,7 +16,7 @@ import org.skyllias.alomatia.*;
 import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.source.*;
 import org.skyllias.alomatia.source.ScreenSource.*;
-import org.skyllias.alomatia.ui.CaptureFrame.*;
+import org.skyllias.alomatia.ui.CaptureFrameComposer.*;
 
 /** Selector of the source of original images.
  *  <p>
@@ -48,6 +48,8 @@ public class SourceSelector extends BasicSelector<ImageSource>
   protected static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
 
   private ImageSource previousSource;
+  private CaptureFrameComposer captureFrameComposer;
+
   private JPanel optionsContainer = new JPanel();                               // no idea why (well, probably due to the use of alignments, see https://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#features), but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space. TODO fix this
 
   private Preferences preferences;
@@ -57,20 +59,23 @@ public class SourceSelector extends BasicSelector<ImageSource>
   /** Creates a new selector to choose from the known types in the catalogue.
    *  The unknown types are ignored, and the missing known types are gently skipped. */
 
-  public SourceSelector(LabelLocalizer localizer, SourceCatalogue catalogue)
+  public SourceSelector(LabelLocalizer localizer, SourceCatalogue catalogue,
+                        CaptureFrameComposer captureFrame)
   {
-    this(getDefaultPreferences(), localizer, catalogue);
+    this(getDefaultPreferences(), localizer, catalogue, captureFrame);
   }
 
 //------------------------------------------------------------------------------
 
   /** Only meant for preferences injection in tests. */
 
-  protected SourceSelector(Preferences prefs, LabelLocalizer localizer, SourceCatalogue catalogue)
+  protected SourceSelector(Preferences prefs, LabelLocalizer localizer,
+                           SourceCatalogue catalogue, CaptureFrameComposer captureFrame)
   {
     super(localizer, SOURCE_LABEL);
 
-    preferences = prefs;
+    preferences          = prefs;
+    captureFrameComposer = captureFrame;
 
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));                           // all this stuff is required for the SourceSelector to be centered
     optionsContainer.setLayout(new BoxLayout(optionsContainer, BoxLayout.Y_AXIS));
@@ -146,8 +151,6 @@ public class SourceSelector extends BasicSelector<ImageSource>
       configPanel.setAlignmentX(LEFT_ALIGNMENT);
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
-      final CaptureFrameListener captureListener = new CaptureFrameListener(screenSource);
-
       JButton screenButton = new JButton(getLabelLocalizer().getString(CAPTURE_LABEL));
       screenButton.setEnabled(false);
       screenButton.addActionListener(new ActionListener()
@@ -155,8 +158,10 @@ public class SourceSelector extends BasicSelector<ImageSource>
         @Override
         public void actionPerformed(ActionEvent e)
         {
+          CaptureFrameListener captureListener = new CaptureFrameListener(screenSource);
+
           screenSource.setActive(false);                                        // always disable capture when the capture frame is open
-          new CaptureFrame(getLabelLocalizer(), captureListener);
+          captureFrameComposer.openNewFrame(captureListener);
         }
       });
 

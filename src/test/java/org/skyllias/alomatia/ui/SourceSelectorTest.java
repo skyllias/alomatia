@@ -34,6 +34,8 @@ public class SourceSelectorTest
   @Mock
   private AsynchronousUrlSource urlSource;
   @Mock
+  private CaptureFrameComposer captureFrameComposer;
+  @Mock
   private Preferences preferences;
 
   private SourceCatalogue catalogue;
@@ -62,7 +64,7 @@ public class SourceSelectorTest
       @Override
       public SourceSelector call() throws Exception
       {
-        return new SourceSelector(preferences, new KeyLabelLocalizer(), catalogue);
+        return new SourceSelector(preferences, new KeyLabelLocalizer(), catalogue, captureFrameComposer);
       }
     });
     frameFixture = showInFrame(sourceSelector);
