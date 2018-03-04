@@ -6,8 +6,6 @@ import java.util.*;
 
 import javax.swing.*;
 
-import org.skyllias.alomatia.ui.*;
-
 /** {@link FrameAdaptorFactory} that returns {@link JInternalFrame}s inside a
  *  given {@link JDesktopPane}. */
 
@@ -24,7 +22,7 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 //==============================================================================
 
   @Override
-  public FrameAdaptor getNewFrame(DisplayPanel displayPanel)
+  public FrameAdaptor getNewFrame(JComponent displayPanel)
   {
     JInternalFrame jInternalFrame = new JInternalFrame();
     jInternalFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

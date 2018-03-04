@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import javax.swing.*;
+
 import org.assertj.swing.edt.*;
 import org.assertj.swing.fixture.*;
 import org.junit.*;
@@ -16,7 +18,7 @@ import org.skyllias.alomatia.filter.*;
 import org.skyllias.alomatia.filter.rgb.*;
 import org.skyllias.alomatia.i18n.*;
 
-public class FilterSelectorTest
+public class FilterSelectorComposerTest
 {
   private static final String NO_FILTER_NAME      = "filter1";                  // these need not be the same keys used in the property files
   private static final String LIGHTER_FILTER_NAME = "filter2";
@@ -49,15 +51,17 @@ public class FilterSelectorTest
                                                      brighterFilter,
                                                      darkerFilter}));
 
-    FilterSelector filterSelector = GuiActionRunner.execute(new Callable<FilterSelector>()
+    final FilterSelectorComposer filterSelector = new FilterSelectorComposer(new KeyLabelLocalizer(), filterableDisplay, filterFactory);
+
+    JComponent filterPanel = GuiActionRunner.execute(new Callable<JComponent>()
     {
       @Override
-      public FilterSelector call() throws Exception
+      public JComponent call() throws Exception
       {
-        return new FilterSelector(new KeyLabelLocalizer(), filterableDisplay, filterFactory);
+        return filterSelector.getComponent();
       }
     });
-    frameFixture = showInFrame(filterSelector);
+    frameFixture = showInFrame(filterPanel);
   }
 
   @After

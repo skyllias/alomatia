@@ -11,42 +11,54 @@ import javax.swing.plaf.basic.*;
 
 import org.skyllias.alomatia.i18n.*;
 
-/** Panel to display the current language and to select the next one. */
+/** Composer of a panel to display the current language and to select the next one. */
 
-@SuppressWarnings("serial")
-public class LanguagePanel extends BasicControlPanel
+public class LanguagePanelComposer
 {
   private static final String TITLE_LABEL    = "language.selector.title";
   private static final String NEXTLANG_LABEL = "language.selector.next";
 
   protected static final String LANG_SELECTOR_NAME = "language.selector";       // name for the combobox
 
+  private LabelLocalizer labelLocalizer;
+
 //==============================================================================
 
   /** Creates a new panel with the components to display and change the language. */
 
-  protected LanguagePanel(LabelLocalizer localizer)
+  protected LanguagePanelComposer(LabelLocalizer localizer)
   {
-    super(localizer, TITLE_LABEL);
+    labelLocalizer = localizer;
+  }
 
-    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+//==============================================================================
 
-    Vector<Locale> availableLocales = new Vector<>(localizer.getAvailableLocales());
+  /** Returns a new panel with the required controls */
+
+  public JComponent getComponent()
+  {
+    JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(TITLE_LABEL));
+
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
+    Vector<Locale> availableLocales = new Vector<>(labelLocalizer.getAvailableLocales());
     Collections.sort(availableLocales, new LocaleComparator());
 
-    JLabel nextLangDescLabel       = new BorderedLabel(getLabelLocalizer().getString(NEXTLANG_LABEL));
+    JLabel nextLangDescLabel       = new BorderedLabel(labelLocalizer.getString(NEXTLANG_LABEL));
     JComboBox<Locale> langSelector = new JComboBox<Locale>(availableLocales);
     langSelector.setName(LANG_SELECTOR_NAME);
     langSelector.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                                               langSelector.getPreferredSize().height));   // prevent it from stretching vertically
-    langSelector.setSelectedItem(getLabelLocalizer().getCurrentLocale());       // do this before adding the listener to avoid redundant events
+    langSelector.setSelectedItem(labelLocalizer.getCurrentLocale());            // do this before adding the listener to avoid redundant events
     langSelector.setRenderer(new LocaleCellRenderer());
     langSelector.addActionListener(new LocaleChangeListener());
-    add(nextLangDescLabel);
-    add(langSelector);
+    panel.add(nextLangDescLabel);
+    panel.add(langSelector);
+
+    return panel;
   }
 
-//==============================================================================
+//------------------------------------------------------------------------------
 
   /* Returns the name of the language of the locale in the locale's language
    * itself and the current language. */
@@ -55,7 +67,7 @@ public class LanguagePanel extends BasicControlPanel
   {
     final String NAME_PATTERN = "{0} ({1})";                                    // TODO pattern i18n
 
-    Locale currentLocale       = getLabelLocalizer().getCurrentLocale();
+    Locale currentLocale       = labelLocalizer.getCurrentLocale();
     String nameInSameLocale    = locale.getDisplayLanguage(locale);
     String nameInCurrentLocale = locale.getDisplayLanguage(currentLocale);
 
@@ -97,7 +109,7 @@ public class LanguagePanel extends BasicControlPanel
       final String CURRENT_FLAG_PATTERN = "{0} (*)";                            // TODO pattern i18n
 
       String displayName = getLanguageDisplayName(value);
-      if (value.equals(getLabelLocalizer().getCurrentLocale()))
+      if (value.equals(labelLocalizer.getCurrentLocale()))
       {
         MessageFormat format = new MessageFormat(CURRENT_FLAG_PATTERN);
         displayName          = format.format(new Object[] {displayName});
@@ -120,7 +132,7 @@ public class LanguagePanel extends BasicControlPanel
     {
       JComboBox<Locale> langSelector = (JComboBox<Locale>) event.getSource();
       Locale nextLocale              = (Locale) langSelector.getSelectedItem();
-      getLabelLocalizer().setLocale(nextLocale);
+      labelLocalizer.setLocale(nextLocale);
     }
   }
 

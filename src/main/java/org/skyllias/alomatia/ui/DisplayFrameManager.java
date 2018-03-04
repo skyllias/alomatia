@@ -69,7 +69,7 @@ public class DisplayFrameManager
   public DisplayFrame getNewDisplayFrame(boolean applySequentialFilter)
   {
     DisplayPanel displayPanel = new DisplayPanel();
-    FrameAdaptor frameAdaptor = adaptorFactory.getNewFrame(displayPanel);
+    FrameAdaptor frameAdaptor = adaptorFactory.getNewFrame(displayPanel.getComponent());
     DisplayFrame frame        = new DisplayFrame(localizer, frameAdaptor, displayPanel,
                                                  filterFactory, imageSaver);
     frame.addListener(new DisplayFrameCloseListener());

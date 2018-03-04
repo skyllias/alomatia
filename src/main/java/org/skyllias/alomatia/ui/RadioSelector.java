@@ -1,7 +1,6 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
@@ -9,39 +8,39 @@ import javax.swing.*;
 
 import org.skyllias.alomatia.i18n.*;
 
-/** Superclass for the configuration selectors.
- *  <p>
- *  Each panel has an HTML-like fieldgroup.
- *  <p>
- *  A generic type is used for related objects to the radio buttons used to
- *  select them. */
+/** Creator of {@link JRadioButton}s belonging to the same group and associated
+ *  to an object of some generic type SELECTABLE. When a radio button is
+ *  selected, a RadioSelectorListener is notified. */
 
-@SuppressWarnings("serial")
-public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
-                                                implements ActionListener
+public class RadioSelector<SELECTABLE> implements ActionListener
 {
   private ButtonGroup radioGroup = new ButtonGroup();                           // group for all radio buttons of this selector
 
   private Map<String, SELECTABLE> commandObjects     = new LinkedHashMap<String, SELECTABLE>();       // radio buttons do not support referencing objects, only string as action commands, so this will contain the relationship between each action commands and the real object selected by each radio button
   private Map<SELECTABLE, JRadioButton> objectRadios = new LinkedHashMap<SELECTABLE, JRadioButton>(); // same as commandObjects, so that objectRadios.get(commandObjects.get(actionCommand).equals(actionCommand), unless there is some null anywhere
 
+  private final LabelLocalizer labelLocalizer;
+  private final RadioSelectorListener<SELECTABLE> listener;
+
 //==============================================================================
 
-  /** Creates a new panel with the passed title localized. */
+  /** Creates a new instance that will notify selectorListener whenever the
+   *  selected radio button changes. */
 
-  protected BasicSelector(LabelLocalizer localizer, String legendKey)
+  public RadioSelector(LabelLocalizer localizer, RadioSelectorListener<SELECTABLE> selectorListener)
   {
-    super(localizer, legendKey);
+    labelLocalizer = localizer;
+    listener       = selectorListener;
   }
 
 //==============================================================================
 
   /** Creates a new radio button with the passed actionCommand and the localized
-   *  label corresponding to te action command, relating it to the passed object,
-   *  and then adds to the passed parent.
+   *  label corresponding to te action command, relating it to the passed object.
+   *  The component is NOT added anywhere.
    *  <p>
-   *  This BasicSelector is added as ActionListener to the new radio button, so
-   *  that subclasses can learn that there has been a selection change by
+   *  This selector is added as ActionListener to the new radio button, so
+   *  that the listener can learn that there has been a selection change by
    *  implementing {@link #onSelectionChanged(SELECTABLE)}.
    *  <p>
    *  All radio buttons are added to the same ButtonGroup, selecting by default
@@ -49,9 +48,9 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
    *  <p>
    *  All action commands should be different. */
 
-  protected void addRadioObject(String actionCommand, SELECTABLE object, Container parent)
+  public JRadioButton createRadioObject(String actionCommand, SELECTABLE object)
   {
-    JRadioButton radio = new JRadioButton(getLabelLocalizer().getString(actionCommand));
+    JRadioButton radio = new JRadioButton(labelLocalizer.getString(actionCommand));
     radio.setActionCommand(actionCommand);
     radio.setName(actionCommand);
     radio.setSelected(!radioGroup.getElements().hasMoreElements());
@@ -61,14 +60,28 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
     commandObjects.put(actionCommand, object);
     objectRadios.put(object, radio);
 
-    parent.add(radio);
+    return radio;
   }
 
 //------------------------------------------------------------------------------
 
-  /** Returns the object related to the currently selected radio in the group, if any. */
+  /** Invokes {@link #onSelectionChanged(SELECTABLE)} with the object related in
+   *  {@link #createRadioObject(String, Object)} to the selected radio button. */
 
-  protected SELECTABLE getCurrentSelection()
+  @Override
+  public void actionPerformed(ActionEvent e)
+  {
+    String actionName        = e.getActionCommand();
+    SELECTABLE relatedObject = commandObjects.get(actionName);
+    listener.onSelectionChanged(relatedObject);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Returns the object related to the currently selected radio in the group, if any.
+   *  This method should be seldom required. */
+
+  public SELECTABLE getCurrentSelection()
   {
     return commandObjects.get(radioGroup.getSelection().getActionCommand());
   }
@@ -78,9 +91,10 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
   /** Returns the action command of the currently selected radio in the group, if any.
    * <p>
    * {@link #getCurrentSelection()} is preferred over this, which is reserved to
-   * cases where the selected object cannot be used (like in Preferences). */
+   * cases where the selected object cannot be used (like when storing selection
+   * in Preferences). */
 
-  protected String getCurrentSelectionAsActionCommand()
+  public String getCurrentSelectionAsActionCommand()
   {
     return radioGroup.getSelection().getActionCommand();
   }
@@ -94,7 +108,7 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
    *  <p>
    *  If the selection changes, this will end up firing {@link #onSelectionChanged(SELECTABLE)}. */
 
-  protected void setSelection(SELECTABLE newSelection)
+  public void setSelection(SELECTABLE newSelection)
   {
     JRadioButton selectedRadio = objectRadios.get(newSelection);
     if (selectedRadio != null) selectedRadio.doClick();
@@ -112,7 +126,7 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
    *  {@link #setSelection(SELECTABLE)} is prefered over this, which is reserved to
    *  cases where the selected object cannot be obtained (like in Preferences). */
 
-  protected void setSelectionByActionCommand(String newSelectionCommand)
+  public void setSelectionByActionCommand(String newSelectionCommand)
   {
     SELECTABLE newlySelectedObject = commandObjects.get(newSelectionCommand);
     if (newlySelectedObject != null) setSelection(newlySelectedObject);
@@ -128,7 +142,7 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
    *  <p>
    *  {@link #setSelection(SELECTABLE)} is prefered over this. */
 
-  protected void setSelectionByIndex(int index)
+  public void setSelectionByIndex(int index)
   {
     if (index >= 0 && index < objectRadios.size())
     {
@@ -142,23 +156,12 @@ public abstract class BasicSelector<SELECTABLE> extends BasicControlPanel
 
 //------------------------------------------------------------------------------
 
-  /** Invokes {@link #onSelectionChanged(SELECTABLE)} with the object related in
-   *  {@link #addRadioObject(String, Object, Container)} to the selected radio button. */
+//******************************************************************************
 
-  @Override
-  public void actionPerformed(ActionEvent e)
+  /** Object to be notified when a radio button is selected. */
+
+  public static interface RadioSelectorListener<SELECTABLE>
   {
-    String actionName        = e.getActionCommand();
-    SELECTABLE relatedObject = commandObjects.get(actionName);
-    onSelectionChanged(relatedObject);
+    void onSelectionChanged(SELECTABLE selectedObject);
   }
-
-//------------------------------------------------------------------------------
-
-  /** Invoked whenever a change occurs in the selected object. */
-
-  protected abstract void onSelectionChanged(SELECTABLE selectedObject);
-
-//------------------------------------------------------------------------------
-
 }
