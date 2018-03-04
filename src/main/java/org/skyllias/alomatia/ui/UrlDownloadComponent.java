@@ -18,7 +18,7 @@ import org.skyllias.alomatia.source.*;
  *  It favours composition over inheritance and does not extend any Swing class. */
 
 public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListener,
-                                             SourceSelector.Enabable
+                                             SourceSelectorComposer.Enabable
 {
   protected static final String BUTTON_READY_LABEL   = "source.selector.url.button.ready";
   protected static final String BUTTON_CANCEL_LABEL  = "source.selector.url.button.cancel";

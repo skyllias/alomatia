@@ -55,7 +55,8 @@ public class ControlsPaneComposer
                                                                                             dropListener,
                                                                                             frameManager, framePolicy);
 
-    panel.add(new SourceSelector(labelLocalizer, sourceCatalogue, new CaptureFrameComposer(labelLocalizer)));
+    panel.add(new SourceSelectorComposer(labelLocalizer, sourceCatalogue,
+                                         new CaptureFrameComposer(labelLocalizer)).getComponent());
     panel.add(windowControlComposer.getComponent());
     panel.add(new SaveFilePanelComposer(labelLocalizer, fileImageSaver).getComponent());
     panel.add(new LanguagePanelComposer(labelLocalizer).getComponent());

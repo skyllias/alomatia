@@ -11,16 +11,16 @@ import javax.swing.event.*;
 
 import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.ui.RadioSelector.*;
 
-/** Selector of the zoom to apply to the displayed image.
- *  <p>
+/** Composer of a panel with controls to change the zoom of some {@link ResizableDisplay}.
  *  The last selected fit policy and slider values are stored as user preferences.
- *  @deprecated Use ZoomSelectorComposer. */
+ *  A keyboard listener is added so that the zoom can be modified from keyboard
+ *  shortcuts, which means that all instances will respond at the same time to
+ *  zoom changes from the keyboard, while the UI component will work separately. */
 
-@Deprecated
-@SuppressWarnings("serial")
-public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
-                          implements ChangeListener, ActionListener
+public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPolicy>,
+                                             ChangeListener
 {
   private static final String ZOOM_LABEL           = "zoom.selector.title";
   private static final String ZOOM_TOOLTIP         = "zoom.custom.tooltip";
@@ -37,52 +37,90 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
   private static final String PREFKEY_FIT  = "fitPolicy";
   private static final String PREFKEY_ZOOM = "zoomSlider";
 
-  private JSlider zoomSlider;
+  private final LabelLocalizer labelLocalizer;
 
   private ResizableDisplay resizableDisplay;
 
-  private Preferences preferences;
+  private JSlider zoomSlider;
+  private RadioSelector<DisplayFitPolicy> radioSelector;
+
+  private Preferences preferences = Preferences.userNodeForPackage(ZoomSelectorComposer.class);
 
 //==============================================================================
 
   /** Creates a new selector that will modify the passed display's zoom. */
 
-  public ZoomSelector(LabelLocalizer localizer, ResizableDisplay imageDisplay)
+  public ZoomSelectorComposer(LabelLocalizer localizer, ResizableDisplay imageDisplay)
   {
-    this(getDefaultPreferences(), localizer, imageDisplay);
+    labelLocalizer   = localizer;
+    resizableDisplay = imageDisplay;
+
+    radioSelector = new RadioSelector<>(labelLocalizer, this);
+  }
+
+//==============================================================================
+
+  /** Returns the component with the zoom controls set up.
+   *  To be called just once. */
+
+  public JComponent getComponent()
+  {
+    JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(ZOOM_LABEL));
+
+    zoomSlider = getNewSlider();
+    panel.add(zoomSlider);
+
+    panel.add(radioSelector.createRadioObject(CUSTOM_LABEL, DisplayFitPolicy.FREE));
+    panel.add(radioSelector.createRadioObject(FIT_FULL_LABEL, DisplayFitPolicy.FULL));
+    panel.add(radioSelector.createRadioObject(FIT_HORIZONTAL_LABEL, DisplayFitPolicy.HORIZONTAL));
+    panel.add(radioSelector.createRadioObject(FIT_VERTICAL_LABEL, DisplayFitPolicy.VERTICAL));
+    panel.add(radioSelector.createRadioObject(FIT_LARGEST_LABEL, DisplayFitPolicy.LARGEST));
+
+    addPolicyKeyListener();
+
+    zoomSlider.setValue(preferences.getInt(PREFKEY_ZOOM, SLIDER_INITIAL));
+    DisplayFitPolicy initialPolicy = DisplayFitPolicy.FREE;
+    try {initialPolicy = DisplayFitPolicy.valueOf(preferences.get(PREFKEY_FIT, DisplayFitPolicy.FREE.toString()));}
+    catch (Exception e) {}                                                      // preferences are optional
+    radioSelector.setSelection(initialPolicy);
+
+    return panel;
   }
 
 //------------------------------------------------------------------------------
 
-  /** Only meant for preferences injection in tests. */
+  /** Sets the selected fit type to the image display.
+   *  <p>
+   *  If the type is {@link org.skyllias.alomatia.window.DisplayFitPolicy.FREE},
+   *  then the display's zoom factor is updated from the slider's current value.
+   *  <p>
+   *  The slider is enabled if and only if the dit policy is FREE.
+   *  <p>
+   *  The selection is stored in the user preferences. */
 
-  protected ZoomSelector(Preferences prefs, LabelLocalizer localizer, ResizableDisplay imageDisplay)
+  @Override
+  public void onSelectionChanged(DisplayFitPolicy type)
   {
-    super(localizer, ZOOM_LABEL);
+    boolean isFreePolicy = (type == DisplayFitPolicy.FREE);
+    zoomSlider.setEnabled(isFreePolicy);
+    if (isFreePolicy) setZoomFactorFromSlider();
+    resizableDisplay.setFitZoom(type);
 
-    preferences = prefs;
-
-    resizableDisplay = imageDisplay;
-
-    zoomSlider = getNewSlider();
-    add(zoomSlider);
-
-    addRadioObject(CUSTOM_LABEL, DisplayFitPolicy.FREE, this);
-    addRadioObject(FIT_FULL_LABEL, DisplayFitPolicy.FULL, this);
-    addRadioObject(FIT_HORIZONTAL_LABEL, DisplayFitPolicy.HORIZONTAL, this);
-    addRadioObject(FIT_VERTICAL_LABEL, DisplayFitPolicy.VERTICAL, this);
-    addRadioObject(FIT_LARGEST_LABEL, DisplayFitPolicy.LARGEST, this);
-
-    addPolicyKeyListener();
-
-    zoomSlider.setValue(getPreferences().getInt(PREFKEY_ZOOM, SLIDER_INITIAL));
-    DisplayFitPolicy initialPolicy = DisplayFitPolicy.FREE;
-    try {initialPolicy = DisplayFitPolicy.valueOf(getPreferences().get(PREFKEY_FIT, DisplayFitPolicy.FREE.toString()));}
-    catch (Exception e) {}                                                      // preferences are optional
-    setSelection(initialPolicy);
+    preferences.put(PREFKEY_FIT, type.toString());
   }
 
-//==============================================================================
+//------------------------------------------------------------------------------
+
+  /** Sets the zoom factor selected in the slider to the image display.
+   *  <p>
+   *  The linear int value from the slider is converted into an exponential
+   *  decimal value for the display, which is much more suitable for the
+   *  behaviour of a zoom. */
+
+  @Override
+  public void stateChanged(ChangeEvent e) {setZoomFactorFromSlider();}
+
+//------------------------------------------------------------------------------
 
   /* Returns a new JSlider instance with all the configurations set to work as a zoom selector. */
 
@@ -94,7 +132,7 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
     newSlider.setPaintTicks(true);
     newSlider.addChangeListener(this);
     newSlider.addMouseListener(new SliderMouseListener());
-    newSlider.setToolTipText(getLabelLocalizer().getString(ZOOM_TOOLTIP));
+    newSlider.setToolTipText(labelLocalizer.getString(ZOOM_TOOLTIP));
 
     Dictionary<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
     addSliderLabel(labels, -SLIDER_SCALE);
@@ -126,39 +164,6 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
 
 //------------------------------------------------------------------------------
 
-  /** Sets the selected fit type to the image display.
-   *  <p>
-   *  If the type is {@link org.skyllias.alomatia.window.DisplayFitPolicy.FREE},
-   *  then the display's zoom factor is updated from the slider's current value.
-   *  <p>
-   *  The slider is enabled if and only if the dit policy is FREE.
-   *  <p>
-   *  The selection is stored in the user preferences. */
-
-  @Override
-  protected void onSelectionChanged(DisplayFitPolicy type)
-  {
-    boolean isFreePolicy = (type == DisplayFitPolicy.FREE);
-    zoomSlider.setEnabled(isFreePolicy);
-    if (isFreePolicy) setZoomFactorFromSlider();
-    resizableDisplay.setFitZoom(type);
-
-    getPreferences().put(PREFKEY_FIT, type.toString());
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the zoom factor selected in the slider to the image display.
-   *  <p>
-   *  The linear int value from the slider is converted into an exponential
-   *  decimal value for the display, which is much more suitable for the
-   *  behaviour of a zoom. */
-
-  @Override
-  public void stateChanged(ChangeEvent e) {setZoomFactorFromSlider();}
-
-//------------------------------------------------------------------------------
-
   /* Sets the zoom factor selected in the slider to the image display.
    * The selection is stored in the user preferences. */
 
@@ -168,7 +173,7 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
     double expValue = getZoomFactorFromSlider(sliderValue);
     resizableDisplay.setZoomFactor(expValue);
 
-    getPreferences().putInt(PREFKEY_ZOOM, sliderValue);
+    preferences.putInt(PREFKEY_ZOOM, sliderValue);
   }
 
 //------------------------------------------------------------------------------
@@ -208,24 +213,12 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
           if (e.getKeyCode() == KeyEvent.VK_2) newPolicy = DisplayFitPolicy.HORIZONTAL;
           if (e.getKeyCode() == KeyEvent.VK_3) newPolicy = DisplayFitPolicy.VERTICAL;
           if (e.getKeyCode() == KeyEvent.VK_4) newPolicy = DisplayFitPolicy.LARGEST;
-          if (newPolicy != null) setSelection(newPolicy);
+          if (newPolicy != null) radioSelector.setSelection(newPolicy);
         }
         return false;                                                           // allow the event to be redispatched
       }
     });
   }
-
-//------------------------------------------------------------------------------
-
-  /* Shortcut method to get preferences by subclasses that store the last URL. */
-
-  private Preferences getPreferences() {return preferences;}
-
-//------------------------------------------------------------------------------
-
-  /* Returns the preferences to use when they are not externally injected. */
-
-  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(ZoomSelector.class);}
 
 //------------------------------------------------------------------------------
 
@@ -241,4 +234,5 @@ public class ZoomSelector extends BasicSelector<DisplayFitPolicy>
       if (e.getClickCount() > 1) zoomSlider.setValue(SLIDER_INITIAL);
     }
   }
+
 }

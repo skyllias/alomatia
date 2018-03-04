@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 import java.util.concurrent.*;
 import java.util.prefs.*;
 
+import javax.swing.*;
+
 import org.assertj.swing.edt.*;
 import org.assertj.swing.fixture.*;
 import org.junit.*;
@@ -15,7 +17,7 @@ import org.skyllias.alomatia.*;
 import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.source.*;
 
-public class SourceSelectorTest
+public class SourceSelectorComposerTest
 {
   private FrameFixture frameFixture;
 
@@ -59,15 +61,16 @@ public class SourceSelectorTest
 
   public void setUpAfterCatalogueInitialization()
   {
-    SourceSelector sourceSelector = GuiActionRunner.execute(new Callable<SourceSelector>()
+    final SourceSelectorComposer sourceComposer = new SourceSelectorComposer(preferences, new KeyLabelLocalizer(), catalogue, captureFrameComposer);
+    JComponent sourcePanel                      = GuiActionRunner.execute(new Callable<JComponent>()
     {
       @Override
-      public SourceSelector call() throws Exception
+      public JComponent call() throws Exception
       {
-        return new SourceSelector(preferences, new KeyLabelLocalizer(), catalogue, captureFrameComposer);
+        return sourceComposer.getComponent();
       }
     });
-    frameFixture = showInFrame(sourceSelector);
+    frameFixture = showInFrame(sourcePanel);
   }
 
   @After
@@ -81,58 +84,58 @@ public class SourceSelectorTest
   @Test
   public void shouldActivateVoidSourceWhenVoidSelected()
   {
-    selectDirectlyActiveSource(VoidSource.class, voidSource, SourceSelector.NO_SOURCE_LABEL);
+    selectDirectlyActiveSource(VoidSource.class, voidSource, SourceSelectorComposer.NO_SOURCE_LABEL);
   }
 
   @Test
   public void shouldActivateClipboardSourceWhenClipboardSelected()
   {
-    selectDirectlyActiveSource(ClipboardSource.class, clipboardSource, SourceSelector.CLIPBOARD_SOURCE_LABEL);
+    selectDirectlyActiveSource(ClipboardSource.class, clipboardSource, SourceSelectorComposer.CLIPBOARD_SOURCE_LABEL);
   }
 
   @Test
   public void shouldActivateDropSourceWhenDndSelected()
   {
-    selectDirectlyActiveSource(DropSource.class, dropSource, SourceSelector.DND_SOURCE_LABEL);
+    selectDirectlyActiveSource(DropSource.class, dropSource, SourceSelectorComposer.DND_SOURCE_LABEL);
   }
 
   @Test
   public void shouldNotActivateScreenSourceWhenCaptureSelected()
   {
-    selectIndirectlyActiveSource(ScreenSource.class, screenSource, SourceSelector.SCREEN_SOURCE_LABEL);
+    selectIndirectlyActiveSource(ScreenSource.class, screenSource, SourceSelectorComposer.SCREEN_SOURCE_LABEL);
   }
 
   @Test
   public void shouldActivateFileSourceWhenFileSelected()
   {
-    selectDirectlyActiveSource(SingleFileSource.class, fileSource, SourceSelector.FILE_SOURCE_LABEL);
+    selectDirectlyActiveSource(SingleFileSource.class, fileSource, SourceSelectorComposer.FILE_SOURCE_LABEL);
   }
 
   @Test
   public void shouldActivateDirSourceWhenDirSelected()
   {
-    selectDirectlyActiveSource(DirFileSource.class, dirSource, SourceSelector.DIR_SOURCE_LABEL);
+    selectDirectlyActiveSource(DirFileSource.class, dirSource, SourceSelectorComposer.DIR_SOURCE_LABEL);
   }
 
   @Test
   public void shouldActivateUrlSourceWhenUrlSelected()
   {
-    selectDirectlyActiveSource(AsynchronousUrlSource.class, urlSource, SourceSelector.URL_SOURCE_LABEL);
+    selectDirectlyActiveSource(AsynchronousUrlSource.class, urlSource, SourceSelectorComposer.URL_SOURCE_LABEL);
   }
 
   @Test
   public void shouldSetClipboardSourceAutoModeWhenCheckboxSelected()
   {
-    doReturn(false).when(preferences).getBoolean(eq(SourceSelector.PREFKEY_CLIPBOARDAUTO),
+    doReturn(false).when(preferences).getBoolean(eq(SourceSelectorComposer.PREFKEY_CLIPBOARDAUTO),
                                                  any(Boolean.class));
     catalogue.add(ClipboardSource.class, clipboardSource);
     setUpAfterCatalogueInitialization();
 
-    JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelector.CLIPBOARD_SOURCE_LABEL);
+    JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelectorComposer.CLIPBOARD_SOURCE_LABEL);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
     Mockito.reset(clipboardSource);                                             // bad practice, but the method is called at init time
-    JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelector.CLIPBOARD_AUTOMODE_NAME);
+    JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelectorComposer.CLIPBOARD_AUTOMODE_NAME);
     checkBox.check(true);
 
     verify(clipboardSource, atLeastOnce()).setAutoMode(true);
@@ -141,16 +144,16 @@ public class SourceSelectorTest
   @Test
   public void shouldSetClipboardSourceNotAutoModeWhenCheckboxUnselected()
   {
-    doReturn(true).when(preferences).getBoolean(eq(SourceSelector.PREFKEY_CLIPBOARDAUTO),
+    doReturn(true).when(preferences).getBoolean(eq(SourceSelectorComposer.PREFKEY_CLIPBOARDAUTO),
                                                 any(Boolean.class));
     catalogue.add(ClipboardSource.class, clipboardSource);
     setUpAfterCatalogueInitialization();
 
-    JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelector.CLIPBOARD_SOURCE_LABEL);
+    JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelectorComposer.CLIPBOARD_SOURCE_LABEL);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
     Mockito.reset(clipboardSource);                                             // bad practice, but the method is called at init time
-    JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelector.CLIPBOARD_AUTOMODE_NAME);
+    JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelectorComposer.CLIPBOARD_AUTOMODE_NAME);
     checkBox.check(false);
 
     verify(clipboardSource, atLeastOnce()).setAutoMode(false);

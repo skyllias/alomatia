@@ -7,8 +7,10 @@ import org.skyllias.alomatia.display.*;
 import org.skyllias.alomatia.filter.*;
 import org.skyllias.alomatia.i18n.*;
 
-/** Selector of the filter to apply to the original image. */
+/** Selector of the filter to apply to the original image.
+ *  @deprecated Use FilterSelectorComposer. */
 
+@Deprecated
 @SuppressWarnings("serial")
 public class FilterSelector extends BasicSelector<NamedFilter>
                             implements ActionListener

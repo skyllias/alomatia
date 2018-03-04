@@ -17,16 +17,12 @@ import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.source.*;
 import org.skyllias.alomatia.source.ScreenSource.*;
 import org.skyllias.alomatia.ui.CaptureFrameComposer.*;
+import org.skyllias.alomatia.ui.RadioSelector.*;
 
-/** Selector of the source of original images.
- *  <p>
- *  The type and last selected file and dir are stored as user preferences.
- *  @deprecated Use SourceSelectorComposer. */
+/** Composer of a panel with the controls to select a {@link ImageSource}.
+ *  TODO MAke it more OO by obtaining a component for each source type. */
 
-@Deprecated
-@SuppressWarnings("serial")
-public class SourceSelector extends BasicSelector<ImageSource>
-                            implements ActionListener
+public class SourceSelectorComposer implements RadioSelectorListener<ImageSource>
 {
   private static final String SOURCE_LABEL             = "source.selector.title";
   protected static final String NO_SOURCE_LABEL        = "source.none.name";    // protected to be accessible in tests
@@ -49,10 +45,12 @@ public class SourceSelector extends BasicSelector<ImageSource>
   protected static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
   protected static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
 
-  private ImageSource previousSource;
-  private CaptureFrameComposer captureFrameComposer;
+  private final LabelLocalizer labelLocalizer;
+  private final CaptureFrameComposer captureFrameComposer;
+  private final SourceCatalogue sourceCatalogue;
 
-  private JPanel optionsContainer = new JPanel();                               // no idea why (well, probably due to the use of alignments, see https://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#features), but if the options are added to the SourceSelector directly then it only stretches the right 50% of the space. TODO fix this
+  private RadioSelector<ImageSource> radioSelector;
+  private ImageSource previousSource;
 
   private Preferences preferences;
 
@@ -61,62 +59,102 @@ public class SourceSelector extends BasicSelector<ImageSource>
   /** Creates a new selector to choose from the known types in the catalogue.
    *  The unknown types are ignored, and the missing known types are gently skipped. */
 
-  public SourceSelector(LabelLocalizer localizer, SourceCatalogue catalogue,
+  public SourceSelectorComposer(LabelLocalizer localizer, SourceCatalogue catalogue,
                         CaptureFrameComposer captureFrame)
   {
-    this(getDefaultPreferences(), localizer, catalogue, captureFrame);
+    this(Preferences.userNodeForPackage(SourceSelectorComposer.class),
+         localizer, catalogue, captureFrame);
   }
 
 //------------------------------------------------------------------------------
 
-  /** Only meant for preferences injection in tests. */
+  /** Only meant for preferences injection in tests.
+   *  TODO Use preferences setter. */
 
-  protected SourceSelector(Preferences prefs, LabelLocalizer localizer,
-                           SourceCatalogue catalogue, CaptureFrameComposer captureFrame)
+  protected SourceSelectorComposer(Preferences prefs, LabelLocalizer localizer,
+                                   SourceCatalogue catalogue, CaptureFrameComposer captureFrame)
   {
-    super(localizer, SOURCE_LABEL);
-
+    labelLocalizer       = localizer;
     preferences          = prefs;
+    sourceCatalogue      = catalogue;
     captureFrameComposer = captureFrame;
 
-    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));                           // all this stuff is required for the SourceSelector to be centered
-    optionsContainer.setLayout(new BoxLayout(optionsContainer, BoxLayout.Y_AXIS));
-    add(optionsContainer);
-
-    VoidSource voidSource = catalogue.get(VoidSource.class);                    // TODO make it more OO by getting a component for each type of source
-    if (voidSource != null) addRadioObject(NO_SOURCE_LABEL, voidSource, optionsContainer);
-
-    DropSource dropSource = catalogue.get(DropSource.class);
-    if (dropSource != null) addRadioObject(DND_SOURCE_LABEL, dropSource, optionsContainer);
-
-    initClipboardSelector(catalogue);
-    initScreenSelector(catalogue);
-    initUrlSelector(catalogue);
-    initSingleFileSelector(catalogue);
-    initDirFileSelector(catalogue);
-
-    String previousSelectionCommand = getPreferences().get(PREFKEY_SOURCECOMMAND, null);
-    setSelectionByActionCommand(previousSelectionCommand);
-    previousSource = getCurrentSelection();
-    previousSource.setActive(true);                                             // set as active the source corresponding to the currently selected radio
+    radioSelector = new RadioSelector<>(labelLocalizer, this);
   }
 
 //==============================================================================
 
+  /** Returns a new component with the controls set up. */
+
+  public JComponent getComponent()
+  {
+    JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(SOURCE_LABEL));
+
+    initVoidSelector(panel);
+    initDropSelector(panel);
+    initClipboardSelector(panel);
+    initScreenSelector(panel);
+    initUrlSelector(panel);
+    initSingleFileSelector(panel);
+    initDirFileSelector(panel);
+
+    String previousSelectionCommand = preferences.get(PREFKEY_SOURCECOMMAND, null);
+    radioSelector.setSelectionByActionCommand(previousSelectionCommand);
+    previousSource = radioSelector.getCurrentSelection();
+    previousSource.setActive(true);                                             // set as active the source corresponding to the currently selected radio
+
+    return panel;
+  }
+
+//==============================================================================
+
+  /* Sets up the drop selector radio if the catalogue contains a DropSource. */
+
+  private void initVoidSelector(JPanel panel)
+  {
+    VoidSource voidSource = sourceCatalogue.get(VoidSource.class);
+    if (voidSource != null)
+    {
+      JPanel configPanel = new JPanel();
+      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
+      configPanel.add(radioSelector.createRadioObject(NO_SOURCE_LABEL, voidSource));
+      configPanel.add(Box.createHorizontalGlue());
+      panel.add(configPanel);
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up the drop selector radio if the catalogue contains a DropSource. */
+
+  private void initDropSelector(JPanel panel)
+  {
+    DropSource dropSource = sourceCatalogue.get(DropSource.class);
+    if (dropSource != null)
+    {
+      JPanel configPanel = new JPanel();
+      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
+      configPanel.add(radioSelector.createRadioObject(DND_SOURCE_LABEL, dropSource));
+      configPanel.add(Box.createHorizontalGlue());
+      panel.add(configPanel);
+    }
+  }
+
+//------------------------------------------------------------------------------
+
   /* Sets up the clipboard selector radio and checkbox if the catalogue contains a ClipboardSource. */
 
-  private void initClipboardSelector(SourceCatalogue catalogue)
+  private void initClipboardSelector(JPanel panel)
   {
-    final ClipboardSource clipboardSource = catalogue.get(ClipboardSource.class);
+    final ClipboardSource clipboardSource = sourceCatalogue.get(ClipboardSource.class);
     if (clipboardSource != null)
     {
-      boolean isAutoMode = getPreferences().getBoolean(PREFKEY_CLIPBOARDAUTO, true);
+      boolean isAutoMode = preferences.getBoolean(PREFKEY_CLIPBOARDAUTO, true);
 
       JPanel configPanel = new JPanel();
-      configPanel.setAlignmentX(LEFT_ALIGNMENT);
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
-      final JCheckBox autoCheckbox = new JCheckBox(getLabelLocalizer().getString(CLIPBOARD_AUTO_LABEL), isAutoMode);
+      final JCheckBox autoCheckbox = new JCheckBox(labelLocalizer.getString(CLIPBOARD_AUTO_LABEL), isAutoMode);
       autoCheckbox.setName(CLIPBOARD_AUTOMODE_NAME);
       autoCheckbox.setEnabled(false);
       autoCheckbox.addChangeListener(new ChangeListener()
@@ -126,7 +164,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
         {
           boolean newAutoMode = autoCheckbox.isSelected();
           clipboardSource.setAutoMode(newAutoMode);
-          getPreferences().putBoolean(PREFKEY_CLIPBOARDAUTO, newAutoMode);
+          preferences.putBoolean(PREFKEY_CLIPBOARDAUTO, newAutoMode);
         }
       });
 
@@ -134,9 +172,10 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
       ButtonSource wrapperSource = new ButtonSource(clipboardSource,
                                                     new CheckBoxEnabable(autoCheckbox), false);
-      addRadioObject(CLIPBOARD_SOURCE_LABEL, wrapperSource, configPanel);
+      configPanel.add(radioSelector.createRadioObject(CLIPBOARD_SOURCE_LABEL, wrapperSource));
       configPanel.add(autoCheckbox);
-      optionsContainer.add(configPanel);
+      configPanel.add(Box.createHorizontalGlue());
+      panel.add(configPanel);
     }
   }
 
@@ -144,16 +183,15 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
   /* Sets up the screen selector radio and button if the catalogue contains a ScreenSource. */
 
-  private void initScreenSelector(SourceCatalogue catalogue)
+  private void initScreenSelector(JPanel panel)
   {
-    final ScreenSource screenSource = catalogue.get(ScreenSource.class);
+    final ScreenSource screenSource = sourceCatalogue.get(ScreenSource.class);
     if (screenSource != null)
     {
       JPanel configPanel = new JPanel();
-      configPanel.setAlignmentX(LEFT_ALIGNMENT);
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
-      JButton screenButton = new JButton(getLabelLocalizer().getString(CAPTURE_LABEL));
+      JButton screenButton = new JButton(labelLocalizer.getString(CAPTURE_LABEL));
       screenButton.setEnabled(false);
       screenButton.addActionListener(new ActionListener()
       {
@@ -169,9 +207,10 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
       ButtonSource wrapperSource = new ButtonSource(screenSource,
                                                     new ButtonEnabable(screenButton));
-      addRadioObject(SCREEN_SOURCE_LABEL, wrapperSource, configPanel);
+      configPanel.add(radioSelector.createRadioObject(SCREEN_SOURCE_LABEL, wrapperSource));
       configPanel.add(screenButton);
-      optionsContainer.add(configPanel);
+      configPanel.add(Box.createHorizontalGlue());
+      panel.add(configPanel);
     }
   }
 
@@ -180,22 +219,21 @@ public class SourceSelector extends BasicSelector<ImageSource>
   /* Sets up the asynchronous URL selector radio and button, reading and writing
    * preferences to remember the last selection between executions. */
 
-  private void initUrlSelector(SourceCatalogue catalogue)
+  private void initUrlSelector(JPanel panel)
   {
-    final AsynchronousUrlSource urlSource = catalogue.get(AsynchronousUrlSource.class);
+    final AsynchronousUrlSource urlSource = sourceCatalogue.get(AsynchronousUrlSource.class);
     if (urlSource != null)
     {
-      UrlDownloadComponent downloadComponent = new UrlDownloadComponent(getLabelLocalizer(),
+      UrlDownloadComponent downloadComponent = new UrlDownloadComponent(labelLocalizer,
                                                                         urlSource);
       JPanel configPanel = new JPanel();
-      configPanel.setAlignmentX(LEFT_ALIGNMENT);
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
-//      ButtonSource wrapperSource = new ButtonSource(urlSource, downloadComponent, false);
-//      addRadioObject(URL_SOURCE_LABEL, wrapperSource, configPanel);
-//      configPanel.add(downloadComponent.getTextField());
-//      configPanel.add(downloadComponent.getButton());
-//      optionsContainer.add(configPanel);
+      ButtonSource wrapperSource = new ButtonSource(urlSource, downloadComponent, false);
+      configPanel.add(radioSelector.createRadioObject(URL_SOURCE_LABEL, wrapperSource));
+      configPanel.add(downloadComponent.getTextField());
+      configPanel.add(downloadComponent.getButton());
+      panel.add(configPanel);
     }
   }
 
@@ -204,18 +242,18 @@ public class SourceSelector extends BasicSelector<ImageSource>
   /* Sets up the single file selector radio and button, reading and writing
    * preferences to remember the last selection between executions. */
 
-  private void initSingleFileSelector(SourceCatalogue catalogue)
+  private void initSingleFileSelector(JPanel panel)
   {
-    final SingleFileSource fileSource = catalogue.get(SingleFileSource.class);
+    final SingleFileSource fileSource = sourceCatalogue.get(SingleFileSource.class);
     if (fileSource != null)
     {
       JFileChooser chooser   = new JFileChooser();
-      FileFilter imageFilter = new FileNameExtensionFilter(getLabelLocalizer().getString(IMAGE_FILES_FILTER),
+      FileFilter imageFilter = new FileNameExtensionFilter(labelLocalizer.getString(IMAGE_FILES_FILTER),
                                                            ImageIO.getReaderFileSuffixes());
       chooser.setAcceptAllFileFilterUsed(false);
       chooser.addChoosableFileFilter(imageFilter);
 
-      initFileSelector(fileSource, chooser, PREFKEY_DEFAULTFILE,
+      initFileSelector(fileSource, chooser, panel, PREFKEY_DEFAULTFILE,
                        FILE_LABEL, FILE_SOURCE_LABEL);
     }
   }
@@ -225,15 +263,15 @@ public class SourceSelector extends BasicSelector<ImageSource>
   /* Sets up the directory file selector radio and button, reading and writing
    * preferences to remember the last selection between executions. */
 
-  private void initDirFileSelector(SourceCatalogue catalogue)
+  private void initDirFileSelector(JPanel panel)
   {
-    final DirFileSource dirSource = catalogue.get(DirFileSource.class);
+    final DirFileSource dirSource = sourceCatalogue.get(DirFileSource.class);
     if (dirSource != null)
     {
       JFileChooser chooser = new JFileChooser();
       chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-      initFileSelector(dirSource, chooser, PREFKEY_DEFAULTDIR,
+      initFileSelector(dirSource, chooser, panel, PREFKEY_DEFAULTDIR,
                        DIR_LABEL, DIR_SOURCE_LABEL);
 
       addNavigationKeyListener(dirSource);
@@ -242,8 +280,8 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
 //------------------------------------------------------------------------------
 
-  /* Adds a radio button with sourceLabel localized as its label and used as its
-   * action command and with a PathTextField and a button next to it.
+  /* Adds to panel  a radio button with sourceLabel localized as its label and
+   * used as its action command and with a PathTextField and a button next to it.
    * If the preferences contain a value for preferencesKey, it is used as the
    * initial value for the field and for the chooser.
    * The button gets as label the localized value for buttonLabelKey and when
@@ -254,14 +292,14 @@ public class SourceSelector extends BasicSelector<ImageSource>
    * is selected then both are activated. */
 
   private void initFileSelector(final BasicFileSource fileSource, final JFileChooser chooser,
-                                final String preferencesKey, String buttonLabelKey, String sourceLabel)
+                                JPanel panel, final String preferencesKey,
+                                String buttonLabelKey, String sourceLabel)
   {
     JPanel configPanel = new JPanel();
-    configPanel.setAlignmentX(LEFT_ALIGNMENT);
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
     File initialFile       = null;
-    String initialFilePath = getPreferences().get(preferencesKey, null);
+    String initialFilePath = preferences.get(preferencesKey, null);
     if (initialFilePath != null) initialFile = new File(initialFilePath);
     fileSource.setFileSource(initialFile);
 
@@ -270,7 +308,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
     chooser.setSelectedFile(initialFile);
 
-    JButton fileButton = new JButton(getLabelLocalizer().getString(buttonLabelKey));
+    JButton fileButton = new JButton(labelLocalizer.getString(buttonLabelKey));
     fileButton.setEnabled(false);
     fileButton.addActionListener(new ActionListener()
     {
@@ -284,7 +322,7 @@ public class SourceSelector extends BasicSelector<ImageSource>
           fileSource.setFileSource(selectedFile);
           pathField.setText(selectedPath);
 
-          getPreferences().put(preferencesKey, selectedPath);
+          preferences.put(preferencesKey, selectedPath);
         }
       }
     });
@@ -292,10 +330,10 @@ public class SourceSelector extends BasicSelector<ImageSource>
     ButtonSource wrapperSource = new ButtonSource(fileSource,
                                                   new ButtonEnabable(fileButton),
                                                   false);
-    addRadioObject(sourceLabel, wrapperSource, configPanel);
+    configPanel.add(radioSelector.createRadioObject(sourceLabel, wrapperSource));
     configPanel.add(pathField);
     configPanel.add(fileButton);
-    optionsContainer.add(configPanel);
+    panel.add(configPanel);
   }
 
 //------------------------------------------------------------------------------
@@ -358,14 +396,14 @@ public class SourceSelector extends BasicSelector<ImageSource>
 
 //------------------------------------------------------------------------------
 
-  /** Sets the selected nonnull source as active so that it can begin producing
+  /** Sets the selected no-nnull source as active so that it can begin producing
    *  images to the display. The previous source get setActive(false) called.
    *  <p>
    *  The selection is stored in the user preferences. */
 
 
   @Override
-  protected void onSelectionChanged(ImageSource source)
+  public void onSelectionChanged(ImageSource source)
   {
     if (source != previousSource)
     {
@@ -374,20 +412,8 @@ public class SourceSelector extends BasicSelector<ImageSource>
     }
     previousSource = source;
 
-    getPreferences().put(PREFKEY_SOURCECOMMAND, getCurrentSelectionAsActionCommand());
+    preferences.put(PREFKEY_SOURCECOMMAND, radioSelector.getCurrentSelectionAsActionCommand());
   }
-
-//------------------------------------------------------------------------------
-
-  /* Shortcut method to get preferences by subclasses that store the last URL. */
-
-  private Preferences getPreferences() {return preferences;}
-
-//------------------------------------------------------------------------------
-
-  /* Returns the preferences to use when they are not externally injected. */
-
-  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(SourceSelector.class);}
 
 //------------------------------------------------------------------------------
 

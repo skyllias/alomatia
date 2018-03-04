@@ -40,7 +40,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
   private DisplayPanel displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
-  private FilterSelector filterSelector;                                        // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
+  private FilterSelectorComposer filterSelector;                                // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
 
   private FrameAdaptor frameAdaptor;                                            // the Swing component with the frame
 
@@ -68,7 +68,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
     frameAdaptor.addClosingFrameListener(this);
 
-    filterSelector = new FilterSelector(labelLocalizer, this, filterFactory);
+    filterSelector = new FilterSelectorComposer(labelLocalizer, this, filterFactory);
     setUpFilterKeyListeners(filterSelector);
     setOutputKeyListeners();
 
@@ -162,7 +162,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
    * for the nect 10 filters. The control modifier is avoided because it is
    * currently used to choose zoom. */
 
-  private void setUpFilterKeyListeners(FilterSelector filterSelector)
+  private void setUpFilterKeyListeners(FilterSelectorComposer filterSelector)
   {
     setUpNumberKeyListeners(filterSelector, 0, 0);
     setUpNumberKeyListeners(filterSelector, 10, KeyEvent.SHIFT_DOWN_MASK);
@@ -176,7 +176,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
    * when pressed with the passed modifiers, selects the (offset + i)th filter
    * in filterSelector. */
 
-  private void setUpNumberKeyListeners(final FilterSelector filterSelector,
+  private void setUpNumberKeyListeners(final FilterSelectorComposer filterSelector,
                                        int offset, int modifiers)
   {
     final String ACTION_NAME_PREFIX = "filterSelector";

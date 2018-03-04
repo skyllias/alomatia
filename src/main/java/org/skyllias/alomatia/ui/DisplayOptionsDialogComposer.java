@@ -34,7 +34,7 @@ public class DisplayOptionsDialogComposer
 
   private DisplayFrame ownerDisplayFrame;
   private LabelLocalizer labelLocalizer;
-  private FilterSelector filterSelector;
+  private FilterSelectorComposer filterSelector;
 
   private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
@@ -43,7 +43,7 @@ public class DisplayOptionsDialogComposer
   /** TODO Replace the filter selector with either a composer or a component. */
 
   public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrame ownerFrame,
-                                      FilterSelector selector)
+                                      FilterSelectorComposer selector)
   {
     labelLocalizer    = localizer;
     ownerDisplayFrame = ownerFrame;
@@ -84,16 +84,17 @@ public class DisplayOptionsDialogComposer
 
   private JPanel getSelectorsPanel()
   {
-    ZoomSelector zoomSelector = new ZoomSelector(labelLocalizer, ownerDisplayFrame.getDisplayPanel());
+    ZoomSelectorComposer zoomComposer = new ZoomSelectorComposer(labelLocalizer, ownerDisplayFrame.getDisplayPanel());
+    JComponent zoomPanel              = zoomComposer.getComponent();
 
     JPanel selectorsPanel     = new JPanel();
-    JScrollPane filtersScroll = new JScrollPane(filterSelector);
+    JScrollPane filtersScroll = new JScrollPane(filterSelector.getComponent());
     filtersScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     filtersScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     filtersScroll.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
-    filtersScroll.setPreferredSize(zoomSelector.getPreferredSize());
+    filtersScroll.setPreferredSize(zoomPanel.getPreferredSize());
     selectorsPanel.add(filtersScroll);
-    selectorsPanel.add(zoomSelector);
+    selectorsPanel.add(zoomPanel);
 
     return selectorsPanel;
   }
