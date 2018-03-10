@@ -7,6 +7,7 @@ import java.util.*;
 import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
 import org.skyllias.alomatia.filter.buffered.distortion.*;
+import org.skyllias.alomatia.filter.buffered.distortion.radial.*;
 import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
