@@ -19,8 +19,7 @@ import org.skyllias.alomatia.source.AsynchronousUrlSource.*;
 
 /** AssertJ does not support writing strings with chars that are typed with
  *  modifiers (shift, alt, etc.), so there is not much effort placed in restoring
- *  previous values or using realistic URLs.
- *  TODO Consider testing Preferences. */
+ *  previous values or using realistic URLs. */
 
 public class UrlDownloadComponentTest
 {
@@ -45,12 +44,16 @@ public class UrlDownloadComponentTest
   {
     MockitoAnnotations.initMocks(this);
 
+    when(preferences.get(eq(UrlDownloadComponent.PREFKEY_DEFAULTURL), any(String.class))).thenReturn(null);
+
     JPanel container = GuiActionRunner.execute(new Callable<JPanel>()
     {
       @Override
       public JPanel call() throws Exception
       {
-        downloadComponent   = new UrlDownloadComponent(preferences, new KeyLabelLocalizer(), source);
+        downloadComponent = new UrlDownloadComponent(new KeyLabelLocalizer(), source);
+        downloadComponent.setPreferences(preferences);
+
         JButton button      = downloadComponent.getButton();
         JTextField urlField = downloadComponent.getTextField();
         JPanel container    = new JPanel();

@@ -18,8 +18,7 @@ import org.skyllias.alomatia.display.*;
  *  original image is shown without change. */
 
 @SuppressWarnings("serial")
-public class DisplayPanel extends JScrollPane
-                          implements ImageDisplay, ResizableDisplay, ComponentListener
+public class DisplayPanel implements ImageDisplay, ResizableDisplay, ComponentListener
 {
   private static final int UNAVAILABLE_SIZE = -1;                               // value returned by Image.getWidth(ImageObserver) and getHeight() when they are still unavailable
   private static final int SCROLL_INCREMENT = 16;
@@ -31,6 +30,7 @@ public class DisplayPanel extends JScrollPane
   private DisplayFitPolicy fitType = DisplayFitPolicy.FREE;
   private double scale = 1;                                                     // zoom factor: 1: normal size; <1: smaller; >1: bigger
 
+  private JScrollPane component;
   private ImagePanel imagePanel = new ImagePanel();
 
   private Executor executor = Executors.newSingleThreadExecutor();              // filter application can be very slow, so operations that imply it are thrown in separate threads. Using a single thread ensures that no race conditions will happen, but if this class were to be tested, the Executor implementation could be changed
@@ -41,16 +41,17 @@ public class DisplayPanel extends JScrollPane
 
   public DisplayPanel()
   {
-    setDoubleBuffered(true);
-    setViewportView(imagePanel);
+    component = new JScrollPane();
+    component.setDoubleBuffered(true);
+    component.setViewportView(imagePanel);
 
-    setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_ALWAYS);                  // it would be much nicer to use the default _AS_NEEDED policies, but then the calculations getResizeFactorToFit would have to account for the scrollbars that would appear or disappear, which is not worth the effort for the moment
-    setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
+    component.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);        // it would be much nicer to use the default _AS_NEEDED policies, but then the calculations in getResizeFactorToFit would have to account for the scrollbars that would appear or disappear, which is not worth the effort for the moment
+    component.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-    getHorizontalScrollBar().setUnitIncrement(SCROLL_INCREMENT);
-    getVerticalScrollBar().setUnitIncrement(SCROLL_INCREMENT);
+    component.getHorizontalScrollBar().setUnitIncrement(SCROLL_INCREMENT);
+    component.getVerticalScrollBar().setUnitIncrement(SCROLL_INCREMENT);
 
-    addComponentListener(this);
+    component.addComponentListener(this);
   }
 
 //==============================================================================
@@ -136,6 +137,12 @@ public class DisplayPanel extends JScrollPane
 
 //------------------------------------------------------------------------------
 
+  /** Returns the UI component used to display images. */
+
+  public JComponent getComponent() {return component;}
+
+//------------------------------------------------------------------------------
+
   /* Calculates the proper scale for the image to fit the viewport according to
    * the current fitType.
    * If fitType is FREE, nothing happens. Else, the new zoom factor is calculated
@@ -167,8 +174,8 @@ public class DisplayPanel extends JScrollPane
         if (imgHeight != UNAVAILABLE_SIZE && imgHeight != 0 &&
             imgWidth != UNAVAILABLE_SIZE && imgWidth != 0)
         {
-          int portHeight      = getViewport().getHeight();                      // these lines assume that the scrollbars will not appear or disappear after the resize
-          int portWidth       = getViewport().getWidth();
+          int portHeight      = component.getViewport().getHeight();            // these lines assume that the scrollbars will not appear or disappear after the resize
+          int portWidth       = component.getViewport().getWidth();
           double heightFactor = ((double) portHeight) / (double) imgHeight;     // amount to multiply the image by to fit the viewport
           double widthFactor  = ((double) portWidth) / (double) imgWidth;
 
@@ -193,7 +200,7 @@ public class DisplayPanel extends JScrollPane
   private void repaintAfterResize()
   {
     imagePanel.setSize(getImageSize());                                         // this makes the parent recalculate the scrollbars
-    repaint();                                                                  // this updates the image contents
+    component.repaint();                                                        // this updates the image contents
   }
 
 //------------------------------------------------------------------------------
@@ -231,18 +238,18 @@ public class DisplayPanel extends JScrollPane
   {
     if (originalImage != null)
     {
-      setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
       filteredImage = originalImage;
       if (filter != null)
       {
         ImageProducer producer = new FilteredImageSource(originalImage.getSource(), filter);    // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
-        filteredImage          = createImage(producer);
+        filteredImage          = component.createImage(producer);
       }
 
       filteredImage.getWidth(null);                                             // what really takes time in slow filters and big images is not the filtering lines above, because the image is not really generated until one method like getWidth() is called
 
-      setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
   }
 
