@@ -13,17 +13,7 @@ public class FramePolicy
   private static final String PREFKEY_INTERNALFRAMES  = "useInternalFrames";
   private static final boolean DEFAULT_INTERNALFRAMES = false;
 
-  private Preferences preferences;
-
-//==============================================================================
-
-  public FramePolicy() {this(getDefaultPreferences());}
-
-//------------------------------------------------------------------------------
-
-  /** Just for testing purposes. */
-
-  protected FramePolicy(Preferences prefs) {preferences = prefs;}
+  private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
@@ -32,14 +22,14 @@ public class FramePolicy
    *  This value is modified by means of
    *  {@link FramePolicy#setUsingInternalFramesNextTime(boolean)}, but the
    *  behaviour should not really change until next execution.
-   *  If a VM argument is passed, it's boolean value is used; otherwise, the 
+   *  If a VM argument is passed, it's boolean value is used; otherwise, the
    *  preferences are looked up. */
 
   public boolean isUsingInternalFrames()
   {
     String vmArgument = System.getProperty(VM_ARG_INTERNALFRAMES);
     if (vmArgument != null) return Boolean.parseBoolean(vmArgument);
-    
+
     return preferences.getBoolean(PREFKEY_INTERNALFRAMES, DEFAULT_INTERNALFRAMES);
   }
 
@@ -52,12 +42,6 @@ public class FramePolicy
   {
     preferences.putBoolean(PREFKEY_INTERNALFRAMES, internal);
   }
-
-//------------------------------------------------------------------------------
-
-  /* Returns the preferences to use when they are not externally injected. */
-
-  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(FramePolicy.class);}
 
 //------------------------------------------------------------------------------
 
