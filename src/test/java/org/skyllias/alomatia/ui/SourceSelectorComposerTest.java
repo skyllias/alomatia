@@ -134,11 +134,10 @@ public class SourceSelectorComposerTest
     JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelectorComposer.CLIPBOARD_SOURCE_LABEL);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
-    Mockito.reset(clipboardSource);                                             // bad practice, but the method is called at init time
     JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelectorComposer.CLIPBOARD_AUTOMODE_NAME);
     checkBox.check(true);
 
-    verify(clipboardSource, atLeastOnce()).setAutoMode(true);
+    verify(clipboardSource, atLeastOnce()).setAutoMode(true);                   // evey mouse action (press, release, hover) fires a checkbox state change event
   }
 
   @Test
@@ -152,7 +151,6 @@ public class SourceSelectorComposerTest
     JRadioButtonFixture radioButton = frameFixture.radioButton(SourceSelectorComposer.CLIPBOARD_SOURCE_LABEL);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
-    Mockito.reset(clipboardSource);                                             // bad practice, but the method is called at init time
     JCheckBoxFixture checkBox = frameFixture.checkBox(SourceSelectorComposer.CLIPBOARD_AUTOMODE_NAME);
     checkBox.check(false);
 
