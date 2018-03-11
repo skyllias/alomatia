@@ -8,6 +8,7 @@ import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
 import org.skyllias.alomatia.filter.buffered.distortion.*;
 import org.skyllias.alomatia.filter.buffered.distortion.radial.*;
+import org.skyllias.alomatia.filter.buffered.distortion.wave.*;
 import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
@@ -192,6 +193,25 @@ public class FixedFilterFactory implements FilterFactory
   private static final String REDUCE_M_FILTER_NAME   = "filter.distort.reductor.m.name";
   private static final String REDUCE_L_FILTER_NAME   = "filter.distort.reductor.l.name";
   private static final String REDUCE_XL_FILTER_NAME  = "filter.distort.reductor.xl.name";
+  private static final String WAVE_HLST_FILTER_NAME  = "filter.distort.wave.hor+long+slow+thin.name";
+  private static final String WAVE_HLSW_FILTER_NAME  = "filter.distort.wave.hor+long+slow+wide.name";
+  private static final String WAVE_HLFT_FILTER_NAME  = "filter.distort.wave.hor+long+fast+thin.name";
+  private static final String WAVE_HLFW_FILTER_NAME  = "filter.distort.wave.hor+long+fast+wide.name";
+  private static final String WAVE_HPST_FILTER_NAME  = "filter.distort.wave.hor+perp+slow+thin.name";
+  private static final String WAVE_HPSW_FILTER_NAME  = "filter.distort.wave.hor+perp+slow+wide.name";
+  private static final String WAVE_HPFT_FILTER_NAME  = "filter.distort.wave.hor+perp+fast+thin.name";
+  private static final String WAVE_HPFW_FILTER_NAME  = "filter.distort.wave.hor+perp+fast+wide.name";
+  private static final String WAVE_VLST_FILTER_NAME  = "filter.distort.wave.ver+long+slow+thin.name";
+  private static final String WAVE_VLSW_FILTER_NAME  = "filter.distort.wave.ver+long+slow+wide.name";
+  private static final String WAVE_VLFT_FILTER_NAME  = "filter.distort.wave.ver+long+fast+thin.name";
+  private static final String WAVE_VLFW_FILTER_NAME  = "filter.distort.wave.ver+long+fast+wide.name";
+  private static final String WAVE_VPST_FILTER_NAME  = "filter.distort.wave.ver+perp+slow+thin.name";
+  private static final String WAVE_VPSW_FILTER_NAME  = "filter.distort.wave.ver+perp+slow+wide.name";
+  private static final String WAVE_VPFT_FILTER_NAME  = "filter.distort.wave.ver+perp+fast+thin.name";
+  private static final String WAVE_VPFW_FILTER_NAME  = "filter.distort.wave.ver+perp+fast+wide.name";
+  private static final String WAVE_OBLO_FILTER_NAME  = "filter.distort.wave.obl+long.name";
+  private static final String WAVE_OBPE_FILTER_NAME  = "filter.distort.wave.obl+perp.name";
+  private static final String WAVE_ROUGH_FILTER_NAME = "filter.distort.wave.rough.name";
   private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
   private static final String INST_EARBY_FILTER_NAME = "Earby lird";
   private static final String INST_TOGAM_FILTER_NAME = "Thogam";
@@ -394,6 +414,32 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(1, 4), true), new BilinearInterpolator())),     REDUCE_M_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(2, 6), true), new BilinearInterpolator())),     REDUCE_L_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(4, 6), false), new BilinearInterpolator())),    REDUCE_XL_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 500, 30), new BilinearInterpolator())), WAVE_HLST_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 500, 60), new BilinearInterpolator())), WAVE_HLSW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 300, 20), new BilinearInterpolator())), WAVE_HLFT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 300, 35), new BilinearInterpolator())), WAVE_HLFW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 750, 20), new BilinearInterpolator())), WAVE_HPST_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 750, 60), new BilinearInterpolator())), WAVE_HPSW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 300, 10), new BilinearInterpolator())), WAVE_HPFT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 300, 35), new BilinearInterpolator())), WAVE_HPFW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 500, 30), new BilinearInterpolator())), WAVE_VLST_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 500, 60), new BilinearInterpolator())), WAVE_VLSW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 300, 20), new BilinearInterpolator())), WAVE_VLFT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 300, 35), new BilinearInterpolator())), WAVE_VLFW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 750, 20), new BilinearInterpolator())), WAVE_VPST_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 750, 60), new BilinearInterpolator())), WAVE_VPSW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 300, 10), new BilinearInterpolator())), WAVE_VPFT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 300, 35), new BilinearInterpolator())), WAVE_VPFW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0.785f, 0, 450, 45), new BilinearInterpolator())), WAVE_OBLO_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(-0.785f, 1.5708f, 500, 60), new BilinearInterpolator())), WAVE_OBPE_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new DistortionChain(new IsotropicWaveDistortion(0, 1.57f, 400, 30),
+                                                                                                                     new IsotropicWaveDistortion(1, .57f, 200, 20),
+                                                                                                                     new IsotropicWaveDistortion(1.57f, 1.57f, 800, 50),
+                                                                                                                     new IsotropicWaveDistortion(-1, 1.57f, 90, 15),
+                                                                                                                     new IsotropicWaveDistortion(-0.2f, -0.3f, 1000, 30)),
+                                                                                                 new BilinearInterpolator())), WAVE_ROUGH_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
