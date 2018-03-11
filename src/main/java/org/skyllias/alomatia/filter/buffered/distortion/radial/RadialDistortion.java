@@ -1,8 +1,10 @@
 
-package org.skyllias.alomatia.filter.buffered.distortion;
+package org.skyllias.alomatia.filter.buffered.distortion.radial;
 
 import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
+
+import org.skyllias.alomatia.filter.buffered.distortion.*;
 
 /** {@link Distortion} that enlarges the central region of images with circular
  *  symmetry. */

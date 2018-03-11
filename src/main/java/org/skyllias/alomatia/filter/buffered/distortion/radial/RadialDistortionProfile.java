@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered.distortion;
+package org.skyllias.alomatia.filter.buffered.distortion.radial;
 
 /** Function that tells how points along a radius displace in a radial distortion. */
 

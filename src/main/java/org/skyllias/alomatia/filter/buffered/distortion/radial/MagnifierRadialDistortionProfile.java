@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered.distortion;
+package org.skyllias.alomatia.filter.buffered.distortion.radial;
 
 /** {@link RadialDistortionProfile} that makes the central region bigger. */
 
