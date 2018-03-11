@@ -24,52 +24,39 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
   protected static final String BUTTON_CANCEL_LABEL  = "source.selector.url.button.cancel";
   protected static final String ERROR_TOOLTIP_PREFIX = "source.selector.url.field.tooltip.error.";
 
-  private static final String PREFKEY_DEFAULTURL = "defaultSourceUrl";
+  protected static final String PREFKEY_DEFAULTURL = "defaultSourceUrl";
 
   private AsynchronousUrlSource urlSource;
   private JButton button;
   private UrlTextField urlField;
   private boolean isDownloading = false;
   private LabelLocalizer labelLocalizer;
-  private Preferences preferences;
+
+  private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
   public UrlDownloadComponent(LabelLocalizer localizer, AsynchronousUrlSource source)
   {
-    this(getDefaultPreferences(), localizer, source);
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Only meant for preferences injection in tests. */
-
-  protected UrlDownloadComponent(Preferences prefs, LabelLocalizer localizer, AsynchronousUrlSource source)
-  {
-    preferences = prefs;
-
     labelLocalizer = localizer;
     urlSource       = source;
-
-    button   = new JButton();
-    urlField = new UrlTextField();
-
-    enableComponents(false);
-    button.setText(labelLocalizer.getString(BUTTON_READY_LABEL));
-
-    String initialUrl = getPreferences().get(PREFKEY_DEFAULTURL, null);
-    if (initialUrl != null) urlField.setText(initialUrl);
-
-    Action urlAction = new UrlAction();
-    button.addActionListener(urlAction);
-    urlField.addActionListener(urlAction);                                      // a JTextField action listener is automatically fired when the enter key is pressed
   }
 
 //==============================================================================
 
-  public JButton getButton() {return button;}
+  public JButton getButton()
+  {
+    if (button == null) init();
 
-  public JTextField getTextField() {return urlField;}
+    return button;
+  }
+
+  public JTextField getTextField()
+  {
+    if (urlField == null) init();
+
+    return urlField;
+  }
 
 //------------------------------------------------------------------------------
 
@@ -80,6 +67,27 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
 
     if (active) startDownload(getUrl());
     else        cancelDownload();
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Instantiates and sets up the components, assuming the preferences have
+   * already been overridden if necessary. */
+
+  private void init()
+  {
+    button   = new JButton();
+    urlField = new UrlTextField();
+
+    enableComponents(false);
+    button.setText(labelLocalizer.getString(BUTTON_READY_LABEL));
+
+    String initialUrl = preferences.get(PREFKEY_DEFAULTURL, null);
+    if (initialUrl != null) urlField.setText(initialUrl);
+
+    Action urlAction = new UrlAction();
+    button.addActionListener(urlAction);
+    urlField.addActionListener(urlAction);                                      // a JTextField action listener is automatically fired when the enter key is pressed
   }
 
 //------------------------------------------------------------------------------
@@ -168,15 +176,9 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
 
 //------------------------------------------------------------------------------
 
-  /* Shortcut method to get preferences by subclasses that store the last URL. */
+  /** Menat only for testing. */
 
-  private Preferences getPreferences() {return preferences;}
-
-//------------------------------------------------------------------------------
-
-  /* Returns the preferences to use when they are not externally injected. */
-
-  private static Preferences getDefaultPreferences() {return Preferences.userNodeForPackage(UrlDownloadComponent.class);}
+  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
@@ -210,7 +212,7 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
         String url = getUrl();
         startDownload(url);
 
-        getPreferences().put(PREFKEY_DEFAULTURL, url);
+        preferences.put(PREFKEY_DEFAULTURL, url);
       }
     }
   }
