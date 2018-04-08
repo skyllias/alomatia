@@ -8,6 +8,7 @@ import org.skyllias.alomatia.filter.affine.*;
 import org.skyllias.alomatia.filter.buffered.*;
 import org.skyllias.alomatia.filter.buffered.distortion.*;
 import org.skyllias.alomatia.filter.buffered.distortion.radial.*;
+import org.skyllias.alomatia.filter.buffered.distortion.rotational.*;
 import org.skyllias.alomatia.filter.buffered.distortion.wave.*;
 import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
@@ -212,6 +213,18 @@ public class FixedFilterFactory implements FilterFactory
   private static final String WAVE_OBLO_FILTER_NAME  = "filter.distort.wave.obl+long.name";
   private static final String WAVE_OBPE_FILTER_NAME  = "filter.distort.wave.obl+perp.name";
   private static final String WAVE_ROUGH_FILTER_NAME = "filter.distort.wave.rough.name";
+  private static final String TILT_RIGHT_FILTER_NAME = "filter.distort.tilt.right.name";
+  private static final String TILT_LEFT_FILTER_NAME  = "filter.distort.tilt.left.name";
+  private static final String TURNING_XS_FILTER_NAME = "filter.distort.turning.xs.name";
+  private static final String TURNING_S_FILTER_NAME  = "filter.distort.turning.s.name";
+  private static final String TURNING_M_FILTER_NAME  = "filter.distort.turning.m.name";
+  private static final String TURNING_L_FILTER_NAME  = "filter.distort.turning.l.name";
+  private static final String TURNING_XL_FILTER_NAME = "filter.distort.turning.xl.name";
+  private static final String WHIRL_XS_FILTER_NAME   = "filter.distort.whirlpool.xs.name";
+  private static final String WHIRL_S_FILTER_NAME    = "filter.distort.whirlpool.s.name";
+  private static final String WHIRL_M_FILTER_NAME    = "filter.distort.whirlpool.m.name";
+  private static final String WHIRL_L_FILTER_NAME    = "filter.distort.whirlpool.l.name";
+  private static final String WHIRL_XL_FILTER_NAME   = "filter.distort.whirlpool.xl.name";
   private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
   private static final String INST_EARBY_FILTER_NAME = "Earby lird";
   private static final String INST_TOGAM_FILTER_NAME = "Thogam";
@@ -433,6 +446,21 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 300, 35), new BilinearInterpolator())), WAVE_VPFW_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0.785f, 0, 450, 45), new BilinearInterpolator())), WAVE_OBLO_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(-0.785f, 1.5708f, 500, 60), new BilinearInterpolator())), WAVE_OBPE_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new ConstantRotationalDistortionProfile(-0.1f), true), new BilinearInterpolator())), TILT_RIGHT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new ConstantRotationalDistortionProfile(0.1f), true), new BilinearInterpolator())),  TILT_LEFT_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(0.2f), true), new BilinearInterpolator())),  WHIRL_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(0.4f), true), new BilinearInterpolator())),  WHIRL_S_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(0.6f), false), new BilinearInterpolator())), WHIRL_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(1.0f), false), new BilinearInterpolator())), WHIRL_L_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(1.5f), false), new BilinearInterpolator())), WHIRL_XL_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.1f), false), new BilinearInterpolator())), TURNING_XS_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.3f), false), new BilinearInterpolator())), TURNING_S_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.4f), true), new BilinearInterpolator())),  TURNING_M_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.7f), true), new BilinearInterpolator())),  TURNING_L_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(1.2f), true), new BilinearInterpolator())),  TURNING_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new DistortionChain(new IsotropicWaveDistortion(0, 1.57f, 400, 30),
                                                                                                                      new IsotropicWaveDistortion(1, .57f, 200, 20),
