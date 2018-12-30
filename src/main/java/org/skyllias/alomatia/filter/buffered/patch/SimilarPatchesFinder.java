@@ -50,7 +50,8 @@ public class SimilarPatchesFinder
 
 //------------------------------------------------------------------------------
 
-  /* Returns one pixel for each in the image. */
+  /* Returns one pixel for each in the image.
+   * It could be parallelized. */
 
   private Set<Pixel> getAllPixels(BufferedImage image)
   {
@@ -70,13 +71,13 @@ public class SimilarPatchesFinder
   /* Iteratively takes pixels from pendingPixels, adds them to patch, removes
    * them from unassignedPixels, and adds to pendingPixels its neighbour pixels
    * from image if they are similar.
-   * It ends when there are no more pending pixels. */
+   * It ends when there are no more pending pixels.
+   * It does not seem easily parallelizable. */
 
   private void transferSimilarPixels(BufferedImage image, Patch patch,
                                      Set<Pixel> pendingPixels,
                                      Set<Pixel> unassignedPixels)
   {
-//System.out.println("transferSimilarPixels " + pendingPixels.size() + ", " + unassignedPixels.size());
     while (!pendingPixels.isEmpty())
     {
       Pixel currentPendingPixel = pendingPixels.iterator().next();
@@ -131,7 +132,6 @@ public class SimilarPatchesFinder
 
   private boolean areSimilar(Pixel aPixel, Pixel anotherPixel)
   {
-//System.out.println("areSimilar " + aPixel + ", " + anotherPixel + " = " + similarity.areSimilar(aPixel.getColour(), anotherPixel.getColour()));
     return similarity.areSimilar(aPixel.getColour(), anotherPixel.getColour());
   }
 
