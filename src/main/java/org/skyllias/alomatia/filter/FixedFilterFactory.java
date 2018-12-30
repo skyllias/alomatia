@@ -10,6 +10,7 @@ import org.skyllias.alomatia.filter.buffered.distortion.*;
 import org.skyllias.alomatia.filter.buffered.distortion.radial.*;
 import org.skyllias.alomatia.filter.buffered.distortion.rotational.*;
 import org.skyllias.alomatia.filter.buffered.distortion.wave.*;
+import org.skyllias.alomatia.filter.buffered.map.*;
 import org.skyllias.alomatia.filter.buffered.vignette.*;
 import org.skyllias.alomatia.filter.compose.*;
 import org.skyllias.alomatia.filter.convolve.*;
@@ -225,6 +226,10 @@ public class FixedFilterFactory implements FilterFactory
   private static final String WHIRL_M_FILTER_NAME    = "filter.distort.whirlpool.m.name";
   private static final String WHIRL_L_FILTER_NAME    = "filter.distort.whirlpool.l.name";
   private static final String WHIRL_XL_FILTER_NAME   = "filter.distort.whirlpool.xl.name";
+  private static final String AXE_S_S_FILTER_NAME    = "filter.axe.s+s.name";
+  private static final String AXE_S_L_FILTER_NAME    = "filter.axe.s+l.name";
+  private static final String AXE_L_S_FILTER_NAME    = "filter.axe.l+s.name";
+  private static final String AXE_L_L_FILTER_NAME    = "filter.axe.l+l.name";
   private static final String INST_ALOPO_FILTER_NAME = "Allopo";                // these are proper names and needn't i18n
   private static final String INST_EARBY_FILTER_NAME = "Earby lird";
   private static final String INST_TOGAM_FILTER_NAME = "Thogam";
@@ -273,6 +278,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(VignetteFilterFactory.forRound(), VIGNETTE_R_FILTER_NAME));
     filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_NAME));
     filters.add(new NamedFilter(VignetteFilterFactory.forEdges(), VIGNETTE_E_FILTER_NAME));
+
+    filters.add(new NamedFilter(new AxeColoursFilter(4, 4, new DiagonalMap()), AXE_S_S_FILTER_NAME));
+    filters.add(new NamedFilter(new AxeColoursFilter(4, 6, new CrossedMap()),  AXE_S_L_FILTER_NAME));
+    filters.add(new NamedFilter(new AxeColoursFilter(7, 4, new AngularMap()),  AXE_L_S_FILTER_NAME));
+    filters.add(new NamedFilter(new AxeColoursFilter(7, 6, new RadialMap()),   AXE_L_L_FILTER_NAME));
 
     filters.add(new NamedFilter(new HueShiftFilter(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(new HueShiftFilter(-0.05f), DEC_HUE_L_FILTER_NAME));
