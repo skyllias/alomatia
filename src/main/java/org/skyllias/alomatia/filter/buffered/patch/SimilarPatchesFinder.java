@@ -33,7 +33,7 @@ public class SimilarPatchesFinder
   {
     Collection<Patch> patches    = new LinkedList<>();
     Set<Pixel> unassignedPixels  = getAllPixels(image);
-    while (!unassignedPixels.isEmpty())
+    while (!unassignedPixels.isEmpty())                                         // this cannot be parallelized, or a patch may end up divided in two if processed beginning with two pixels
     {
       Pixel firstPixelForPatch = unassignedPixels.iterator().next();
 
@@ -88,11 +88,11 @@ public class SimilarPatchesFinder
       Collection<Pixel> neighbours = getNeighbours(currentPendingPixel, image);
       for (Pixel currentNeighbour : neighbours)
       {
-        if (areSimilar(currentPendingPixel, currentNeighbour) &&
-            unassignedPixels.contains(currentNeighbour))
-        {
-          pendingPixels.add(currentNeighbour);
-        }
+            if (areSimilar(currentPendingPixel, currentNeighbour) &&
+                unassignedPixels.contains(currentNeighbour))
+            {
+              pendingPixels.add(currentNeighbour);
+            }
       }
     }
   }
@@ -106,14 +106,14 @@ public class SimilarPatchesFinder
   private Collection<Pixel> getNeighbours(Pixel pixel, BufferedImage image)
   {
     Point point                  = pixel.getCoordinates();
-    Collection<Pixel> neighbours = new LinkedList<>();
-
-    if (point.x > 0) neighbours.add(getPixelAt(new Point(point.x - 1, point.y), image));
-    if (point.y > 0) neighbours.add(getPixelAt(new Point(point.x, point.y - 1), image));
-
-    if (point.x < image.getWidth() - 1)  neighbours.add(getPixelAt(new Point(point.x + 1, point.y), image));
-    if (point.y < image.getHeight() - 1) neighbours.add(getPixelAt(new Point(point.x, point.y + 1), image));
-
+      Collection<Pixel> neighbours = new LinkedList<>();
+  
+      if (point.x > 0) neighbours.add(getPixelAt(new Point(point.x - 1, point.y), image));
+      if (point.y > 0) neighbours.add(getPixelAt(new Point(point.x, point.y - 1), image));
+  
+      if (point.x < image.getWidth() - 1)  neighbours.add(getPixelAt(new Point(point.x + 1, point.y), image));
+      if (point.y < image.getHeight() - 1) neighbours.add(getPixelAt(new Point(point.x, point.y + 1), image));
+  
     return neighbours;
   }
 

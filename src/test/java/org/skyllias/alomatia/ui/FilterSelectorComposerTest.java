@@ -82,7 +82,7 @@ public class FilterSelectorComposerTest
   }
 
   /* TODO test all filters */
-
+  
   @Test
   public void shouldSetBrighterFilterWhenLighterOptionSelected()
   {
@@ -90,5 +90,50 @@ public class FilterSelectorComposerTest
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
     verify(filterableDisplay, times(1)).setImageFilter(brighterFilter);
+  }
+  
+  @Test
+  public void shouldHideAllWhenNoSearchMatches()
+  {
+    shouldShowOrHideSearchedFilters("inexisting text", false, false, false);
+  }
+  
+  @Test
+  public void shouldShowAllWhenSearchMatches()
+  {
+    shouldShowOrHideSearchedFilters("filter", true, true, true);
+  }
+  
+  @Test
+  public void shouldShowAllWhenNoSearch()
+  {
+    shouldShowOrHideSearchedFilters("", true, true, true);
+  }
+
+  @Test
+  public void shouldShowSomwWhenSearchMatches()
+  {
+    shouldShowOrHideSearchedFilters("2", false, true, false);
+  }
+
+  private void shouldShowOrHideSearchedFilters(String searchText, boolean nullRadioVisible, 
+                                               boolean lighterRadioVisible, boolean darkerRadioVisible)
+  {
+    JRadioButtonFixture radioButton1 = frameFixture.radioButton(NO_FILTER_NAME);
+    JRadioButtonFixture radioButton2 = frameFixture.radioButton(LIGHTER_FILTER_NAME);
+    JRadioButtonFixture radioButton3 = frameFixture.radioButton(DARKER_FILTER_NAME);
+    
+    JTextComponentFixture searchField = frameFixture.textBox("filter.selector.search");
+    searchField.enterText(searchText);
+    
+    requireVisible(radioButton1, nullRadioVisible);
+    requireVisible(radioButton2, lighterRadioVisible);
+    requireVisible(radioButton3, darkerRadioVisible);
+  }
+
+  private void requireVisible(JRadioButtonFixture radioButton, boolean visible)
+  {
+    if (visible) radioButton.requireVisible();
+    else         radioButton.requireNotVisible();
   }
 }
