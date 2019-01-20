@@ -14,6 +14,7 @@ public class BasicControlPanelComposer
   public JPanel getPanel(String title)
   {
     JPanel panel = new JPanel();
+    panel.setName(title);
 
     panel.setBorder(BorderFactory.createTitledBorder(title));
 
