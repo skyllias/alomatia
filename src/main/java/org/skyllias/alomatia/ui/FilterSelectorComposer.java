@@ -32,7 +32,7 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
   private final FilterableDisplay filterableDisplay;
   private final FilterFactory factory;
 
-  private RadioSelector<NamedFilter> radioSelector;
+  private RadioSelector<JRadioButton, NamedFilter> radioSelector;
 
 //==============================================================================
 
@@ -46,7 +46,7 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
     filterableDisplay = imageDisplay;
     factory           = filterFactory;
 
-    radioSelector = new RadioSelector<>(labelLocalizer, this);
+    radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, this);
   }
 
 //==============================================================================
