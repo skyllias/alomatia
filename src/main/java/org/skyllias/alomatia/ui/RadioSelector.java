@@ -8,27 +8,35 @@ import javax.swing.*;
 
 import org.skyllias.alomatia.i18n.*;
 
-/** Creator of {@link JRadioButton}s belonging to the same group and associated
+/** Creator of radio buttons belonging to the same group and associated
  *  to an object of some generic type SELECTABLE. When a radio button is
- *  selected, a RadioSelectorListener is notified. */
+ *  selected, a RadioSelectorListener is notified.
+ *  Since these radio buttons can be used in different components (like panels
+ *  and menus), this class is also generic in regards to the Swing component
+ *  to use. Most times it will be a JRadioButton, but it may be a
+ *  JRadioButtonMenuItem as well. */
 
-public class RadioSelector<SELECTABLE> implements ActionListener
+public class RadioSelector<RADIO extends AbstractButton, SELECTABLE> implements ActionListener
 {
+  private final Class<RADIO> radioClass;
+
   private ButtonGroup radioGroup = new ButtonGroup();                           // group for all radio buttons of this selector
 
-  private Map<String, SELECTABLE> commandObjects     = new LinkedHashMap<String, SELECTABLE>();       // radio buttons do not support referencing objects, only string as action commands, so this will contain the relationship between each action commands and the real object selected by each radio button
-  private Map<SELECTABLE, JRadioButton> objectRadios = new LinkedHashMap<SELECTABLE, JRadioButton>(); // same as commandObjects, so that objectRadios.get(commandObjects.get(actionCommand).equals(actionCommand), unless there is some null anywhere
+  private Map<String, SELECTABLE> commandObjects = new LinkedHashMap<String, SELECTABLE>();  // radio buttons do not support referencing objects, only string as action commands, so this will contain the relationship between each action commands and the real object selected by each radio button
+  private Map<SELECTABLE, RADIO> objectRadios    = new LinkedHashMap<SELECTABLE, RADIO>();   // same as commandObjects, so that objectRadios.get(commandObjects.get(actionCommand).equals(actionCommand), unless there is some null anywhere
 
   private final LabelLocalizer labelLocalizer;
   private final RadioSelectorListener<SELECTABLE> listener;
 
 //==============================================================================
 
-  /** Creates a new instance that will notify selectorListener whenever the
-   *  selected radio button changes. */
+  /** Creates a new instance that will create radio buttons of radioClazz type
+   *  and notify selectorListener whenever the selected radio button changes. */
 
-  public RadioSelector(LabelLocalizer localizer, RadioSelectorListener<SELECTABLE> selectorListener)
+  public RadioSelector(Class<RADIO> radioClazz, LabelLocalizer localizer,
+                       RadioSelectorListener<SELECTABLE> selectorListener)
   {
+    radioClass     = radioClazz;
     labelLocalizer = localizer;
     listener       = selectorListener;
   }
@@ -48,19 +56,24 @@ public class RadioSelector<SELECTABLE> implements ActionListener
    *  <p>
    *  All action commands should be different. */
 
-  public JRadioButton createRadioObject(String actionCommand, SELECTABLE object)
+  public RADIO createRadioObject(String actionCommand, SELECTABLE object)
   {
-    JRadioButton radio = new JRadioButton(labelLocalizer.getString(actionCommand));
-    radio.setActionCommand(actionCommand);
-    radio.setName(actionCommand);
-    radio.setSelected(!radioGroup.getElements().hasMoreElements());
-    radio.addActionListener(this);
-    radioGroup.add(radio);
+    try
+    {
+      RADIO radio = radioClass.newInstance();
+      radio.setText(labelLocalizer.getString(actionCommand));
+      radio.setActionCommand(actionCommand);
+      radio.setName(actionCommand);
+      radio.setSelected(!radioGroup.getElements().hasMoreElements());
+      radio.addActionListener(this);
+      radioGroup.add(radio);
 
-    commandObjects.put(actionCommand, object);
-    objectRadios.put(object, radio);
+      commandObjects.put(actionCommand, object);
+      objectRadios.put(object, radio);
 
-    return radio;
+      return radio;
+    }
+    catch (Exception e) {throw new RuntimeException("Could not instantiate radio component", e);} // this should never happen
   }
 
 //------------------------------------------------------------------------------
@@ -110,7 +123,7 @@ public class RadioSelector<SELECTABLE> implements ActionListener
 
   public void setSelection(SELECTABLE newSelection)
   {
-    JRadioButton selectedRadio = objectRadios.get(newSelection);
+    AbstractButton selectedRadio = objectRadios.get(newSelection);
     if (selectedRadio != null) selectedRadio.doClick();
   }
 

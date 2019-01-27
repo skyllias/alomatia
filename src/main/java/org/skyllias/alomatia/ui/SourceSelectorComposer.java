@@ -17,12 +17,11 @@ import org.skyllias.alomatia.i18n.*;
 import org.skyllias.alomatia.source.*;
 import org.skyllias.alomatia.source.ScreenSource.*;
 import org.skyllias.alomatia.ui.CaptureFrameComposer.*;
-import org.skyllias.alomatia.ui.RadioSelector.*;
 
 /** Composer of a panel with the controls to select a {@link ImageSource}.
- *  TODO MAke it more OO by obtaining a component for each source type. */
+ *  TODO Make it more OO by obtaining a component for each source type. */
 
-public class SourceSelectorComposer implements RadioSelectorListener<ImageSource>
+public class SourceSelectorComposer
 {
   private static final String SOURCE_LABEL             = "source.selector.title";
   protected static final String NO_SOURCE_LABEL        = "source.none.name";    // protected to be accessible in tests
@@ -40,7 +39,6 @@ public class SourceSelectorComposer implements RadioSelectorListener<ImageSource
 
   protected static final String CLIPBOARD_AUTOMODE_NAME = "checkbox.clipboard.automode";
 
-  protected static final String PREFKEY_SOURCECOMMAND = "sourceCommandName";
   protected static final String PREFKEY_CLIPBOARDAUTO = "sourceClipboardAuto";
   protected static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
   protected static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
@@ -49,10 +47,9 @@ public class SourceSelectorComposer implements RadioSelectorListener<ImageSource
   private final CaptureFrameComposer captureFrameComposer;
   private final SourceCatalogue sourceCatalogue;
 
-  private RadioSelector<ImageSource> radioSelector;
-  private ImageSource previousSource;
+  private SourceRadioSelector<JRadioButton> radioSelector;
 
-  private Preferences preferences;
+  private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
@@ -60,26 +57,13 @@ public class SourceSelectorComposer implements RadioSelectorListener<ImageSource
    *  The unknown types are ignored, and the missing known types are gently skipped. */
 
   public SourceSelectorComposer(LabelLocalizer localizer, SourceCatalogue catalogue,
-                        CaptureFrameComposer captureFrame)
-  {
-    this(Preferences.userNodeForPackage(SourceSelectorComposer.class),
-         localizer, catalogue, captureFrame);
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Only meant for preferences injection in tests.
-   *  TODO Use preferences setter. */
-
-  protected SourceSelectorComposer(Preferences prefs, LabelLocalizer localizer,
-                                   SourceCatalogue catalogue, CaptureFrameComposer captureFrame)
+                                CaptureFrameComposer captureFrame,
+                                SourceRadioSelector<JRadioButton> sourceRadioSelector)
   {
     labelLocalizer       = localizer;
-    preferences          = prefs;
     sourceCatalogue      = catalogue;
     captureFrameComposer = captureFrame;
-
-    radioSelector = new RadioSelector<>(labelLocalizer, this);
+    radioSelector        = sourceRadioSelector;
   }
 
 //==============================================================================
@@ -98,15 +82,16 @@ public class SourceSelectorComposer implements RadioSelectorListener<ImageSource
     initSingleFileSelector(panel);
     initDirFileSelector(panel);
 
-    String previousSelectionCommand = preferences.get(PREFKEY_SOURCECOMMAND, null);
-    radioSelector.setSelectionByActionCommand(previousSelectionCommand);
-    previousSource = radioSelector.getCurrentSelection();
-    previousSource.setActive(true);                                             // set as active the source corresponding to the currently selected radio
-
     return panel;
   }
 
-//==============================================================================
+//------------------------------------------------------------------------------
+
+  /** Only meant for testing. */
+
+  protected void setPreferences(Preferences prefs) {preferences = prefs;}
+
+//------------------------------------------------------------------------------
 
   /* Sets up the drop selector radio if the catalogue contains a DropSource. */
 
@@ -392,27 +377,6 @@ public class SourceSelectorComposer implements RadioSelectorListener<ImageSource
         return false;                                                           // allow the event to be redispatched
       }
     });
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the selected no-nnull source as active so that it can begin producing
-   *  images to the display. The previous source get setActive(false) called.
-   *  <p>
-   *  The selection is stored in the user preferences. */
-
-
-  @Override
-  public void onSelectionChanged(ImageSource source)
-  {
-    if (source != previousSource)
-    {
-      if (previousSource != null) previousSource.setActive(false);
-      source.setActive(true);
-    }
-    previousSource = source;
-
-    preferences.put(PREFKEY_SOURCECOMMAND, radioSelector.getCurrentSelectionAsActionCommand());
   }
 
 //------------------------------------------------------------------------------

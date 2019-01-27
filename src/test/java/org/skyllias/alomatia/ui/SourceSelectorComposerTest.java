@@ -38,6 +38,8 @@ public class SourceSelectorComposerTest
   @Mock
   private CaptureFrameComposer captureFrameComposer;
   @Mock
+  private SourceRadioSelector sourceRadioSelector;
+  @Mock
   private Preferences preferences;
 
   private SourceCatalogue catalogue;
@@ -61,7 +63,7 @@ public class SourceSelectorComposerTest
 
   public void setUpAfterCatalogueInitialization()
   {
-    final SourceSelectorComposer sourceComposer = new SourceSelectorComposer(preferences, new KeyLabelLocalizer(), catalogue, captureFrameComposer);
+    final SourceSelectorComposer sourceComposer = new SourceSelectorComposer(new KeyLabelLocalizer(), catalogue, captureFrameComposer, sourceRadioSelector);
     JComponent sourcePanel                      = GuiActionRunner.execute(new Callable<JComponent>()
     {
       @Override

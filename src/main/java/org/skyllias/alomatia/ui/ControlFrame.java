@@ -1,21 +1,36 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.dnd.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.KeyEvent;
 
-import javax.swing.*;
+import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.logo.*;
-import org.skyllias.alomatia.source.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.skyllias.alomatia.display.Repeater;
+import org.skyllias.alomatia.filter.FilterFactory;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.source.DropSource;
+import org.skyllias.alomatia.source.SourceCatalogue;
+import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
+import org.skyllias.alomatia.ui.frame.FramePolicy;
+import org.skyllias.alomatia.ui.frame.JFrameAdaptorFactory;
+import org.skyllias.alomatia.ui.frame.JInternalFrameAdaptorFactory;
 
 /** Logic for the main windows of the application.
  *  <p>
- *  Only one of these is expected in a given application. */
+ *  Only one instance of ControlFrame is expected in a given application. */
 
 public class ControlFrame
 {
@@ -38,12 +53,22 @@ public class ControlFrame
                       FramePolicy framePolicy)
   {
     FrameAdaptorFactory adaptorFactory;
+    ControlsWindow controlsWindow;
+    JFrame mainFrame = getNewFrame();
     if (framePolicy.isUsingInternalFrames())
     {
-      JDesktopPane desktopPane = createDesktopFrame(labelLocalizer);
+      JDesktopPane desktopPane = createDesktopFrame(mainFrame, labelLocalizer, catalogue);
       adaptorFactory           = new JInternalFrameAdaptorFactory(desktopPane);
+
+      JDialog dialog           = new JDialog(mainFrame);
+      controlsWindow           = new DialogControlsWindow(dialog);
+      addPreferencesVisibleKeyListener(dialog);
     }
-    else adaptorFactory = new JFrameAdaptorFactory();
+    else
+    {
+      adaptorFactory = new JFrameAdaptorFactory();
+      controlsWindow = new FrameControlsWindow(mainFrame);
+    }
 
     FileImageSaver imageSaver        = new FileImageSaver(labelLocalizer);
     DisplayFrameManager frameManager = new DisplayFrameManager(labelLocalizer,
@@ -51,51 +76,71 @@ public class ControlFrame
                                                                adaptorFactory,
                                                                imageSaver);
 
-    createControlsFrame(labelLocalizer, catalogue, displayRepeater,
-                        filterFactory, frameManager, framePolicy, imageSaver);
+    setUpControlsFrame(controlsWindow, labelLocalizer, catalogue, displayRepeater,
+                       filterFactory, frameManager, framePolicy, imageSaver);
   }
 
 //==============================================================================
 
-  /* Shows a non resizable, packed frame with the source and window controls. */
+  /* Shows ownerContainer as non resizable and packed, with all the controls. */
 
-  private void createControlsFrame(LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
-                                   Repeater displayRepeater, FilterFactory filterFactory,
-                                   DisplayFrameManager frameManager, FramePolicy framePolicy,
-                                   FileImageSaver imageSaver)
+  private void setUpControlsFrame(ControlsWindow ownerContainer,
+                                  LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
+                                  Repeater displayRepeater, FilterFactory filterFactory,
+                                  DisplayFrameManager frameManager, FramePolicy framePolicy,
+                                  FileImageSaver imageSaver)
   {
-    JFrame frame = getNewFrame();
-    frame.setTitle(labelLocalizer.getString(CONTROL_TITLE));
+    ownerContainer.setTitle(labelLocalizer.getString(CONTROL_TITLE));
 
     DropTargetListener dropListener = catalogue.get(DropSource.class);          // if not present it will be null
-    if (dropListener != null) new DropTarget(frame, dropListener);
+    if (dropListener != null) new DropTarget(ownerContainer.getComponent(), dropListener);
 
     ControlsPaneComposer controlsPane = new ControlsPaneComposer(labelLocalizer, catalogue,
                                                                  displayRepeater, dropListener,
                                                                  frameManager, framePolicy,
                                                                  imageSaver);
-    frame.getContentPane().add(controlsPane.getComponent(), BorderLayout.CENTER);
+    ownerContainer.getContentPane().add(controlsPane.getComponent(),
+                                        BorderLayout.CENTER);
 
-    frame.setExtendedState(Frame.NORMAL);                                       // this is forced because some desktop managers maximize all windows by default, and this looks better if really packed
-    frame.pack();
-    frame.setResizable(false);
-    frame.setVisible(true);                                                     // do this at the end, when the size has been fixed
+    ownerContainer.pack();
+    ownerContainer.setResizable(false);
+    ownerContainer.setVisible(true);                                                     // do this at the end, when the size has been fixed
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Adds a global listener that makes dialog visible when Ctrl + P is pressed. */
+
+  private void addPreferencesVisibleKeyListener(final JDialog dialog)
+  {
+    KeyboardFocusManager keyboardManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    keyboardManager.addKeyEventDispatcher(new KeyEventDispatcher()
+    {
+      @Override
+      public boolean dispatchKeyEvent(KeyEvent e)
+      {
+        if(e.getID() == KeyEvent.KEY_PRESSED)
+        {
+          if (e.getKeyCode() == KeyEvent.VK_P && EventUtils.isControlDown(e)) dialog.setVisible(true);
+        }
+        return false;                                                           // allow the event to be redispatched
+      }
+    });
   }
 
 //------------------------------------------------------------------------------
 
   /* Shows a resizable frame with a JDesktopPane inside, which is returned. */
 
-  private JDesktopPane createDesktopFrame(LabelLocalizer labelLocalizer)
+  private JDesktopPane createDesktopFrame(JFrame ownerFrame, LabelLocalizer labelLocalizer, SourceCatalogue catalogue)
   {
-    JFrame frame = getNewFrame();
-    frame.setTitle(labelLocalizer.getString(DESKTOP_TITLE));
+    ownerFrame.setTitle(labelLocalizer.getString(DESKTOP_TITLE));
 
     JDesktopPane desktopPane = new JDesktopPane();
-    frame.getContentPane().add(desktopPane, BorderLayout.CENTER);
+    ownerFrame.getContentPane().add(desktopPane, BorderLayout.CENTER);
 
-    frame.setSize(DEFAULT_DESKTOP_SIZE.width, DEFAULT_DESKTOP_SIZE.height);
-    frame.setVisible(true);                                                     // do this at the end, when the size has been fixed
+    ownerFrame.setSize(DEFAULT_DESKTOP_SIZE.width, DEFAULT_DESKTOP_SIZE.height);
+    ownerFrame.setVisible(true);                                                // do this at the end, when the size has been fixed
 
     return desktopPane;
   }
@@ -123,4 +168,91 @@ public class ControlFrame
 
 //------------------------------------------------------------------------------
 
+//******************************************************************************
+
+  /* Abstraction of a frame and a dialog, with the methods required to set them up.
+   * Unfortunately, some methods exist in both JFrame and JDialog but with
+   * different hierarchy. */
+
+  private static interface ControlsWindow
+  {
+    Component getComponent();
+
+    void setTitle(String title);
+
+    Container getContentPane();
+
+    void pack();
+
+    void setResizable(boolean resizable);
+
+    void setVisible(boolean visible);
+  }
+
+//******************************************************************************
+
+  /* ControlsWindow implementation for a JFrame. */
+
+  private static class FrameControlsWindow implements ControlsWindow
+  {
+    private final JFrame frame;
+
+    public FrameControlsWindow(JFrame frame)
+    {
+      this.frame = frame;
+
+      frame.setExtendedState(Frame.NORMAL);                                     // this is forced because some desktop managers maximize all windows by default, and this looks better if really packed
+    }
+
+    @Override
+    public Component getComponent() {return frame;}
+
+    @Override
+    public void setTitle(String title) {frame.setTitle(title);}
+
+    @Override
+    public Container getContentPane() {return frame.getContentPane();}
+
+    @Override
+    public void pack() {frame.pack();}
+
+    @Override
+    public void setResizable(boolean resizable) {frame.setResizable(resizable);}
+
+    @Override
+    public void setVisible(boolean visible) {frame.setVisible(visible);}
+  }
+
+//******************************************************************************
+
+  /* ControlsWindow implementation for a JDialog. */
+
+  private static class DialogControlsWindow implements ControlsWindow
+  {
+    private final JDialog dialog;
+
+    public DialogControlsWindow(JDialog dialog)
+    {
+      this.dialog = dialog;
+    }
+
+    @Override
+    public Component getComponent() {return dialog;}
+
+    @Override
+    public void setTitle(String title) {dialog.setTitle(title);}
+
+    @Override
+    public Container getContentPane() {return dialog.getContentPane();}
+
+    @Override
+    public void pack() {dialog.pack();}
+
+    @Override
+    public void setResizable(boolean resizable) {dialog.setResizable(resizable);}
+
+    @Override
+    public void setVisible(boolean visible) {dialog.setVisible(visible);}
+
+  }
 }

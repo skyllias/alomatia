@@ -42,7 +42,7 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
   private ResizableDisplay resizableDisplay;
 
   private JSlider zoomSlider;
-  private RadioSelector<DisplayFitPolicy> radioSelector;
+  private RadioSelector<JRadioButton, DisplayFitPolicy> radioSelector;
 
   private Preferences preferences = Preferences.userNodeForPackage(ZoomSelectorComposer.class);
 
@@ -55,7 +55,7 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
     labelLocalizer   = localizer;
     resizableDisplay = imageDisplay;
 
-    radioSelector = new RadioSelector<>(labelLocalizer, this);
+    radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, this);
   }
 
 //==============================================================================
