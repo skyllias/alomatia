@@ -1,16 +1,18 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.factor.AntiBoostingFactor;
+import org.skyllias.alomatia.filter.factor.UnitFactor;
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-/** Filter that increases or decreases the saturation of the colours in an image
- *  by a non-linear factor.
+/** Converter that increases or decreases the saturation of the colours in an
+ *  image by a non-linear factor.
  *  <p>
- *  This could be a particular case of {@link HueDependingSaturationFactorFilter}. */
+ *  This could be a particular case of {@link HueDependingSaturationFactorConverter}. */
 
-public class SaturationFilter extends BasicHSBFilter
+public class SaturationConverter extends HsbAdapter
 {
-  private UnitFactor unitFactor;                                                // favouring composition over inheritance
+  private final UnitFactor unitFactor;
 
 //==============================================================================
 
@@ -23,7 +25,7 @@ public class SaturationFilter extends BasicHSBFilter
    *  - With large positive numbers (3 and above), the saturation is nearly saturated.
    *  - The first noticeable differences occur with absolute values of the order of 0.1. */
 
-  public SaturationFilter(double saturationFactor)
+  public SaturationConverter(double saturationFactor)
   {
     unitFactor = new AntiBoostingFactor(saturationFactor);
   }
@@ -34,7 +36,7 @@ public class SaturationFilter extends BasicHSBFilter
    *  results outside [0, 1]. */
 
   @Override
-  protected float getNewSaturation(float hue, float saturation, float brightness)
+  public float getNewSaturation(float hue, float saturation, float brightness)
   {
     return unitFactor.apply(saturation);
   }

@@ -1,15 +1,17 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-/** Filter that quantizes the brightness of each pixel. */
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-public class BrightnessPosterizerFilter extends BasicHSBFilter
+/** Converter that quantizes the brightness of each pixel. */
+
+public class BrightnessPosterizerConverter extends HsbAdapter
 {
-  private UnitQuantizer quantizer;
+  private final UnitQuantizer quantizer;
 
 //==============================================================================
 
-  public BrightnessPosterizerFilter(int amountOfBuckets, boolean centerThem)
+  public BrightnessPosterizerConverter(int amountOfBuckets, boolean centerThem)
   {
     quantizer = new UnitQuantizer(amountOfBuckets, centerThem);
   }
@@ -17,7 +19,7 @@ public class BrightnessPosterizerFilter extends BasicHSBFilter
 //==============================================================================
 
   @Override
-  protected float getNewBrightness(float hue, float saturation, float brightness)
+  public float getNewBrightness(float hue, float saturation, float brightness)
   {
     return quantizer.getQuantized(brightness);
   }

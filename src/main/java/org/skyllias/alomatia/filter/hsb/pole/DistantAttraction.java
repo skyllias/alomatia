@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
 /** {@link Attraction} that hardly modifies hue closest to the pole, but affects
  *  others farther away. */
@@ -8,8 +8,8 @@ public class DistantAttraction implements Attraction
 {
   private static final float DEFAULT_STRENGTH = 1;
 
-  private float strength;
-  private float range;
+  private final float strength;
+  private final float range;
 
 //==============================================================================
 

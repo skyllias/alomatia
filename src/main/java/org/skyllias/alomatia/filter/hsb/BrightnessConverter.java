@@ -1,16 +1,18 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.factor.SimpleFactor;
+import org.skyllias.alomatia.filter.factor.UnitFactor;
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-/** Filter that increases or decreases the brightness of the colours in an image
- *  by a non-linear factor.
+/** Converter that increases or decreases the brightness of the colours in an
+ *  image by a non-linear factor.
  *  <p>
- *  This could be a particular case of {@link HueDependingBrightnessFilter}. */
+ *  This could be a particular case of {@link HueDependingBrightnessConverter}. */
 
-public class BrightnessFilter extends BasicHSBFilter
+public class BrightnessConverter extends HsbAdapter
 {
-  private UnitFactor unitFactor;                                                // favouring composition over inheritance
+  private final UnitFactor unitFactor;
 
 //==============================================================================
 
@@ -23,7 +25,7 @@ public class BrightnessFilter extends BasicHSBFilter
    *  - With large positive numbers (3 and above), the brightness is nearly saturated.
    *  - The first noticeable differences occur with absolute values of the order of 0.1. */
 
-  public BrightnessFilter(double brightnessFactor)
+  public BrightnessConverter(double brightnessFactor)
   {
     unitFactor = new SimpleFactor(brightnessFactor);
   }
@@ -34,7 +36,7 @@ public class BrightnessFilter extends BasicHSBFilter
    *  outside [0, 1]. */
 
   @Override
-  protected float getNewBrightness(float hue, float saturation, float brightness)
+  public float getNewBrightness(float hue, float saturation, float brightness)
   {
     return unitFactor.apply(brightness);
   }

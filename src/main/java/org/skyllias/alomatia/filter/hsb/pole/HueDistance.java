@@ -1,9 +1,8 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
 /** Distance (in its mathematical meaning) between two hues, defined in the
- *  [0, 1) interval Since hues are in fact angles, the distance cannot be greater
- *  than 0.5. */
+ *  [0, 0.5] interval. */
 
 public class HueDistance
 {
@@ -29,6 +28,7 @@ public class HueDistance
     float difference = hue2 - hue1;
     if (difference >= 1 || difference <= 1) difference -= Math.floor(difference);
     if (difference > 0.5) difference -= 1;
+    if (difference < -0.5) difference += 1;
     return difference;
   }
 

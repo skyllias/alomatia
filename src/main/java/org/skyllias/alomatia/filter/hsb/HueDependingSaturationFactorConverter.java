@@ -1,18 +1,20 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.factor.AntiBoostingFactor;
+import org.skyllias.alomatia.filter.factor.UnitFactor;
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-/** Filter that increases or decreases the saturation of the colours in an image
- *  depending on their hue. */
+/** Converter that increases or decreases the saturation of the colours in an
+ *  image depending on their hue. */
 
-public class HueDependingSaturationFactorFilter extends BasicHSBFilter
+public class HueDependingSaturationFactorConverter extends HsbAdapter
 {
-  private HueFunction hueFunction;
+  private final HueFunction hueFunction;
 
 //==============================================================================
 
-  public HueDependingSaturationFactorFilter(HueFunction function) {hueFunction = function;}
+  public HueDependingSaturationFactorConverter(HueFunction function) {hueFunction = function;}
 
 //==============================================================================
 
@@ -21,7 +23,7 @@ public class HueDependingSaturationFactorFilter extends BasicHSBFilter
    *  the hue is undefined). */
 
   @Override
-  protected float getNewSaturation(float hue, float saturation, float brightness)
+  public float getNewSaturation(float hue, float saturation, float brightness)
   {
     if (saturation == 0) return saturation;
 

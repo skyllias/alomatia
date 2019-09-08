@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
 /** {@link Attraction} that does not comply with the requirement x * attract(x) > 0,
  *  therefore used to avoid certain hues.
@@ -8,8 +8,8 @@ package org.skyllias.alomatia.filter.hsb;
 
 public class LinearRepulsion implements Attraction
 {
-  private float strength;
-  private float range;
+  private final float strength;
+  private final float range;
 
 //==============================================================================
 

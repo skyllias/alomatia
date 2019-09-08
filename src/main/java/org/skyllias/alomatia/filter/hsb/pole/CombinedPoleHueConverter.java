@@ -1,12 +1,16 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
-import java.awt.*;
+import java.awt.Color;
 
-/** Filter that shifts hue combining the attractions of multiple poles. */
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-public class CombinedPoleHueFilter extends BasicPoleHueFilter
+/** Converter that shifts hue combining the attractions of multiple poles. */
+
+public class CombinedPoleHueConverter extends HsbAdapter
 {
+  private final AttractionPoles attractionPoles;
+
 //==============================================================================
 
   /** Creates a filter that modifies the hue of images by adding the passed
@@ -15,9 +19,9 @@ public class CombinedPoleHueFilter extends BasicPoleHueFilter
    *  A colour with saturation 0 may have unexpected effects over the inner
    *  calculations, since the hue is then indeterministically defined. */
 
-  public CombinedPoleHueFilter(Attraction attraction, Color... colourPoles)
+  public CombinedPoleHueConverter(Attraction attraction, Color... colourPoles)
   {
-    super(attraction, colourPoles);
+    attractionPoles = new AttractionPoles(attraction, colourPoles);
   }
 
 //==============================================================================
@@ -25,10 +29,13 @@ public class CombinedPoleHueFilter extends BasicPoleHueFilter
   /** Applies the attraction to all the poles. */
 
   @Override
-  protected float getNewHue(float hue, float saturation, float brightness)
+  public float getNewHue(float hue, float saturation, float brightness)
   {
     float accumulatedShift = 0;
-    for (float currentPole : getAllPoles()) accumulatedShift += getAttraction(currentPole, hue);
+    for (float currentPole : attractionPoles.getAllPoles())
+    {
+      accumulatedShift += attractionPoles.getAttraction(currentPole, hue);
+    }
     return hue - accumulatedShift;
   }
 

@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
 /** {@link Attraction} that grows proportionally up to a point from which it
  *  begins to decrease.
@@ -8,8 +8,8 @@ package org.skyllias.alomatia.filter.hsb;
 
 public class SawAttraction implements Attraction
 {
-  private float slope;
-  private float range;
+  private final float slope;
+  private final float range;
 
 //==============================================================================
 

@@ -1,18 +1,20 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.factor.SimpleFactor;
+import org.skyllias.alomatia.filter.factor.UnitFactor;
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-/** Filter that increases or decreases the brightness of the colours in an image
- *  depending on their hue. */
+/** Converter that increases or decreases the brightness of the colours in an
+ *  image depending on their hue. */
 
-public class HueDependingBrightnessFilter extends BasicHSBFilter
+public class HueDependingBrightnessConverter extends HsbAdapter
 {
-  private HueFunction hueFunction;
+  private final HueFunction hueFunction;
 
 //==============================================================================
 
-  public HueDependingBrightnessFilter(HueFunction function) {hueFunction = function;}
+  public HueDependingBrightnessConverter(HueFunction function) {hueFunction = function;}
 
 //==============================================================================
 
@@ -22,7 +24,7 @@ public class HueDependingBrightnessFilter extends BasicHSBFilter
    *  can lead to very different tones). */
 
   @Override
-  protected float getNewBrightness(float hue, float saturation, float brightness)
+  public float getNewBrightness(float hue, float saturation, float brightness)
   {
     double functionFactor = hueFunction.getValue(hue);
     UnitFactor unitFactor = new SimpleFactor(functionFactor * saturation * brightness);

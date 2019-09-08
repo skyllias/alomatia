@@ -1,12 +1,16 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
-import java.awt.*;
+import java.awt.Color;
 
-/** Filter that shifts hue towards the closest of one or more poles. */
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-public class ClosestPoleHueFilter extends BasicPoleHueFilter
+/** Converter that shifts hue towards the closest of one or more poles. */
+
+public class ClosestPoleHueConverter extends HsbAdapter
 {
+  private final AttractionPoles attractionPoles;
+
 //==============================================================================
 
   /** Creates a filter that modifies the hue of images by finding the closest
@@ -15,9 +19,9 @@ public class ClosestPoleHueFilter extends BasicPoleHueFilter
    *  A colour with saturation 0 may have unexpected effects over the inner
    *  calculations, since the hue is then indeterministically defined. */
 
-  public ClosestPoleHueFilter(Attraction attraction, Color... colourPoles)
+  public ClosestPoleHueConverter(Attraction attraction, Color... colourPoles)
   {
-    super(attraction, colourPoles);
+    attractionPoles = new AttractionPoles(attraction, colourPoles);
   }
 
 //==============================================================================
@@ -25,10 +29,10 @@ public class ClosestPoleHueFilter extends BasicPoleHueFilter
   /** Applies the attraction to the closest pole. */
 
   @Override
-  protected float getNewHue(float hue, float saturation, float brightness)
+  public float getNewHue(float hue, float saturation, float brightness)
   {
     float closestPole = findClosestPole(hue);
-    return hue - getAttraction(closestPole, hue);
+    return hue - attractionPoles.getAttraction(closestPole, hue);
   }
 
 //------------------------------------------------------------------------------
@@ -40,9 +44,9 @@ public class ClosestPoleHueFilter extends BasicPoleHueFilter
   {
     float closestPole      = 0;
     float smallestDistance = 1;
-    for (float currentPole : getAllPoles())
+    for (float currentPole : attractionPoles.getAllPoles())
     {
-      float currentDistance = getDistance(currentPole, hue);
+      float currentDistance = attractionPoles.getDistance(currentPole, hue);
       if (currentDistance < smallestDistance)
       {
         closestPole      = currentPole;

@@ -1,5 +1,7 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
+
+import org.skyllias.alomatia.filter.hsb.pole.HueDistance;
 
 /** Function over {@link HueDistance#difference(float, float)} that
  *  determines how a hue should be shifted towards a pole.
@@ -9,7 +11,7 @@ package org.skyllias.alomatia.filter.hsb;
  *  <li> attract(0) = 0 (a pole is not modified)
  *  <li> attract(x) = -attract(-x) (the function is antisymmetric, which implies
  *       the condition above)
- *  <li> attract(x) * x >= 0 (poles attract)
+ *  <li> attract(x) * x >=< 0 (poles attract if >= 0 and repulse if <= 0)
  *  <li> attract(x) <= x (the shift is moderate, preventing the hue from
  *       trespassing the pole)
  *  <li> d(attract(x)) / dx <= 1 (two different hues are shifted to two different

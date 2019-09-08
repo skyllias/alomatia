@@ -1,21 +1,22 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
-import java.awt.*;
+import java.awt.Color;
 
-/** Superclass for the filters that shift hues depending on the attraction from
- *  one or more poles. */
+/** Composition of an {@link Attraction} and one or more hue values, which
+ *  together specify how an original hue may be shifted depending on its
+ *  distance to the different poles. */
 
-public abstract class BasicPoleHueFilter extends BasicHSBFilter
+public class AttractionPoles
 {
-  private HueDistance distance = new HueDistance();
+  private final HueDistance distance = new HueDistance();
 
-  private Attraction attraction;
-  private float[] poles;
+  private final Attraction attraction;
+  private final float[] poles;
 
 //==============================================================================
 
-  protected BasicPoleHueFilter(Attraction attraction, Color... colourPoles)
+  protected AttractionPoles(Attraction attraction, Color... colourPoles)
   {
     this.attraction = attraction;
 
@@ -31,21 +32,21 @@ public abstract class BasicPoleHueFilter extends BasicHSBFilter
 
 //==============================================================================
 
-  /** Offers all the received poles to subclasses. */
+  /** Offers all the received poles. */
 
-  protected float[] getAllPoles() {return poles;}
+  public float[] getAllPoles() {return poles;}
 
 //------------------------------------------------------------------------------
 
   /** Returns the distance between hue1 and hue2. */
 
-  protected float getDistance(float hue1, float hue2) {return distance.calculate(hue1, hue2);}
+  public float getDistance(float hue1, float hue2) {return distance.calculate(hue1, hue2);}
 
 //------------------------------------------------------------------------------
 
   /** Returns the attraction exerted on hue by pole. */
 
-  protected float getAttraction(float pole, float hue)
+  public float getAttraction(float pole, float hue)
   {
     float difference = distance.difference(pole, hue);
     return attraction.attract(difference);

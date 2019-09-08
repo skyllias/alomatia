@@ -5,13 +5,13 @@ import java.awt.Color;
 
 import org.skyllias.alomatia.filter.ColorConverter;
 import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
-import org.skyllias.alomatia.filter.hsb.ContrastFilter;
+import org.skyllias.alomatia.filter.hsb.ContrastConverter;
 
 /** Converter that separately increases the differences of the three RGB
  *  components by means of a {@link ComposedUnitFactor}.
- *  Its results may be similar to those by {@link ContrastFilter}, although this
- *  should increase the differences between colours with separate contributions
- *  in each channel. The other one does not change the hue. */
+ *  Its results may be similar to those by {@link ContrastConverter}, although
+ *  this should increase the differences between colours with separate
+ *  contributions in each channel. The other one does not change the hue. */
 
 public class ColourContrastConverter implements ColorConverter
 {

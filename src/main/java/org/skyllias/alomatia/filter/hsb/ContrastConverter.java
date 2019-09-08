@@ -1,9 +1,11 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
+import org.skyllias.alomatia.filter.factor.UnitFactor;
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-/** Filter that increases the difference in brightness of the colours in an image.
+/** Converter that increases the difference in brightness of the colours in an image.
  *  <p>
  *  Of course brightness cannot be greater than 1 or smaller than 0, so the
  *  difference cannot grow homogeneously for all colour pairs. If it increases
@@ -11,9 +13,9 @@ import org.skyllias.alomatia.filter.factor.*;
  *  the differences either in the middle range of brightnesses or in the lowest
  *  and highest brightnesses. */
 
-public class ContrastFilter extends BasicHSBFilter
+public class ContrastConverter extends HsbAdapter
 {
-  private ComposedUnitFactor factor;
+  private final ComposedUnitFactor factor;
 
 //==============================================================================
 
@@ -28,7 +30,7 @@ public class ContrastFilter extends BasicHSBFilter
    *  - With large positive numbers (3 and above), everything becomes almost black or white.
    *  - The first noticeable differences occur with absolute values of the order of 0.1. */
 
-  public ContrastFilter(double contrastFactor)
+  public ContrastConverter(double contrastFactor)
   {
     factor = new ComposedUnitFactor(contrastFactor);
   }
@@ -40,7 +42,7 @@ public class ContrastFilter extends BasicHSBFilter
    *  upper right get a different {@link UnitFactor} applied. */
 
   @Override
-  protected float getNewBrightness(float hue, float saturation, float brightness)
+  public float getNewBrightness(float hue, float saturation, float brightness)
   {
     return factor.apply(brightness);
   }

@@ -1,11 +1,11 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.pole;
 
 /** {@link Attraction} proportional to difference (never decreasing). */
 
 public class LinearAttraction implements Attraction
 {
-  private float slope;
+  private final float slope;
 
 //==============================================================================
 

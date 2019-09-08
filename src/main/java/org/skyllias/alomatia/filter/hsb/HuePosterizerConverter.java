@@ -1,19 +1,21 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-/** Filter that quantizes the hue of each pixel. */
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-public class HuePosterizerFilter extends BasicHSBFilter
+/** Converter that quantizes the hue of each pixel. */
+
+public class HuePosterizerConverter extends HsbAdapter
 {
-  private UnitQuantizer quantizer;
-  private float startHue;
+  private final UnitQuantizer quantizer;
+  private final float startHue;
 
 //==============================================================================
 
   /** Creates a filter that divides the hue spectrum in amountOfBuckets centered
    *  stripes, with one of the buckets beginning at startingHue. */
 
-  public HuePosterizerFilter(int amountOfBuckets, float startingHue)
+  public HuePosterizerConverter(int amountOfBuckets, float startingHue)
   {
     quantizer = new UnitQuantizer(amountOfBuckets, true);
     startHue  = startingHue;
@@ -22,7 +24,7 @@ public class HuePosterizerFilter extends BasicHSBFilter
 //==============================================================================
 
   @Override
-  protected float getNewHue(float hue, float saturation, float brightness)
+  public float getNewHue(float hue, float saturation, float brightness)
   {
     float shiftedHue = hue - startHue;
     if (shiftedHue < 0) shiftedHue = shiftedHue + 1;

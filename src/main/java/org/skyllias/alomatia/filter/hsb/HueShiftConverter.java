@@ -1,11 +1,13 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-/** Filter that "rotates" the hue by a factor. */
+import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
-public class HueShiftFilter extends BasicHSBFilter
+/** Converter that "rotates" the hue by a factor. */
+
+public class HueShiftConverter extends HsbAdapter
 {
-  private float shift;
+  private final float shift;
 
 //==============================================================================
 
@@ -18,7 +20,7 @@ public class HueShiftFilter extends BasicHSBFilter
    *  Shifts with absolute value over 0.1 begin to become unrealistic; below
    *  0.01 are difficult to notice. */
 
-  public HueShiftFilter(float hueShift)
+  public HueShiftConverter(float hueShift)
   {
     shift = hueShift;
   }
@@ -28,7 +30,7 @@ public class HueShiftFilter extends BasicHSBFilter
   /** Applies the linear shift to the original hue. */
 
   @Override
-  protected float getNewHue(float hue, float saturation, float brightness)
+  public float getNewHue(float hue, float saturation, float brightness)
   {
     return hue + shift;
   }
