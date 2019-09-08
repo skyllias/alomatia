@@ -1,11 +1,11 @@
 
 package org.skyllias.alomatia.filter.compose;
 
-import java.awt.image.*;
+import java.awt.image.RescaleOp;
 
-import org.skyllias.alomatia.filter.buffered.*;
-import org.skyllias.alomatia.filter.convolve.*;
-import org.skyllias.alomatia.filter.rgb.*;
+import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.convolve.EmbossKernelDataFactory;
+import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** Composition of filters that produce an embossing effect on pictures.
  *  First the original channels are shifted, then embossed and then
@@ -33,9 +33,9 @@ public class EmbossFilter extends ComposedFilter
   public EmbossFilter(float scale, float offset, float volume, float slope)
   {
     super(new SingleFrameBufferedImageFilter(new RescaleOp(scale, offset, null)),
-          new VoidFilter(),
+          RgbFilterFactory.forVoid(),
           new EdgeConvolvingComposedFilter(new EmbossKernelDataFactory(volume, slope)),
-          new GreyScaleFilter());
+          RgbFilterFactory.forEqualGreyScale());
   }
 
 //------------------------------------------------------------------------------

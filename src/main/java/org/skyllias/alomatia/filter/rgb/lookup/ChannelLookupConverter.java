@@ -1,24 +1,24 @@
 
 package org.skyllias.alomatia.filter.rgb.lookup;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Filter that maps each channel according to a {@link ColourLookup}. */
+/** Converter that maps each channel according to a {@link ColourLookup}. */
 
-public class ChannelLookupFilter extends BasicColorFilter
+public class ChannelLookupConverter implements ColorConverter
 {
   private ColourLookup lookup;
 
 //==============================================================================
 
-  public ChannelLookupFilter(ColourLookup colourLookup) {lookup = colourLookup;}
+  public ChannelLookupConverter(ColourLookup colourLookup) {lookup = colourLookup;}
 
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     int red   = original.getRed();
     int green = original.getGreen();

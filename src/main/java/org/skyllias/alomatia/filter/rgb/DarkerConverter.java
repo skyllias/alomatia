@@ -1,18 +1,18 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Demo filter that makes the image darker according to the AWT implementation. */
+/** Demo converter that makes the image darker according to the AWT implementation. */
 
-public class DarkerFilter extends BasicColorFilter
+public class DarkerConverter implements ColorConverter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     return original.darker();
   }

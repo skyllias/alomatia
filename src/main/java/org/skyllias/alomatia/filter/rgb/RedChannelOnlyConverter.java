@@ -1,18 +1,18 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Demo filter that leaves only the red component of each colour. */
+/** Demo converter that leaves only the red component of each colour. */
 
-public class RedChannelOnlyFilter extends BasicColorFilter
+public class RedChannelOnlyConverter implements ColorConverter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     int red = original.getRed();
     return new Color(red, 0, 0);

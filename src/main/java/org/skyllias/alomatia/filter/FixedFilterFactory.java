@@ -1,23 +1,74 @@
 
 package org.skyllias.alomatia.filter;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Collection;
+import java.util.LinkedList;
 
-import org.skyllias.alomatia.filter.affine.*;
-import org.skyllias.alomatia.filter.buffered.*;
-import org.skyllias.alomatia.filter.buffered.distortion.*;
-import org.skyllias.alomatia.filter.buffered.distortion.radial.*;
-import org.skyllias.alomatia.filter.buffered.distortion.rotational.*;
-import org.skyllias.alomatia.filter.buffered.distortion.wave.*;
-import org.skyllias.alomatia.filter.buffered.map.*;
-import org.skyllias.alomatia.filter.buffered.vignette.*;
-import org.skyllias.alomatia.filter.compose.*;
-import org.skyllias.alomatia.filter.convolve.*;
-import org.skyllias.alomatia.filter.daltonism.*;
-import org.skyllias.alomatia.filter.hsb.*;
-import org.skyllias.alomatia.filter.rgb.*;
-import org.skyllias.alomatia.filter.rgb.lookup.*;
+import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformImageOp;
+import org.skyllias.alomatia.filter.affine.RotationTransformImageOp;
+import org.skyllias.alomatia.filter.affine.VerticalFlipTransformImageOp;
+import org.skyllias.alomatia.filter.buffered.DyeOp;
+import org.skyllias.alomatia.filter.buffered.MedianChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.MinMaxChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.PixelizerOp;
+import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.buffered.SurroundingColoursOp;
+import org.skyllias.alomatia.filter.buffered.distortion.BilinearInterpolator;
+import org.skyllias.alomatia.filter.buffered.distortion.DistortingBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.distortion.DistortionChain;
+import org.skyllias.alomatia.filter.buffered.distortion.radial.MagnifierRadialDistortionProfile;
+import org.skyllias.alomatia.filter.buffered.distortion.radial.RadialDistortion;
+import org.skyllias.alomatia.filter.buffered.distortion.radial.ReductorRadialDistortionProfile;
+import org.skyllias.alomatia.filter.buffered.distortion.rotational.ConstantRotationalDistortionProfile;
+import org.skyllias.alomatia.filter.buffered.distortion.rotational.IncreasingRotationalDistortionProfile;
+import org.skyllias.alomatia.filter.buffered.distortion.rotational.RotationalDistortion;
+import org.skyllias.alomatia.filter.buffered.distortion.rotational.WhirlpoolRotationalDistortionProfile;
+import org.skyllias.alomatia.filter.buffered.distortion.wave.IsotropicWaveDistortion;
+import org.skyllias.alomatia.filter.buffered.map.AngularMap;
+import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
+import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
+import org.skyllias.alomatia.filter.buffered.map.RadialMap;
+import org.skyllias.alomatia.filter.buffered.vignette.VignetteFilterFactory;
+import org.skyllias.alomatia.filter.compose.AxeColoursFilter;
+import org.skyllias.alomatia.filter.compose.EdgeConvolvingComposedFilter;
+import org.skyllias.alomatia.filter.compose.EmbossFilter;
+import org.skyllias.alomatia.filter.convolve.EdgeDetectingKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.LinearBlurKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.NeighbourSharpKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.ParaboloidBlurKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
+import org.skyllias.alomatia.filter.daltonism.LmsDeuteranopiaFilter;
+import org.skyllias.alomatia.filter.daltonism.LmsProtanopiaFilter;
+import org.skyllias.alomatia.filter.daltonism.LmsTritanopiaFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzAchromatomalyFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzAchromatopsiaFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzDeuteranomalyFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzDeuteranopiaFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzProtanomalyFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzProtanopiaFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzTritanomalyFilter;
+import org.skyllias.alomatia.filter.daltonism.XyzTritanopiaFilter;
+import org.skyllias.alomatia.filter.hsb.BrightnessFilter;
+import org.skyllias.alomatia.filter.hsb.BrightnessPosterizerFilter;
+import org.skyllias.alomatia.filter.hsb.ClosestPoleHueFilter;
+import org.skyllias.alomatia.filter.hsb.CombinedPoleHueFilter;
+import org.skyllias.alomatia.filter.hsb.ContrastFilter;
+import org.skyllias.alomatia.filter.hsb.CosineHueFunction;
+import org.skyllias.alomatia.filter.hsb.DistantAttraction;
+import org.skyllias.alomatia.filter.hsb.FlatStepHueFunction;
+import org.skyllias.alomatia.filter.hsb.HueDependingBrightnessFilter;
+import org.skyllias.alomatia.filter.hsb.HueDependingSaturationFactorFilter;
+import org.skyllias.alomatia.filter.hsb.HuePosterizerFilter;
+import org.skyllias.alomatia.filter.hsb.HueShiftFilter;
+import org.skyllias.alomatia.filter.hsb.LinearRepulsion;
+import org.skyllias.alomatia.filter.hsb.MultiplyingHueFactor;
+import org.skyllias.alomatia.filter.hsb.PitStepHueFunction;
+import org.skyllias.alomatia.filter.hsb.PositiveFilteringHueFunction;
+import org.skyllias.alomatia.filter.hsb.SaturationFilter;
+import org.skyllias.alomatia.filter.hsb.SaturationPosterizerFilter;
+import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
+import org.skyllias.alomatia.filter.rgb.lookup.ChannelLookupFilterFactory;
 
 /** FilterFactory with a hardcoded set of available filters. */
 
@@ -37,7 +88,8 @@ public class FixedFilterFactory implements FilterFactory
   private static final String XYZACHMALY_FILTER_NAME = "filter.dalton.xyz.achromatomaly.name";
   private static final String RGBR_FILTER_NAME       = "filter.rgb.gbr.name";
   private static final String BGRB_FILTER_NAME       = "filter.rgb.brg.name";
-  private static final String GREY_FILTER_NAME       = "filter.rgb.greys.name";
+  private static final String EQUAL_GREY_FILTER_NAME = "filter.rgb.greys.equal.name";
+  private static final String HUMAN_GREY_FILTER_NAME = "filter.rgb.greys.human.name";
   private static final String REDONLY_FILTER_NAME    = "filter.rgb.redonly.name";
   private static final String GREENONLY_FILTER_NAME  = "filter.rgb.greenonly.name";
   private static final String BLUEONLY_FILTER_NAME   = "filter.rgb.blueonly.name";
@@ -328,16 +380,16 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new ContrastFilter(1),    INC_CTR_L_FILTER_NAME));
     filters.add(new NamedFilter(new ContrastFilter(2),    INC_CTR_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new ColourContrastFilter(-2),   DEC_CCT_XL_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(-1),   DEC_CCT_L_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(-0.6), DEC_CCT_M_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(-0.3), DEC_CCT_S_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(-0.1), DEC_CCT_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(0.1),  INC_CCT_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(0.3),  INC_CCT_S_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(0.6),  INC_CCT_M_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(1),    INC_CCT_L_FILTER_NAME));
-    filters.add(new NamedFilter(new ColourContrastFilter(2),    INC_CCT_XL_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-2),   DEC_CCT_XL_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-1),   DEC_CCT_L_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-0.6), DEC_CCT_M_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-0.3), DEC_CCT_S_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-0.1), DEC_CCT_XS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(0.1),  INC_CCT_XS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(0.3),  INC_CCT_S_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(0.6),  INC_CCT_M_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(1),    INC_CCT_L_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(2),    INC_CCT_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
@@ -358,9 +410,10 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
     filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
 
-    filters.add(new NamedFilter(new NegativeFilter(), NEGATIVE_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forNegative(), NEGATIVE_FILTER_NAME));
 
-    filters.add(new NamedFilter(new GreyScaleFilter(), GREY_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(), EQUAL_GREY_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forHumanSensitiveGreyScale(), HUMAN_GREY_FILTER_NAME));
 
     filters.add(new NamedFilter(new ClosestPoleHueFilter(new DistantAttraction(0.2f), new Color(255, 128, 0)), ORANGEPHIL_FILTER_NAME));
     filters.add(new NamedFilter(new ClosestPoleHueFilter(new DistantAttraction(0.2f), new Color(43, 255, 0)),  GREENPHIL_FILTER_NAME));
@@ -373,14 +426,14 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(0, 255, 255)), CYANPHOB_FILTER_NAME));
     filters.add(new NamedFilter(new CombinedPoleHueFilter(new LinearRepulsion(0.12f, 0.22f), new Color(255, 0, 255)), MAGENTPHOB_FILTER_NAME));
 
-    filters.add(new NamedFilter(new RtoGtoBtoRFilter(),       RGBR_FILTER_NAME));
-    filters.add(new NamedFilter(new BtoGtoRtoBFilter(),       BGRB_FILTER_NAME));
-    filters.add(new NamedFilter(new RedChannelOnlyFilter(),   REDONLY_FILTER_NAME));
-    filters.add(new NamedFilter(new GreenChannelOnlyFilter(), GREENONLY_FILTER_NAME));
-    filters.add(new NamedFilter(new BlueChannelOnlyFilter(),  BLUEONLY_FILTER_NAME));
-    filters.add(new NamedFilter(new RedlessFilter(),          REDLESS_FILTER_NAME));
-    filters.add(new NamedFilter(new GreenlessFilter(),        GREENLESS_FILTER_NAME));
-    filters.add(new NamedFilter(new BluelessFilter(),         BLUELESS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forRtoGtoBtoR(),       RGBR_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forBtoGtoRtoB(),       BGRB_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forRedChannelOnly(),   REDONLY_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forGreenChannelOnly(), GREENONLY_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forBlueChannelOnly(),  BLUEONLY_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forRedless(),          REDLESS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forGreenless(),        GREENLESS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forBlueless(),         BLUELESS_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, false))), MINMAX_BLK_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))), MINMAX_RED_FILTER_NAME));
@@ -485,11 +538,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new RgbPosterizer(2),  POSTER_XL_FILTER_NAME));
-    filters.add(new NamedFilter(new RgbPosterizer(3),  POSTER_L_FILTER_NAME));
-    filters.add(new NamedFilter(new RgbPosterizer(6),  POSTER_M_FILTER_NAME));
-    filters.add(new NamedFilter(new RgbPosterizer(12), POSTER_S_FILTER_NAME));
-    filters.add(new NamedFilter(new RgbPosterizer(20), POSTER_XS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(2),  POSTER_XL_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(3),  POSTER_L_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(6),  POSTER_M_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(12), POSTER_S_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(20), POSTER_XS_FILTER_NAME));
 
     filters.add(new NamedFilter(new BrightnessPosterizerFilter(2, false),  BPOSTER_XL_FILTER_NAME));
     filters.add(new NamedFilter(new BrightnessPosterizerFilter(3, false),  BPOSTER_L_FILTER_NAME));

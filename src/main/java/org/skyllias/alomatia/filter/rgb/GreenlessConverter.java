@@ -1,18 +1,18 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Demo filter that removes the green component of each colour. */
+/** Demo converter that removes the green component of each colour. */
 
-public class GreenlessFilter extends BasicColorFilter
+public class GreenlessConverter implements ColorConverter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     int red   = original.getRed();
     int blue  = original.getBlue();

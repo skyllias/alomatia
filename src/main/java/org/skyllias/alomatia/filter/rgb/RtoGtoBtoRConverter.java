@@ -1,19 +1,19 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Demo filter that rotates the colour components: Red is set as green,
+/** Demo converter that rotates the colour components: Red is set as green,
  *  green is set as blue and blue is set as red. */
 
-public class RtoGtoBtoRFilter extends BasicColorFilter
+public class RtoGtoBtoRConverter implements ColorConverter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     int red   = original.getRed();
     int green = original.getGreen();

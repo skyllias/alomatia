@@ -1,18 +1,18 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Demo filter that changes every colour by its invert. */
+/** Demo converter that changes every colour by its invert. */
 
-public class NegativeFilter extends BasicColorFilter
+public class NegativeConverter implements ColorConverter
 {
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     final int MAX = 0xFF;
 

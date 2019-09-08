@@ -1,29 +1,30 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.ColorConverter;
+import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
+import org.skyllias.alomatia.filter.hsb.ContrastFilter;
 
-/** Filter that separately increases the differences of the three RGB components
- *  by means of a {@link ComposedUnitFactor}.
+/** Converter that separately increases the differences of the three RGB
+ *  components by means of a {@link ComposedUnitFactor}.
  *  Its results may be similar to those by {@link ContrastFilter}, although this
  *  should increase the differences between colours with separate contributions
  *  in each channel. The other one does not change the hue. */
 
-public class ColourContrastFilter extends BasicColorFilter
+public class ColourContrastConverter implements ColorConverter
 {
   private ComposedUnitFactor factor;
 
 //==============================================================================
 
-  /** Creates a filter that will modify each component in the RGB colour space
+  /** Creates a converter that will modify each component in the RGB colour space
    *  with a ComposedUnitFactor based on contrastFactor, so that negative values
    *  turn most colours greyish, and positive values project colours towards the
    *  {black, cyan, purple, yellow, red, geen, blue, white} set. */
 
-  public ColourContrastFilter(double contrastFactor)
+  public ColourContrastConverter(double contrastFactor)
   {
     factor = new ComposedUnitFactor(contrastFactor);
   }
@@ -31,7 +32,7 @@ public class ColourContrastFilter extends BasicColorFilter
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     int red   = original.getRed();
     int green = original.getGreen();
