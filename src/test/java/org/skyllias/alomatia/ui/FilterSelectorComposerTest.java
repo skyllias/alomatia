@@ -1,22 +1,34 @@
 
 package org.skyllias.alomatia.ui;
 
-import static org.assertj.swing.fixture.Containers.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.swing.fixture.Containers.showInFrame;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.concurrent.Callable;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
-import org.assertj.swing.edt.*;
-import org.assertj.swing.fixture.*;
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.filter.rgb.*;
-import org.skyllias.alomatia.i18n.*;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
+import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JRadioButtonFixture;
+import org.assertj.swing.fixture.JTextComponentFixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.display.FilterableDisplay;
+import org.skyllias.alomatia.filter.ColorFilter;
+import org.skyllias.alomatia.filter.FilterFactory;
+import org.skyllias.alomatia.filter.NamedFilter;
+import org.skyllias.alomatia.filter.rgb.BrighterConverter;
+import org.skyllias.alomatia.filter.rgb.DarkerConverter;
+import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 
 public class FilterSelectorComposerTest
 {
@@ -31,9 +43,9 @@ public class FilterSelectorComposerTest
   @Mock
   private FilterFactory filterFactory;
 
-  private NamedFilter nullFilter     = new NamedFilter(null,                 NO_FILTER_NAME);
-  private NamedFilter brighterFilter = new NamedFilter(new BrighterFilter(), LIGHTER_FILTER_NAME);
-  private NamedFilter darkerFilter   = new NamedFilter(new DarkerFilter(),   DARKER_FILTER_NAME);
+  private NamedFilter nullFilter     = new NamedFilter(null,                                     NO_FILTER_NAME);
+  private NamedFilter brighterFilter = new NamedFilter(new ColorFilter(new BrighterConverter()), LIGHTER_FILTER_NAME);
+  private NamedFilter darkerFilter   = new NamedFilter(new ColorFilter(new DarkerConverter()),   DARKER_FILTER_NAME);
 
   @BeforeClass
   public static void setUpOnce()
@@ -90,5 +102,50 @@ public class FilterSelectorComposerTest
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
     verify(filterableDisplay, times(1)).setImageFilter(brighterFilter);
+  }
+
+  @Test
+  public void shouldHideAllWhenNoSearchMatches()
+  {
+    shouldShowOrHideSearchedFilters("inexisting text", false, false, false);
+  }
+
+  @Test
+  public void shouldShowAllWhenSearchMatches()
+  {
+    shouldShowOrHideSearchedFilters("filter", true, true, true);
+  }
+
+  @Test
+  public void shouldShowAllWhenNoSearch()
+  {
+    shouldShowOrHideSearchedFilters("", true, true, true);
+  }
+
+  @Test
+  public void shouldShowSomwWhenSearchMatches()
+  {
+    shouldShowOrHideSearchedFilters("2", false, true, false);
+  }
+
+  private void shouldShowOrHideSearchedFilters(String searchText, boolean nullRadioVisible,
+                                               boolean lighterRadioVisible, boolean darkerRadioVisible)
+  {
+    JRadioButtonFixture radioButton1 = frameFixture.radioButton(NO_FILTER_NAME);
+    JRadioButtonFixture radioButton2 = frameFixture.radioButton(LIGHTER_FILTER_NAME);
+    JRadioButtonFixture radioButton3 = frameFixture.radioButton(DARKER_FILTER_NAME);
+
+    JTextComponentFixture searchField = frameFixture.textBox("filter.selector.search");
+    searchField.enterText(searchText);
+
+    requireVisible(radioButton1, nullRadioVisible);
+    requireVisible(radioButton2, lighterRadioVisible);
+    requireVisible(radioButton3, darkerRadioVisible);
+  }
+
+  private void requireVisible(JRadioButtonFixture radioButton, boolean visible)
+  {
+    if (visible) radioButton.requireVisible();
+    else         radioButton.requireNotVisible();
   }
 }

@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.filter.compose;
 
-import java.awt.image.*;
+import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.rgb.*;
+import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** {@link ComposedFilter} that forces a value of 1.0 in the alpha channel of
  *  all pixels after another filter is applied.
@@ -13,7 +13,7 @@ import org.skyllias.alomatia.filter.rgb.*;
 
 public class OpaqueFilter extends ComposedFilter
 {
-  private static ImageFilter opaquingFilter = new VoidFilter();
+  private static ImageFilter opaquingFilter = RgbFilterFactory.forVoid();
 
 //==============================================================================
 

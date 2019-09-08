@@ -1,12 +1,15 @@
 
 package org.skyllias.alomatia.filter;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.image.RGBImageFilter;
 
 /** Superclass for the filters that just alter the colours of an image's palette.
- *  The alpha channel is not properly handled due to the limitations of {@link RGBImageFilter}. */
+ *  The alpha channel is not properly handled due to the limitations of {@link RGBImageFilter}.
+ *  @deprecated Use {@link ColorFilter} and {@link ColorConverter} to avoid
+ *  long class hierarchies. */
 
+@Deprecated
 public abstract class BasicColorFilter extends RGBImageFilter
 {
 //==============================================================================

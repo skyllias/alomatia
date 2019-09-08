@@ -1,11 +1,16 @@
 
 package org.skyllias.alomatia.filter.compose;
 
-import java.awt.image.*;
+import java.awt.image.ConvolveOp;
+import java.awt.image.ImageConsumer;
+import java.awt.image.ImageFilter;
+import java.awt.image.Kernel;
 
-import org.skyllias.alomatia.filter.buffered.*;
-import org.skyllias.alomatia.filter.convolve.*;
-import org.skyllias.alomatia.filter.rgb.*;
+import org.skyllias.alomatia.filter.buffered.KernelCroppingBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.KernelExpandingBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.convolve.KernelDataFactory;
+import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** {@link ImageFilter} that delegates the image modifications to three composed
  *  filters: one to add an extra margin to the image, one to apply a convolution,
@@ -31,7 +36,7 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
     ImageFilter expandingFilter  = new SingleFrameBufferedImageFilter(new KernelExpandingBufferedImageOp(kernel));
     ImageFilter convolvingFilter = new SingleFrameBufferedImageFilter(new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null));   // EDGE_NO_OP has to be used to prevent a one-pixel black stripe if an even size is used for the kernel width or height
-    ImageFilter alphalessFitler  = new VoidFilter();
+    ImageFilter alphalessFitler  = RgbFilterFactory.forVoid();
     ImageFilter croppingFilter   = new SingleFrameBufferedImageFilter(new KernelCroppingBufferedImageOp(kernel));
     composedFilter               = new ComposedFilter(expandingFilter, convolvingFilter, alphalessFitler, croppingFilter);
   }

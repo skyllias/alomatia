@@ -55,8 +55,10 @@ public class ControlsPaneComposer
                                                                                             dropListener,
                                                                                             frameManager, framePolicy);
 
+    SourceRadioSelector<JRadioButton> radioSelector = new SourceRadioSelector<>(JRadioButton.class, labelLocalizer);
     panel.add(new SourceSelectorComposer(labelLocalizer, sourceCatalogue,
-                                         new CaptureFrameComposer(labelLocalizer)).getComponent());
+                                         new CaptureFrameComposer(labelLocalizer),
+                                         radioSelector).getComponent());
     panel.add(windowControlComposer.getComponent());
     panel.add(new SaveFilePanelComposer(labelLocalizer, fileImageSaver).getComponent());
     panel.add(new LanguagePanelComposer(labelLocalizer).getComponent());

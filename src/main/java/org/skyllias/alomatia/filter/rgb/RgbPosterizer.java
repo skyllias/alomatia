@@ -1,14 +1,14 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.ColorConverter;
 
-/** Filter that divides each RGB channel in two or more buckets and quantifies
+/** Converter that divides each RGB channel in two or more buckets and quantifies
  *  all the values inside each bucket into one single value. */
 
-public class RgbPosterizer extends BasicColorFilter
+public class RgbPosterizer implements ColorConverter
 {
   private int buckets;
   private float bucketSize;
@@ -48,7 +48,7 @@ public class RgbPosterizer extends BasicColorFilter
 //==============================================================================
 
   @Override
-  public Color filterColor(Color original)
+  public Color convertColor(Color original)
   {
     int red   = getQuantized(original.getRed());
     int green = getQuantized(original.getGreen());
