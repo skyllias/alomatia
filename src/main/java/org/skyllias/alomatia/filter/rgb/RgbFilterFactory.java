@@ -43,6 +43,18 @@ public class RgbFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forRedAndGreenSwap() {return new ColorFilter(new SwapRedAndGreenConverter());}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forGreenAndBlueSwap() {return new ColorFilter(new SwapGreenAndBlueConverter());}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forBlueAndRedSwap() {return new ColorFilter(new SwapBlueAndRedConverter());}
+
+//------------------------------------------------------------------------------
+
   public static ImageFilter forNegative() {return new ColorFilter(new NegativeConverter());}
 
 //------------------------------------------------------------------------------
