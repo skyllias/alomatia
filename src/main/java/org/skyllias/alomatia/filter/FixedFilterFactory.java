@@ -78,6 +78,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String XYZACHMALY_FILTER_NAME = "filter.dalton.xyz.achromatomaly.name";
   private static final String RGBR_FILTER_NAME       = "filter.rgb.gbr.name";
   private static final String BGRB_FILTER_NAME       = "filter.rgb.brg.name";
+  private static final String SWAP_RG_FILTER_NAME    = "filter.rgb.swap.rg.name";
+  private static final String SWAP_GB_FILTER_NAME    = "filter.rgb.swap.gb.name";
+  private static final String SWAP_BR_FILTER_NAME    = "filter.rgb.swap.br.name";
   private static final String EQUAL_GREY_FILTER_NAME = "filter.rgb.greys.equal.name";
   private static final String HUMAN_GREY_FILTER_NAME = "filter.rgb.greys.human.name";
   private static final String REDONLY_FILTER_NAME    = "filter.rgb.redonly.name";
@@ -418,6 +421,9 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(RgbFilterFactory.forRtoGtoBtoR(),       RGBR_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBtoGtoRtoB(),       BGRB_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forRedAndGreenSwap(),  SWAP_RG_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forGreenAndBlueSwap(), SWAP_GB_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forBlueAndRedSwap(),   SWAP_BR_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forRedChannelOnly(),   REDONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forGreenChannelOnly(), GREENONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBlueChannelOnly(),  BLUEONLY_FILTER_NAME));
