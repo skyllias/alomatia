@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
+import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.JTextField;
 
 /** Non-editable {@link JTextField} with some preset sizes that prevent it from
  *  growing vertically or horizontally. */

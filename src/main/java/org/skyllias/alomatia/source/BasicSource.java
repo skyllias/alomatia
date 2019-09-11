@@ -1,9 +1,10 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.*;
+import java.awt.Image;
 
-import org.skyllias.alomatia.*;
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
 
 /** Superclass for most source implementations. */
 

@@ -1,14 +1,17 @@
 
 package org.skyllias.alomatia.i18n;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.*;
-import java.util.prefs.*;
+import java.util.Locale;
+import java.util.prefs.Preferences;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class StartupLabelLocalizerTest
 {

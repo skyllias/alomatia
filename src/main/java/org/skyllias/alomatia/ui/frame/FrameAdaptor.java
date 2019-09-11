@@ -1,11 +1,15 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.Image;
 
-import javax.swing.*;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 
-import org.skyllias.alomatia.ui.*;
+import org.skyllias.alomatia.ui.DisplayPanel;
 
 /** Abstraction of a frame (window) containing a {@link DisplayPanel}, so that
  *  the management logic can be independent on how frames are implemented.

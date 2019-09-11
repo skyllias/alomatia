@@ -1,8 +1,10 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 
 /** {@link BufferedImageOp} that paints a semitransparent rectangle of certain
  *  colour in front of the source image. */

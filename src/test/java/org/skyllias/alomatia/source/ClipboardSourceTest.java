@@ -1,16 +1,24 @@
 
 package org.skyllias.alomatia.source;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.image.*;
+import java.awt.Image;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.image.BufferedImage;
 
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.ImageDisplay;
 
 /** The system's clipboard cannot be used to generate the events because it is
  *  asynchronous. */

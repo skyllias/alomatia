@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.daltonism;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** Representation of a colour in the LMS colour-space.
  *  <p>

@@ -1,9 +1,10 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 
 /**Provider of colours from an image from positions that may not fall exactly on
  * a pixel.

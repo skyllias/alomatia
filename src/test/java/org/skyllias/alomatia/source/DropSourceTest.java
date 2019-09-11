@@ -1,16 +1,22 @@
 
 package org.skyllias.alomatia.source;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
-import java.awt.image.*;
+import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.image.BufferedImage;
 
-import org.junit.*;
-
-import org.skyllias.alomatia.*;
+import org.junit.Test;
+import org.skyllias.alomatia.ImageDisplay;
 
 /** Events have to be mocked because their construction is too complex. */
 

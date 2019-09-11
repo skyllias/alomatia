@@ -1,11 +1,18 @@
 
 package org.skyllias.alomatia.filter.buffered.vignette;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.concurrent.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
-import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.DyeOp;
 
 /** {@link BufferedImageOp} that paints a partially opaque, black rectangle in
  *  front of the source image. In opposition to {@link DyeOp}, the transparency

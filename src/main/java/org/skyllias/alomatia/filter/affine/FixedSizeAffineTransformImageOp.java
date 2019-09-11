@@ -1,10 +1,12 @@
 
 package org.skyllias.alomatia.filter.affine;
 
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 
-import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
 
 /** {@link BufferedImageOp} that applies an {@link AffineTransform} that keeps
  *  the original size of the source image.

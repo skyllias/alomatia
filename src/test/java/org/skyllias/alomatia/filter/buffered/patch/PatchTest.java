@@ -1,11 +1,12 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Point;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class PatchTest
 {

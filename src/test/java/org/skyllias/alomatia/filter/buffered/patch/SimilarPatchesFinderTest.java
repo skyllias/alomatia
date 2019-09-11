@@ -1,15 +1,19 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.awt.image.*;
-import java.io.*;
-import java.util.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Vector;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class SimilarPatchesFinderTest
 {

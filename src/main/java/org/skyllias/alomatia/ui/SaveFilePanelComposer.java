@@ -1,14 +1,23 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.event.*;
-import java.io.*;
-import java.util.prefs.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 /** Composer of the panel with the save to file controls.
  *  The panel can be obtained by calling {@link #getComponent()}. */

@@ -1,15 +1,25 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import java.util.concurrent.*;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-import org.skyllias.alomatia.*;
-import org.skyllias.alomatia.display.*;
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.display.DisplayFitPolicy;
+import org.skyllias.alomatia.display.ResizableDisplay;
 
 /** Panel where images are drawn after manipulation.
  *  <p>

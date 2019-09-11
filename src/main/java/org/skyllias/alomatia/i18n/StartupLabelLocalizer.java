@@ -1,12 +1,14 @@
 
 package org.skyllias.alomatia.i18n;
 
-import java.util.*;
-import java.util.prefs.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.UIManager;
 
-import org.apache.commons.lang.*;
+import org.apache.commons.lang.ArrayUtils;
 
 /** LabelLocalizer that applies the same locale over a JVM, retrieving it from
  *  the user properties. It may be overriden by means of VM arguments.

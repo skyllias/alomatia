@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.rgb.*;
+import org.skyllias.alomatia.filter.rgb.RgbPosterizer;
 
 /** Function [0, 1] -> [0, 1] that divides the range in two or more equal-sized
  *  buckets and returns the same result to all the values in each bucket.

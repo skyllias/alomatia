@@ -1,10 +1,10 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion.wave;
 
-import java.awt.geom.*;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D.Float;
 
-import org.skyllias.alomatia.filter.buffered.distortion.*;
+import org.skyllias.alomatia.filter.buffered.distortion.Distortion;
 
 /** Distortion that displaces pixels according to some sinusoidal function of
  *  constant amplitude and frequency.

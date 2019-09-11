@@ -1,14 +1,18 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.event.*;
-import java.util.prefs.*;
+import java.awt.event.ActionEvent;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.source.*;
+import org.apache.commons.lang.StringUtils;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.source.AsynchronousUrlSource;
 
 /** Button with a text field tightly coupled to {@link SourceSelector} and
  *  {@link AsynchronousUrlSource} with three possible states: Disabled, ready

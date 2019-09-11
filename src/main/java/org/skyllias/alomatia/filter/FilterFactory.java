@@ -1,10 +1,10 @@
 
 package org.skyllias.alomatia.filter;
 
-import java.awt.image.*;
-import java.util.*;
+import java.awt.image.ImageFilter;
+import java.util.Collection;
 
-import org.skyllias.alomatia.display.*;
+import org.skyllias.alomatia.display.FilterableDisplay;
 
 /** Provider of instances of {@link NamedFilter} appliable to an {@link FilterableDisplay}.
  *  <p>

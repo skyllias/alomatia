@@ -1,13 +1,16 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
+import java.awt.Rectangle;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
 
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.skyllias.alomatia.filter.FilterFactory;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.frame.FrameAdaptor;
+import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 
 /** Factory for {@link DisplayFrame} instances that keeps track of them. */
 

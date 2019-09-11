@@ -1,8 +1,9 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Point;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /** Contiguous collection of pixels from an image.
  *  A patch can contain zero, one, or more pixels. In the latter case, all of

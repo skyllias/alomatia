@@ -1,10 +1,14 @@
 
 package org.skyllias.alomatia.filter.compose;
 
-import java.awt.image.*;
-import java.util.*;
+import java.awt.image.ImageConsumer;
+import java.awt.image.ImageFilter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.skyllias.alomatia.display.*;
+import org.skyllias.alomatia.display.FilterableDisplay;
 
 /** Filter that delegates the image modifications to other filters.
  *  It is meant to cancatenate in order two or more different filters (all

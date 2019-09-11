@@ -1,20 +1,39 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import java.text.*;
-import java.util.*;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.HashSet;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JDialog;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.logo.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.skyllias.alomatia.display.FilterableDisplay;
+import org.skyllias.alomatia.filter.FilterFactory;
+import org.skyllias.alomatia.filter.NamedFilter;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
+import org.skyllias.alomatia.ui.frame.FrameAdaptor;
+import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 
 /** Provider of the logic for windows where the contents of the capture frame
  *  are drawn after filtering them. The real frame is managed by means of a

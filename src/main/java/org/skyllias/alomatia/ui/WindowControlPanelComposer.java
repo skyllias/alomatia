@@ -1,21 +1,38 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.dnd.*;
-import java.awt.event.*;
-import java.text.*;
-import java.util.prefs.*;
+import java.awt.Component;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.text.MessageFormat;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.plaf.basic.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.ListCellRenderer;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.display.Repeater;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.DisplayFrame.DisplayFrameCloseListener;
-import org.skyllias.alomatia.ui.DisplayFrameManager.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
+import org.skyllias.alomatia.ui.frame.FramePolicy;
 
 /** Composer of panels to manage display frames: Create, count and rearrange them.
  *  This takes care of the UI, while a {@link DisplayFrameManager} is in charge

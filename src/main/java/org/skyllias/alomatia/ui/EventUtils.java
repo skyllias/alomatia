@@ -1,8 +1,8 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 
 /** Helper methods to deal with Swing events. */
 

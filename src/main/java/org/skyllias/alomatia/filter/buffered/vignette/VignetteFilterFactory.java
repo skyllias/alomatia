@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.filter.buffered.vignette;
 
-import java.awt.image.*;
+import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.buffered.*;
+import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 
 /** Helper class to get the most usual vignette filters. */
 

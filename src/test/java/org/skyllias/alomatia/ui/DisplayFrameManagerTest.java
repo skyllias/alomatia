@@ -1,16 +1,20 @@
 
 package org.skyllias.alomatia.ui;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Rectangle;
+import java.util.Arrays;
 
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.filter.FixedFilterFactory;
+import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 
 public class DisplayFrameManagerTest
 {

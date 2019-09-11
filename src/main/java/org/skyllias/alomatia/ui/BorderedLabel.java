@@ -1,8 +1,9 @@
 
 package org.skyllias.alomatia.ui;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.border.Border;
 
 /** Text-only JLabel with a border so that it does not stick to nearby components.
  *  The margin should be the same used by other components like JRadioButton,
