@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered;
+package org.skyllias.alomatia.filter.buffered.surround;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.RecursiveAction;
 
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.parallelization.ImageProcessor;
 import org.skyllias.alomatia.filter.buffered.parallelization.RecursiveImageAction;
 

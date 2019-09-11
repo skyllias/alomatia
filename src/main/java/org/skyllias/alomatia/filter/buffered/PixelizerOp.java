@@ -8,6 +8,8 @@ import java.awt.image.BufferedImageOp;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.skyllias.alomatia.filter.buffered.surround.AverageChannelCalculator;
+
 /** {@link BufferedImageOp} that divides the original image in same-sized
  *  squares and paints all the pixels in each box with its average colour. */
 

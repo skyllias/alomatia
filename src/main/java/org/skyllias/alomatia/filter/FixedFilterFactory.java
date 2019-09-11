@@ -9,11 +9,8 @@ import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformImageOp;
 import org.skyllias.alomatia.filter.affine.RotationTransformImageOp;
 import org.skyllias.alomatia.filter.affine.VerticalFlipTransformImageOp;
 import org.skyllias.alomatia.filter.buffered.DyeOp;
-import org.skyllias.alomatia.filter.buffered.MedianChannelCalculator;
-import org.skyllias.alomatia.filter.buffered.MinMaxChannelCalculator;
 import org.skyllias.alomatia.filter.buffered.PixelizerOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
-import org.skyllias.alomatia.filter.buffered.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.buffered.distortion.BilinearInterpolator;
 import org.skyllias.alomatia.filter.buffered.distortion.DistortingBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.distortion.DistortionChain;
@@ -29,6 +26,12 @@ import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
 import org.skyllias.alomatia.filter.buffered.map.RadialMap;
+import org.skyllias.alomatia.filter.buffered.surround.LightCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.MinMaxChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.ProbabilisticBlackOrWhiteSelector;
+import org.skyllias.alomatia.filter.buffered.surround.StrictBlackOrWhiteSelector;
+import org.skyllias.alomatia.filter.buffered.surround.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.buffered.vignette.VignetteFilterFactory;
 import org.skyllias.alomatia.filter.compose.AxeColoursFilter;
 import org.skyllias.alomatia.filter.compose.EdgeConvolvingComposedFilter;
@@ -152,6 +155,10 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_CCT_M_FILTER_NAME  = "filter.rgb.colourcontrast+m.name";
   private static final String INC_CCT_S_FILTER_NAME  = "filter.rgb.colourcontrast+s.name";
   private static final String INC_CCT_XS_FILTER_NAME = "filter.rgb.colourcontrast+xs.name";
+  private static final String BNW_PIXEL_FILTER_NAME  = "filter.b&w.pixel.name";
+  private static final String BNW_BLOT_FILTER_NAME   = "filter.b&w.blot.name";
+  private static final String BNW_SCATT_FILTER_NAME  = "filter.b&w.scatter.name";
+  private static final String BNW_SNOW_FILTER_NAME   = "filter.b&w.snow.name";
   private static final String BLUR_SMALL_FILTER_NAME = "filter.blur.small.name";
   private static final String BLUR_MED_FILTER_NAME   = "filter.blur.medium.name";
   private static final String BLUR_BIG_FILTER_NAME   = "filter.blur.big.name";
@@ -407,6 +414,11 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(), EQUAL_GREY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forHumanSensitiveGreyScale(), HUMAN_GREY_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(0, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_PIXEL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(2, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_BLOT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()))), BNW_SCATT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(3, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()))), BNW_SNOW_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(255, 128, 0)), ORANGEPHIL_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(43, 255, 0)),  GREENPHIL_FILTER_NAME));

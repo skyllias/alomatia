@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered;
+package org.skyllias.alomatia.filter.buffered.surround;
 
 import java.awt.Color;
 import java.util.Collection;
