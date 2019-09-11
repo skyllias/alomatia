@@ -1,12 +1,15 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.concurrent.RecursiveAction;
 
-import org.skyllias.alomatia.filter.buffered.parallelization.*;
+import org.skyllias.alomatia.filter.buffered.parallelization.ImageProcessor;
+import org.skyllias.alomatia.filter.buffered.parallelization.RecursiveImageAction;
 
 /** {@link BufferedImageOp} that replaces the colour in each pixel with another
  *  one derived from all the pixels in the box surrounding it.

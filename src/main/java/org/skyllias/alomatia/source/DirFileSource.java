@@ -1,12 +1,13 @@
 
 package org.skyllias.alomatia.source;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.Arrays;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 
-import org.apache.commons.io.filefilter.*;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 /** Source from a directory.
  *  <p>

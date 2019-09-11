@@ -1,11 +1,18 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.awt.*;
-import java.beans.*;
+import java.awt.Frame;
+import java.awt.Image;
+import java.beans.PropertyVetoException;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 /** {@link FrameAdaptor} that wraps a {@link JInternalFrame} (ie, a light-weight
  *  Swing component inside a JDesktopPane) to display filtered images. */

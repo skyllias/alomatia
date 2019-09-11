@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.logo;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** Calculator of the colour to apply to a pixel according to its location in an image. */
 

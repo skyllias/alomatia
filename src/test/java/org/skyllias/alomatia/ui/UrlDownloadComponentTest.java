@@ -1,21 +1,34 @@
 
 package org.skyllias.alomatia.ui;
 
-import static org.assertj.swing.fixture.Containers.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.swing.fixture.Containers.showInFrame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.concurrent.*;
-import java.util.prefs.*;
+import java.util.concurrent.Callable;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import org.assertj.swing.edt.*;
-import org.assertj.swing.fixture.*;
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.source.*;
-import org.skyllias.alomatia.source.AsynchronousUrlSource.*;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
+import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.edt.GuiTask;
+import org.assertj.swing.fixture.FrameFixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.source.AsynchronousUrlSource;
+import org.skyllias.alomatia.source.AsynchronousUrlSource.DownloadListener;
 
 /** AssertJ does not support writing strings with chars that are typed with
  *  modifiers (shift, alt, etc.), so there is not much effort placed in restoring

@@ -1,8 +1,8 @@
 
 package org.skyllias.alomatia.filter.affine;
 
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImageOp;
 
 /** {@link BufferedImageOp} that flips an image horizontally. */
 

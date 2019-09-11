@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia;
 
-import java.awt.*;
+import java.awt.Image;
 
 /** "Consumer" of images that may have to be filtered and displayed.
  *  <p>

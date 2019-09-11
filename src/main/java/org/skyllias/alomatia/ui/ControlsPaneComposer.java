@@ -1,14 +1,18 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.dnd.*;
+import java.awt.dnd.DropTargetListener;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.source.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.skyllias.alomatia.display.Repeater;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.source.SourceCatalogue;
+import org.skyllias.alomatia.ui.frame.FramePolicy;
 
 /** Composer of the container for the visual controls to choose the options.
  *  It includes a source selector, a filter selector and a display zoom selector. */

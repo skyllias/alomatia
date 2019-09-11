@@ -1,11 +1,19 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.GraphicsDevice;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
-import javax.swing.*;
+import javax.swing.Timer;
 
 /** Source of periodic screenshots.
  *  <p>

@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.geom.Point2D.Float;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 
 /** {@link Interpolator} that uses at most four surronding pixels to pick a
  *  colour that is not exactly on a pixel. */

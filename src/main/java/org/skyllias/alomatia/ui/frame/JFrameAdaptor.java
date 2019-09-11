@@ -1,10 +1,15 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
-import javax.swing.*;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 
 /** {@link FrameAdaptor} that wraps a {@link JFrame} (ie, an OS window) to
  *  display filtered images. */

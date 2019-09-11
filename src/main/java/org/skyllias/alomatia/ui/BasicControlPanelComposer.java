@@ -1,7 +1,9 @@
 
 package org.skyllias.alomatia.ui;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
 /** Composer of bare empty panels that can be used to contain controls. */
 

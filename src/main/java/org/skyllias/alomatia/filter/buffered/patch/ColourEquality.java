@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** ColourSimilarity that regards as similar only equal colours. */
 

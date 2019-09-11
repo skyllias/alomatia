@@ -1,8 +1,9 @@
 
 package org.skyllias.alomatia.logo;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 /** Generator of images whose pixels depend on their location according to a ColourCoordinator. */
 

@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** Comparator of {@link Color}s.
  *  A colour must be similar to itself and if A is similar to B then B is

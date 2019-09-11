@@ -1,11 +1,12 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class MultiplyingHueFactorTest
 {

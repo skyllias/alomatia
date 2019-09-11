@@ -1,9 +1,13 @@
 
 package org.skyllias.alomatia.source;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
-import org.skyllias.alomatia.*;
+import org.skyllias.alomatia.ImageSource;
 
 /** Collector of {@link ImageSource} instances retrievable by type.
  *  <p>

@@ -1,8 +1,8 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Collection;
 
 /** Selector of a colour for some pixel considering the colours of the
  *  surrounding pixels (including the pixel at the location being replaced).

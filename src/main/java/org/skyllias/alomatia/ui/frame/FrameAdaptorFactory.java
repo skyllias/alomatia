@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
 /** Provider of new instances of {@link FrameAdaptor}. */
 

@@ -1,9 +1,12 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /** {@link BufferedImageOp} that divides the original image in same-sized
  *  squares and paints all the pixels in each box with its average colour. */

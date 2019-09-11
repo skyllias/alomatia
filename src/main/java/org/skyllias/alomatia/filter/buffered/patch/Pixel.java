@@ -1,7 +1,8 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Point;
 
 /** Pixel from an image, identified by its coordinates and characterized by its colour.
  *  Two pixels are considered equal if they have the same coordinates, regardless

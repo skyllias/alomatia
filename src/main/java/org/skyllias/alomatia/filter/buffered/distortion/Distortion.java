@@ -1,7 +1,8 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import java.awt.geom.*;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 
 /** Geometric mapping of bidimensional points that dislocate the pixels from
  *  an image to produce a distorted image.

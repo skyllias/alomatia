@@ -1,8 +1,9 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.Collection;
 
 /** Calculator of the median of each separate channel of a collection of colours. */
 

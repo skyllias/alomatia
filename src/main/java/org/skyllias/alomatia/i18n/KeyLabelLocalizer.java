@@ -1,7 +1,9 @@
 
 package org.skyllias.alomatia.i18n;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Locale;
 
 /** Dummy localizer that always returns the key and the same locale.
  *  For stubbing purposes. */

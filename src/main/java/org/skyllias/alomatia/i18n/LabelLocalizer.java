@@ -1,7 +1,8 @@
 
 package org.skyllias.alomatia.i18n;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
 
 /** Provider of labels to be presented to the user in some language.
  *  <p>

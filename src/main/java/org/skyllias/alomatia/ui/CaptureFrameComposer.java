@@ -1,14 +1,17 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Button;
+import java.awt.GraphicsDevice;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.logo.*;
-import org.skyllias.alomatia.source.ScreenSource.*;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 
 /** Opener of frames used to select a region to capture images from. */
 

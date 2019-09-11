@@ -1,9 +1,13 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 /** Generator of patches from images.
  *  Patch boundaries are decided according to colour similarity between adjacent
@@ -107,13 +111,13 @@ public class SimilarPatchesFinder
   {
     Point point                  = pixel.getCoordinates();
       Collection<Pixel> neighbours = new LinkedList<>();
-  
+
       if (point.x > 0) neighbours.add(getPixelAt(new Point(point.x - 1, point.y), image));
       if (point.y > 0) neighbours.add(getPixelAt(new Point(point.x, point.y - 1), image));
-  
+
       if (point.x < image.getWidth() - 1)  neighbours.add(getPixelAt(new Point(point.x + 1, point.y), image));
       if (point.y < image.getHeight() - 1) neighbours.add(getPixelAt(new Point(point.x, point.y + 1), image));
-  
+
     return neighbours;
   }
 

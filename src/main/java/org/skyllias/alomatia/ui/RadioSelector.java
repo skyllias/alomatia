@@ -1,12 +1,16 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 
-import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 /** Creator of radio buttons belonging to the same group and associated
  *  to an object of some generic type SELECTABLE. When a radio button is

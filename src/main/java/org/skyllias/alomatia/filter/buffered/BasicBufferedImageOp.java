@@ -1,7 +1,8 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 
 /** Superclass for the {@link BufferedImageOp} that keep the image size.
  *  Subclasses must implement doFilter(BufferedImage, BufferedImage). */

@@ -1,15 +1,26 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
-import java.util.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Locale;
+import java.util.Vector;
 
-import javax.swing.*;
-import javax.swing.plaf.basic.*;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
-import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 /** Composer of a panel to display the current language and to select the next one. */
 

@@ -1,9 +1,16 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 /** {@link FrameAdaptorFactory} that returns {@link JFrameAdaptor}s. */
 

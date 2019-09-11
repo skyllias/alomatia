@@ -1,12 +1,12 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion.wave;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Dimension;
+import java.awt.geom.Point2D;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class IsotropicWaveDistortionTest
 {

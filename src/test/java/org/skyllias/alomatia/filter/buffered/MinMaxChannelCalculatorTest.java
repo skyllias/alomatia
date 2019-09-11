@@ -1,12 +1,13 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.Collection;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class MinMaxChannelCalculatorTest
 {

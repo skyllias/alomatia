@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.util.prefs.*;
+import java.util.prefs.Preferences;
 
 /** Configuration for the behaviour when displaying frames.
  *  Maybe in the future this will become an interface, and a bigger variety of

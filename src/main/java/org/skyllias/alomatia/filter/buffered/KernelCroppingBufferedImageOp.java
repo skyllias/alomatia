@@ -1,8 +1,12 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.Kernel;
 
 /** {@link BufferedImageOp} that, given a {@link Kernel}, produces an image with
  *  dimensions equal to the original image's minus the kernel's (minus 1).

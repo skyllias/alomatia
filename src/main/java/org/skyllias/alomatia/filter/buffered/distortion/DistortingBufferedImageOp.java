@@ -1,13 +1,16 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
-import java.util.concurrent.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.RecursiveAction;
 
-import org.skyllias.alomatia.filter.buffered.*;
-import org.skyllias.alomatia.filter.buffered.parallelization.*;
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.parallelization.ImageProcessor;
+import org.skyllias.alomatia.filter.buffered.parallelization.RecursiveImageAction;
 
 /** {@link BasicBufferedImageOp} that distorts images by applying a
  *  {@link Distortion} to all pixels. */

@@ -1,17 +1,27 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.prefs.*;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.RadioSelector.*;
+import org.skyllias.alomatia.display.DisplayFitPolicy;
+import org.skyllias.alomatia.display.ResizableDisplay;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 
 /** Composer of a panel with controls to change the zoom of some {@link ResizableDisplay}.
  *  The last selected fit policy and slider values are stored as user preferences.

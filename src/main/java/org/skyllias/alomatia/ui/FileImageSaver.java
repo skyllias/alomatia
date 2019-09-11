@@ -1,18 +1,23 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import javax.imageio.*;
-import javax.swing.*;
-import javax.swing.filechooser.*;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.apache.commons.lang.*;
-import org.skyllias.alomatia.i18n.*;
+import org.apache.commons.lang.StringUtils;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 /** {@link ImageSaver} that stores images in files.
  *  The format is initially fixed to PNG.

@@ -1,14 +1,19 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
-import java.awt.image.*;
-import java.io.*;
+import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 
 /** Source that takes images dropped on some component (supposedly, the display
  * panel itself).
