@@ -2,13 +2,13 @@
 package org.skyllias.alomatia.filter.compose;
 
 import org.skyllias.alomatia.filter.ColorFilter;
-import org.skyllias.alomatia.filter.buffered.MedianChannelCalculator;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
-import org.skyllias.alomatia.filter.buffered.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.buffered.map.HueMap;
 import org.skyllias.alomatia.filter.buffered.patch.ColourEquality;
 import org.skyllias.alomatia.filter.buffered.patch.HueMappedPatchBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.patch.SimilarPatchesFinder;
+import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.rgb.RgbPosterizer;
 
 /** Posterizes colours and then changes their hue, emulating to a certain extend
