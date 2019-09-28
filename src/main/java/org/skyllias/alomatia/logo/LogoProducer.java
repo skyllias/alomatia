@@ -28,7 +28,7 @@ public class LogoProducer
       {
         float x = ((float) i) / (float) width;
         float y = ((float) j + MARGIN_SATURATION) /
-                  ((float) height  + MARGIN_SATURATION + MARGIN_BRIGHTNESS);    // avoid 0 and 1
+                  ((float) height + MARGIN_SATURATION + MARGIN_BRIGHTNESS);     // avoid 0 and 1
 
         Color pixelColour = coordinator.getColourAt(x, y);
         image.setRGB(i, j, pixelColour.getRGB());

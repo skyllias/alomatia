@@ -6,15 +6,15 @@ import java.awt.image.RGBImageFilter;
 
 /** {@link RGBImageFilter} that filters colours independently from the location
  *  of pixels.
- *  The conversion is delegated to a {@link ColorConverter}. */
+ *  The conversion is delegated to a {@link ColourConverter}. */
 
-public class ColorFilter extends RGBImageFilter
+public class ColourFilter extends RGBImageFilter
 {
-  private final ColorConverter converter;
+  private final ColourConverter converter;
 
 //==============================================================================
 
-  public ColorFilter(ColorConverter converter)
+  public ColourFilter(ColourConverter converter)
   {
     this.converter = converter;
 
@@ -30,7 +30,7 @@ public class ColorFilter extends RGBImageFilter
   public int filterRGB(int x, int y, int rgb)
   {
     Color originalColor = new Color(rgb);
-    Color modifiedColor = converter.convertColor(originalColor);
+    Color modifiedColor = converter.convertColour(originalColor);
     return modifiedColor.getRGB();
   }
 

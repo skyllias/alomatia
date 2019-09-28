@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.display.FilterableDisplay;
-import org.skyllias.alomatia.filter.ColorFilter;
+import org.skyllias.alomatia.filter.ColourFilter;
 import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.filter.rgb.BrighterConverter;
@@ -44,8 +44,8 @@ public class FilterSelectorComposerTest
   private FilterFactory filterFactory;
 
   private NamedFilter nullFilter     = new NamedFilter(null,                                     NO_FILTER_NAME);
-  private NamedFilter brighterFilter = new NamedFilter(new ColorFilter(new BrighterConverter()), LIGHTER_FILTER_NAME);
-  private NamedFilter darkerFilter   = new NamedFilter(new ColorFilter(new DarkerConverter()),   DARKER_FILTER_NAME);
+  private NamedFilter brighterFilter = new NamedFilter(new ColourFilter(new BrighterConverter()), LIGHTER_FILTER_NAME);
+  private NamedFilter darkerFilter   = new NamedFilter(new ColourFilter(new DarkerConverter()),   DARKER_FILTER_NAME);
 
   @BeforeClass
   public static void setUpOnce()

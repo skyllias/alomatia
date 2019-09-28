@@ -3,18 +3,18 @@ package org.skyllias.alomatia.filter.hsb;
 
 import java.awt.Color;
 
-import org.skyllias.alomatia.filter.ColorConverter;
+import org.skyllias.alomatia.filter.ColourConverter;
 
 /** Converter that works in the hue-saturation-brightness colour-space,
  *  delegating transformations to an HsbConverter. */
 
-public class HsbColorConverter implements ColorConverter
+public class HsbColourConverter implements ColourConverter
 {
   private final HsbConverter hsbConverter;
 
 //==============================================================================
 
-  public HsbColorConverter(HsbConverter hsbConverter)
+  public HsbColourConverter(HsbConverter hsbConverter)
   {
     this.hsbConverter = hsbConverter;
   }
@@ -22,7 +22,7 @@ public class HsbColorConverter implements ColorConverter
 //==============================================================================
 
   @Override
-  public Color convertColor(Color original)
+  public Color convertColour(Color original)
   {
     int red   = original.getRed();
     int green = original.getGreen();

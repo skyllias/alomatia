@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered;
+package org.skyllias.alomatia.filter.buffered.simple;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,6 +8,7 @@ import java.awt.image.BufferedImageOp;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.surround.AverageChannelCalculator;
 
 /** {@link BufferedImageOp} that divides the original image in same-sized

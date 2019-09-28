@@ -9,9 +9,9 @@ import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-import org.skyllias.alomatia.ui.DisplayPanel;
+import org.skyllias.alomatia.ui.DisplayPanelController;
 
-/** Abstraction of a frame (window) containing a {@link DisplayPanel}, so that
+/** Abstraction of a frame (window) containing a {@link DisplayPanelController}, so that
  *  the management logic can be independent on how frames are implemented.
  *  Implementations are expected to be as thin as possible, working as wrappers
  *  around some Swing components. For example, they can choose whether the

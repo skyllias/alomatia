@@ -15,7 +15,7 @@ import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
  *  The transformation is delegated to a real AffineTransformOp in order to
  *  take advantage of any potential hardware or native optimizations. */
 
-public abstract class FixedSizeAffineTransformImageOp extends BasicBufferedImageOp
+public abstract class FixedSizeAffineTransformOp extends BasicBufferedImageOp
 {
 //==============================================================================
 

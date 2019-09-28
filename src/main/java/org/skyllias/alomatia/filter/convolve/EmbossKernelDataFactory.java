@@ -50,9 +50,9 @@ public class EmbossKernelDataFactory implements KernelDataFactory
   @Override
   public float[][] getKernelData()
   {
-    return new float[][] {{-slope + volume/9, -slope + volume/9,        0 + volume/9},
-                          {-slope + volume/9,         0 + volume/9, slope + volume/9},
-                          {        0 + volume/9,  slope + volume/9, slope + volume/9}};
+    return new float[][] {{-slope + volume/9, -slope + volume/9,     0 + volume/9},
+                          {-slope + volume/9,      0 + volume/9, slope + volume/9},
+                          {     0 + volume/9,  slope + volume/9, slope + volume/9}};
   }
 
 //------------------------------------------------------------------------------

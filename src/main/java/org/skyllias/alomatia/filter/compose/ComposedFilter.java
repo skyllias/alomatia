@@ -11,7 +11,7 @@ import java.util.List;
 import org.skyllias.alomatia.display.FilterableDisplay;
 
 /** Filter that delegates the image modifications to other filters.
- *  It is meant to cancatenate in order two or more different filters (all
+ *  It is meant to concatenate in order two or more different filters (all
  *  complying the requirements described at {@link FilterableDisplay#setImageFilter(ImageFilter)}),
  *  producing aggregated effects. Two filters applied in different order may
  *  produce significantly different results. */

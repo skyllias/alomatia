@@ -3,11 +3,11 @@ package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.Color;
 
-import org.skyllias.alomatia.filter.ColorConverter;
+import org.skyllias.alomatia.filter.ColourConverter;
 
 /** Converter of any colour into grey shades. */
 
-public class WeighedGreyScaleConverter implements ColorConverter
+public class WeighedGreyScaleConverter implements ColourConverter
 {
   private final ChannelWeights channelWeights;
 
@@ -21,7 +21,7 @@ public class WeighedGreyScaleConverter implements ColorConverter
 //==============================================================================
 
   @Override
-  public Color convertColor(Color original)
+  public Color convertColour(Color original)
   {
     int red   = original.getRed();
     int green = original.getGreen();

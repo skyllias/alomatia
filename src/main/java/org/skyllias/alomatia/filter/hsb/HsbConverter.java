@@ -19,7 +19,9 @@ public interface HsbConverter
 
 //******************************************************************************
 
-  /** Dummy implementation of HsbConverter that returns the original values unaltered. */
+  /** Dummy implementation of HsbConverter that returns the original values unaltered.
+   *  Meant to serve as a superclass for HsbConverters that only override one
+   *  dimension, as Java 8 default interface methods are not available. */
 
   public class HsbAdapter implements HsbConverter
   {

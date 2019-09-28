@@ -30,7 +30,7 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.ui.DisplayFrame.DisplayFrameCloseListener;
+import org.skyllias.alomatia.ui.DisplayFrameController.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
 import org.skyllias.alomatia.ui.frame.FramePolicy;
 
@@ -122,9 +122,9 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   /** Removes the panel in the closed frame from those notified by the source. */
 
   @Override
-  public void onDisplayFrameClosed(DisplayFrame displayFrame)
+  public void onDisplayFrameClosed(DisplayFrameController displayFrame)
   {
-    DisplayPanel displayPanel = displayFrame.getDisplayPanel();
+    DisplayPanelController displayPanel = displayFrame.getDisplayPanel();
     repeaterDisplay.removeReceiver(displayPanel);
   }
 
@@ -176,8 +176,8 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private void createNewDisplayFrame()
   {
-    DisplayFrame frame        = manager.getNewDisplayFrame(applySequentialFilters);
-    DisplayPanel displayPanel = frame.getDisplayPanel();
+    DisplayFrameController frame        = manager.getNewDisplayFrame(applySequentialFilters);
+    DisplayPanelController displayPanel = frame.getDisplayPanel();
 
     repeaterDisplay.addReceiver(displayPanel);
     frame.addListener(this);

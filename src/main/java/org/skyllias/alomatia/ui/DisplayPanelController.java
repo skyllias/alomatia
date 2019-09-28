@@ -21,14 +21,15 @@ import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.display.DisplayFitPolicy;
 import org.skyllias.alomatia.display.ResizableDisplay;
 
-/** Panel where images are drawn after manipulation.
+/** Provider of a panel where images are drawn after manipulation, along with 
+ *  the associated logic.
  *  <p>
  *  For an image to be modified, both an original image and a filter are needed.
  *  If there is no original image, nothing is displayed; if no filter, the
  *  original image is shown without change. */
 
 @SuppressWarnings("serial")
-public class DisplayPanel implements ImageDisplay, ResizableDisplay, ComponentListener
+public class DisplayPanelController implements ImageDisplay, ResizableDisplay, ComponentListener
 {
   private static final int UNAVAILABLE_SIZE = -1;                               // value returned by Image.getWidth(ImageObserver) and getHeight() when they are still unavailable
   private static final int SCROLL_INCREMENT = 16;
@@ -49,7 +50,7 @@ public class DisplayPanel implements ImageDisplay, ResizableDisplay, ComponentLi
 
   /** Creates a new instance with double buffering enabled to reduce flickering. */
 
-  public DisplayPanel()
+  public DisplayPanelController()
   {
     component = new JScrollPane();
     component.setDoubleBuffered(true);

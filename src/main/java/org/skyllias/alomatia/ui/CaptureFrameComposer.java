@@ -46,8 +46,8 @@ public class CaptureFrameComposer
     frame.setLocationRelativeTo(null);
     frame.setSize(INITIAL_FRAME_WIDTH, INITIAL_FRAME_HEIGHT);
 
-    frame.setIconImage(new LogoProducer().createImage(ControlFrame.ICON_WIDTH,
-                                                      ControlFrame.ICON_HEIGHT));
+    frame.setIconImage(new LogoProducer().createImage(ControlFrameController.ICON_WIDTH,
+                                                      ControlFrameController.ICON_HEIGHT));
 
     Button captureButton = new Button(labelLocalizer.getString(BUTTON_LABEL));
     captureButton.addActionListener(new CaptureButtonListener(frame, listener));

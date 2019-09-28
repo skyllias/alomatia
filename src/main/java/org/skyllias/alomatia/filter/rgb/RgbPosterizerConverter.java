@@ -3,12 +3,12 @@ package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.Color;
 
-import org.skyllias.alomatia.filter.ColorConverter;
+import org.skyllias.alomatia.filter.ColourConverter;
 
 /** Converter that divides each RGB channel in two or more buckets and quantifies
  *  all the values inside each bucket into one single value. */
 
-public class RgbPosterizer implements ColorConverter
+public class RgbPosterizerConverter implements ColourConverter
 {
   private int buckets;
   private float bucketSize;
@@ -18,7 +18,7 @@ public class RgbPosterizer implements ColorConverter
 
   /** Same as RgbPosterizer(amountOfBuckets, false); */
 
-  public RgbPosterizer(int amountOfBuckets)
+  public RgbPosterizerConverter(int amountOfBuckets)
   {
     this(amountOfBuckets, false);
   }
@@ -35,7 +35,7 @@ public class RgbPosterizer implements ColorConverter
    *  bucket are moved to 255, the values in the middle bucket are moved to 127,
    *  and so on. */
 
-  public RgbPosterizer(int amountOfBuckets, boolean centerValue)
+  public RgbPosterizerConverter(int amountOfBuckets, boolean centerValue)
   {
     final float FULL_RANGE = 256f;                                              // considering the interval [0, 256). See getQuantized
 
@@ -48,7 +48,7 @@ public class RgbPosterizer implements ColorConverter
 //==============================================================================
 
   @Override
-  public Color convertColor(Color original)
+  public Color convertColour(Color original)
   {
     int red   = getQuantized(original.getRed());
     int green = getQuantized(original.getGreen());

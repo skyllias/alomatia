@@ -3,7 +3,7 @@ package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.ColorFilter;
+import org.skyllias.alomatia.filter.ColourFilter;
 
 /** Instantiator of filters that play with the RGB components of colours. */
 
@@ -11,71 +11,71 @@ public class RgbFilterFactory
 {
 //==============================================================================
 
-  public static ImageFilter forRedless() {return new ColorFilter(new RedlessConverter());}
+  public static ImageFilter forRedless() {return new ColourFilter(new RedlessConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forGreenless() {return new ColorFilter(new GreenlessConverter());}
+  public static ImageFilter forGreenless() {return new ColourFilter(new GreenlessConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forBlueless() {return new ColorFilter(new BluelessConverter());}
+  public static ImageFilter forBlueless() {return new ColourFilter(new BluelessConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forRedChannelOnly() {return new ColorFilter(new RedChannelOnlyConverter());}
+  public static ImageFilter forRedChannelOnly() {return new ColourFilter(new RedChannelOnlyConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forGreenChannelOnly() {return new ColorFilter(new GreenChannelOnlyConverter());}
+  public static ImageFilter forGreenChannelOnly() {return new ColourFilter(new GreenChannelOnlyConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forBlueChannelOnly() {return new ColorFilter(new BlueChannelOnlyConverter());}
+  public static ImageFilter forBlueChannelOnly() {return new ColourFilter(new BlueChannelOnlyConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forRtoGtoBtoR() {return new ColorFilter(new RtoGtoBtoRConverter());}
+  public static ImageFilter forRtoGtoBtoR() {return new ColourFilter(new RtoGtoBtoRConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forBtoGtoRtoB() {return new ColorFilter(new BtoGtoRtoBConverter());}
+  public static ImageFilter forBtoGtoRtoB() {return new ColourFilter(new BtoGtoRtoBConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forRedAndGreenSwap() {return new ColorFilter(new SwapRedAndGreenConverter());}
+  public static ImageFilter forRedAndGreenSwap() {return new ColourFilter(new SwapRedAndGreenConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forGreenAndBlueSwap() {return new ColorFilter(new SwapGreenAndBlueConverter());}
+  public static ImageFilter forGreenAndBlueSwap() {return new ColourFilter(new SwapGreenAndBlueConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forBlueAndRedSwap() {return new ColorFilter(new SwapBlueAndRedConverter());}
+  public static ImageFilter forBlueAndRedSwap() {return new ColourFilter(new SwapBlueAndRedConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forNegative() {return new ColorFilter(new NegativeConverter());}
+  public static ImageFilter forNegative() {return new ColourFilter(new NegativeConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forEqualGreyScale() {return new ColorFilter(new WeighedGreyScaleConverter(new EqualChannelWeights()));}
+  public static ImageFilter forEqualGreyScale() {return new ColourFilter(new WeighedGreyScaleConverter(new EqualChannelWeights()));}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forHumanSensitiveGreyScale() {return new ColorFilter(new WeighedGreyScaleConverter(new HumanSensitiveChannelWeights()));}
+  public static ImageFilter forHumanSensitiveGreyScale() {return new ColourFilter(new WeighedGreyScaleConverter(new HumanSensitiveChannelWeights()));}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forVoid() {return new ColorFilter(new VoidConverter());}
+  public static ImageFilter forVoid() {return new ColourFilter(new VoidConverter());}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forColourContrast(double contrastFactor) {return new ColorFilter(new ColourContrastConverter(contrastFactor));}
+  public static ImageFilter forColourContrast(double contrastFactor) {return new ColourFilter(new ColourContrastConverter(contrastFactor));}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forPosterizer(int amountOfBuckets) {return new ColorFilter(new RgbPosterizer(amountOfBuckets));}
+  public static ImageFilter forPosterizer(int amountOfBuckets) {return new ColourFilter(new RgbPosterizerConverter(amountOfBuckets));}
 
 //------------------------------------------------------------------------------
 

@@ -5,11 +5,9 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformImageOp;
-import org.skyllias.alomatia.filter.affine.RotationTransformImageOp;
-import org.skyllias.alomatia.filter.affine.VerticalFlipTransformImageOp;
-import org.skyllias.alomatia.filter.buffered.DyeOp;
-import org.skyllias.alomatia.filter.buffered.PixelizerOp;
+import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformOp;
+import org.skyllias.alomatia.filter.affine.RotationTransformOp;
+import org.skyllias.alomatia.filter.affine.VerticalFlipTransformOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.buffered.distortion.BilinearInterpolator;
 import org.skyllias.alomatia.filter.buffered.distortion.DistortingBufferedImageOp;
@@ -26,6 +24,8 @@ import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
 import org.skyllias.alomatia.filter.buffered.map.RadialMap;
+import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
+import org.skyllias.alomatia.filter.buffered.simple.PixelizerOp;
 import org.skyllias.alomatia.filter.buffered.surround.LightCalculator;
 import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
 import org.skyllias.alomatia.filter.buffered.surround.MinMaxChannelCalculator;
@@ -567,9 +567,9 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(HsbFilterFactory.forSaturationPosterizer(2, false), SATPOSTER_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformOp()), HORIZONTAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformOp()),   VERTICAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformOp()),       ROTATION_FILTER_NAME));
   }
 
 //==============================================================================

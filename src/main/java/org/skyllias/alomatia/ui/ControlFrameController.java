@@ -32,7 +32,7 @@ import org.skyllias.alomatia.ui.frame.JInternalFrameAdaptorFactory;
  *  <p>
  *  Only one instance of ControlFrame is expected in a given application. */
 
-public class ControlFrame
+public class ControlFrameController
 {
   public static final int ICON_WIDTH  = 32;
   public static final int ICON_HEIGHT = 32;
@@ -48,7 +48,7 @@ public class ControlFrame
    *  sources with the repeater set as display. If it contains a DropSource,
    *  this frame is added as drop target. */
 
-  public ControlFrame(LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
+  public ControlFrameController(LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
                       Repeater displayRepeater, FilterFactory filterFactory,
                       FramePolicy framePolicy)
   {
