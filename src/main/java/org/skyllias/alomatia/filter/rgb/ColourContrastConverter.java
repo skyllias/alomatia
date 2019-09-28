@@ -3,7 +3,7 @@ package org.skyllias.alomatia.filter.rgb;
 
 import java.awt.Color;
 
-import org.skyllias.alomatia.filter.ColorConverter;
+import org.skyllias.alomatia.filter.ColourConverter;
 import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
 import org.skyllias.alomatia.filter.hsb.ContrastConverter;
 
@@ -13,7 +13,7 @@ import org.skyllias.alomatia.filter.hsb.ContrastConverter;
  *  this should increase the differences between colours with separate
  *  contributions in each channel. The other one does not change the hue. */
 
-public class ColourContrastConverter implements ColorConverter
+public class ColourContrastConverter implements ColourConverter
 {
   private ComposedUnitFactor factor;
 
@@ -32,7 +32,7 @@ public class ColourContrastConverter implements ColorConverter
 //==============================================================================
 
   @Override
-  public Color convertColor(Color original)
+  public Color convertColour(Color original)
   {
     int red   = original.getRed();
     int green = original.getGreen();

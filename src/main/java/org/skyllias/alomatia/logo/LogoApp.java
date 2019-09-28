@@ -8,7 +8,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-/** Application to generate the logo. */
+/** Application to generate the logo as a file in the project. */
 
 public class LogoApp
 {

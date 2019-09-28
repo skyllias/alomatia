@@ -21,7 +21,7 @@ public interface ImageSource
 
   void setDisplay(ImageDisplay display);
 
-  /** Turns the production of images on (if active is true) or off (if active is off). */
+  /** Turns the production of images on (if active is true) or off (if active is false). */
 
   void setActive(boolean active);
 }

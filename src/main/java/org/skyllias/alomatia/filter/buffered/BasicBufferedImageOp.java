@@ -24,8 +24,8 @@ public abstract class BasicBufferedImageOp extends HintlessBufferedImageOp
 
 //------------------------------------------------------------------------------
 
-  /** Does the filtering from the original image src into the destination image dest
-   *  without caring about the nullness of the latter. */
+  /** Does the filtering from the original image src into the destination image
+   *  dest without caring about the nullness of the latter. */
 
   protected abstract void doFilter(BufferedImage src, BufferedImage dest);
 

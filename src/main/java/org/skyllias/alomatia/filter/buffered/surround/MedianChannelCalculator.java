@@ -12,7 +12,7 @@ public class MedianChannelCalculator implements SurroundingColoursCalculator
 //==============================================================================
 
   /** If surroundingColours contains an even amount of items, the median is taken
-   *  as the value above the middle. */
+   *  as the value immediately below the middle. */
 
   @Override
   public Color getColour(Collection<Color> surroundingColours)

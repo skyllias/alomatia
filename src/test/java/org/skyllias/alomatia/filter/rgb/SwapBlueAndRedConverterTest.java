@@ -13,24 +13,24 @@ public class SwapBlueAndRedConverterTest
   @Test
   public void shouldNotModifyGrey()
   {
-    assertEquals(new Color(150, 150, 150), converter.convertColor(new Color(150, 150, 150)));
+    assertEquals(new Color(150, 150, 150), converter.convertColour(new Color(150, 150, 150)));
   }
 
   @Test
   public void shouldTurnBlueToRed()
   {
-    assertEquals(new Color(255, 0, 0), converter.convertColor(new Color(0, 0, 255)));
+    assertEquals(new Color(255, 0, 0), converter.convertColour(new Color(0, 0, 255)));
   }
 
   @Test
   public void shouldTurnRedToBlue()
   {
-    assertEquals(new Color(0, 0, 255), converter.convertColor(new Color(255, 0, 0)));
+    assertEquals(new Color(0, 0, 255), converter.convertColour(new Color(255, 0, 0)));
   }
 
   @Test
   public void shouldKeepGreenChannel()
   {
-    assertEquals(new Color(54, 209, 100), converter.convertColor(new Color(100, 209, 54)));
+    assertEquals(new Color(54, 209, 100), converter.convertColour(new Color(100, 209, 54)));
   }
 }

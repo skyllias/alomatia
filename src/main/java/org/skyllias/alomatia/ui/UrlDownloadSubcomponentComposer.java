@@ -21,8 +21,8 @@ import org.skyllias.alomatia.source.AsynchronousUrlSource;
  *  It takes care of enabling, disabling and feeding the related field.
  *  It favours composition over inheritance and does not extend any Swing class. */
 
-public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListener,
-                                             SourceSelectorComposer.Enabable
+public class UrlDownloadSubcomponentComposer implements AsynchronousUrlSource.DownloadListener,
+                                                        SourceSelectorComposer.Enabable
 {
   protected static final String BUTTON_READY_LABEL   = "source.selector.url.button.ready";
   protected static final String BUTTON_CANCEL_LABEL  = "source.selector.url.button.cancel";
@@ -40,7 +40,7 @@ public class UrlDownloadComponent implements AsynchronousUrlSource.DownloadListe
 
 //==============================================================================
 
-  public UrlDownloadComponent(LabelLocalizer localizer, AsynchronousUrlSource source)
+  public UrlDownloadSubcomponentComposer(LabelLocalizer localizer, AsynchronousUrlSource source)
   {
     labelLocalizer = localizer;
     urlSource       = source;

@@ -24,7 +24,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 
-/** Composer of non-modal dialog with the display options for a given {@link DisplayFrame}.
+/** Composer of non-modal dialog with the display options for a given {@link DisplayFrameController}.
  *  <p>
  *  By default a new instance is immediately shown when {@link #getDialog()} is
  *  called, but it can be configured to hide by using preferences.
@@ -45,7 +45,7 @@ public class DisplayOptionsDialogComposer
 
   private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. They should be removed sometime after the dialog disposal
 
-  private DisplayFrame ownerDisplayFrame;
+  private DisplayFrameController ownerDisplayFrame;
   private LabelLocalizer labelLocalizer;
   private FilterSelectorComposer filterSelector;
 
@@ -55,7 +55,7 @@ public class DisplayOptionsDialogComposer
 
   /** TODO Replace the filter selector with either a composer or a component. */
 
-  public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrame ownerFrame,
+  public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrameController ownerFrame,
                                       FilterSelectorComposer selector)
   {
     labelLocalizer    = localizer;

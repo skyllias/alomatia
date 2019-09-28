@@ -4,16 +4,17 @@ package org.skyllias.alomatia.filter.affine;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImageOp;
 
-/** {@link BufferedImageOp} that flips an image vertically. */
+/** {@link BufferedImageOp} that rotates the image 180º.
+ *  Other angles would not generally produce images with the same size. */
 
-public class VerticalFlipTransformImageOp extends FixedSizeAffineTransformImageOp
+public class RotationTransformOp extends FixedSizeAffineTransformOp
 {
 //==============================================================================
 
   @Override
   protected AffineTransform getTransform(int width, int height)
   {
-    return new AffineTransform(1, 0, 0, -1, 0, height);
+    return AffineTransform.getQuadrantRotateInstance(2, ((double) width) / 2, ((double) height) / 2);
   }
 
 //------------------------------------------------------------------------------

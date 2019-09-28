@@ -12,13 +12,13 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 
-/** Factory for {@link DisplayFrame} instances that keeps track of them. */
+/** Factory for {@link DisplayFrameController} instances that keeps track of them. */
 
 public class DisplayFrameManager
 {
   private FrameAdaptorFactory adaptorFactory;
 
-  private List<DisplayFrame> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrame>());  // every new window is added here in order of creation, and removed when closed
+  private List<DisplayFrameController> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrameController>());  // every new window is added here in order of creation, and removed when closed
 
   private LabelLocalizer localizer;
   private FilterFactory filterFactory;
@@ -46,7 +46,7 @@ public class DisplayFrameManager
 
   protected DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory filterFactory,
                                 FrameAdaptorFactory frameFactory, ImageSaver saver,
-                                List<DisplayFrame> displayFrames)
+                                List<DisplayFrameController> displayFrames)
   {
     this(labelLocalizer, filterFactory, frameFactory, saver);
 
@@ -57,7 +57,7 @@ public class DisplayFrameManager
 
   /** Creates a new window and returns it without setting any initial filter. */
 
-  public DisplayFrame getNewDisplayFrame()
+  public DisplayFrameController getNewDisplayFrame()
   {
     return getNewDisplayFrame(false);
   }
@@ -69,11 +69,11 @@ public class DisplayFrameManager
    * If applySequentialFilter, the nth filter is automatically selected in the
    * new instance, with n being the amount of DisplayFrames that already existed. */
 
-  public DisplayFrame getNewDisplayFrame(boolean applySequentialFilter)
+  public DisplayFrameController getNewDisplayFrame(boolean applySequentialFilter)
   {
-    DisplayPanel displayPanel = new DisplayPanel();
+    DisplayPanelController displayPanel = new DisplayPanelController();
     FrameAdaptor frameAdaptor = adaptorFactory.getNewFrame(displayPanel.getComponent());
-    DisplayFrame frame        = new DisplayFrame(localizer, frameAdaptor, displayPanel,
+    DisplayFrameController frame        = new DisplayFrameController(localizer, frameAdaptor, displayPanel,
                                                  filterFactory, imageSaver);
     frame.addListener(new DisplayFrameCloseListener());
 
@@ -132,7 +132,7 @@ public class DisplayFrameManager
         int windowWidth  = screenBounds.width / amountOfColumns;                // some pixels may be lost with roundings
         int windowHeight = screenBounds.height / amountOfRows;
         int currentIndex = 0;
-        for (DisplayFrame currentWindow : existingFrames)
+        for (DisplayFrameController currentWindow : existingFrames)
         {
           currentWindow.setMaximized(false);
           currentWindow.setSize(windowWidth, windowHeight);
@@ -160,7 +160,7 @@ public class DisplayFrameManager
   public void applySequentialFilters()
   {
     int currentIndex = 0;
-    for (DisplayFrame currentWindow : existingFrames) currentWindow.applyFilterAt(currentIndex++);
+    for (DisplayFrameController currentWindow : existingFrames) currentWindow.applyFilterAt(currentIndex++);
   }
 
 //------------------------------------------------------------------------------
@@ -193,10 +193,10 @@ public class DisplayFrameManager
 
   /** DisplayFrameCloseListener that removes a window from existingFrames when it is closed. */
 
-  private class DisplayFrameCloseListener implements DisplayFrame.DisplayFrameCloseListener
+  private class DisplayFrameCloseListener implements DisplayFrameController.DisplayFrameCloseListener
   {
     @Override
-    public void onDisplayFrameClosed(DisplayFrame displayFrame)
+    public void onDisplayFrameClosed(DisplayFrameController displayFrame)
     {
       existingFrames.remove(displayFrame);
       notifyListeners();

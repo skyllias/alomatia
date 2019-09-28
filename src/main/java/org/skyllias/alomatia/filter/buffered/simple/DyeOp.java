@@ -1,10 +1,12 @@
 
-package org.skyllias.alomatia.filter.buffered;
+package org.skyllias.alomatia.filter.buffered.simple;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
+
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
 
 /** {@link BufferedImageOp} that paints a semitransparent rectangle of certain
  *  colour in front of the source image. */

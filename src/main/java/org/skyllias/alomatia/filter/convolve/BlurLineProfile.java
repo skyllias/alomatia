@@ -5,8 +5,9 @@ package org.skyllias.alomatia.filter.convolve;
 
 public interface BlurLineProfile
 {
-  /** Returns an array of length items whose sum is 1.
-   *  The first item corresponds to the first pixel along the line. */
+  /** Returns an array of length "items" whose sum is 1.
+   *  The first item corresponds to the first pixel along the line,  and all are
+   *  positive. */
 
   float[] getProfile(int length);
 }

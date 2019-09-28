@@ -32,7 +32,7 @@ public class DisplayFrameManagerTest
   {
     when(adaptorFactory.getRearrengementBounds()).thenReturn(new Rectangle(20, 30, 500, 200));
 
-    DisplayFrame displayFrame   = mock(DisplayFrame.class);
+    DisplayFrameController displayFrame   = mock(DisplayFrameController.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
                                                           adaptorFactory, null, Arrays.asList(displayFrame));
     manager.rearrangeWindows(1, false);
@@ -45,8 +45,8 @@ public class DisplayFrameManagerTest
   {
     when(adaptorFactory.getRearrengementBounds()).thenReturn(new Rectangle(20, 30, 500, 200));
 
-    DisplayFrame frame1         = mock(DisplayFrame.class);
-    DisplayFrame frame2         = mock(DisplayFrame.class);
+    DisplayFrameController frame1         = mock(DisplayFrameController.class);
+    DisplayFrameController frame2         = mock(DisplayFrameController.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
                                                           adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(2, true);
@@ -61,8 +61,8 @@ public class DisplayFrameManagerTest
   {
     when(adaptorFactory.getRearrengementBounds()).thenReturn(new Rectangle(20, 30, 500, 200));
 
-    DisplayFrame frame1         = mock(DisplayFrame.class);
-    DisplayFrame frame2         = mock(DisplayFrame.class);
+    DisplayFrameController frame1         = mock(DisplayFrameController.class);
+    DisplayFrameController frame2         = mock(DisplayFrameController.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
                                                           adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(1, false);
@@ -77,8 +77,8 @@ public class DisplayFrameManagerTest
   {
     when(adaptorFactory.getRearrengementBounds()).thenReturn(new Rectangle(20, 30, 500, 200));
 
-    DisplayFrame frame1         = mock(DisplayFrame.class);
-    DisplayFrame frame2         = mock(DisplayFrame.class);
+    DisplayFrameController frame1         = mock(DisplayFrameController.class);
+    DisplayFrameController frame2         = mock(DisplayFrameController.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
                                                           adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(2, false);
@@ -93,8 +93,8 @@ public class DisplayFrameManagerTest
   {
     when(adaptorFactory.getRearrengementBounds()).thenReturn(new Rectangle(20, 30, 500, 200));
 
-    DisplayFrame frame1         = mock(DisplayFrame.class);
-    DisplayFrame frame2         = mock(DisplayFrame.class);
+    DisplayFrameController frame1         = mock(DisplayFrameController.class);
+    DisplayFrameController frame2         = mock(DisplayFrameController.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
                                                           adaptorFactory, null, Arrays.asList(frame1, frame2));
     manager.rearrangeWindows(1, true);
@@ -109,11 +109,11 @@ public class DisplayFrameManagerTest
   {
     when(adaptorFactory.getRearrengementBounds()).thenReturn(new Rectangle(100, 200, 600, 300));
 
-    DisplayFrame frame1         = mock(DisplayFrame.class);
-    DisplayFrame frame2         = mock(DisplayFrame.class);
-    DisplayFrame frame3         = mock(DisplayFrame.class);
-    DisplayFrame frame4         = mock(DisplayFrame.class);
-    DisplayFrame frame5         = mock(DisplayFrame.class);
+    DisplayFrameController frame1         = mock(DisplayFrameController.class);
+    DisplayFrameController frame2         = mock(DisplayFrameController.class);
+    DisplayFrameController frame3         = mock(DisplayFrameController.class);
+    DisplayFrameController frame4         = mock(DisplayFrameController.class);
+    DisplayFrameController frame5         = mock(DisplayFrameController.class);
     DisplayFrameManager manager = new DisplayFrameManager(new KeyLabelLocalizer(), new FixedFilterFactory(),
                                                           adaptorFactory, null, Arrays.asList(frame1, frame2, frame3,
                                                                                               frame4, frame5));

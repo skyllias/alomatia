@@ -44,7 +44,7 @@ public class UrlDownloadComponentTest
   private AsynchronousUrlSource source;
   @Mock
   private Preferences preferences;
-  private UrlDownloadComponent downloadComponent;
+  private UrlDownloadSubcomponentComposer downloadComponent;
 
   @BeforeClass
   public static void setUpOnce()
@@ -57,14 +57,14 @@ public class UrlDownloadComponentTest
   {
     MockitoAnnotations.initMocks(this);
 
-    when(preferences.get(eq(UrlDownloadComponent.PREFKEY_DEFAULTURL), any(String.class))).thenReturn(null);
+    when(preferences.get(eq(UrlDownloadSubcomponentComposer.PREFKEY_DEFAULTURL), any(String.class))).thenReturn(null);
 
     JPanel container = GuiActionRunner.execute(new Callable<JPanel>()
     {
       @Override
       public JPanel call() throws Exception
       {
-        downloadComponent = new UrlDownloadComponent(new KeyLabelLocalizer(), source);
+        downloadComponent = new UrlDownloadSubcomponentComposer(new KeyLabelLocalizer(), source);
         downloadComponent.setPreferences(preferences);
 
         JButton button      = downloadComponent.getButton();
@@ -93,7 +93,7 @@ public class UrlDownloadComponentTest
   {
     frameFixture.textBox(FIELD_NAME).requireDisabled();
     frameFixture.button(BUTTON_NAME).requireDisabled();
-    frameFixture.button(BUTTON_NAME).requireText(UrlDownloadComponent.BUTTON_READY_LABEL);
+    frameFixture.button(BUTTON_NAME).requireText(UrlDownloadSubcomponentComposer.BUTTON_READY_LABEL);
   }
 
   @Test
@@ -143,7 +143,7 @@ public class UrlDownloadComponentTest
     frameFixture.button(BUTTON_NAME).click();
 
     verify(source, times(1)).setUrl("whatever", downloadComponent);
-    frameFixture.button(BUTTON_NAME).requireText(UrlDownloadComponent.BUTTON_CANCEL_LABEL);
+    frameFixture.button(BUTTON_NAME).requireText(UrlDownloadSubcomponentComposer.BUTTON_CANCEL_LABEL);
   }
 
   @Test

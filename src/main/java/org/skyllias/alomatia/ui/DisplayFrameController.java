@@ -48,7 +48,7 @@ import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
  *  when clicked. */
 
 @SuppressWarnings("serial")
-public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
+public class DisplayFrameController implements ClosingFrameListener, FilterableDisplay
 {
   private static final String DEFAULT_TITLE = "display.window.title";
   private static final String TITLE_PATTERN = "display.window.title.filtered";
@@ -56,7 +56,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   private LabelLocalizer labelLocalizer;
 
-  private DisplayPanel displayPanel;
+  private DisplayPanelController displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
   private FilterSelectorComposer filterSelector;                                // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
@@ -72,8 +72,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   /** Creates a new window containing the passed display panel. */
 
-  public DisplayFrame(LabelLocalizer localizer, FrameAdaptor adaptor,
-                      DisplayPanel panel, FilterFactory filterFactory, ImageSaver saver)
+  public DisplayFrameController(LabelLocalizer localizer, FrameAdaptor adaptor,
+                      DisplayPanelController panel, FilterFactory filterFactory, ImageSaver saver)
   {
     labelLocalizer = localizer;
     displayPanel   = panel;
@@ -126,7 +126,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   /** Returns the panel contained in this window. */
 
-  public DisplayPanel getDisplayPanel() {return displayPanel;}
+  public DisplayPanelController getDisplayPanel() {return displayPanel;}
 
 //------------------------------------------------------------------------------
 
@@ -345,8 +345,8 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
 
   private Image getDefaultLogo()
   {
-    return new LogoProducer().createImage(ControlFrame.ICON_WIDTH,
-                                          ControlFrame.ICON_HEIGHT);            // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
+    return new LogoProducer().createImage(ControlFrameController.ICON_WIDTH,
+                                          ControlFrameController.ICON_HEIGHT);            // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
   }
 
 //------------------------------------------------------------------------------
@@ -377,7 +377,7 @@ public class DisplayFrame implements ClosingFrameListener, FilterableDisplay
      *  <p>
      *  It is not worth the effort to create events for this. */
 
-    void onDisplayFrameClosed(DisplayFrame displayFrame);
+    void onDisplayFrameClosed(DisplayFrameController displayFrame);
   }
 
 //******************************************************************************

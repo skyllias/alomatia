@@ -230,7 +230,7 @@ public class SourceSelectorComposer
     final AsynchronousUrlSource urlSource = sourceCatalogue.get(AsynchronousUrlSource.class);
     if (urlSource != null)
     {
-      UrlDownloadComponent downloadComponent = new UrlDownloadComponent(labelLocalizer,
+      UrlDownloadSubcomponentComposer downloadComponent = new UrlDownloadSubcomponentComposer(labelLocalizer,
                                                                         urlSource);
       JPanel configPanel = new JPanel();
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));

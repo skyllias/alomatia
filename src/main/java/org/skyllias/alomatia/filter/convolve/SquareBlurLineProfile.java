@@ -15,7 +15,7 @@ public class SquareBlurLineProfile implements BlurLineProfile
     float sum      = 0;
     for (int i = 0; i < length; i++)
     {
-      float square = (length - i) * (length - i);;
+      float square = (length - i) * (length - i);
       sum         += square;
       result[i]    = square;
     }

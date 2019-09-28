@@ -11,7 +11,7 @@ import org.skyllias.alomatia.filter.FixedFilterFactory;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.i18n.StartupLabelLocalizer;
 import org.skyllias.alomatia.source.FixedCatalogueGenerator;
-import org.skyllias.alomatia.ui.ControlFrame;
+import org.skyllias.alomatia.ui.ControlFrameController;
 import org.skyllias.alomatia.ui.frame.FramePolicy;
 
 import com.jtattoo.plaf.aero.AeroLookAndFeel;
@@ -44,7 +44,7 @@ public class SwingAlomatia
           FixedCatalogueGenerator catalogueGenerator = new FixedCatalogueGenerator();
           Repeater repeater                          = new Repeater();
           FramePolicy framePolicy                    = new FramePolicy();
-          new ControlFrame(labelLocalizer, catalogueGenerator.getNewCatalogue(repeater),
+          new ControlFrameController(labelLocalizer, catalogueGenerator.getNewCatalogue(repeater),
                            repeater, new FixedFilterFactory(), framePolicy);    // TODO instead of passing these instances everywhere use an injection framework like Spring
         }
         catch (Exception e) {e.printStackTrace();}                              // TODO log

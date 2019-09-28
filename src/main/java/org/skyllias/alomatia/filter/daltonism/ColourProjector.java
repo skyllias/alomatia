@@ -3,7 +3,7 @@ package org.skyllias.alomatia.filter.daltonism;
 
 /** Matrix-like data that defines how a ProjectableColour is projected (ie, how
  *  its components are linearly combined) in an abnormally functioning eye.
- *  Each anomaly is characterised by a different projector. Usually, the sum of
+ *  Each anomaly is characterized by a different projector. Usually, the sum of
  *  values maintains the total energy, but that is not forced by this class.
  *  <p>
  *  The oxToRy items are to be interpreted as the factor to multiply the original

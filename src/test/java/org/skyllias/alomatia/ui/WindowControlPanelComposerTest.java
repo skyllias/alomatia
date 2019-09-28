@@ -42,9 +42,9 @@ public class WindowControlPanelComposerTest
   @Mock
   private DropTargetListener dropTargetListener;
   @Mock
-  private DisplayPanel displayPanel;
+  private DisplayPanelController displayPanel;
   @Mock
-  private DisplayFrame displayFrame;
+  private DisplayFrameController displayFrame;
   @Mock
   private DisplayFrameManager displayFrameManager;
   @Mock
