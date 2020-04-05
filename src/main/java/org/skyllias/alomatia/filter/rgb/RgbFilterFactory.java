@@ -55,6 +55,18 @@ public class RgbFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forYellowEqualizer() {return new ColourFilter(new YellowEqualizerConverter());}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forMagentaEqualizer() {return new ColourFilter(new MagentaEqualizerConverter());}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forCyanEqualizer() {return new ColourFilter(new CyanEqualizerConverter());}
+
+//------------------------------------------------------------------------------
+
   public static ImageFilter forNegative() {return new ColourFilter(new NegativeConverter());}
 
 //------------------------------------------------------------------------------
