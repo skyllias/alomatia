@@ -93,6 +93,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String REDLESS_FILTER_NAME    = "filter.rgb.redless.name";
   private static final String GREENLESS_FILTER_NAME  = "filter.rgb.greenless.name";
   private static final String BLUELESS_FILTER_NAME   = "filter.rgb.blueless.name";
+  private static final String YELLOW_EQ_FILTER_NAME  = "filter.rgb.blue+yellow.name";
+  private static final String MAGENTA_EQ_FILTER_NAME = "filter.rgb.green+magenta.name";
+  private static final String CYAN_EQ_FILTER_NAME    = "filter.rgb.red+cyan.name";
   private static final String NEGATIVE_FILTER_NAME   = "filter.rgb.invert.name";
   private static final String DEC_SAT_XL_FILTER_NAME = "filter.hsb.saturation-xl.name";
   private static final String DEC_SAT_L_FILTER_NAME  = "filter.hsb.saturation-l.name";
@@ -451,6 +454,10 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forRedless(),          REDLESS_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forGreenless(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBlueless(),         BLUELESS_FILTER_NAME));
+
+    filters.add(new NamedFilter(RgbFilterFactory.forYellowEqualizer(),  YELLOW_EQ_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forMagentaEqualizer(), MAGENTA_EQ_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forCyanEqualizer(),    CYAN_EQ_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, false))), MINMAX_BLK_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))), MINMAX_RED_FILTER_NAME));
