@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
-import org.skyllias.alomatia.filter.buffered.DyeOp;
+import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
 
 /** {@link BufferedImageOp} that paints a partially opaque, black rectangle in
  *  front of the source image. In opposition to {@link DyeOp}, the transparency

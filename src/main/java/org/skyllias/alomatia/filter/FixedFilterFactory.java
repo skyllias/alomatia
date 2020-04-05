@@ -39,6 +39,7 @@ import org.skyllias.alomatia.filter.compose.EmbossFilter;
 import org.skyllias.alomatia.filter.convolve.EdgeDetectingKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.LinearBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.NeighbourSharpKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.NucelarKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.ParaboloidBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.daltonism.LmsDeuteranopiaFilter;
@@ -170,6 +171,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MOTION_L45_FILTER_NAME = "filter.blur.motion.fast.oblique.name";
   private static final String SHARPEN_FILTER_NAME    = "filter.blur.sharpen.name";
   private static final String EDGEDETECT_FILTER_NAME = "filter.convolve.edgedetection.name";
+  private static final String NUCELAR_FILTER_NAME    = "filter.convolve.nucelarwash.name";
   private static final String LAYEMBOSS_FILTER_NAME  = "filter.convolve.emboss.layered.name";
   private static final String SMTHEMBOSS_FILTER_NAME = "filter.convolve.emboss.smooth.name";
   private static final String MEDIAN_XS_FILTER_NAME  = "filter.median.xs.name";
@@ -406,6 +408,7 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NeighbourSharpKernelDataFactory()),                                         SHARPEN_FILTER_NAME));
 
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new EdgeDetectingKernelDataFactory()), EDGEDETECT_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarKernelDataFactory()), NUCELAR_FILTER_NAME));
 
     filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
     filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
