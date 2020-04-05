@@ -5,6 +5,8 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.ImageConsumer;
 import java.awt.image.ImageFilter;
 import java.awt.image.Kernel;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.skyllias.alomatia.filter.buffered.KernelCroppingBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.KernelExpandingBufferedImageOp;
@@ -28,17 +30,20 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
 //==============================================================================
 
-  /** Sets up a filter that will apply the kernel from the factory to images. */
+  /** Sets up a filter that will apply the kernels from the factory to images.
+   *  A filter is set up for each kernel factory separately and they are
+   *  composed in the same order.
+   *  All kernels must have the same size. */
 
-  public EdgeConvolvingComposedFilter(KernelDataFactory kernelFactory)
+  public EdgeConvolvingComposedFilter(KernelDataFactory... kernelFactories)
   {
-    Kernel kernel = getKernel(kernelFactory);
+    List<Kernel> kernels = new LinkedList<>();
+    for (KernelDataFactory kernelDataFactory : kernelFactories)
+    {
+      kernels.add(getKernel(kernelDataFactory));
+    }
 
-    ImageFilter expandingFilter  = new SingleFrameBufferedImageFilter(new KernelExpandingBufferedImageOp(kernel));
-    ImageFilter convolvingFilter = new SingleFrameBufferedImageFilter(new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null));   // EDGE_NO_OP has to be used to prevent a one-pixel black stripe if an even size is used for the kernel width or height
-    ImageFilter alphalessFitler  = RgbFilterFactory.forVoid();
-    ImageFilter croppingFilter   = new SingleFrameBufferedImageFilter(new KernelCroppingBufferedImageOp(kernel));
-    composedFilter               = new ComposedFilter(expandingFilter, convolvingFilter, alphalessFitler, croppingFilter);
+    composedFilter = composeFilters(kernels);
   }
 
 //==============================================================================
@@ -49,6 +54,37 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
   public ImageFilter getFilterInstance(ImageConsumer imageConsumer)
   {
     return composedFilter.getFilterInstance(imageConsumer);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns a composed filter with a kernel expanding filter, the convolution
+   * filters associated to the passed kernels, a channel to restore the alpha
+   * channel and a kernel cropping filter.
+   * The order is important and any change may lead to fully black images. */
+
+  private ComposedFilter composeFilters(List<Kernel> kernels)
+  {
+    Kernel representativeKernel = kernels.get(0);
+
+    List<ImageFilter> filtersToCompose = new LinkedList<>();
+
+    ImageFilter expandingFilter = new SingleFrameBufferedImageFilter(new KernelExpandingBufferedImageOp(representativeKernel));
+    filtersToCompose.add(expandingFilter);
+
+    for (Kernel kernel : kernels)
+    {
+      ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);    // EDGE_NO_OP has to be used to prevent a one-pixel black stripe if an even size is used for the kernel width or height
+      ImageFilter convolvingFilter = new SingleFrameBufferedImageFilter(convolveOp);
+      filtersToCompose.add(convolvingFilter);
+    }
+
+    ImageFilter alphalessFitler = RgbFilterFactory.forVoid();
+    filtersToCompose.add(alphalessFitler);
+    ImageFilter croppingFilter = new SingleFrameBufferedImageFilter(new KernelCroppingBufferedImageOp(representativeKernel));
+    filtersToCompose.add(croppingFilter);
+
+    return new ComposedFilter(filtersToCompose.toArray(new ImageFilter[0]));
   }
 
 //------------------------------------------------------------------------------
