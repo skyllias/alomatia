@@ -35,14 +35,13 @@ import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 
-/** Provider of the logic for windows where the contents of the capture frame
- *  are drawn after filtering them. The real frame is managed by means of a
- *  {@link FrameAdaptorFactory}.
+/** Provider of the logic for windows where the filtered images are drawn. The
+ *  real frame is managed by means of a {@link FrameAdaptorFactory}.
  *  <p>
  *  In an application there can be zero or more of these windows, all with the
- *  same original image but potentially with a different filter applied to each one.
- *  When closed, a DisplayFrameCloseListener is notified and all consumed
- *  resources are freed.
+ *  same original image but potentially with a different filter applied to each
+ *  one. When closed, a {@link DisplayFrameCloseListener} is notified and all
+ *  consumed resources are freed.
  *  <p>
  *  The display panel gets a listener added so that the options dialog is shown
  *  when clicked. */
@@ -73,7 +72,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   /** Creates a new window containing the passed display panel. */
 
   public DisplayFrameController(LabelLocalizer localizer, FrameAdaptor adaptor,
-                      DisplayPanelController panel, FilterFactory filterFactory, ImageSaver saver)
+                                DisplayPanelController panel, FilterFactory filterFactory,
+                                ImageSaver saver)
   {
     labelLocalizer = localizer;
     displayPanel   = panel;
@@ -273,9 +273,12 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
 //------------------------------------------------------------------------------
 
-  /* Sets up the key event handlet to save the filtered image from the display panel.
+  /* Sets up the key event handler to save the filtered image from the display panel.
    * Ctrl + Shift + S is used to silently save all the frames' images.
-   * The listener should be removed when the frame is disposed. */
+   * The procedure is different from setSaveSingleKeyListeners because "save all"
+   * has to be performed no matter where the focus is, while the "save single"
+   * only applies when the focus is in the current frame.
+   * The listener should be removed when the frame is disposed (onClosingFrame). */
 
   private void setSaveAllKeyListeners()
   {
@@ -345,8 +348,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   private Image getDefaultLogo()
   {
-    return new LogoProducer().createImage(ControlFrameController.ICON_WIDTH,
-                                          ControlFrameController.ICON_HEIGHT);            // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
+    return new LogoProducer().createImage(ControlFrameManager.ICON_WIDTH,
+                                          ControlFrameManager.ICON_HEIGHT);            // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
   }
 
 //------------------------------------------------------------------------------

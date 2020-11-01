@@ -32,7 +32,7 @@ import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.DisplayFrameController.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
-import org.skyllias.alomatia.ui.frame.FramePolicy;
+import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 /** Composer of panels to manage display frames: Create, count and rearrange them.
  *  This takes care of the UI, while a {@link DisplayFrameManager} is in charge
@@ -72,7 +72,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   protected static final String PREFKEY_AUTOOPEN    = "automaticallyOpenNewWindowOnStartup";
 
   private DisplayFrameManager manager;
-  private FramePolicy framePolicy;
+  private FramePolicyAtStartUp framePolicy;
 
   private Repeater repeaterDisplay;
 
@@ -91,7 +91,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   protected WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
                                        DropTargetListener dropTargetListener,
-                                       DisplayFrameManager frameManager, FramePolicy policy)
+                                       DisplayFrameManager frameManager, FramePolicyAtStartUp policy)
   {
     labelLocalizer  = localizer;
     repeaterDisplay = displayRepeater;
@@ -106,7 +106,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   /** Returns a new panel with the required controls. */
 
-  public JComponent getComponent()
+  public JComponent createComponent()
   {
     JPanel windowControlPanel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(TITLE_LABEL));
 
@@ -176,7 +176,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private void createNewDisplayFrame()
   {
-    DisplayFrameController frame        = manager.getNewDisplayFrame(applySequentialFilters);
+    DisplayFrameController frame        = manager.createDisplayFrame(applySequentialFilters);
     DisplayPanelController displayPanel = frame.getDisplayPanel();
 
     repeaterDisplay.addReceiver(displayPanel);
@@ -291,7 +291,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   {
     JCheckBox checkBox = new JCheckBox(labelLocalizer.getString(AUTOOPEN_LABEL),
                                        isAutoOpenOn());
-    checkBox.addChangeListener(new AutoopenCheckBoxAutoopenChangeListener());
+    checkBox.addChangeListener(new AutoopenCheckBoxSelectionChangeListener());
     checkBox.setName(AUTOOPEN_CHECKBOX_NAME);
 
     return checkBox;
@@ -457,7 +457,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   /* Saver of the new autoopen value in the preferences. */
 
-  private class AutoopenCheckBoxAutoopenChangeListener implements ChangeListener
+  private class AutoopenCheckBoxSelectionChangeListener implements ChangeListener
   {
     @Override
     public void stateChanged(ChangeEvent event)

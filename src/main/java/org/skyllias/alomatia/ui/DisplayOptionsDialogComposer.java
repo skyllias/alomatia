@@ -43,7 +43,7 @@ public class DisplayOptionsDialogComposer
 
   private static final int SCROLL_UNIT = 16;
 
-  private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. They should be removed sometime after the dialog disposal
+  private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. TODO remove sometime after the dialog disposal
 
   private DisplayFrameController ownerDisplayFrame;
   private LabelLocalizer labelLocalizer;
@@ -52,8 +52,6 @@ public class DisplayOptionsDialogComposer
   private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
-
-  /** TODO Replace the filter selector with either a composer or a component. */
 
   public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrameController ownerFrame,
                                       FilterSelectorComposer selector)
@@ -67,8 +65,7 @@ public class DisplayOptionsDialogComposer
 
   /** The dialog is not modal because doing it so blocks the opening window and
    *  any subsequent that may be created afterwards, and offers no special
-   *  advantage in this case.
-   *  Expected to be called just once. */
+   *  advantage in this case. */
 
   public JDialog getDialog()
   {

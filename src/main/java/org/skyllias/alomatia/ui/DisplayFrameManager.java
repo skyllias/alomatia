@@ -18,7 +18,7 @@ public class DisplayFrameManager
 {
   private FrameAdaptorFactory adaptorFactory;
 
-  private List<DisplayFrameController> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrameController>());  // every new window is added here in order of creation, and removed when closed
+  private List<DisplayFrameController> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrameController>());  // every new window is added here in order of creation, and removed when closed. The order is used to apply filters sequentially
 
   private LabelLocalizer localizer;
   private FilterFactory filterFactory;
@@ -42,7 +42,7 @@ public class DisplayFrameManager
 
 //------------------------------------------------------------------------------
 
-  /** Just for testing purposes, this should NOT be used in real code. */
+  /** Just for testing purposes, this should NOT be used in production code. */
 
   protected DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory filterFactory,
                                 FrameAdaptorFactory frameFactory, ImageSaver saver,
@@ -55,26 +55,17 @@ public class DisplayFrameManager
 
 //==============================================================================
 
-  /** Creates a new window and returns it without setting any initial filter. */
-
-  public DisplayFrameController getNewDisplayFrame()
-  {
-    return getNewDisplayFrame(false);
-  }
-
-//------------------------------------------------------------------------------
-
   /** Creates a new window and returns it, so that it can be used for example to
-   * register other DisplayFrameCloseListener.
-   * If applySequentialFilter, the nth filter is automatically selected in the
-   * new instance, with n being the amount of DisplayFrames that already existed. */
+   *  register other DisplayFrameCloseListener.
+   *  If applySequentialFilter, the nth filter is automatically selected in the
+   *  new instance, with n being the amount of DisplayFrames that already existed. */
 
-  public DisplayFrameController getNewDisplayFrame(boolean applySequentialFilter)
+  public DisplayFrameController createDisplayFrame(boolean applySequentialFilter)
   {
     DisplayPanelController displayPanel = new DisplayPanelController();
-    FrameAdaptor frameAdaptor = adaptorFactory.getNewFrame(displayPanel.getComponent());
+    FrameAdaptor frameAdaptor           = adaptorFactory.getNewFrame(displayPanel.getComponent());
     DisplayFrameController frame        = new DisplayFrameController(localizer, frameAdaptor, displayPanel,
-                                                 filterFactory, imageSaver);
+                                                                     filterFactory, imageSaver);
     frame.addListener(new DisplayFrameCloseListener());
 
     if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());
