@@ -7,7 +7,7 @@ import java.util.prefs.Preferences;
  *  Maybe in the future this will become an interface, and a bigger variety of
  *  policies are supported. */
 
-public class FramePolicy
+public class FramePolicyAtStartUp
 {
   private static final String VM_ARG_INTERNALFRAMES   = "alomatia.frames.inner";
   private static final String PREFKEY_INTERNALFRAMES  = "useInternalFrames";
@@ -20,8 +20,8 @@ public class FramePolicy
   /** Returns true if display frames should be internal frames, false if they
    *  should be separate windows.
    *  This value is modified by means of
-   *  {@link FramePolicy#setUsingInternalFramesNextTime(boolean)}, but the
-   *  behaviour should not really change until next execution.
+   *  {@link FramePolicyAtStartUp#setUsingInternalFramesNextTime(boolean)}, but
+   *  the behaviour should not really change until next execution.
    *  If a VM argument is passed, it's boolean value is used; otherwise, the
    *  preferences are looked up. */
 

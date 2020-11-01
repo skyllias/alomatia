@@ -21,7 +21,7 @@ import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.display.DisplayFitPolicy;
 import org.skyllias.alomatia.display.ResizableDisplay;
 
-/** Provider of a panel where images are drawn after manipulation, along with 
+/** Provider of a panel where images are drawn after manipulation, along with
  *  the associated logic.
  *  <p>
  *  For an image to be modified, both an original image and a filter are needed.
@@ -156,9 +156,9 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
   /* Calculates the proper scale for the image to fit the viewport according to
    * the current fitType.
-   * If fitType is FREE, nothing happens. Else, the new zoom factor is calculated
-   * for the image to fit and it is set by invoking setZoomFactor, which will
-   * in turn force a repaint.
+   * If fitType is FREE, nothing happens. Else, the new zoom factor is
+   * calculated for the image to fit and it is set by invoking setZoomFactor,
+   * which will in turn force a repaint.
    * Everything assuming there is already an image, of course. */
 
   private void resizeImageToFit()

@@ -114,7 +114,7 @@ public class SourceSelectorComposer
 
 //------------------------------------------------------------------------------
 
-  /* Sets up the drop selector radio if the catalogue contains a DropSource. */
+  /* Sets up the drop selector radio if the catalogue contains a VoidSource. */
 
   private void initVoidSelector(JPanel panel)
   {

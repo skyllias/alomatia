@@ -24,15 +24,15 @@ import org.skyllias.alomatia.logo.LogoProducer;
 import org.skyllias.alomatia.source.DropSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
-import org.skyllias.alomatia.ui.frame.FramePolicy;
+import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 import org.skyllias.alomatia.ui.frame.JFrameAdaptorFactory;
 import org.skyllias.alomatia.ui.frame.JInternalFrameAdaptorFactory;
 
 /** Logic for the main windows of the application.
  *  <p>
- *  Only one instance of ControlFrame is expected in a given application. */
+ *  Only one instance is expected in a given application. */
 
-public class ControlFrameController
+public class ControlFrameManager
 {
   public static final int ICON_WIDTH  = 32;
   public static final int ICON_HEIGHT = 32;
@@ -46,18 +46,20 @@ public class ControlFrameController
 
   /** The catalogue is left untouched, although it is expected to have all the
    *  sources with the repeater set as display. If it contains a DropSource,
-   *  this frame is added as drop target. */
+   *  the new frame is added as drop target. */
 
-  public ControlFrameController(LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
-                      Repeater displayRepeater, FilterFactory filterFactory,
-                      FramePolicy framePolicy)
+  public void createControlFrame(LabelLocalizer labelLocalizer,
+                                 SourceCatalogue catalogue,
+                                 Repeater displayRepeater,
+                                 FilterFactory filterFactory,
+                                 FramePolicyAtStartUp framePolicy)
   {
     FrameAdaptorFactory adaptorFactory;
     ControlsWindow controlsWindow;
     JFrame mainFrame = getNewFrame();
     if (framePolicy.isUsingInternalFrames())
     {
-      JDesktopPane desktopPane = createDesktopFrame(mainFrame, labelLocalizer, catalogue);
+      JDesktopPane desktopPane = createDesktopFrame(mainFrame, labelLocalizer);
       adaptorFactory           = new JInternalFrameAdaptorFactory(desktopPane);
 
       JDialog dialog           = new JDialog(mainFrame);
@@ -76,19 +78,18 @@ public class ControlFrameController
                                                                adaptorFactory,
                                                                imageSaver);
 
-    setUpControlsFrame(controlsWindow, labelLocalizer, catalogue, displayRepeater,
-                       filterFactory, frameManager, framePolicy, imageSaver);
+    setUpControlsFrame(controlsWindow, labelLocalizer, catalogue,
+                       displayRepeater, frameManager, framePolicy, imageSaver);
   }
 
-//==============================================================================
+//------------------------------------------------------------------------------
 
   /* Shows ownerContainer as non resizable and packed, with all the controls. */
 
-  private void setUpControlsFrame(ControlsWindow ownerContainer,
-                                  LabelLocalizer labelLocalizer, SourceCatalogue catalogue,
-                                  Repeater displayRepeater, FilterFactory filterFactory,
-                                  DisplayFrameManager frameManager, FramePolicy framePolicy,
-                                  FileImageSaver imageSaver)
+  private void setUpControlsFrame(ControlsWindow ownerContainer, LabelLocalizer labelLocalizer,
+                                  SourceCatalogue catalogue, Repeater displayRepeater,
+                                  DisplayFrameManager frameManager,
+                                  FramePolicyAtStartUp framePolicy, FileImageSaver imageSaver)
   {
     ownerContainer.setTitle(labelLocalizer.getString(CONTROL_TITLE));
 
@@ -99,7 +100,7 @@ public class ControlFrameController
                                                                  displayRepeater, dropListener,
                                                                  frameManager, framePolicy,
                                                                  imageSaver);
-    ownerContainer.getContentPane().add(controlsPane.getComponent(),
+    ownerContainer.getContentPane().add(controlsPane.createComponent(),
                                         BorderLayout.CENTER);
 
     ownerContainer.pack();
@@ -132,7 +133,7 @@ public class ControlFrameController
 
   /* Shows a resizable frame with a JDesktopPane inside, which is returned. */
 
-  private JDesktopPane createDesktopFrame(JFrame ownerFrame, LabelLocalizer labelLocalizer, SourceCatalogue catalogue)
+  private JDesktopPane createDesktopFrame(JFrame ownerFrame, LabelLocalizer labelLocalizer)
   {
     ownerFrame.setTitle(labelLocalizer.getString(DESKTOP_TITLE));
 

@@ -19,7 +19,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 
-/** Composer of the panel with the save to file controls.
+/** Composer of the panel with the save-to-file controls.
  *  The panel can be obtained by calling {@link #getComponent()}. */
 
 public class SaveFilePanelComposer

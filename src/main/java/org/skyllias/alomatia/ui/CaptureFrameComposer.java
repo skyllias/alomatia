@@ -36,8 +36,8 @@ public class CaptureFrameComposer
 
   /** Returns a new visible frame that will notify listener when the user
    *  chooses the region to capture from.
-   *  The returned frame has already been set up (icon, size, etc.) and therefore
-   *  most times it is not expected to be used by the caller. */
+   *  The returned frame has already been set up (icon, size, etc.) and
+   *  therefore most times it is not expected to be used by the caller. */
 
   public JFrame openNewFrame(CaptureBoundsListener listener)
   {
@@ -46,8 +46,8 @@ public class CaptureFrameComposer
     frame.setLocationRelativeTo(null);
     frame.setSize(INITIAL_FRAME_WIDTH, INITIAL_FRAME_HEIGHT);
 
-    frame.setIconImage(new LogoProducer().createImage(ControlFrameController.ICON_WIDTH,
-                                                      ControlFrameController.ICON_HEIGHT));
+    frame.setIconImage(new LogoProducer().createImage(ControlFrameManager.ICON_WIDTH,
+                                                      ControlFrameManager.ICON_HEIGHT));
 
     Button captureButton = new Button(labelLocalizer.getString(BUTTON_LABEL));
     captureButton.addActionListener(new CaptureButtonListener(frame, listener));

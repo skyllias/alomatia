@@ -32,7 +32,7 @@ import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.StartupLabelLocalizer;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
-import org.skyllias.alomatia.ui.frame.FramePolicy;
+import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 public class WindowControlPanelComposerTest
 {
@@ -48,7 +48,7 @@ public class WindowControlPanelComposerTest
   @Mock
   private DisplayFrameManager displayFrameManager;
   @Mock
-  private FramePolicy framePolicy;
+  private FramePolicyAtStartUp framePolicy;
   @Mock
   private Preferences preferences;
   @Captor
@@ -68,7 +68,7 @@ public class WindowControlPanelComposerTest
     MockitoAnnotations.initMocks(this);
 
     when(displayFrame.getDisplayPanel()).thenReturn(displayPanel);
-    when(displayFrameManager.getNewDisplayFrame(any(Boolean.class))).thenReturn(displayFrame);
+    when(displayFrameManager.createDisplayFrame(any(Boolean.class))).thenReturn(displayFrame);
   }
 
   /* Cannot be called inside setUp() if preferences are to be tuned up. */
@@ -84,7 +84,7 @@ public class WindowControlPanelComposerTest
       @Override
       public JComponent call() throws Exception
       {
-        return windowControlPanelComposer.getComponent();
+        return windowControlPanelComposer.createComponent();
       }
     });
     frameFixture = showInFrame(controlPanel);
@@ -130,8 +130,8 @@ public class WindowControlPanelComposerTest
     frameFixture.checkBox(WindowControlPanelComposer.AUTOAPPLY_FILTER_NAME).check(true);
     frameFixture.button(WindowControlPanelComposer.ADD_BUTTON_NAME).click();
 
-    verify(displayFrameManager, times(1)).getNewDisplayFrame(true);
-    verify(displayFrameManager, times(0)).getNewDisplayFrame(false);
+    verify(displayFrameManager, times(1)).createDisplayFrame(true);
+    verify(displayFrameManager, times(0)).createDisplayFrame(false);
   }
 
   @Test
@@ -144,8 +144,8 @@ public class WindowControlPanelComposerTest
     frameFixture.checkBox(WindowControlPanelComposer.AUTOAPPLY_FILTER_NAME).check(false);
     frameFixture.button(WindowControlPanelComposer.ADD_BUTTON_NAME).click();
 
-    verify(displayFrameManager, times(0)).getNewDisplayFrame(true);
-    verify(displayFrameManager, times(1)).getNewDisplayFrame(false);
+    verify(displayFrameManager, times(0)).createDisplayFrame(true);
+    verify(displayFrameManager, times(1)).createDisplayFrame(false);
   }
 
   @Test
