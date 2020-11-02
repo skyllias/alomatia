@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.source;
 
-import java.io.*;
+import java.io.File;
 
 /** Source from a fixed file in disk. */
 
@@ -14,6 +14,7 @@ public class SingleFileSource extends BasicFileSource
   /** Sets the file whose contents are to be used as source image, and tries
    *  and displays it. */
 
+  @Override
   public void setFileSource(File imageFile)
   {
     sourceFile = imageFile;

@@ -1,7 +1,8 @@
 
 package org.skyllias.alomatia.source;
 
-import org.skyllias.alomatia.*;
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
 
 /** Provider of instances of {@link SourceCatalogue} with instances from some
  *  known {@link ImageSource}s. */

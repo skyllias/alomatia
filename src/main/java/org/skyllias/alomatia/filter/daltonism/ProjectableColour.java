@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.daltonism;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** Representation of a colour in some particular {@link ColourSpace} that admits
  *  projections by means of a {@link ColourProjector}.

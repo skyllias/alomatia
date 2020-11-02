@@ -1,12 +1,13 @@
 
 package org.skyllias.alomatia.filter.buffered.patch;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.Collection;
 
-import org.skyllias.alomatia.filter.buffered.*;
-import org.skyllias.alomatia.filter.buffered.map.*;
+import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.map.HueMap;
 
 /** BasicBufferedImageOp that tints each patch in the source image with a hue
  *  taken from a {@link HueMap}. */

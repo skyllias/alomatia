@@ -1,22 +1,43 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.prefs.*;
+import java.awt.AWTException;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.util.prefs.Preferences;
 
-import javax.imageio.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.filechooser.*;
+import javax.imageio.ImageIO;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.skyllias.alomatia.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.source.*;
-import org.skyllias.alomatia.source.ScreenSource.*;
-import org.skyllias.alomatia.ui.CaptureFrameComposer.*;
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.source.AsynchronousUrlSource;
+import org.skyllias.alomatia.source.BasicFileSource;
+import org.skyllias.alomatia.source.ClipboardSource;
+import org.skyllias.alomatia.source.DirFileSource;
+import org.skyllias.alomatia.source.DropSource;
+import org.skyllias.alomatia.source.ScreenSource;
+import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
+import org.skyllias.alomatia.source.SingleFileSource;
+import org.skyllias.alomatia.source.SourceCatalogue;
+import org.skyllias.alomatia.source.VoidSource;
+import org.skyllias.alomatia.ui.CaptureFrameComposer.CaptureBoundsListener;
 
 /** Composer of a panel with the controls to select a {@link ImageSource}.
  *  TODO Make it more OO by obtaining a component for each source type. */
@@ -93,7 +114,7 @@ public class SourceSelectorComposer
 
 //------------------------------------------------------------------------------
 
-  /* Sets up the drop selector radio if the catalogue contains a DropSource. */
+  /* Sets up the drop selector radio if the catalogue contains a VoidSource. */
 
   private void initVoidSelector(JPanel panel)
   {
@@ -209,7 +230,7 @@ public class SourceSelectorComposer
     final AsynchronousUrlSource urlSource = sourceCatalogue.get(AsynchronousUrlSource.class);
     if (urlSource != null)
     {
-      UrlDownloadComponent downloadComponent = new UrlDownloadComponent(labelLocalizer,
+      UrlDownloadSubcomponentComposer downloadComponent = new UrlDownloadSubcomponentComposer(labelLocalizer,
                                                                         urlSource);
       JPanel configPanel = new JPanel();
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));

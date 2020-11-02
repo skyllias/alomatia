@@ -1,13 +1,16 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Dimension;
+import java.awt.geom.Point2D;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class DistortionChainTest
 {

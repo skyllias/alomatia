@@ -1,14 +1,18 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.image.*;
-import java.io.*;
-import java.net.*;
-import java.util.concurrent.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 
-import org.apache.commons.io.*;
+import org.apache.commons.io.IOUtils;
 
 /** ImageSource that retrieves the image from a URL.
  *  <p>
@@ -19,15 +23,15 @@ import org.apache.commons.io.*;
  *  <p>
  *  This is meant for "easily" accessible resources only. If proxy configuration,
  *  authentication, SSL validation, new protocols support, timeout control or
- *  other features are needed, other sources should be considered.
+ *  other features are needed, different sources should be considered.
  *  <p>
  *  HTTP/HTTPS will be the most common protocol, but this class does not enforce it.
  *  <p>
  *  A reactivation is passive in the sense that the previous download, if any,
  *  is not reattempted.
  *  <p>
- *  The inner interface DownloadListener can be implemented in order to be notified
- *  when the download completes, either successfully or not. */
+ *  The inner interface DownloadListener can be implemented in order to be
+ *  notified when the download completes, either successfully or not. */
 
 public class AsynchronousUrlSource extends BasicSource
 {

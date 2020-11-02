@@ -1,8 +1,9 @@
 
 package org.skyllias.alomatia.logo;
 
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 /** Generator of images whose pixels depend on their location according to a ColourCoordinator. */
 
@@ -27,7 +28,7 @@ public class LogoProducer
       {
         float x = ((float) i) / (float) width;
         float y = ((float) j + MARGIN_SATURATION) /
-                  ((float) height  + MARGIN_SATURATION + MARGIN_BRIGHTNESS);    // avoid 0 and 1
+                  ((float) height + MARGIN_SATURATION + MARGIN_BRIGHTNESS);     // avoid 0 and 1
 
         Color pixelColour = coordinator.getColourAt(x, y);
         image.setRGB(i, j, pixelColour.getRGB());

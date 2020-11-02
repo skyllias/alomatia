@@ -1,13 +1,13 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.util.prefs.*;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
 
-import org.skyllias.alomatia.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.RadioSelector.*;
+import org.skyllias.alomatia.ImageSource;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 
 /** Creator of radio buttons used to select one of the available {@link ImageSource}s.
  *  It is generic with respect to the component used to implement the radio buttons

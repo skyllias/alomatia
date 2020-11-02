@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.factor.*;
+import org.skyllias.alomatia.filter.factor.UnitFactor;
 
 /** Function that tells how a magnitude like brightness or saturation should
  *  vary depending on hue. Its result is not intended to be applied directly

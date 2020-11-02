@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.display;
 
-import java.awt.image.*;
+import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.NamedFilter;
 
 /** Display with the ability to apply a filter to some image. */
 

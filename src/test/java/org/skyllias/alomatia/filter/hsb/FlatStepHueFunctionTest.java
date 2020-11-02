@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class FlatStepHueFunctionTest
 {

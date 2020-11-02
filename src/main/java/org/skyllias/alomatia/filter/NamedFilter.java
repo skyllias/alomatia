@@ -1,7 +1,9 @@
 
 package org.skyllias.alomatia.filter;
 
-import java.awt.image.*;
+import java.awt.image.ImageFilter;
+
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 /** Association of an {@link ImageFilter} with a name. */
 

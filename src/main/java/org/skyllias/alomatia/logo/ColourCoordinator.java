@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.logo;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** Calculator of the colour to apply to a pixel according to its location in an image. */
 
@@ -10,9 +10,10 @@ public class ColourCoordinator
 //==============================================================================
 
   /** Returns the {@link Color} for the pixel located in a system of coordinates
-   *  at (x, y), with both values between the open interval (0, 1).
+   *  at (x, y), with both values inside the open interval (0, 1).
    *  The pixels may be as close to the boundary as wanted, but the round values
-   *  should be prevented because pixels on the edges will have the same colour.
+   *  should be prevented because all pixels on the edges would have the same
+   *  colour.
    *  The colour is assigned using the HSB model, with the x mainly determining
    *  the hue (the y is also involved to a lesser extent to avoid vertical bars)
    *  and the y the saturation and the brightness: for the lower half of values,

@@ -1,15 +1,18 @@
 
 package org.skyllias.alomatia.display;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.*;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.ImageDisplay;
 
 public class RepeaterTest
 {

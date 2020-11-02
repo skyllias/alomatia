@@ -1,10 +1,11 @@
 
 package org.skyllias.alomatia.display;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Image;
+import java.util.Collection;
+import java.util.HashSet;
 
-import org.skyllias.alomatia.*;
+import org.skyllias.alomatia.ImageDisplay;
 
 /** Display that only transfers the received images to other displays (receivers). */
 

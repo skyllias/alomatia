@@ -1,18 +1,20 @@
 
 package org.skyllias.alomatia.app;
 
-import java.util.*;
+import java.util.Properties;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.filter.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.source.*;
-import org.skyllias.alomatia.ui.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.skyllias.alomatia.display.Repeater;
+import org.skyllias.alomatia.filter.FixedFilterFactory;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.i18n.StartupLabelLocalizer;
+import org.skyllias.alomatia.source.FixedCatalogueGenerator;
+import org.skyllias.alomatia.ui.ControlFrameManager;
+import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
-import com.jtattoo.plaf.aero.*;
+import com.jtattoo.plaf.aero.AeroLookAndFeel;
 
 /** Launcher of a visual application. */
 
@@ -41,9 +43,12 @@ public class SwingAlomatia
 
           FixedCatalogueGenerator catalogueGenerator = new FixedCatalogueGenerator();
           Repeater repeater                          = new Repeater();
-          FramePolicy framePolicy                    = new FramePolicy();
-          new ControlFrame(labelLocalizer, catalogueGenerator.getNewCatalogue(repeater),
-                           repeater, new FixedFilterFactory(), framePolicy);    // TODO instead of passing these instances everywhere use an injection framework like Spring
+          FramePolicyAtStartUp framePolicy           = new FramePolicyAtStartUp();
+
+          ControlFrameManager controlFrameController = new ControlFrameManager();
+          controlFrameController.createControlFrame(labelLocalizer,
+                                                    catalogueGenerator.getNewCatalogue(repeater),
+                                                    repeater, new FixedFilterFactory(), framePolicy);    // TODO instead of passing these instances everywhere use an injection framework like Spring
         }
         catch (Exception e) {e.printStackTrace();}                              // TODO log
       }

@@ -1,8 +1,8 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.Image;
+import java.io.File;
 
 /** Persister of images. The most natural storage is {@link File}, but
  *  implementations may choose any other type.

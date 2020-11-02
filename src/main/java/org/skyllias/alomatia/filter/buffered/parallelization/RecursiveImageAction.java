@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.buffered.parallelization;
 
-import java.util.concurrent.*;
+import java.util.concurrent.RecursiveAction;
 
 /** Fork/join task that works on some buffered image being filtered by
  *  recursively dividing it into smaller fragments and processing them

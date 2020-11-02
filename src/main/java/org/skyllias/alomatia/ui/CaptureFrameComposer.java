@@ -1,14 +1,17 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Button;
+import java.awt.GraphicsDevice;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.logo.*;
-import org.skyllias.alomatia.source.ScreenSource.*;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 
 /** Opener of frames used to select a region to capture images from. */
 
@@ -33,8 +36,8 @@ public class CaptureFrameComposer
 
   /** Returns a new visible frame that will notify listener when the user
    *  chooses the region to capture from.
-   *  The returned frame has already been set up (icon, size, etc.) and therefore
-   *  most times it is not expected to be used by the caller. */
+   *  The returned frame has already been set up (icon, size, etc.) and
+   *  therefore most times it is not expected to be used by the caller. */
 
   public JFrame openNewFrame(CaptureBoundsListener listener)
   {
@@ -43,8 +46,8 @@ public class CaptureFrameComposer
     frame.setLocationRelativeTo(null);
     frame.setSize(INITIAL_FRAME_WIDTH, INITIAL_FRAME_HEIGHT);
 
-    frame.setIconImage(new LogoProducer().createImage(ControlFrame.ICON_WIDTH,
-                                                      ControlFrame.ICON_HEIGHT));
+    frame.setIconImage(new LogoProducer().createImage(ControlFrameManager.ICON_WIDTH,
+                                                      ControlFrameManager.ICON_HEIGHT));
 
     Button captureButton = new Button(labelLocalizer.getString(BUTTON_LABEL));
     captureButton.addActionListener(new CaptureButtonListener(frame, listener));

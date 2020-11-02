@@ -1,10 +1,10 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.image.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 
 /** Superclass for the images that produce images from a {@link File} (file or directory). */
 

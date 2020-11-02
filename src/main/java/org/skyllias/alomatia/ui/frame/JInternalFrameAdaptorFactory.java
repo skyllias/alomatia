@@ -1,10 +1,16 @@
 
 package org.skyllias.alomatia.ui.frame;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Random;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.WindowConstants;
 
 /** {@link FrameAdaptorFactory} that returns {@link JInternalFrame}s inside a
  *  given {@link JDesktopPane}. */

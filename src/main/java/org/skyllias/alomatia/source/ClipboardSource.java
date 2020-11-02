@@ -1,8 +1,13 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.datatransfer.FlavorListener;
+import java.awt.datatransfer.StringSelection;
 
 /** Source that extracts images from the system's clipboard. If the clipboard
  *  does not contain an image, nothing is generated.

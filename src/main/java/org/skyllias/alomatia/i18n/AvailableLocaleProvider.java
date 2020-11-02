@@ -1,7 +1,9 @@
 
 package org.skyllias.alomatia.i18n;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Locale;
 
 /** Factory of locales selectable to show the UI in.
  *  @deprecated Moved to {@link LabelLocalizer} */

@@ -1,17 +1,27 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.prefs.*;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.RadioSelector.*;
+import org.skyllias.alomatia.display.DisplayFitPolicy;
+import org.skyllias.alomatia.display.ResizableDisplay;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 
 /** Composer of a panel with controls to change the zoom of some {@link ResizableDisplay}.
  *  The last selected fit policy and slider values are stored as user preferences.
@@ -19,8 +29,7 @@ import org.skyllias.alomatia.ui.RadioSelector.*;
  *  shortcuts, which means that all instances will respond at the same time to
  *  zoom changes from the keyboard, while the UI component will work separately. */
 
-public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPolicy>,
-                                             ChangeListener
+public class ZoomSelectorComposer
 {
   private static final String ZOOM_LABEL           = "zoom.selector.title";
   private static final String ZOOM_TOOLTIP         = "zoom.custom.tooltip";
@@ -41,9 +50,6 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
 
   private ResizableDisplay resizableDisplay;
 
-  private JSlider zoomSlider;
-  private RadioSelector<JRadioButton, DisplayFitPolicy> radioSelector;
-
   private Preferences preferences = Preferences.userNodeForPackage(ZoomSelectorComposer.class);
 
 //==============================================================================
@@ -54,71 +60,25 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
   {
     labelLocalizer   = localizer;
     resizableDisplay = imageDisplay;
-
-    radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, this);
   }
 
 //==============================================================================
 
-  /** Returns the component with the zoom controls set up.
-   *  To be called just once. */
+  /** Returns the component with the zoom controls set up. */
 
   public JComponent getComponent()
   {
     JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(ZOOM_LABEL));
 
-    zoomSlider = getNewSlider();
+    JSlider zoomSlider = getNewSlider();
     panel.add(zoomSlider);
 
-    panel.add(radioSelector.createRadioObject(CUSTOM_LABEL, DisplayFitPolicy.FREE));
-    panel.add(radioSelector.createRadioObject(FIT_FULL_LABEL, DisplayFitPolicy.FULL));
-    panel.add(radioSelector.createRadioObject(FIT_HORIZONTAL_LABEL, DisplayFitPolicy.HORIZONTAL));
-    panel.add(radioSelector.createRadioObject(FIT_VERTICAL_LABEL, DisplayFitPolicy.VERTICAL));
-    panel.add(radioSelector.createRadioObject(FIT_LARGEST_LABEL, DisplayFitPolicy.LARGEST));
-
-    addPolicyKeyListener();
+    setUpFitPolicyRadioSelector(panel, zoomSlider);
 
     zoomSlider.setValue(preferences.getInt(PREFKEY_ZOOM, SLIDER_INITIAL));
-    DisplayFitPolicy initialPolicy = DisplayFitPolicy.FREE;
-    try {initialPolicy = DisplayFitPolicy.valueOf(preferences.get(PREFKEY_FIT, DisplayFitPolicy.FREE.toString()));}
-    catch (Exception e) {}                                                      // preferences are optional
-    radioSelector.setSelection(initialPolicy);
 
     return panel;
   }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the selected fit type to the image display.
-   *  <p>
-   *  If the type is {@link org.skyllias.alomatia.window.DisplayFitPolicy.FREE},
-   *  then the display's zoom factor is updated from the slider's current value.
-   *  <p>
-   *  The slider is enabled if and only if the dit policy is FREE.
-   *  <p>
-   *  The selection is stored in the user preferences. */
-
-  @Override
-  public void onSelectionChanged(DisplayFitPolicy type)
-  {
-    boolean isFreePolicy = (type == DisplayFitPolicy.FREE);
-    zoomSlider.setEnabled(isFreePolicy);
-    if (isFreePolicy) setZoomFactorFromSlider();
-    resizableDisplay.setFitZoom(type);
-
-    preferences.put(PREFKEY_FIT, type.toString());
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the zoom factor selected in the slider to the image display.
-   *  <p>
-   *  The linear int value from the slider is converted into an exponential
-   *  decimal value for the display, which is much more suitable for the
-   *  behaviour of a zoom. */
-
-  @Override
-  public void stateChanged(ChangeEvent e) {setZoomFactorFromSlider();}
 
 //------------------------------------------------------------------------------
 
@@ -130,8 +90,8 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
     newSlider.setMajorTickSpacing(SLIDER_INCREMENT);
     newSlider.setMinorTickSpacing(SLIDER_INCREMENT);
     newSlider.setPaintTicks(true);
-    newSlider.addChangeListener(this);
-    newSlider.addMouseListener(new SliderMouseListener());
+    newSlider.addChangeListener(new ZoomSliderChangeListener(newSlider));
+    newSlider.addMouseListener(new ResetSliderMouseListener(newSlider));
     newSlider.setToolTipText(labelLocalizer.getString(ZOOM_TOOLTIP));
 
     Dictionary<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
@@ -164,10 +124,30 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
 
 //------------------------------------------------------------------------------
 
+  private void setUpFitPolicyRadioSelector(JPanel panel, JSlider zoomSlider)
+  {
+    RadioSelector<JRadioButton, DisplayFitPolicy> radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, new FitPolicySelectorListener(zoomSlider));
+
+    panel.add(radioSelector.createRadioObject(CUSTOM_LABEL, DisplayFitPolicy.FREE));
+    panel.add(radioSelector.createRadioObject(FIT_FULL_LABEL, DisplayFitPolicy.FULL));
+    panel.add(radioSelector.createRadioObject(FIT_HORIZONTAL_LABEL, DisplayFitPolicy.HORIZONTAL));
+    panel.add(radioSelector.createRadioObject(FIT_VERTICAL_LABEL, DisplayFitPolicy.VERTICAL));
+    panel.add(radioSelector.createRadioObject(FIT_LARGEST_LABEL, DisplayFitPolicy.LARGEST));
+
+    addPolicyKeyListener(radioSelector);
+
+    DisplayFitPolicy initialPolicy = DisplayFitPolicy.FREE;
+    try {initialPolicy = DisplayFitPolicy.valueOf(preferences.get(PREFKEY_FIT, DisplayFitPolicy.FREE.toString()));}
+    catch (Exception e) {}                                                      // preferences are optional
+    radioSelector.setSelection(initialPolicy);
+  }
+
+//------------------------------------------------------------------------------
+
   /* Sets the zoom factor selected in the slider to the image display.
    * The selection is stored in the user preferences. */
 
-  private void setZoomFactorFromSlider()
+  private void setZoomFactorFromSlider(JSlider zoomSlider)
   {
     int sliderValue = zoomSlider.getValue();
     double expValue = getZoomFactorFromSlider(sliderValue);
@@ -197,7 +177,7 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
    * control + 0 for FREE, control + 1 for FULL, control + 2 for HORIZONTAL,
    * control + 3 for VERTICAL, control + 3 for LARGEST. */
 
-  private void addPolicyKeyListener()
+  private void addPolicyKeyListener(final RadioSelector<JRadioButton,DisplayFitPolicy> radioSelector)
   {
     KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
     manager.addKeyEventDispatcher(new KeyEventDispatcher()
@@ -224,10 +204,72 @@ public class ZoomSelectorComposer implements RadioSelectorListener<DisplayFitPol
 
 //******************************************************************************
 
+  /* Listener of changes of the fit policy selector. */
+
+  private class FitPolicySelectorListener implements RadioSelectorListener<DisplayFitPolicy>
+  {
+    private final JSlider zoomSlider;
+
+    public FitPolicySelectorListener(JSlider zoomSlider)
+    {
+      this.zoomSlider = zoomSlider;
+    }
+
+    /* Sets the selected fit type to the image display.
+     * If the type is DisplayFitPolicy.FREE, then the display's zoom factor is
+     * updated from the slider's current value.
+     * The slider is enabled if and only if the fit policy is FREE.
+     * The selection is stored in the user preferences. */
+
+    @Override
+    public void onSelectionChanged(DisplayFitPolicy type)
+    {
+      boolean isFreePolicy = (type == DisplayFitPolicy.FREE);
+      zoomSlider.setEnabled(isFreePolicy);
+      if (isFreePolicy) setZoomFactorFromSlider(zoomSlider);
+      resizableDisplay.setFitZoom(type);
+
+      preferences.put(PREFKEY_FIT, type.toString());
+    }
+  }
+
+//******************************************************************************
+
+  /* Listener of changes in the slider to modify the zoom in the display. */
+
+  private class ZoomSliderChangeListener implements ChangeListener
+  {
+    private final JSlider zoomSlider;
+
+    public ZoomSliderChangeListener(JSlider zoomSlider)
+    {
+      this.zoomSlider = zoomSlider;
+    }
+
+    /* Sets the zoom factor selected in the slider to the image display.
+     * The linear int value from the slider is converted into an exponential
+     * decimal value for the display, which is much more suitable for the
+     * behaviour of a zoom. */
+
+    @Override
+    public void stateChanged(ChangeEvent e) {setZoomFactorFromSlider(zoomSlider);}
+
+  //------------------------------------------------------------------------------
+  }
+
+//******************************************************************************
+
   /* Listener of clicks on the slider to reset it easily. */
 
-  private class SliderMouseListener extends MouseAdapter
+  private class ResetSliderMouseListener extends MouseAdapter
   {
+    private final JSlider zoomSlider;
+
+    public ResetSliderMouseListener(JSlider zoomSlider)
+    {
+      this.zoomSlider = zoomSlider;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e)
     {

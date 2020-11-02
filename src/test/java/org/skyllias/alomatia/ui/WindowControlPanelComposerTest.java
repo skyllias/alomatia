@@ -1,25 +1,38 @@
 
 package org.skyllias.alomatia.ui;
 
-import static org.assertj.swing.fixture.Containers.*;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.swing.fixture.Containers.showInFrame;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.awt.dnd.*;
-import java.util.concurrent.*;
-import java.util.prefs.*;
+import java.awt.dnd.DropTargetListener;
+import java.util.concurrent.Callable;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
-import org.assertj.swing.edt.*;
-import org.assertj.swing.fixture.*;
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.display.*;
-import org.skyllias.alomatia.i18n.*;
-import org.skyllias.alomatia.ui.DisplayFrameManager.*;
-import org.skyllias.alomatia.ui.frame.*;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
+import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.edt.GuiTask;
+import org.assertj.swing.fixture.FrameFixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.display.Repeater;
+import org.skyllias.alomatia.i18n.StartupLabelLocalizer;
+import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
+import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 public class WindowControlPanelComposerTest
 {
@@ -29,13 +42,13 @@ public class WindowControlPanelComposerTest
   @Mock
   private DropTargetListener dropTargetListener;
   @Mock
-  private DisplayPanel displayPanel;
+  private DisplayPanelController displayPanel;
   @Mock
-  private DisplayFrame displayFrame;
+  private DisplayFrameController displayFrame;
   @Mock
   private DisplayFrameManager displayFrameManager;
   @Mock
-  private FramePolicy framePolicy;
+  private FramePolicyAtStartUp framePolicy;
   @Mock
   private Preferences preferences;
   @Captor
@@ -55,7 +68,7 @@ public class WindowControlPanelComposerTest
     MockitoAnnotations.initMocks(this);
 
     when(displayFrame.getDisplayPanel()).thenReturn(displayPanel);
-    when(displayFrameManager.getNewDisplayFrame(any(Boolean.class))).thenReturn(displayFrame);
+    when(displayFrameManager.createDisplayFrame(any(Boolean.class))).thenReturn(displayFrame);
   }
 
   /* Cannot be called inside setUp() if preferences are to be tuned up. */
@@ -71,7 +84,7 @@ public class WindowControlPanelComposerTest
       @Override
       public JComponent call() throws Exception
       {
-        return windowControlPanelComposer.getComponent();
+        return windowControlPanelComposer.createComponent();
       }
     });
     frameFixture = showInFrame(controlPanel);
@@ -117,8 +130,8 @@ public class WindowControlPanelComposerTest
     frameFixture.checkBox(WindowControlPanelComposer.AUTOAPPLY_FILTER_NAME).check(true);
     frameFixture.button(WindowControlPanelComposer.ADD_BUTTON_NAME).click();
 
-    verify(displayFrameManager, times(1)).getNewDisplayFrame(true);
-    verify(displayFrameManager, times(0)).getNewDisplayFrame(false);
+    verify(displayFrameManager, times(1)).createDisplayFrame(true);
+    verify(displayFrameManager, times(0)).createDisplayFrame(false);
   }
 
   @Test
@@ -131,8 +144,8 @@ public class WindowControlPanelComposerTest
     frameFixture.checkBox(WindowControlPanelComposer.AUTOAPPLY_FILTER_NAME).check(false);
     frameFixture.button(WindowControlPanelComposer.ADD_BUTTON_NAME).click();
 
-    verify(displayFrameManager, times(0)).getNewDisplayFrame(true);
-    verify(displayFrameManager, times(1)).getNewDisplayFrame(false);
+    verify(displayFrameManager, times(0)).createDisplayFrame(true);
+    verify(displayFrameManager, times(1)).createDisplayFrame(false);
   }
 
   @Test

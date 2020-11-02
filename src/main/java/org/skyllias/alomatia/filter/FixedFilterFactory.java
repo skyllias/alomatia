@@ -5,15 +5,10 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformImageOp;
-import org.skyllias.alomatia.filter.affine.RotationTransformImageOp;
-import org.skyllias.alomatia.filter.affine.VerticalFlipTransformImageOp;
-import org.skyllias.alomatia.filter.buffered.DyeOp;
-import org.skyllias.alomatia.filter.buffered.MedianChannelCalculator;
-import org.skyllias.alomatia.filter.buffered.MinMaxChannelCalculator;
-import org.skyllias.alomatia.filter.buffered.PixelizerOp;
+import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformOp;
+import org.skyllias.alomatia.filter.affine.RotationTransformOp;
+import org.skyllias.alomatia.filter.affine.VerticalFlipTransformOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
-import org.skyllias.alomatia.filter.buffered.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.buffered.distortion.BilinearInterpolator;
 import org.skyllias.alomatia.filter.buffered.distortion.DistortingBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.distortion.DistortionChain;
@@ -29,13 +24,22 @@ import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
 import org.skyllias.alomatia.filter.buffered.map.RadialMap;
+import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
+import org.skyllias.alomatia.filter.buffered.simple.PixelizerOp;
+import org.skyllias.alomatia.filter.buffered.surround.LightCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.MinMaxChannelCalculator;
+import org.skyllias.alomatia.filter.buffered.surround.ProbabilisticBlackOrWhiteSelector;
+import org.skyllias.alomatia.filter.buffered.surround.StrictBlackOrWhiteSelector;
+import org.skyllias.alomatia.filter.buffered.surround.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.buffered.vignette.VignetteFilterFactory;
 import org.skyllias.alomatia.filter.compose.AxeColoursFilter;
 import org.skyllias.alomatia.filter.compose.EdgeConvolvingComposedFilter;
 import org.skyllias.alomatia.filter.compose.EmbossFilter;
-import org.skyllias.alomatia.filter.convolve.EdgeDetectingKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.EdgeDetectorFilterFactory;
 import org.skyllias.alomatia.filter.convolve.LinearBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.NeighbourSharpKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.NucelarWashKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.ParaboloidBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.daltonism.LmsDeuteranopiaFilter;
@@ -78,6 +82,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String XYZACHMALY_FILTER_NAME = "filter.dalton.xyz.achromatomaly.name";
   private static final String RGBR_FILTER_NAME       = "filter.rgb.gbr.name";
   private static final String BGRB_FILTER_NAME       = "filter.rgb.brg.name";
+  private static final String SWAP_RG_FILTER_NAME    = "filter.rgb.swap.rg.name";
+  private static final String SWAP_GB_FILTER_NAME    = "filter.rgb.swap.gb.name";
+  private static final String SWAP_BR_FILTER_NAME    = "filter.rgb.swap.br.name";
   private static final String EQUAL_GREY_FILTER_NAME = "filter.rgb.greys.equal.name";
   private static final String HUMAN_GREY_FILTER_NAME = "filter.rgb.greys.human.name";
   private static final String REDONLY_FILTER_NAME    = "filter.rgb.redonly.name";
@@ -86,6 +93,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String REDLESS_FILTER_NAME    = "filter.rgb.redless.name";
   private static final String GREENLESS_FILTER_NAME  = "filter.rgb.greenless.name";
   private static final String BLUELESS_FILTER_NAME   = "filter.rgb.blueless.name";
+  private static final String YELLOW_EQ_FILTER_NAME  = "filter.rgb.blue+yellow.name";
+  private static final String MAGENTA_EQ_FILTER_NAME = "filter.rgb.green+magenta.name";
+  private static final String CYAN_EQ_FILTER_NAME    = "filter.rgb.red+cyan.name";
   private static final String NEGATIVE_FILTER_NAME   = "filter.rgb.invert.name";
   private static final String DEC_SAT_XL_FILTER_NAME = "filter.hsb.saturation-xl.name";
   private static final String DEC_SAT_L_FILTER_NAME  = "filter.hsb.saturation-l.name";
@@ -149,6 +159,10 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_CCT_M_FILTER_NAME  = "filter.rgb.colourcontrast+m.name";
   private static final String INC_CCT_S_FILTER_NAME  = "filter.rgb.colourcontrast+s.name";
   private static final String INC_CCT_XS_FILTER_NAME = "filter.rgb.colourcontrast+xs.name";
+  private static final String BNW_PIXEL_FILTER_NAME  = "filter.b&w.pixel.name";
+  private static final String BNW_BLOT_FILTER_NAME   = "filter.b&w.blot.name";
+  private static final String BNW_SCATT_FILTER_NAME  = "filter.b&w.scatter.name";
+  private static final String BNW_SNOW_FILTER_NAME   = "filter.b&w.snow.name";
   private static final String BLUR_SMALL_FILTER_NAME = "filter.blur.small.name";
   private static final String BLUR_MED_FILTER_NAME   = "filter.blur.medium.name";
   private static final String BLUR_BIG_FILTER_NAME   = "filter.blur.big.name";
@@ -159,7 +173,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MOTION_L90_FILTER_NAME = "filter.blur.motion.fast.vertical.name";
   private static final String MOTION_L45_FILTER_NAME = "filter.blur.motion.fast.oblique.name";
   private static final String SHARPEN_FILTER_NAME    = "filter.blur.sharpen.name";
-  private static final String EDGEDETECT_FILTER_NAME = "filter.convolve.edgedetection.name";
+  private static final String EDGEDETECT_FILTER_NAME = "filter.convolve.edgedetection.standard.name";
+  private static final String THICKEDGES_FILTER_NAME = "filter.convolve.edgedetection.thick.s.name";
+  private static final String THICKEDGEM_FILTER_NAME = "filter.convolve.edgedetection.thick.m.name";
+  private static final String THICKEDGEL_FILTER_NAME = "filter.convolve.edgedetection.thick.l.name";
+  private static final String NUCELAR_FILTER_NAME    = "filter.convolve.nucelarwash.name";
   private static final String LAYEMBOSS_FILTER_NAME  = "filter.convolve.emboss.layered.name";
   private static final String SMTHEMBOSS_FILTER_NAME = "filter.convolve.emboss.smooth.name";
   private static final String MEDIAN_XS_FILTER_NAME  = "filter.median.xs.name";
@@ -395,7 +413,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())), MOTION_L90_FILTER_NAME));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NeighbourSharpKernelDataFactory()),                                         SHARPEN_FILTER_NAME));
 
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new EdgeDetectingKernelDataFactory()), EDGEDETECT_FILTER_NAME));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                 EDGEDETECT_FILTER_NAME));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f),             THICKEDGES_FILTER_NAME));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(1),                THICKEDGEM_FILTER_NAME));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2),                THICKEDGEL_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()), NUCELAR_FILTER_NAME));
 
     filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
     filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
@@ -404,6 +426,11 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(), EQUAL_GREY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forHumanSensitiveGreyScale(), HUMAN_GREY_FILTER_NAME));
+
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(0, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_PIXEL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(2, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_BLOT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()))), BNW_SCATT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(3, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()))), BNW_SNOW_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(255, 128, 0)), ORANGEPHIL_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(43, 255, 0)),  GREENPHIL_FILTER_NAME));
@@ -418,12 +445,19 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(RgbFilterFactory.forRtoGtoBtoR(),       RGBR_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBtoGtoRtoB(),       BGRB_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forRedAndGreenSwap(),  SWAP_RG_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forGreenAndBlueSwap(), SWAP_GB_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forBlueAndRedSwap(),   SWAP_BR_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forRedChannelOnly(),   REDONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forGreenChannelOnly(), GREENONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBlueChannelOnly(),  BLUEONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forRedless(),          REDLESS_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forGreenless(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBlueless(),         BLUELESS_FILTER_NAME));
+
+    filters.add(new NamedFilter(RgbFilterFactory.forYellowEqualizer(),  YELLOW_EQ_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forMagentaEqualizer(), MAGENTA_EQ_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forCyanEqualizer(),    CYAN_EQ_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, false))), MINMAX_BLK_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))), MINMAX_RED_FILTER_NAME));
@@ -549,9 +583,9 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(HsbFilterFactory.forSaturationPosterizer(2, false), SATPOSTER_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformImageOp()), HORIZONTAL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformImageOp()),   VERTICAL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformImageOp()),       ROTATION_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformOp()), HORIZONTAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformOp()),   VERTICAL_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformOp()),       ROTATION_FILTER_NAME));
   }
 
 //==============================================================================

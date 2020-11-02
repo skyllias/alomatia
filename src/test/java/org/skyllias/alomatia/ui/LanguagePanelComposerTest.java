@@ -1,22 +1,31 @@
 
 package org.skyllias.alomatia.ui;
 
-import static org.assertj.swing.fixture.Containers.*;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.skyllias.alomatia.ui.LanguagePanelComposer.*;
+import static org.assertj.swing.fixture.Containers.showInFrame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.skyllias.alomatia.ui.LanguagePanelComposer.LANG_SELECTOR_NAME;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.concurrent.Callable;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
-import org.assertj.swing.edt.*;
-import org.assertj.swing.fixture.*;
-import org.junit.*;
-import org.mockito.*;
-import org.skyllias.alomatia.i18n.*;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
+import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JComboBoxFixture;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 public class LanguagePanelComposerTest
 {

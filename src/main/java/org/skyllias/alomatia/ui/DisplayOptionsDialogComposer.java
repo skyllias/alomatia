@@ -1,17 +1,30 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.prefs.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import org.skyllias.alomatia.i18n.*;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 
-/** Composer of non-modal dialog with the display options for a given {@link DisplayFrame}.
+/** Composer of non-modal dialog with the display options for a given {@link DisplayFrameController}.
  *  <p>
  *  By default a new instance is immediately shown when {@link #getDialog()} is
  *  called, but it can be configured to hide by using preferences.
@@ -30,9 +43,9 @@ public class DisplayOptionsDialogComposer
 
   private static final int SCROLL_UNIT = 16;
 
-  private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. They should be removed sometime after the dialog disposal
+  private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. TODO remove sometime after the dialog disposal
 
-  private DisplayFrame ownerDisplayFrame;
+  private DisplayFrameController ownerDisplayFrame;
   private LabelLocalizer labelLocalizer;
   private FilterSelectorComposer filterSelector;
 
@@ -40,9 +53,7 @@ public class DisplayOptionsDialogComposer
 
 //==============================================================================
 
-  /** TODO Replace the filter selector with either a composer or a component. */
-
-  public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrame ownerFrame,
+  public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrameController ownerFrame,
                                       FilterSelectorComposer selector)
   {
     labelLocalizer    = localizer;
@@ -54,8 +65,7 @@ public class DisplayOptionsDialogComposer
 
   /** The dialog is not modal because doing it so blocks the opening window and
    *  any subsequent that may be created afterwards, and offers no special
-   *  advantage in this case.
-   *  Expected to be called just once. */
+   *  advantage in this case. */
 
   public JDialog getDialog()
   {

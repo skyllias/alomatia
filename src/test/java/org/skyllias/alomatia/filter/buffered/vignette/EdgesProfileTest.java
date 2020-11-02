@@ -1,9 +1,10 @@
 
 package org.skyllias.alomatia.filter.buffered.vignette;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class EdgesProfileTest
 {

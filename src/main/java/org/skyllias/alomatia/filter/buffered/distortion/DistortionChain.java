@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import java.awt.geom.*;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D.Float;
 
 /** Distortion that accumulates the displacements of two or more other distortions. */

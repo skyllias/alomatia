@@ -1,13 +1,14 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class BilinearInterpolatorTest
 {

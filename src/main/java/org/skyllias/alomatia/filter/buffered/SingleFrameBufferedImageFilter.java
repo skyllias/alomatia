@@ -1,7 +1,9 @@
 
 package org.skyllias.alomatia.filter.buffered;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImageFilter;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageConsumer;
 
 /** {@link BufferedImageFilter} that does not process the
  *  imageComplete(ImageConsumer.STATICIMAGEDONE) notification, as it assumes that

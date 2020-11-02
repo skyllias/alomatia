@@ -1,10 +1,10 @@
 
 package org.skyllias.alomatia.filter.buffered.distortion.rotational;
 
-import java.awt.geom.*;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D.Float;
 
-import org.skyllias.alomatia.filter.buffered.distortion.*;
+import org.skyllias.alomatia.filter.buffered.distortion.Distortion;
 
 /** {@link Distortion} that moves pixels with an angle from the center. */
 
@@ -26,7 +26,7 @@ public class RotationalDistortion implements Distortion
 
   /** TODO RadialDistortion has some common calculations.
    *  Remember that cos(A + B) = cosA · cosB - sinA · sinB and
-   *  sin(A + B) = sinA · cosB - cosA · sinB. */
+   *  sin(A + B) = sinA · cosB + cosA · sinB. */
 
   @Override
   public Float getSourcePoint(Float destination, Dimension2D bounds)

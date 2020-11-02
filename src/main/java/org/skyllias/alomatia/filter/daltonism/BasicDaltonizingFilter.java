@@ -1,9 +1,9 @@
 
 package org.skyllias.alomatia.filter.daltonism;
 
-import java.awt.*;
+import java.awt.Color;
 
-import org.skyllias.alomatia.filter.*;
+import org.skyllias.alomatia.filter.BasicColorFilter;
 
 /** Superclass for the filters that reduce the visible colours simulating some
  *  anomaly in the eye receptors.

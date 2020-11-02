@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.convolve;
 
-import java.awt.image.*;
+import java.awt.image.ConvolveOp;
 
 /** {@link KernelDataFactory} that turns black all pixels similar to their neighbours.
  * Mind that {@link ConvolveOp} affects all the channels, including the alpha,

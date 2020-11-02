@@ -4,7 +4,7 @@ package org.skyllias.alomatia.filter.hsb;
 import java.awt.Color;
 import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.ColorFilter;
+import org.skyllias.alomatia.filter.ColourFilter;
 import org.skyllias.alomatia.filter.hsb.pole.Attraction;
 import org.skyllias.alomatia.filter.hsb.pole.ClosestPoleHueConverter;
 import org.skyllias.alomatia.filter.hsb.pole.CombinedPoleHueConverter;
@@ -59,7 +59,7 @@ public class HsbFilterFactory
 
 //------------------------------------------------------------------------------
 
-  private static ImageFilter forHsbConverter(HsbConverter hsbConverter) {return new ColorFilter(new HsbColorConverter(hsbConverter));}
+  private static ImageFilter forHsbConverter(HsbConverter hsbConverter) {return new ColourFilter(new HsbColourConverter(hsbConverter));}
 
 //------------------------------------------------------------------------------
 
