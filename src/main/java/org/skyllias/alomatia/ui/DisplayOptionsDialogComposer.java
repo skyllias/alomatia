@@ -23,6 +23,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 
 /** Composer of non-modal dialog with the display options for a given {@link DisplayFrameController}.
  *  <p>

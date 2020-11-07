@@ -31,6 +31,7 @@ import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
