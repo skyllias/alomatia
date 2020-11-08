@@ -31,6 +31,8 @@ import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.ui.filter.FilterSelector;
+import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
@@ -58,7 +60,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   private DisplayPanelController displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
-  private FilterSelectorComposer filterSelector;                                // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
+  private FilterSelector filterSelector;                                        // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
 
   private FrameAdaptor frameAdaptor;                                            // the Swing component with the frame
 
@@ -87,7 +89,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
     frameAdaptor.addClosingFrameListener(this);
 
-    filterSelector = new FilterSelectorComposer(labelLocalizer, this, filterFactory);
+    filterSelector = new FilterSelectorComposer(labelLocalizer, this, filterFactory).createFilterSelector();
     setUpFilterKeyListeners(filterSelector);
     setOutputKeyListeners();
 
@@ -181,7 +183,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
    * for the nect 10 filters. The control modifier is avoided because it is
    * currently used to choose zoom. */
 
-  private void setUpFilterKeyListeners(FilterSelectorComposer filterSelector)
+  private void setUpFilterKeyListeners(FilterSelector filterSelector)
   {
     setUpNumberKeyListeners(filterSelector, 0, 0);
     setUpNumberKeyListeners(filterSelector, 10, KeyEvent.SHIFT_DOWN_MASK);
@@ -195,7 +197,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
    * when pressed with the passed modifiers, selects the (offset + i)th filter
    * in filterSelector. */
 
-  private void setUpNumberKeyListeners(final FilterSelectorComposer filterSelector,
+  private void setUpNumberKeyListeners(final FilterSelector filterSelector,
                                        int offset, int modifiers)
   {
     final String ACTION_NAME_PREFIX = "filterSelector";
