@@ -23,7 +23,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
+import org.skyllias.alomatia.ui.filter.FilterSelector;
 
 /** Composer of non-modal dialog with the display options for a given {@link DisplayFrameController}.
  *  <p>
@@ -48,14 +48,15 @@ public class DisplayOptionsDialogComposer
 
   private DisplayFrameController ownerDisplayFrame;
   private LabelLocalizer labelLocalizer;
-  private FilterSelectorComposer filterSelector;
+  private FilterSelector filterSelector;
 
   private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
-  public DisplayOptionsDialogComposer(LabelLocalizer localizer, DisplayFrameController ownerFrame,
-                                      FilterSelectorComposer selector)
+  public DisplayOptionsDialogComposer(LabelLocalizer localizer,
+                                      DisplayFrameController ownerFrame,
+                                      FilterSelector selector)
   {
     labelLocalizer    = localizer;
     ownerDisplayFrame = ownerFrame;

@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -42,8 +41,6 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
 
   private final Collection<FilterSelectionListener> filterSelectionListeners = new LinkedList<>();
 
-  private RadioSelector<JRadioButton, NamedFilter> radioSelector;               // TODO make getComponent() reinvokable
-
 //==============================================================================
 
   /** Creates a new selector that will modify the passed display's filter with
@@ -67,40 +64,29 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
     filterableDisplay = imageDisplay;
     factory           = filterFactory;
 
-    radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, this);
-
     this.filterSearchHistoryFactory = filterSearchHistoryFactory;
     this.historySuggestionDecorator = historySuggestionDecorator;
   }
 
 //==============================================================================
 
-  /** Returns a component with the filter controls set up. */
+  /** Returns a new component with the filter controls set up. */
 
-  public JComponent getComponent()
+  public FilterSelector createFilterSelector()
   {
     final JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(FILTER_LABEL));
 
     JTextField searchField = createSearchField(panel);
     panel.add(searchField);
 
+    RadioSelector<JRadioButton, NamedFilter> radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, this);
+
     for (NamedFilter namedFilter : factory.getAllAvailableFilters())            // consider sorting them
     {
       panel.add(radioSelector.createRadioObject(namedFilter.getNameKey(), namedFilter));
     }
 
-    return panel;
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Changes the selection to the named filter at the passed position, being 0
-   *  the first one.
-   *  If index is below zero or above the amount of filters, nothing happens. */
-
-  public void selectFilterAt(int index)
-  {
-    radioSelector.setSelectionByIndex(index);
+    return new FilterSelector(panel, radioSelector);
   }
 
 //------------------------------------------------------------------------------

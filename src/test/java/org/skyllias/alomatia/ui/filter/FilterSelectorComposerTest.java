@@ -84,7 +84,7 @@ public class FilterSelectorComposerTest
       @Override
       public JComponent call() throws Exception
       {
-        return filterSelector.getComponent();
+        return filterSelector.createFilterSelector().getComponent();
       }
     });
     frameFixture = showInFrame(filterPanel);
