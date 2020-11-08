@@ -219,6 +219,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HPOSTER_M1_FILTER_NAME = "filter.hsb.posterize.hue.m1.name";
   private static final String HPOSTER_S0_FILTER_NAME = "filter.hsb.posterize.hue.s0.name";
   private static final String HPOSTER_S1_FILTER_NAME = "filter.hsb.posterize.hue.s1.name";
+  private static final String MAXONLY_XL_FILTER_NAME = "filter.rgb.maxonly.xl.name";
+  private static final String MAXONLY_L_FILTER_NAME  = "filter.rgb.maxonly.l.name";
+  private static final String MAXONLY_M_FILTER_NAME  = "filter.rgb.maxonly.m.name";
+  private static final String MAXONLY_S_FILTER_NAME  = "filter.rgb.maxonly.s.name";
+  private static final String MAXONLY_XS_FILTER_NAME = "filter.rgb.maxonly.xs.name";
   private static final String PIXEL_XS_FILTER_NAME   = "filter.pixelize.xs.name";
   private static final String PIXEL_S_FILTER_NAME    = "filter.pixelize.s.name";
   private static final String PIXEL_M_FILTER_NAME    = "filter.pixelize.m.name";
@@ -582,6 +587,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forHuePosterizer(12, 0.04167f), HPOSTER_S1_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forSaturationPosterizer(2, false), SATPOSTER_FILTER_NAME));
+
+    filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(2),   MAXONLY_XL_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(16),  MAXONLY_L_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(32),  MAXONLY_M_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(64),  MAXONLY_S_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(128), MAXONLY_XS_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformOp()), HORIZONTAL_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformOp()),   VERTICAL_FILTER_NAME));
