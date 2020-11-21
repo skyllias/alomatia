@@ -5,6 +5,7 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.ImageConsumer;
 import java.awt.image.ImageFilter;
 import java.awt.image.Kernel;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,9 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
   /** Sets up a filter that will apply the kernels from the factory to images.
    *  A filter is set up for each kernel factory separately and they are
    *  composed in the same order.
-   *  All kernels must have the same size. */
+   *  Kernels can have different sizes, but if they don't the edge is maximized
+   *  and convolutions will be less efficient as some will be applied to
+   *  fragments of image that will be fully cropped. */
 
   public EdgeConvolvingComposedFilter(KernelDataFactory... kernelFactories)
   {
@@ -65,23 +68,23 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
   private ComposedFilter composeFilters(List<Kernel> kernels)
   {
-    Kernel representativeKernel = kernels.get(0);
+    Kernel maximalKernel = getMaximalKernel(kernels);
 
     List<ImageFilter> filtersToCompose = new LinkedList<>();
 
-    ImageFilter expandingFilter = new SingleFrameBufferedImageFilter(new KernelExpandingBufferedImageOp(representativeKernel));
+    ImageFilter expandingFilter = new SingleFrameBufferedImageFilter(new KernelExpandingBufferedImageOp(maximalKernel));
     filtersToCompose.add(expandingFilter);
 
     for (Kernel kernel : kernels)
     {
-      ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);    // EDGE_NO_OP has to be used to prevent a one-pixel black stripe if an even size is used for the kernel width or height
+      ConvolveOp convolveOp        = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);    // EDGE_NO_OP has to be used to prevent a one-pixel black stripe if an even size is used for the kernel width or height
       ImageFilter convolvingFilter = new SingleFrameBufferedImageFilter(convolveOp);
       filtersToCompose.add(convolvingFilter);
     }
 
     ImageFilter alphalessFitler = RgbFilterFactory.forVoid();
     filtersToCompose.add(alphalessFitler);
-    ImageFilter croppingFilter = new SingleFrameBufferedImageFilter(new KernelCroppingBufferedImageOp(representativeKernel));
+    ImageFilter croppingFilter = new SingleFrameBufferedImageFilter(new KernelCroppingBufferedImageOp(maximalKernel));
     filtersToCompose.add(croppingFilter);
 
     return new ComposedFilter(filtersToCompose.toArray(new ImageFilter[0]));
@@ -106,6 +109,30 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
       for (int j = 0; j < width; j++) linearData[i * width + j] = matrixData[i][j];
     }
     return new Kernel(width, height, linearData);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns a Kernel instance whose width is the maximum width from kernels,
+   * whose height is the maximum height of kernels, and wose data is all zeros.
+   * This should only be used as a wrapper of some dimensions. */
+
+  private Kernel getMaximalKernel(Collection<Kernel> kernels)
+  {
+    int maxWidth  = 0;
+    int maxHeight = 0;
+
+    for (Kernel currentKernel : kernels)
+    {
+      int currentWidth = currentKernel.getWidth();
+      if (currentWidth > maxWidth) maxWidth = currentWidth;
+
+      int currentHeight = currentKernel.getHeight();
+      if (currentHeight > maxHeight) maxHeight = currentHeight;
+    }
+
+    int totalSize = maxWidth * maxHeight;
+    return new Kernel(maxWidth, maxHeight, new float[totalSize]);
   }
 
 //------------------------------------------------------------------------------
