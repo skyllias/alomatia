@@ -41,6 +41,7 @@ import org.skyllias.alomatia.filter.convolve.LinearBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.NeighbourSharpKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.NucelarWashKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.ParaboloidBlurKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.SeparatedKernelDataFactoryBuilder;
 import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.daltonism.LmsDeuteranopiaFilter;
 import org.skyllias.alomatia.filter.daltonism.LmsProtanopiaFilter;
@@ -407,16 +408,16 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
 
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(5)),                                        BLUR_SMALL_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(15)),                                       BLUR_MED_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(31)),                                       BLUR_BIG_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, Math.PI / 2)),                              MOTION_S90_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, 0, new SquareBlurLineProfile())),           MOTION_L0_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 4, new SquareBlurLineProfile())), MOTION_L45_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())), MOTION_L90_FILTER_NAME));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NeighbourSharpKernelDataFactory()),                                         SHARPEN_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new ParaboloidBlurKernelDataFactory(5)),                                                 BLUR_SMALL_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new SeparatedKernelDataFactoryBuilder().createSeparatedGaussianKernelDataFactories(15)), BLUR_MED_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new SeparatedKernelDataFactoryBuilder().createSeparatedGaussianKernelDataFactories(31)), BLUR_BIG_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                                 MOTION_S0_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                                      MOTION_S45_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, Math.PI / 2)),                                       MOTION_S90_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, 0, new SquareBlurLineProfile())),                    MOTION_L0_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 4, new SquareBlurLineProfile())),          MOTION_L45_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())),          MOTION_L90_FILTER_NAME));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NeighbourSharpKernelDataFactory()),                                                  SHARPEN_FILTER_NAME));
 
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                 EDGEDETECT_FILTER_NAME));
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f),             THICKEDGES_FILTER_NAME));
