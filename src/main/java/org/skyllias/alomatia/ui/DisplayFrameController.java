@@ -14,9 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,6 +26,7 @@ import javax.swing.SwingUtilities;
 
 import org.skyllias.alomatia.display.FilterableDisplay;
 import org.skyllias.alomatia.filter.FilterFactory;
+import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.LogoProducer;
@@ -55,14 +54,16 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   private static final String TITLE_PATTERN = "display.window.title.filtered";
   private static final String PANEL_TOOLTIP = "display.panel.tooltip";
 
-  private LabelLocalizer labelLocalizer;
+  private final LabelLocalizer labelLocalizer;
 
-  private DisplayPanelController displayPanel;
+  private final DisplayPanelController displayPanel;
 
   private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
   private FilterSelector filterSelector;                                        // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
 
-  private FrameAdaptor frameAdaptor;                                            // the Swing component with the frame
+  private final FrameAdaptor frameAdaptor;                                      // the Swing component with the frame
+
+  private final FilteredImageGenerator filteredImageGenerator;
 
   private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   private ImageSaver imageSaver;
@@ -75,12 +76,13 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   public DisplayFrameController(LabelLocalizer localizer, FrameAdaptor adaptor,
                                 DisplayPanelController panel, FilterFactory filterFactory,
-                                ImageSaver saver)
+                                FilteredImageGenerator filteredImageGenerator, ImageSaver saver)
   {
-    labelLocalizer = localizer;
-    displayPanel   = panel;
-    frameAdaptor   = adaptor;
-    imageSaver     = saver;
+    labelLocalizer              = localizer;
+    displayPanel                = panel;
+    frameAdaptor                = adaptor;
+    this.filteredImageGenerator = filteredImageGenerator;
+    imageSaver                  = saver;
 
     frameAdaptor.setTitle(labelLocalizer.getString(DEFAULT_TITLE));
     frameAdaptor.setIcon(getDefaultLogo());
@@ -335,11 +337,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   private void applyFilterToIcon(ImageFilter filter)
   {
     Image logo = getDefaultLogo();
-    if (filter != null)
-    {
-      ImageProducer producer = new FilteredImageSource(logo.getSource(), filter);
-      logo                   = Toolkit.getDefaultToolkit().createImage(producer);
-    }
+    if (filter != null) logo = filteredImageGenerator.generate(logo, filter);
+
     frameAdaptor.setIcon(logo);
   }
 

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.skyllias.alomatia.filter.FilterFactory;
+import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
@@ -62,10 +63,12 @@ public class DisplayFrameManager
 
   public DisplayFrameController createDisplayFrame(boolean applySequentialFilter)
   {
-    DisplayPanelController displayPanel = new DisplayPanelController();
+    FilteredImageGenerator filteredImageGenerator = new FilteredImageGenerator();
+
+    DisplayPanelController displayPanel = new DisplayPanelController(filteredImageGenerator);
     FrameAdaptor frameAdaptor           = adaptorFactory.getNewFrame(displayPanel.getComponent());
     DisplayFrameController frame        = new DisplayFrameController(localizer, frameAdaptor, displayPanel,
-                                                                     filterFactory, imageSaver);
+                                                                     filterFactory, filteredImageGenerator, imageSaver);
     frame.addListener(new DisplayFrameCloseListener());
 
     if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());

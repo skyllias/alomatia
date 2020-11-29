@@ -7,9 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -20,6 +18,7 @@ import javax.swing.JScrollPane;
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.display.DisplayFitPolicy;
 import org.skyllias.alomatia.display.ResizableDisplay;
+import org.skyllias.alomatia.filter.FilteredImageGenerator;
 
 /** Provider of a panel where images are drawn after manipulation, along with
  *  the associated logic.
@@ -33,6 +32,8 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 {
   private static final int UNAVAILABLE_SIZE = -1;                               // value returned by Image.getWidth(ImageObserver) and getHeight() when they are still unavailable
   private static final int SCROLL_INCREMENT = 16;
+
+  private final FilteredImageGenerator filteredImageGenerator;
 
   private ImageFilter filter;
   private Image originalImage;
@@ -50,8 +51,10 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
   /** Creates a new instance with double buffering enabled to reduce flickering. */
 
-  public DisplayPanelController()
+  public DisplayPanelController(FilteredImageGenerator filteredImageGenerator)
   {
+    this.filteredImageGenerator = filteredImageGenerator;
+
     component = new JScrollPane();
     component.setDoubleBuffered(true);
     component.setViewportView(imagePanel);
@@ -254,8 +257,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
       filteredImage = originalImage;
       if (filter != null)
       {
-        ImageProducer producer = new FilteredImageSource(originalImage.getSource(), filter);    // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
-        filteredImage          = component.createImage(producer);
+        filteredImage = filteredImageGenerator.generate(originalImage, filter);     // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
       }
 
       filteredImage.getWidth(null);                                             // what really takes time in slow filters and big images is not the filtering lines above, because the image is not really generated until one method like getWidth() is called
