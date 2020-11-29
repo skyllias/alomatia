@@ -3,6 +3,7 @@ package org.skyllias.alomatia.filter;
 
 import java.awt.Color;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformOp;
@@ -605,7 +606,7 @@ public class FixedFilterFactory implements FilterFactory
   @Override
   public Collection<NamedFilter> getAllAvailableFilters()
   {
-    return filters;
+    return Collections.unmodifiableCollection(filters);
   }
 
 //------------------------------------------------------------------------------
