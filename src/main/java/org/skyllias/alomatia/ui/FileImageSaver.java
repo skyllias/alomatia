@@ -1,23 +1,20 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.lang.StringUtils;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.save.FileSaver;
 
 /** {@link ImageSaver} that stores images in files.
  *  The format is initially fixed to PNG.
@@ -33,7 +30,8 @@ public class FileImageSaver implements ImageSaver
   private static final String ERROR_TITLE_LABEL = "save.error.title";
   private static final String ERROR_DESCR_LABEL = "save.error.description";
 
-  private LabelLocalizer labelLocalizer;
+  private final LabelLocalizer labelLocalizer;
+  private final FileSaver fileSaver;
 
   private File destinationDir   = new File(System.getProperty(USER_HOME_PROP));
   private boolean promptForFile = true;
@@ -41,7 +39,11 @@ public class FileImageSaver implements ImageSaver
 
 //==============================================================================
 
-  public FileImageSaver(LabelLocalizer localizer) {labelLocalizer = localizer;}
+  public FileImageSaver(LabelLocalizer localizer, FileSaver fileSaver)
+  {
+    this.labelLocalizer = localizer;
+    this.fileSaver      = fileSaver;
+  }
 
 //==============================================================================
 
@@ -52,7 +54,7 @@ public class FileImageSaver implements ImageSaver
 //------------------------------------------------------------------------------
 
   /** Modifies the behaviour when interactive saves are requested. If true,
-   *  a file chooser will apeear so that the user chooses where to save the
+   *  a file chooser will appear so that the user chooses where to save the
    *  image; if false, a file will be created automatically. */
 
   public void setPrompt(boolean prompt) {promptForFile = prompt;}
@@ -68,11 +70,7 @@ public class FileImageSaver implements ImageSaver
     File destinationFile = getDestinationFile(nameHint, silently);
     if (destinationFile != null)
     {
-      try
-      {
-        RenderedImage renderedImage = getRenderedImage(image);
-        ImageIO.write(renderedImage, IMAGE_FORMAT, destinationFile);
-      }
+      try {fileSaver.save(image, destinationFile);}
       catch (Exception e)                                                       // unfortunately, the IOException hierarchy does not allow for surefire distinction of causes, so a generic message has to be used
       {
         JOptionPane.showMessageDialog(null, labelLocalizer.getString(ERROR_DESCR_LABEL),
@@ -140,23 +138,6 @@ public class FileImageSaver implements ImageSaver
       return new File(selectedFile.getParentFile(), fileName + extension);
     }
     else return null;
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Returns a RenderedImage with the contents of image. */
-
-  private RenderedImage getRenderedImage(Image image)
-  {
-    if (image instanceof RenderedImage) return (RenderedImage) image;           // filtered images will most likely be already BufferedImages
-
-    BufferedImage bufferedImage = new BufferedImage(image.getWidth(null),
-                                                    image.getHeight(null),
-                                                    BufferedImage.TYPE_INT_ARGB);
-    Graphics2D graphics         = bufferedImage.createGraphics();
-    graphics.drawImage(image, 0, 0, null);
-    graphics.dispose();
-    return bufferedImage;
   }
 
 //------------------------------------------------------------------------------
