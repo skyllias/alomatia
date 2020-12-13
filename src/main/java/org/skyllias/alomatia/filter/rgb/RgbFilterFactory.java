@@ -91,4 +91,8 @@ public class RgbFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forMaxOnly(int threshold) {return new ColourFilter(new MaxOnlyConverter(threshold));}
+
+//------------------------------------------------------------------------------
+
 }

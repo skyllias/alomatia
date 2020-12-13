@@ -4,7 +4,6 @@ package org.skyllias.alomatia.filter.convolve;
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
-import org.skyllias.alomatia.filter.compose.EdgeConvolvingComposedFilter;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** Factory of some filters based on edge detection. */

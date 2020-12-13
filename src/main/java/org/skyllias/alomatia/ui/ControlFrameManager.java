@@ -21,6 +21,7 @@ import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.save.FileSaver;
 import org.skyllias.alomatia.source.DropSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
@@ -72,7 +73,7 @@ public class ControlFrameManager
       controlsWindow = new FrameControlsWindow(mainFrame);
     }
 
-    FileImageSaver imageSaver        = new FileImageSaver(labelLocalizer);
+    FileImageSaver imageSaver        = new FileImageSaver(labelLocalizer, new FileSaver());
     DisplayFrameManager frameManager = new DisplayFrameManager(labelLocalizer,
                                                                filterFactory,
                                                                adaptorFactory,
