@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.compose;
+package org.skyllias.alomatia.filter.convolve;
 
 import java.awt.image.ConvolveOp;
 import java.awt.image.ImageConsumer;
@@ -12,7 +12,7 @@ import java.util.List;
 import org.skyllias.alomatia.filter.buffered.KernelCroppingBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.KernelExpandingBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
-import org.skyllias.alomatia.filter.convolve.KernelDataFactory;
+import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** {@link ImageFilter} that delegates the image modifications to three composed
