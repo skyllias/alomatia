@@ -25,6 +25,7 @@ import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
 import org.skyllias.alomatia.filter.buffered.map.RadialMap;
+import org.skyllias.alomatia.filter.buffered.patch.AxeColoursFilterFactory;
 import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
 import org.skyllias.alomatia.filter.buffered.simple.PixelizerOp;
 import org.skyllias.alomatia.filter.buffered.surround.LightCalculator;
@@ -34,9 +35,8 @@ import org.skyllias.alomatia.filter.buffered.surround.ProbabilisticBlackOrWhiteS
 import org.skyllias.alomatia.filter.buffered.surround.StrictBlackOrWhiteSelector;
 import org.skyllias.alomatia.filter.buffered.surround.SurroundingColoursOp;
 import org.skyllias.alomatia.filter.buffered.vignette.VignetteFilterFactory;
-import org.skyllias.alomatia.filter.compose.AxeColoursFilter;
-import org.skyllias.alomatia.filter.compose.EdgeConvolvingComposedFilter;
-import org.skyllias.alomatia.filter.compose.EmbossFilter;
+import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
+import org.skyllias.alomatia.filter.convolve.EdgeConvolvingComposedFilter;
 import org.skyllias.alomatia.filter.convolve.EdgeDetectorFilterFactory;
 import org.skyllias.alomatia.filter.convolve.LinearBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.NeighbourSharpKernelDataFactory;
@@ -44,6 +44,7 @@ import org.skyllias.alomatia.filter.convolve.NucelarWashKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.ParaboloidBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.SeparatedKernelDataFactoryBuilder;
 import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
+import org.skyllias.alomatia.filter.convolve.emboss.EmbossFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.LmsDeuteranopiaFilter;
 import org.skyllias.alomatia.filter.daltonism.LmsProtanopiaFilter;
 import org.skyllias.alomatia.filter.daltonism.LmsTritanopiaFilter;
@@ -346,10 +347,10 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_NAME));
     filters.add(new NamedFilter(VignetteFilterFactory.forEdges(), VIGNETTE_E_FILTER_NAME));
 
-    filters.add(new NamedFilter(new AxeColoursFilter(4, 4, new DiagonalMap()), AXE_S_S_FILTER_NAME));
-    filters.add(new NamedFilter(new AxeColoursFilter(4, 6, new CrossedMap()),  AXE_S_L_FILTER_NAME));
-    filters.add(new NamedFilter(new AxeColoursFilter(7, 4, new AngularMap()),  AXE_L_S_FILTER_NAME));
-    filters.add(new NamedFilter(new AxeColoursFilter(7, 6, new RadialMap()),   AXE_L_L_FILTER_NAME));
+    filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 4, new DiagonalMap()), AXE_S_S_FILTER_NAME));
+    filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_NAME));
+    filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 4, new AngularMap()),  AXE_L_S_FILTER_NAME));
+    filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 6, new RadialMap()),   AXE_L_L_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forHueShift(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forHueShift(-0.05f), DEC_HUE_L_FILTER_NAME));
@@ -426,12 +427,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2),                THICKEDGEL_FILTER_NAME));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()), NUCELAR_FILTER_NAME));
 
-    filters.add(new NamedFilter(EmbossFilter.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
-    filters.add(new NamedFilter(EmbossFilter.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
+    filters.add(new NamedFilter(EmbossFilterFactory.forLayeredEmboss(), LAYEMBOSS_FILTER_NAME));
+    filters.add(new NamedFilter(EmbossFilterFactory.forSmoothEmboss(),  SMTHEMBOSS_FILTER_NAME));
 
     filters.add(new NamedFilter(RgbFilterFactory.forNegative(), NEGATIVE_FILTER_NAME));
 
-    filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(), EQUAL_GREY_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(),          EQUAL_GREY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forHumanSensitiveGreyScale(), HUMAN_GREY_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(0, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_PIXEL_FILTER_NAME));
@@ -467,13 +468,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forCyanEqualizer(),    CYAN_EQ_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, false))), MINMAX_BLK_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))), MINMAX_RED_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, false))), MINMAX_GRN_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, true))), MINMAX_BLU_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, true))), MINMAX_CYA_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, true))), MINMAX_MGT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, false))), MINMAX_YLW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, true))), MINMAX_WIT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))),  MINMAX_RED_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, false))),  MINMAX_GRN_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, true))),  MINMAX_BLU_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, true))),   MINMAX_CYA_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, true))),   MINMAX_MGT_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, false))),   MINMAX_YLW_FILTER_NAME));
+    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, true))),    MINMAX_WIT_FILTER_NAME));
 
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));

@@ -5,7 +5,6 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
-import org.skyllias.alomatia.filter.compose.EdgeConvolvingComposedFilter;
 
 /** Filter that applies a {@link Kernel}-based convolution.
  *  Mind that convolutions can be very slow with large kernel data.
