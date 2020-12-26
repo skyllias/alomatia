@@ -2,15 +2,12 @@
 package org.skyllias.alomatia.filter.buffered.hdr.naive;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageFilter;
-import java.awt.image.RenderedImage;
 
-import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 
 /** {@link BufferedImageOp} that applies some blurring filter and then modifies
  *  each of the channels of all pixels by multiplying the normalized values of
@@ -22,12 +19,12 @@ import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
 public class NaiveHdrOp extends BasicBufferedImageOp
 {
   private final ImageFilter blurringFilter;
-  private final FilteredImageGenerator filteredImageGenerator;
+  private final FilteredBufferedImageGenerator filteredImageGenerator;
 
 //==============================================================================
 
   public NaiveHdrOp(ImageFilter blurringFilter,
-                    FilteredImageGenerator filteredImageGenerator)
+                    FilteredBufferedImageGenerator filteredImageGenerator)
   {
     this.blurringFilter         = blurringFilter;
     this.filteredImageGenerator = filteredImageGenerator;
@@ -51,17 +48,7 @@ public class NaiveHdrOp extends BasicBufferedImageOp
 
   private BufferedImage getBlurredImage(BufferedImage image)
   {
-    Image blurredImage = filteredImageGenerator.generate(image, blurringFilter);
-
-    if (blurredImage instanceof RenderedImage) return (BufferedImage) blurredImage;   // perhaps it is already
-
-    BufferedImage bufferedImage = new BufferedImage(blurredImage.getWidth(null),
-                                                    blurredImage.getHeight(null),
-                                                    BufferedImage.TYPE_INT_ARGB);
-    Graphics2D graphics         = bufferedImage.createGraphics();
-    graphics.drawImage(blurredImage, 0, 0, null);
-    graphics.dispose();
-    return bufferedImage;
+    return filteredImageGenerator.generate(image, blurringFilter);
   }
 
 //------------------------------------------------------------------------------
@@ -72,15 +59,15 @@ public class NaiveHdrOp extends BasicBufferedImageOp
   private void setColour(int x, int y, BufferedImage dest, BufferedImage src,
                          BufferedImage blurredImage)
   {
-    Color sourceColor  = new Color(src.getRGB(x, y));
-    Color blurredColor = new Color(blurredImage.getRGB(x, y));
+    Color sourceColour  = new Color(src.getRGB(x, y));
+    Color blurredColour = new Color(blurredImage.getRGB(x, y));
 
-    int red   = getMultipliedValue(sourceColor.getRed(),   blurredColor.getRed());
-    int green = getMultipliedValue(sourceColor.getGreen(), blurredColor.getGreen());
-    int blue  = getMultipliedValue(sourceColor.getBlue(),  blurredColor.getBlue());
+    int red   = getMultipliedValue(sourceColour.getRed(),   blurredColour.getRed());
+    int green = getMultipliedValue(sourceColour.getGreen(), blurredColour.getGreen());
+    int blue  = getMultipliedValue(sourceColour.getBlue(),  blurredColour.getBlue());
 
-    Color destinationColor = new Color(red, green, blue);
-    dest.setRGB(x, y, destinationColor.getRGB());
+    Color destinationColour = new Color(red, green, blue);
+    dest.setRGB(x, y, destinationColour.getRGB());
   }
 
 //------------------------------------------------------------------------------

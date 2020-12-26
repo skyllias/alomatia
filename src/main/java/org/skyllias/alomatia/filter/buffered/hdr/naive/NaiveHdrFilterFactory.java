@@ -4,6 +4,7 @@ package org.skyllias.alomatia.filter.buffered.hdr.naive;
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
+import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
@@ -13,7 +14,7 @@ import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
 
 public class NaiveHdrFilterFactory
 {
-  private static final FilteredImageGenerator filteredImageGenerator = new FilteredImageGenerator();
+  private static final FilteredBufferedImageGenerator filteredImageGenerator = new FilteredBufferedImageGenerator(new FilteredImageGenerator());
 
 //==============================================================================
 
