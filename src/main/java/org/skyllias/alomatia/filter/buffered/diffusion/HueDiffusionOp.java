@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered.hdr.naive;
+package org.skyllias.alomatia.filter.buffered.diffusion;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -9,22 +9,18 @@ import java.awt.image.ImageFilter;
 import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 
-/** {@link BufferedImageOp} that applies some blurring filter and then modifies
- *  each of the channels of all pixels by multiplying the normalized values of
- *  the blurred and the original images.
- *  The real effect probably has more to do with colour contrast than with real
- *  HDR, but anyway it has been copied from:
- *  https://github.com/alhazmy13/ImageFilters/blob/master/library/src/main/jni/HDRFilter.cpp */
+/** {@link BufferedImageOp} that applies some blurring to hues, maintaining the
+ *  original values of brightness and saturation in each pixel. */
 
-public class NaiveHdrOp extends BasicBufferedImageOp
+public class HueDiffusionOp extends BasicBufferedImageOp
 {
   private final ImageFilter blurringFilter;
   private final FilteredBufferedImageGenerator filteredImageGenerator;
 
 //==============================================================================
 
-  public NaiveHdrOp(ImageFilter blurringFilter,
-                    FilteredBufferedImageGenerator filteredImageGenerator)
+  public HueDiffusionOp(ImageFilter blurringFilter,
+                        FilteredBufferedImageGenerator filteredImageGenerator)
   {
     this.blurringFilter         = blurringFilter;
     this.filteredImageGenerator = filteredImageGenerator;
@@ -62,28 +58,25 @@ public class NaiveHdrOp extends BasicBufferedImageOp
     Color sourceColour  = new Color(src.getRGB(x, y));
     Color blurredColour = new Color(blurredImage.getRGB(x, y));
 
-    int red   = getMultipliedValue(sourceColour.getRed(),   blurredColour.getRed());
-    int green = getMultipliedValue(sourceColour.getGreen(), blurredColour.getGreen());
-    int blue  = getMultipliedValue(sourceColour.getBlue(),  blurredColour.getBlue());
+    float[] sourceHsbComponents  = getHsbComponents(sourceColour);
+    float[] blurredHsbComponents = getHsbComponents(blurredColour);
 
-    Color destinationColour = new Color(red, green, blue);
-    dest.setRGB(x, y, destinationColour.getRGB());
+    float hue        = blurredHsbComponents[0];
+    float saturation = sourceHsbComponents[1];
+    float brightness = sourceHsbComponents[2];
+
+    dest.setRGB(x, y, Color.HSBtoRGB(hue, saturation, brightness));
   }
 
 //------------------------------------------------------------------------------
 
-  /* Returns the channel component for a pixel that has sourceValue in the
-   * source image and blurredValue in the blurred image. */
-
-  private int getMultipliedValue(int sourceValue, int blurredValue)
+  private float[] getHsbComponents(Color colour)
   {
-    final float MAX_VALUE      = 0xFF;
-    final float HALF_THRESHOLD = 0.5f;
+    int red   = colour.getRed();
+    int green = colour.getGreen();
+    int blue  = colour.getBlue();
 
-    float smoothedValue = blurredValue / MAX_VALUE;
-
-    if (smoothedValue <= HALF_THRESHOLD) return (int) (2 * smoothedValue * sourceValue);
-    else                                 return (int) (MAX_VALUE - 2 * (1 - smoothedValue) * (MAX_VALUE - sourceValue));
+    return Color.RGBtoHSB(red, green, blue, null);
   }
 
 //------------------------------------------------------------------------------
