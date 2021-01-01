@@ -1,7 +1,6 @@
 
 package org.skyllias.alomatia.test.matchers;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import org.mockito.ArgumentMatcher;
@@ -13,17 +12,16 @@ public class AlomatiaMatchers
 {
 //==============================================================================
 
-  public static ArgumentMatcher<Image> sameImage(final BufferedImage expectedImage)
+  public static ArgumentMatcher<BufferedImage> sameImage(final BufferedImage expectedImage)
   {
-    return new ArgumentMatcher<Image>()
+    return new ArgumentMatcher<BufferedImage>()
     {
       @Override
-      public boolean matches(Image argument)
+      public boolean matches(BufferedImage argument)
       {
         if (argument == null) return false;
-        BufferedImage argumentImage = (BufferedImage) argument;
 
-        return ImageUtils.areEqual(argumentImage, expectedImage);
+        return ImageUtils.areEqual(argument, expectedImage);
       }
     };
   }

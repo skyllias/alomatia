@@ -38,8 +38,12 @@ public class NaiveHdrOp extends BasicBufferedImageOp
     BufferedImage blurredImage = getBlurredImage(src);
 
     for (int x = 0; x < src.getWidth(); x++)
+    {
       for (int y = 0; y < src.getHeight(); y++)
+      {
         setColour(x, y, dest, src, blurredImage);
+      }
+    }
   }
 
 //------------------------------------------------------------------------------

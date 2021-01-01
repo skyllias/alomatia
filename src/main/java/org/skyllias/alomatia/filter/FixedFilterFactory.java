@@ -30,6 +30,7 @@ import org.skyllias.alomatia.filter.buffered.map.RadialMap;
 import org.skyllias.alomatia.filter.buffered.patch.AxeColoursFilterFactory;
 import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
 import org.skyllias.alomatia.filter.buffered.simple.PixelizerOp;
+import org.skyllias.alomatia.filter.buffered.spectrum.SpectrumFilterFactory;
 import org.skyllias.alomatia.filter.buffered.surround.LightCalculator;
 import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
 import org.skyllias.alomatia.filter.buffered.surround.MinMaxChannelCalculator;
@@ -204,6 +205,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String YELLOWDYE_FILTER_NAME     = "filter.dye.yellow.name";
   private static final String CYANDYE_FILTER_NAME       = "filter.dye.cyan.name";
   private static final String MAGENTADYE_FILTER_NAME    = "filter.dye.magenta.name";
+  private static final String DOMINANT_RED_FILTER_NAME  = "filter.spectrum.hue.dominant.red.name";
+  private static final String DOMINANT_YLOW_FILTER_NAME = "filter.spectrum.hue.dominant.yellow.name";
+  private static final String DOMINANT_GREN_FILTER_NAME = "filter.spectrum.hue.dominant.green.name";
+  private static final String DOMINANT_CYAN_FILTER_NAME = "filter.spectrum.hue.dominant.cyan.name";
+  private static final String DOMINANT_BLUE_FILTER_NAME = "filter.spectrum.hue.dominant.blue.name";
+  private static final String DOMINANT_PRPL_FILTER_NAME = "filter.spectrum.hue.dominant.purple.name";
   private static final String HORIZONTAL_FILTER_NAME    = "filter.affine.horizontal.name";
   private static final String VERTICAL_FILTER_NAME      = "filter.affine.vertical.name";
   private static final String ROTATION_FILTER_NAME      = "filter.affine.rotation.name";
@@ -492,6 +499,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
     filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
+
+    filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0),     DOMINANT_RED_FILTER_NAME));
+    filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0.17f), DOMINANT_YLOW_FILTER_NAME));
+    filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0.33f), DOMINANT_GREN_FILTER_NAME));
+    filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0.5f),  DOMINANT_CYAN_FILTER_NAME));
+    filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0.67f), DOMINANT_BLUE_FILTER_NAME));
+    filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0.83f), DOMINANT_PRPL_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7))),                                    INC_RED_BR_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7)), -1)),      DEC_RED_BR_FILTER_NAME));
