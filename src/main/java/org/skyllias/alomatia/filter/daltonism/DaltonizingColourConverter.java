@@ -60,9 +60,8 @@ public class DaltonizingColourConverter implements ColourConverter
   @Override
   public Color convertColour(Color original)
   {
-    ProjectableColour projectableColour = new ProjectableColour(projector.getSpace(), original);
-    projectableColour.project(projector);
-    return projectableColour.getColor();
+    ProjectableColour projectableColour = new ProjectableColour(original);
+    return projectableColour.project(projector);
   }
 
 //------------------------------------------------------------------------------
