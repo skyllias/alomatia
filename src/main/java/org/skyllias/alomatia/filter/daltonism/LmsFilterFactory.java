@@ -9,7 +9,8 @@ import org.skyllias.alomatia.filter.ColourFilter;
 
 public class LmsFilterFactory
 {
-  private static final LmsProjectorFactory lmsProjectorFactory = new LmsProjectorFactory();
+  private static final ProjectableColourFactory projectableColourFactory = new ProjectableColourFactory();
+  private static final LmsProjectorFactory lmsProjectorFactory           = new LmsProjectorFactory();
 
 //==============================================================================
 
@@ -42,7 +43,7 @@ public class LmsFilterFactory
 
   private static ImageFilter forProjector(ColourProjector projector)
   {
-    return new ColourFilter(new DaltonizingColourConverter(projector));
+    return new ColourFilter(new DaltonizingColourConverter(projectableColourFactory, projector));
   }
 
 //------------------------------------------------------------------------------

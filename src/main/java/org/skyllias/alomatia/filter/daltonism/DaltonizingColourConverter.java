@@ -40,6 +40,7 @@ import org.skyllias.alomatia.filter.ColourConverter;
 
 public class DaltonizingColourConverter implements ColourConverter
 {
+  private final ProjectableColourFactory projectableColourFactory;
   private final ColourProjector projector;
 
 //==============================================================================
@@ -47,9 +48,11 @@ public class DaltonizingColourConverter implements ColourConverter
   /** Creates a converter that uses the passed projector to transform to its
    *  colour-space, make the projection and then transform back to RGB. */
 
-  public DaltonizingColourConverter(ColourProjector projector)
+  public DaltonizingColourConverter(ProjectableColourFactory projectableColourFactory,
+                                    ColourProjector projector)
   {
-    this.projector = projector;
+    this.projectableColourFactory = projectableColourFactory;
+    this.projector                = projector;
   }
 
 //==============================================================================
@@ -60,7 +63,7 @@ public class DaltonizingColourConverter implements ColourConverter
   @Override
   public Color convertColour(Color original)
   {
-    ProjectableColour projectableColour = new ProjectableColour(original);
+    ProjectableColour projectableColour = projectableColourFactory.createProjectableColour(original);
     return projectableColour.project(projector);
   }
 

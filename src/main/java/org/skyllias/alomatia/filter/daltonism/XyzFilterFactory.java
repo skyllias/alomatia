@@ -9,7 +9,8 @@ import org.skyllias.alomatia.filter.ColourFilter;
 
 public class XyzFilterFactory
 {
-  private static final XyzProjectorFactory xyzProjectorFactory = new XyzProjectorFactory();
+  private static final ProjectableColourFactory projectableColourFactory = new ProjectableColourFactory();
+  private static final XyzProjectorFactory xyzProjectorFactory           = new XyzProjectorFactory();
 
 //==============================================================================
 
@@ -87,7 +88,7 @@ public class XyzFilterFactory
 
   private static ImageFilter forProjector(ColourProjector projector)
   {
-    return new ColourFilter(new DaltonizingColourConverter(projector));
+    return new ColourFilter(new DaltonizingColourConverter(projectableColourFactory, projector));
   }
 
 //------------------------------------------------------------------------------
