@@ -45,17 +45,8 @@ import org.skyllias.alomatia.filter.convolve.LinearBlurKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.NucelarWashKernelDataFactory;
 import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.convolve.emboss.EmbossFilterFactory;
-import org.skyllias.alomatia.filter.daltonism.LmsDeuteranopiaFilter;
-import org.skyllias.alomatia.filter.daltonism.LmsProtanopiaFilter;
-import org.skyllias.alomatia.filter.daltonism.LmsTritanopiaFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzAchromatomalyFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzAchromatopsiaFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzDeuteranomalyFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzDeuteranopiaFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzProtanomalyFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzProtanopiaFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzTritanomalyFilter;
-import org.skyllias.alomatia.filter.daltonism.XyzTritanopiaFilter;
+import org.skyllias.alomatia.filter.daltonism.LmsFilterFactory;
+import org.skyllias.alomatia.filter.daltonism.XyzFilterFactory;
 import org.skyllias.alomatia.filter.hsb.CosineHueFunction;
 import org.skyllias.alomatia.filter.hsb.FlatStepHueFunction;
 import org.skyllias.alomatia.filter.hsb.HsbFilterFactory;
@@ -327,18 +318,18 @@ public class FixedFilterFactory implements FilterFactory
   {
     filters.add(new NamedFilter(null, NO_FILTER_NAME));
 
-    filters.add(new NamedFilter(new XyzProtanopiaFilter(),    XYZPROPIA_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzProtanomalyFilter(),   XYZPROMALY_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzDeuteranopiaFilter(),  XYZDEUPIA_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzDeuteranomalyFilter(), XYZDEUMALY_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzTritanopiaFilter(),    XYZTRIPIA_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzTritanomalyFilter(),   XYZTRIMALY_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzAchromatopsiaFilter(), XYZACHSIA_FILTER_NAME));
-    filters.add(new NamedFilter(new XyzAchromatomalyFilter(), XYZACHMALY_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forProtanopia(),    XYZPROPIA_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forProtanomaly(),   XYZPROMALY_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forDeuteranopia(),  XYZDEUPIA_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forDeuteranomaly(), XYZDEUMALY_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forTritanopia(),    XYZTRIPIA_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forTritanomaly(),   XYZTRIMALY_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forAchromatopsia(), XYZACHSIA_FILTER_NAME));
+    filters.add(new NamedFilter(XyzFilterFactory.forAchromatomaly(), XYZACHMALY_FILTER_NAME));
 
-    filters.add(new NamedFilter(new LmsProtanopiaFilter(),   LMSPROPIA_FILTER_NAME));
-    filters.add(new NamedFilter(new LmsDeuteranopiaFilter(), LMSDEUPIA_FILTER_NAME));
-    filters.add(new NamedFilter(new LmsTritanopiaFilter(),   LMSTRIPIA_FILTER_NAME));
+    filters.add(new NamedFilter(LmsFilterFactory.forProtanopia(),   LMSPROPIA_FILTER_NAME));
+    filters.add(new NamedFilter(LmsFilterFactory.forDeuteranopia(), LMSDEUPIA_FILTER_NAME));
+    filters.add(new NamedFilter(LmsFilterFactory.forTritanopia(),   LMSTRIPIA_FILTER_NAME));
 
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forThogam(),    INST_TOGAM_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forProx(),      INST_PROX_FILTER_NAME));
