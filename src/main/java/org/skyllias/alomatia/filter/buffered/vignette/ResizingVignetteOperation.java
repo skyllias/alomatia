@@ -4,20 +4,19 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
-import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
+import org.skyllias.alomatia.filter.buffered.simple.DyeOperation;
 
-/** {@link BufferedImageOp} that paints a partially opaque, black rectangle in
- *  front of the source image. In opposition to {@link DyeOp}, the transparency
- *  is different in each pixel, with darker edges. The profile of transparency
- *  is defined by a {@link VignetteProfile}.
+/** {@link BufferedImageOperation} that paints a partially opaque, black
+ *  rectangle in front of the source image. In opposition to {@link DyeOperation}, the
+ *  transparency is different in each pixel, with darker edges. The profile of
+ *  transparency is defined by a {@link VignetteProfile}.
  *  The "Resizing" in the name refers to the fact that one single, squared
  *  profile is obtained only once, and then it is reshaped to match the
  *  destination image size. This means that the consuming operation of
@@ -25,16 +24,17 @@ import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
  *  darkening the same areas. Other VignetteOps may deal with profiles in a
  *  different way. */
 
-public class ResizingVignetteOp extends BasicBufferedImageOp
+public class ResizingVignetteOperation implements BufferedImageOperation
 {
   private static ThreadFactory lowerPriorityThreadFactory;
-  private ExecutorService executorService = Executors.newSingleThreadExecutor(lowerPriorityThreadFactory);
-  private Future<BufferedImage> futureVignetteImage;                            // the precalculated, semi-transparent image generated from a profile and a colour that is drawn in front of the source image, needs a lot of processing but usually is not immediately required
+  private final ExecutorService executorService = Executors.newSingleThreadExecutor(lowerPriorityThreadFactory);
+
+  private final Future<BufferedImage> futureVignetteImage;                      // the precalculated, semi-transparent image generated from a profile and a colour that is drawn in front of the source image; needs a lot of processing but usually is not immediately required
 
 //==============================================================================
 
   /* threadFactory could be non-static and initialized in the constructor, or
-   * even inline, but this way it is cleaner and less forgetable.
+   * even inline, but this way it is cleaner and less forgettable.
    * It uses the instances from the default Executors.defaultThreadFactory() but
    * lowering their priority. */
 
@@ -56,27 +56,29 @@ public class ResizingVignetteOp extends BasicBufferedImageOp
 
   /** Creates a BufferedImageOp that applies a black vignetteProfile. */
 
-  public ResizingVignetteOp(VignetteProfile vignetteProfile) {this(vignetteProfile, Color.BLACK);}
+  public ResizingVignetteOperation(VignetteProfile vignetteProfile) {this(vignetteProfile, Color.BLACK);}
 
 //------------------------------------------------------------------------------
 
   /** Creates a BufferedImageOp that applies vignetteProfile with vignetteColour. */
 
-  public ResizingVignetteOp(VignetteProfile vignetteProfile, Color vignetteColour)
+  public ResizingVignetteOperation(VignetteProfile vignetteProfile, Color vignetteColour)
   {
     futureVignetteImage = getFutureVignette(vignetteProfile, vignetteColour);
   }
 
 //==============================================================================
 
-  /** Copies src and draws the precalculated vignette image when available. */
+  /** Copies the input image and draws the precalculated vignette image on it
+   *  when available. */
 
   @Override
-  public void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    Graphics2D graphics = dest.createGraphics();
-    graphics.drawImage(src, 0, 0, null);
-    try {graphics.drawImage(futureVignetteImage.get(), 0, 0, dest.getWidth(), dest.getHeight(), null);}
+    Graphics2D graphics = outputImage.createGraphics();
+    graphics.drawImage(inputImage, 0, 0, null);
+    try {graphics.drawImage(futureVignetteImage.get(), 0, 0,
+                            outputImage.getWidth(), outputImage.getHeight(), null);}
     catch (Exception e) {}                                                      // TODO log exceptions
 
     graphics.dispose();

@@ -6,7 +6,7 @@ import java.util.Collection;
 
 /** Calculator of the average of each separate channel of a collection of colours.
  *
- *  Not really meant to be used by {@link SurroundingColoursOp} because the
+ *  Not really meant to be used by {@link SurroundingColoursOperation} because the
  *  result would be the same as a ConvolveOp with equally weighed pixels in the
  *  kernel, and a convolution is much faster than what SurroundingColoursOp does.
  *  Anyway, available as a function voer some colours. */

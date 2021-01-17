@@ -4,30 +4,29 @@ package org.skyllias.alomatia.filter.buffered.simple;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 
-/** {@link BufferedImageOp} that paints a semitransparent rectangle of certain
- *  colour in front of the source image. */
+/** {@link BufferedImageOperation} that paints a semitransparent rectangle of
+ *  certain colour in front of the source image. */
 
-public class DyeOp extends BasicBufferedImageOp
+public class DyeOperation implements BufferedImageOperation
 {
-  private Color dye;
+  private final Color dye;
 
 //==============================================================================
 
   /** Creates a filter that will paint the source image with the passed colour,
    *  which should already have an alpha channel. */
 
-  public DyeOp(Color semitransparentColor) {dye = semitransparentColor;}
+  public DyeOperation(Color semitransparentColor) {dye = semitransparentColor;}
 
 //------------------------------------------------------------------------------
 
   /** Creates a filter that will paint the source image with the passed colour,
    *  overriding its alpha channel with the passed value. */
 
-  public DyeOp(Color color, float alpha)
+  public DyeOperation(Color color, float alpha)
   {
     final int MAX_INT = 255;
 
@@ -40,12 +39,12 @@ public class DyeOp extends BasicBufferedImageOp
   /** Copies src and fills a rectangle of the inner dye all over it. */
 
   @Override
-  public void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    Graphics2D graphics = dest.createGraphics();
-    graphics.drawImage(src, 0, 0, null);
+    Graphics2D graphics = outputImage.createGraphics();
+    graphics.drawImage(inputImage, 0, 0, null);
     graphics.setColor(dye);
-    graphics.fillRect(0, 0, dest.getWidth(), dest.getHeight());
+    graphics.fillRect(0, 0, outputImage.getWidth(), outputImage.getHeight());
 
     graphics.dispose();
   }

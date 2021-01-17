@@ -33,19 +33,21 @@ public class DominantHueShiftOpTest
   public void shouldShiftHueToThePositive()
   {
     when(mostRelevantHueCalculator.getMostRelevantHue(argThat(sameImage(buildInputImage()))))
-    .thenReturn(0f);
+      .thenReturn(0f);
 
     ImageFilter positiveHueShiftFilter = mock(ImageFilter.class);
     when(hueShiftFilterFactory.getHueShiftFilter(0.25f)).thenReturn(positiveHueShiftFilter);
 
-    when(filteredBufferedImageGenerator.generate(argThat(sameImage(buildInputImage())), eq(positiveHueShiftFilter)))
-    .thenReturn(buildOutputImage());
+    when(filteredBufferedImageGenerator.generate(argThat(sameImage(buildInputImage())),
+                                                 eq(positiveHueShiftFilter)))
+      .thenReturn(buildOutputImage());
 
 
-    DominantHueShiftOp imageOp = new DominantHueShiftOp(mostRelevantHueCalculator,
-                                                        filteredBufferedImageGenerator,
-                                                        hueShiftFilterFactory, 0.25f);
-    BufferedImage result = imageOp.filter(buildInputImage(), null);
+    DominantHueShiftOperation imageOperation = new DominantHueShiftOperation(mostRelevantHueCalculator,
+                                                                             filteredBufferedImageGenerator,
+                                                                             hueShiftFilterFactory, 0.25f);
+    BufferedImage result = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+    imageOperation.filter(buildInputImage(), result);
 
     assertTrue(ImageUtils.areEqual(result, buildOutputImage()));
   }
@@ -59,14 +61,16 @@ public class DominantHueShiftOpTest
     ImageFilter positiveHueShiftFilter = mock(ImageFilter.class);
     when(hueShiftFilterFactory.getHueShiftFilter(-0.25f)).thenReturn(positiveHueShiftFilter);
 
-    when(filteredBufferedImageGenerator.generate(argThat(sameImage(buildInputImage())), eq(positiveHueShiftFilter)))
+    when(filteredBufferedImageGenerator.generate(argThat(sameImage(buildInputImage())),
+                                                 eq(positiveHueShiftFilter)))
       .thenReturn(buildOutputImage());
 
 
-    DominantHueShiftOp imageOp = new DominantHueShiftOp(mostRelevantHueCalculator,
-                                                        filteredBufferedImageGenerator,
-                                                        hueShiftFilterFactory, 0.5f);
-    BufferedImage result = imageOp.filter(buildInputImage(), null);
+    DominantHueShiftOperation imageOperation = new DominantHueShiftOperation(mostRelevantHueCalculator,
+                                                                             filteredBufferedImageGenerator,
+                                                                             hueShiftFilterFactory, 0.5f);
+    BufferedImage result = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+    imageOperation.filter(buildInputImage(), result);
 
     assertTrue(ImageUtils.areEqual(result, buildOutputImage()));
   }

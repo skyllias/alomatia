@@ -6,37 +6,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import org.skyllias.alomatia.filter.affine.HorizontalFlipTransformOp;
-import org.skyllias.alomatia.filter.affine.RotationTransformOp;
-import org.skyllias.alomatia.filter.affine.VerticalFlipTransformOp;
-import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.affine.AffineFilterFactory;
 import org.skyllias.alomatia.filter.buffered.diffusion.DiffusionFilterFactory;
-import org.skyllias.alomatia.filter.buffered.distortion.BilinearInterpolator;
-import org.skyllias.alomatia.filter.buffered.distortion.DistortingBufferedImageOp;
-import org.skyllias.alomatia.filter.buffered.distortion.DistortionChain;
-import org.skyllias.alomatia.filter.buffered.distortion.radial.MagnifierRadialDistortionProfile;
-import org.skyllias.alomatia.filter.buffered.distortion.radial.RadialDistortion;
-import org.skyllias.alomatia.filter.buffered.distortion.radial.ReductorRadialDistortionProfile;
-import org.skyllias.alomatia.filter.buffered.distortion.rotational.ConstantRotationalDistortionProfile;
-import org.skyllias.alomatia.filter.buffered.distortion.rotational.IncreasingRotationalDistortionProfile;
-import org.skyllias.alomatia.filter.buffered.distortion.rotational.RotationalDistortion;
-import org.skyllias.alomatia.filter.buffered.distortion.rotational.WhirlpoolRotationalDistortionProfile;
-import org.skyllias.alomatia.filter.buffered.distortion.wave.IsotropicWaveDistortion;
+import org.skyllias.alomatia.filter.buffered.distortion.DistortingFilterFactory;
 import org.skyllias.alomatia.filter.buffered.hdr.naive.NaiveHdrFilterFactory;
 import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
 import org.skyllias.alomatia.filter.buffered.map.RadialMap;
 import org.skyllias.alomatia.filter.buffered.patch.AxeColoursFilterFactory;
-import org.skyllias.alomatia.filter.buffered.simple.DyeOp;
-import org.skyllias.alomatia.filter.buffered.simple.PixelizerOp;
+import org.skyllias.alomatia.filter.buffered.simple.DyeFilterFactory;
+import org.skyllias.alomatia.filter.buffered.simple.PixelizerFilterFactory;
 import org.skyllias.alomatia.filter.buffered.spectrum.SpectrumFilterFactory;
-import org.skyllias.alomatia.filter.buffered.surround.LightCalculator;
-import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
-import org.skyllias.alomatia.filter.buffered.surround.MinMaxChannelCalculator;
-import org.skyllias.alomatia.filter.buffered.surround.ProbabilisticBlackOrWhiteSelector;
-import org.skyllias.alomatia.filter.buffered.surround.StrictBlackOrWhiteSelector;
-import org.skyllias.alomatia.filter.buffered.surround.SurroundingColoursOp;
+import org.skyllias.alomatia.filter.buffered.surround.SurroundingFilterFactory;
 import org.skyllias.alomatia.filter.buffered.vignette.VignetteFilterFactory;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
 import org.skyllias.alomatia.filter.convolve.EdgeConvolvingComposedFilter;
@@ -410,8 +392,8 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(NaiveHdrFilterFactory.forSmallBlur(3),  NAIVE_HDR_FILTER_NAME));
     filters.add(new NamedFilter(NaiveHdrFilterFactory.forSmallBlur(15), NAIVE_HDR_B_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MedianChannelCalculator())), MEDIAN_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(5, new MedianChannelCalculator())), MEDIAN_M_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMedian(1), MEDIAN_XS_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMedian(5), MEDIAN_M_FILTER_NAME));
 
     filters.add(new NamedFilter(BlurFilterFactory.forSharpening(),  SHARPEN_FILTER_NAME));
     filters.add(new NamedFilter(BlurFilterFactory.forParaboloid(5), BLUR_SMALL_FILTER_NAME));
@@ -441,10 +423,10 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(DiffusionFilterFactory.forHueDiffusion(31), HUE_DIFFUSION_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(0, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_PIXEL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(2, new LightCalculator(new StrictBlackOrWhiteSelector()))),        BNW_BLOT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()))), BNW_SCATT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(3, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()))), BNW_SNOW_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(0),        BNW_PIXEL_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2),        BNW_BLOT_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(1), BNW_SCATT_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(3), BNW_SNOW_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(255, 128, 0)), ORANGEPHIL_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(43, 255, 0)),  GREENPHIL_FILTER_NAME));
@@ -473,23 +455,23 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forMagentaEqualizer(), MAGENTA_EQ_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forCyanEqualizer(),    CYAN_EQ_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, false))), MINMAX_BLK_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, false))),  MINMAX_RED_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, false))),  MINMAX_GRN_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, false, true))),  MINMAX_BLU_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(false, true, true))),   MINMAX_CYA_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, false, true))),   MINMAX_MGT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, false))),   MINMAX_YLW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(1, new MinMaxChannelCalculator(true, true, true))),    MINMAX_WIT_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, false, false, false), MINMAX_BLK_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, true, false, false),  MINMAX_RED_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, false, true, false),  MINMAX_GRN_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, false, false, true),  MINMAX_BLU_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, false, true, true),   MINMAX_CYA_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, true, false, true),   MINMAX_MGT_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, true, true, false),   MINMAX_YLW_FILTER_NAME));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forMinMaxChannel(1, true, true, true),    MINMAX_WIT_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.WHITE, 0.2f)),   WHITEDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLACK, 0.2f)),   BLACKDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.RED, 0.2f)),     REDDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.GREEN, 0.2f)),   GREENDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.BLUE, 0.2f)),    BLUEDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.YELLOW, 0.2f)),  YELLOWDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.CYAN, 0.2f)),    CYANDYE_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DyeOp(Color.MAGENTA, 0.2f)), MAGENTADYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.WHITE),   WHITEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.BLACK),   BLACKDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.RED),     REDDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.GREEN),   GREENDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.BLUE),    BLUEDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.YELLOW),  YELLOWDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.CYAN),    CYANDYE_FILTER_NAME));
+    filters.add(new NamedFilter(DyeFilterFactory.forDefaultAlpha(Color.MAGENTA), MAGENTADYE_FILTER_NAME));
 
     filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0),     DOMINANT_RED_FILTER_NAME));
     filters.add(new NamedFilter(SpectrumFilterFactory.forDominantHue(0.17f), DOMINANT_YLOW_FILTER_NAME));
@@ -524,64 +506,59 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.5f, 0.7f)), HIGHSBLUE_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.7f, 0.9f)), HIGHSPURPL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.25f, 4f), true), new BilinearInterpolator())), MAGNIFY_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.25f, 6f), true), new BilinearInterpolator())), MAGNIFY_S_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.75f, 2f), true), new BilinearInterpolator())), MAGNIFY_M_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.75f, 4f), true), new BilinearInterpolator())), MAGNIFY_L_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new MagnifierRadialDistortionProfile(0.75f, 6f), true), new BilinearInterpolator())), MAGNIFY_XL_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.25f, 4f), MAGNIFY_XS_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.25f, 6f), MAGNIFY_S_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.75f, 2f), MAGNIFY_M_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.75f, 4f), MAGNIFY_L_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.75f, 6f), MAGNIFY_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(0.5f, 6), true), new BilinearInterpolator())),  REDUCE_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(0.5f, 6), false), new BilinearInterpolator())), REDUCE_S_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(1, 4), true), new BilinearInterpolator())),     REDUCE_M_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(2, 6), true), new BilinearInterpolator())),     REDUCE_L_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RadialDistortion(new ReductorRadialDistortionProfile(4, 6), false), new BilinearInterpolator())),    REDUCE_XL_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forReductor(0.5f, 6, true),  REDUCE_XS_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forReductor(0.5f, 6, false), REDUCE_S_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forReductor(1, 4, true),     REDUCE_M_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forReductor(2, 6, true),     REDUCE_L_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forReductor(4, 6, false),    REDUCE_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 500, 30), new BilinearInterpolator())), WAVE_HLST_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 500, 60), new BilinearInterpolator())), WAVE_HLSW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 300, 20), new BilinearInterpolator())), WAVE_HLFT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 0, 300, 35), new BilinearInterpolator())), WAVE_HLFW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 750, 20), new BilinearInterpolator())), WAVE_HPST_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 750, 60), new BilinearInterpolator())), WAVE_HPSW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 300, 10), new BilinearInterpolator())), WAVE_HPFT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0, 1.5708f, 300, 35), new BilinearInterpolator())), WAVE_HPFW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 500, 30), new BilinearInterpolator())), WAVE_VLST_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 500, 60), new BilinearInterpolator())), WAVE_VLSW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 300, 20), new BilinearInterpolator())), WAVE_VLFT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 0, 300, 35), new BilinearInterpolator())), WAVE_VLFW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 750, 20), new BilinearInterpolator())), WAVE_VPST_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 750, 60), new BilinearInterpolator())), WAVE_VPSW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 300, 10), new BilinearInterpolator())), WAVE_VPFT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(1.5708f, 1.5708f, 300, 35), new BilinearInterpolator())), WAVE_VPFW_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(0.785f, 0, 450, 45), new BilinearInterpolator())), WAVE_OBLO_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new IsotropicWaveDistortion(-0.785f, 1.5708f, 500, 60), new BilinearInterpolator())), WAVE_OBPE_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 0, 500, 30),             WAVE_HLST_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 0, 500, 60),             WAVE_HLSW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 0, 300, 20),             WAVE_HLFT_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 0, 300, 35),             WAVE_HLFW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 1.5708f, 750, 20),       WAVE_HPST_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 1.5708f, 750, 60),       WAVE_HPSW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 1.5708f, 300, 10),       WAVE_HPFT_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0, 1.5708f, 300, 35),       WAVE_HPFW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 0, 500, 30),       WAVE_VLST_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 0, 500, 60),       WAVE_VLSW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 0, 300, 20),       WAVE_VLFT_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 0, 300, 35),       WAVE_VLFW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 1.5708f, 750, 20), WAVE_VPST_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 1.5708f, 750, 60), WAVE_VPSW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 1.5708f, 300, 10), WAVE_VPFT_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(1.5708f, 1.5708f, 300, 35), WAVE_VPFW_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(0.785f, 0, 450, 45),        WAVE_OBLO_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIsotropicWave(-0.785f, 1.5708f, 500, 60), WAVE_OBPE_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new ConstantRotationalDistortionProfile(-0.1f), true), new BilinearInterpolator())), TILT_RIGHT_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new ConstantRotationalDistortionProfile(0.1f), true), new BilinearInterpolator())),  TILT_LEFT_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forConstantRotation(-0.1f), TILT_RIGHT_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forConstantRotation(0.1f),  TILT_LEFT_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(0.2f), true), new BilinearInterpolator())),  WHIRL_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(0.4f), true), new BilinearInterpolator())),  WHIRL_S_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(0.6f), false), new BilinearInterpolator())), WHIRL_M_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(1.0f), false), new BilinearInterpolator())), WHIRL_L_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new WhirlpoolRotationalDistortionProfile(1.5f), false), new BilinearInterpolator())), WHIRL_XL_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forWhirlpool(0.2f, true),  WHIRL_XS_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forWhirlpool(0.4f, true),  WHIRL_S_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forWhirlpool(0.6f, false), WHIRL_M_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forWhirlpool(1.0f, false), WHIRL_L_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forWhirlpool(1.5f, false), WHIRL_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.1f), false), new BilinearInterpolator())), TURNING_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.3f), false), new BilinearInterpolator())), TURNING_S_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.4f), true), new BilinearInterpolator())),  TURNING_M_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(0.7f), true), new BilinearInterpolator())),  TURNING_L_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new RotationalDistortion(new IncreasingRotationalDistortionProfile(1.2f), true), new BilinearInterpolator())),  TURNING_XL_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIncreasingRotation(0.1f, false), TURNING_XS_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIncreasingRotation(0.3f, false), TURNING_S_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIncreasingRotation(0.4f, true),  TURNING_M_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIncreasingRotation(0.7f, true),  TURNING_L_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forIncreasingRotation(1.2f, true),  TURNING_XL_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new DistortingBufferedImageOp(new DistortionChain(new IsotropicWaveDistortion(0, 1.57f, 400, 30),
-                                                                                                                     new IsotropicWaveDistortion(1, .57f, 200, 20),
-                                                                                                                     new IsotropicWaveDistortion(1.57f, 1.57f, 800, 50),
-                                                                                                                     new IsotropicWaveDistortion(-1, 1.57f, 90, 15),
-                                                                                                                     new IsotropicWaveDistortion(-0.2f, -0.3f, 1000, 30)),
-                                                                                                 new BilinearInterpolator())), WAVE_ROUGH_FILTER_NAME));
+    filters.add(new NamedFilter(DistortingFilterFactory.forRoughWaves(), WAVE_ROUGH_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(3)),  PIXEL_XS_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(5)),  PIXEL_S_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(10)), PIXEL_M_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(20)), PIXEL_L_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new PixelizerOp(50)), PIXEL_XL_FILTER_NAME));
+    filters.add(new NamedFilter(PixelizerFilterFactory.forPixelSize(3),  PIXEL_XS_FILTER_NAME));
+    filters.add(new NamedFilter(PixelizerFilterFactory.forPixelSize(5),  PIXEL_S_FILTER_NAME));
+    filters.add(new NamedFilter(PixelizerFilterFactory.forPixelSize(10), PIXEL_M_FILTER_NAME));
+    filters.add(new NamedFilter(PixelizerFilterFactory.forPixelSize(20), PIXEL_L_FILTER_NAME));
+    filters.add(new NamedFilter(PixelizerFilterFactory.forPixelSize(50), PIXEL_XL_FILTER_NAME));
 
     filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(2),  POSTER_XL_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forPosterizer(3),  POSTER_L_FILTER_NAME));
@@ -610,9 +587,9 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(64),  MAXONLY_S_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(128), MAXONLY_XS_FILTER_NAME));
 
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new HorizontalFlipTransformOp()), HORIZONTAL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new VerticalFlipTransformOp()),   VERTICAL_FILTER_NAME));
-    filters.add(new NamedFilter(new SingleFrameBufferedImageFilter(new RotationTransformOp()),       ROTATION_FILTER_NAME));
+    filters.add(new NamedFilter(AffineFilterFactory.forHorizontalFlip(), HORIZONTAL_FILTER_NAME));
+    filters.add(new NamedFilter(AffineFilterFactory.forVerticalFlip(),   VERTICAL_FILTER_NAME));
+    filters.add(new NamedFilter(AffineFilterFactory.forRotation(),       ROTATION_FILTER_NAME));
   }
 
 //==============================================================================

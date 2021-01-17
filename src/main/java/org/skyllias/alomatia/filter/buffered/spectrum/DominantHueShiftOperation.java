@@ -2,17 +2,16 @@
 package org.skyllias.alomatia.filter.buffered.spectrum;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 
-/** {@link BufferedImageOp} that applies a hue shift so that some target hue
- *  becomes the most relevant in the image. Therefore the shift depends on the
- *  input image as much as on the target hue. */
+/** {@link BufferedImageOperation} that applies a hue shift so that some target
+ *  hue becomes the most relevant in the image. Therefore the shift depends on
+ *  the input image as much as on the target hue. */
 
-public class DominantHueShiftOp extends BasicBufferedImageOp
+public class DominantHueShiftOperation implements BufferedImageOperation
 {
   private final MostRelevantHueCalculator mostRelevantHueCalculator;
   private final FilteredBufferedImageGenerator filteredBufferedImageGenerator;
@@ -21,10 +20,10 @@ public class DominantHueShiftOp extends BasicBufferedImageOp
 
 //==============================================================================
 
-  public DominantHueShiftOp(MostRelevantHueCalculator mostRelevantHueCalculator,
-                            FilteredBufferedImageGenerator filteredBufferedImageGenerator,
-                            HueShiftFilterFactory hueShiftFilterFactory,
-                            float targetHue)
+  public DominantHueShiftOperation(MostRelevantHueCalculator mostRelevantHueCalculator,
+                                   FilteredBufferedImageGenerator filteredBufferedImageGenerator,
+                                   HueShiftFilterFactory hueShiftFilterFactory,
+                                   float targetHue)
   {
     this.mostRelevantHueCalculator      = mostRelevantHueCalculator;
     this.filteredBufferedImageGenerator = filteredBufferedImageGenerator;
@@ -35,14 +34,14 @@ public class DominantHueShiftOp extends BasicBufferedImageOp
 //==============================================================================
 
   @Override
-  protected void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    float mostRelevantHueInImage = mostRelevantHueCalculator.getMostRelevantHue(src);
+    float mostRelevantHueInImage = mostRelevantHueCalculator.getMostRelevantHue(inputImage);
     float requiredShift          = targetHue - mostRelevantHueInImage;
 
     ImageFilter hueShiftFilter = hueShiftFilterFactory.getHueShiftFilter(requiredShift);
-    BufferedImage result       = filteredBufferedImageGenerator.generate(src, hueShiftFilter);
-    dest.getGraphics().drawImage(result, 0, 0, null);
+    BufferedImage result       = filteredBufferedImageGenerator.generate(inputImage, hueShiftFilter);
+    outputImage.getGraphics().drawImage(result, 0, 0, null);
   }
 
 //------------------------------------------------------------------------------

@@ -5,6 +5,7 @@ import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
+import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 
 /** Instantiator of filters that work with the spectrum of images. */
@@ -19,10 +20,11 @@ public class SpectrumFilterFactory
 
   public static ImageFilter forDominantHue(float targetHue)
   {
-    return new SingleFrameBufferedImageFilter(new DominantHueShiftOp(mostRelevantHueCalculator,
-                                                                     filteredBufferedImageGenerator,
-                                                                     hueShiftFilterFactory,
-                                                                     targetHue));
+    DominantHueShiftOperation dominantHueShiftOperation = new DominantHueShiftOperation(mostRelevantHueCalculator,
+                                                                                        filteredBufferedImageGenerator,
+                                                                                        hueShiftFilterFactory,
+                                                                                        targetHue);
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(dominantHueShiftOperation));
   }
 
 //------------------------------------------------------------------------------
