@@ -6,21 +6,21 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.map.HueMap;
 
-/** BasicBufferedImageOp that tints each patch in the source image with a hue
- *  taken from a {@link HueMap}. */
+/** {@link BufferedImageOperation} that tints each patch in the source image
+ *  with a hue taken from a {@link HueMap}. */
 
-public class HueMappedPatchBufferedImageOp extends BasicBufferedImageOp
+public class HueMappedPatchBufferedImageOperation implements BufferedImageOperation
 {
   private final SimilarPatchesFinder patchesFinder;
   private final HueMap hueMap;
 
 //==============================================================================
 
-  public HueMappedPatchBufferedImageOp(SimilarPatchesFinder similarPatchesFinder,
-                                       HueMap hueMap)
+  public HueMappedPatchBufferedImageOperation(SimilarPatchesFinder similarPatchesFinder,
+                                              HueMap hueMap)
   {
     this.patchesFinder = similarPatchesFinder;
     this.hueMap        = hueMap;
@@ -32,14 +32,14 @@ public class HueMappedPatchBufferedImageOp extends BasicBufferedImageOp
    * its Graphics2D. */
 
   @Override
-  public void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    Collection<Patch> patches = patchesFinder.findPatches(src);
+    Collection<Patch> patches = patchesFinder.findPatches(inputImage);
     for (Patch patch : patches)
     {
         Point patchCenter = patch.getCentralPoint();
         float newHue      = hueMap.getHue(patchCenter.x, patchCenter.y,
-                                          src.getWidth(), src.getHeight());
+                                          inputImage.getWidth(), inputImage.getHeight());
         Color patchOriginalColour = patch.getPixels().iterator().next().getColour();
         float[] patchOriginalHsb  = Color.RGBtoHSB(patchOriginalColour.getRed(),
                                                    patchOriginalColour.getGreen(),
@@ -48,7 +48,7 @@ public class HueMappedPatchBufferedImageOp extends BasicBufferedImageOp
 
         for (final Pixel pixel : patch.getPixels())
         {
-          dest.setRGB(pixel.getCoordinates().x, pixel.getCoordinates().y,
+          outputImage.setRGB(pixel.getCoordinates().x, pixel.getCoordinates().y,
                       patchNewColour);
         }
     }

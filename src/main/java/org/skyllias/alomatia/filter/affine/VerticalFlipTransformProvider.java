@@ -2,16 +2,15 @@
 package org.skyllias.alomatia.filter.affine;
 
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImageOp;
 
-/** {@link BufferedImageOp} that flips an image vertically. */
+/** {@link AffineTransformProvider} that flips an image vertically. */
 
-public class VerticalFlipTransformOp extends FixedSizeAffineTransformOp
+public class VerticalFlipTransformProvider implements AffineTransformProvider
 {
 //==============================================================================
 
   @Override
-  protected AffineTransform getTransform(int width, int height)
+  public AffineTransform getTransform(int width, int height)
   {
     return new AffineTransform(1, 0, 0, -1, 0, height);
   }

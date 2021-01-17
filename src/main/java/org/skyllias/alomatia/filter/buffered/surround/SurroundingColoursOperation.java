@@ -3,25 +3,24 @@ package org.skyllias.alomatia.filter.buffered.surround;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.RecursiveAction;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.parallelization.ImageProcessor;
 import org.skyllias.alomatia.filter.buffered.parallelization.RecursiveImageAction;
 
-/** {@link BufferedImageOp} that replaces the colour in each pixel with another
- *  one derived from all the pixels in the box surrounding it.
+/** {@link BufferedImageOperation} that replaces the colour in each pixel with
+ *  another one derived from all the pixels in the box surrounding it.
  *  The alpha channel info is erased.
- *  The implementation is only partially optimized. Therefore, filters using this
- *  may be slow. */
+ *  The implementation is only partially optimized. Therefore, filters using
+ *  this may be slow. */
 
-public class SurroundingColoursOp extends BasicBufferedImageOp
+public class SurroundingColoursOperation implements BufferedImageOperation
 {
-  private int boxSize;
-  private SurroundingColoursCalculator calculator;
+  private final int boxSize;
+  private final SurroundingColoursCalculator calculator;
 
 //==============================================================================
 
@@ -30,7 +29,7 @@ public class SurroundingColoursOp extends BasicBufferedImageOp
    *  [i - boxSize, i + boxSize]) around the pixel at (i, j).
    *  Of course, boxSize should be positive. */
 
-  public SurroundingColoursOp(int boxSize, SurroundingColoursCalculator calculator)
+  public SurroundingColoursOperation(int boxSize, SurroundingColoursCalculator calculator)
   {
     this.boxSize    = boxSize;
     this.calculator = calculator;
@@ -38,18 +37,18 @@ public class SurroundingColoursOp extends BasicBufferedImageOp
 
 //==============================================================================
 
-  /** Loops over each pixel in src, gets its surrounding pixels, and writes the
-   *  resulting pixel calculated by the {@link SurroundingColoursCalculator} in
-   *  dest or a new image if null.
+  /** Loops over each pixel in input, gets its surrounding pixels, and writes
+   *  the resulting pixel calculated by the {@link SurroundingColoursCalculator}
+   *  in the output.
    *  The work is parallelized to take advantage of multiple processors with a
    *  fork/join strategy. */
 
   @Override
-  public void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    Color[] colourCache = getAllPixels(src);
+    Color[] colourCache = getAllPixels(inputImage);
 
-    SurroundingColoursProcessor imageProcessor = new SurroundingColoursProcessor(colourCache, dest);
+    SurroundingColoursProcessor imageProcessor = new SurroundingColoursProcessor(colourCache, outputImage);
     RecursiveAction processAction              = new RecursiveImageAction(imageProcessor);
     processAction.invoke();
   }

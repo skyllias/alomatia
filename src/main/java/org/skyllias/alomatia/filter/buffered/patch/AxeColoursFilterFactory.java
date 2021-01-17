@@ -4,10 +4,10 @@ package org.skyllias.alomatia.filter.buffered.patch;
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.ColourFilter;
+import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.buffered.map.HueMap;
-import org.skyllias.alomatia.filter.buffered.surround.MedianChannelCalculator;
-import org.skyllias.alomatia.filter.buffered.surround.SurroundingColoursOp;
+import org.skyllias.alomatia.filter.buffered.surround.SurroundingFilterFactory;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.rgb.RgbPosterizerConverter;
 
@@ -23,12 +23,21 @@ public class AxeColoursFilterFactory
 
   public static ImageFilter forAxeColours(int blurWidth, int rgbBuckets, HueMap hueMap)
   {
-    return new ComposedFilter(new SingleFrameBufferedImageFilter(new SurroundingColoursOp(blurWidth, new MedianChannelCalculator())),
+    return new ComposedFilter(SurroundingFilterFactory.forMedian(blurWidth),
                               new ColourFilter(new RgbPosterizerConverter(rgbBuckets, true)),                 // avoid pure blacks and whites
-                              new SingleFrameBufferedImageFilter(new HueMappedPatchBufferedImageOp(new SimilarPatchesFinder(new ColourEquality()),
-                                                                                                   hueMap)));
+                              forHueMappedPatch(hueMap));
   }
 
-//==============================================================================
+//------------------------------------------------------------------------------
+
+  private static ImageFilter forHueMappedPatch(HueMap hueMap)
+  {
+    HueMappedPatchBufferedImageOperation hueMappedPatchOperation = new HueMappedPatchBufferedImageOperation(new SimilarPatchesFinder(new ColourEquality()),
+                                                                                                            hueMap);
+
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(hueMappedPatchOperation));
+  }
+
+//------------------------------------------------------------------------------
 
 }

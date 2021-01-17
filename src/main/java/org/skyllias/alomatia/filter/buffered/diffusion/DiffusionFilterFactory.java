@@ -5,6 +5,7 @@ import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
+import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
 
@@ -18,7 +19,10 @@ public class DiffusionFilterFactory
 
   public static ImageFilter forHueDiffusion(int blurLength)
   {
-    return new SingleFrameBufferedImageFilter(new HueDiffusionOp(BlurFilterFactory.forGaussian(blurLength), filteredImageGenerator));
+    HueDiffusionOperation hueDiffusionOperation = new HueDiffusionOperation(BlurFilterFactory.forGaussian(blurLength),
+                                                                            filteredImageGenerator);
+
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(hueDiffusionOperation));
   }
 
 //------------------------------------------------------------------------------

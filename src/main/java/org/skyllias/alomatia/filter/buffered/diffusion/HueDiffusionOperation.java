@@ -3,24 +3,23 @@ package org.skyllias.alomatia.filter.buffered.diffusion;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 
-/** {@link BufferedImageOp} that applies some blurring to hues, maintaining the
- *  original values of brightness and saturation in each pixel. */
+/** {@link BufferedImageOperation} that applies some blurring to hues,
+ *  maintaining the original values of brightness and saturation in each pixel. */
 
-public class HueDiffusionOp extends BasicBufferedImageOp
+public class HueDiffusionOperation implements BufferedImageOperation
 {
   private final ImageFilter blurringFilter;
   private final FilteredBufferedImageGenerator filteredImageGenerator;
 
 //==============================================================================
 
-  public HueDiffusionOp(ImageFilter blurringFilter,
-                        FilteredBufferedImageGenerator filteredImageGenerator)
+  public HueDiffusionOperation(ImageFilter blurringFilter,
+                               FilteredBufferedImageGenerator filteredImageGenerator)
   {
     this.blurringFilter         = blurringFilter;
     this.filteredImageGenerator = filteredImageGenerator;
@@ -29,15 +28,15 @@ public class HueDiffusionOp extends BasicBufferedImageOp
 //==============================================================================
 
   @Override
-  protected void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    BufferedImage blurredImage = getBlurredImage(src);
+    BufferedImage blurredImage = getBlurredImage(inputImage);
 
-    for (int x = 0; x < src.getWidth(); x++)
+    for (int x = 0; x < inputImage.getWidth(); x++)
     {
-      for (int y = 0; y < src.getHeight(); y++)
+      for (int y = 0; y < inputImage.getHeight(); y++)
       {
-        setColour(x, y, dest, src, blurredImage);
+        setColour(x, y, outputImage, inputImage, blurredImage);
       }
     }
   }

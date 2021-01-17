@@ -3,28 +3,27 @@ package org.skyllias.alomatia.filter.buffered.hdr.naive;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageFilter;
 
-import org.skyllias.alomatia.filter.buffered.BasicBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 
-/** {@link BufferedImageOp} that applies some blurring filter and then modifies
- *  each of the channels of all pixels by multiplying the normalized values of
- *  the blurred and the original images.
+/** {@link BufferedImageOperation} that applies some blurring filter and then
+ *  modifies each of the channels of all pixels by multiplying the normalized
+ *  values of the blurred and the original images.
  *  The real effect probably has more to do with colour contrast than with real
  *  HDR, but anyway it has been copied from:
  *  https://github.com/alhazmy13/ImageFilters/blob/master/library/src/main/jni/HDRFilter.cpp */
 
-public class NaiveHdrOp extends BasicBufferedImageOp
+public class NaiveHdrOperation implements BufferedImageOperation
 {
   private final ImageFilter blurringFilter;
   private final FilteredBufferedImageGenerator filteredImageGenerator;
 
 //==============================================================================
 
-  public NaiveHdrOp(ImageFilter blurringFilter,
-                    FilteredBufferedImageGenerator filteredImageGenerator)
+  public NaiveHdrOperation(ImageFilter blurringFilter,
+                           FilteredBufferedImageGenerator filteredImageGenerator)
   {
     this.blurringFilter         = blurringFilter;
     this.filteredImageGenerator = filteredImageGenerator;
@@ -33,15 +32,15 @@ public class NaiveHdrOp extends BasicBufferedImageOp
 //==============================================================================
 
   @Override
-  protected void doFilter(BufferedImage src, BufferedImage dest)
+  public void filter(BufferedImage inputImage, BufferedImage outputImage)
   {
-    BufferedImage blurredImage = getBlurredImage(src);
+    BufferedImage blurredImage = getBlurredImage(inputImage);
 
-    for (int x = 0; x < src.getWidth(); x++)
+    for (int x = 0; x < inputImage.getWidth(); x++)
     {
-      for (int y = 0; y < src.getHeight(); y++)
+      for (int y = 0; y < inputImage.getHeight(); y++)
       {
-        setColour(x, y, dest, src, blurredImage);
+        setColour(x, y, outputImage, inputImage, blurredImage);
       }
     }
   }
@@ -60,10 +59,10 @@ public class NaiveHdrOp extends BasicBufferedImageOp
   /* Sets the colour of the pixel at (x, y) in dest as a function of the colours
    * at the same location of src and blurredImage. */
 
-  private void setColour(int x, int y, BufferedImage dest, BufferedImage src,
-                         BufferedImage blurredImage)
+  private void setColour(int x, int y, BufferedImage outputImage,
+                         BufferedImage inputImage, BufferedImage blurredImage)
   {
-    Color sourceColour  = new Color(src.getRGB(x, y));
+    Color sourceColour  = new Color(inputImage.getRGB(x, y));
     Color blurredColour = new Color(blurredImage.getRGB(x, y));
 
     int red   = getMultipliedValue(sourceColour.getRed(),   blurredColour.getRed());
@@ -71,7 +70,7 @@ public class NaiveHdrOp extends BasicBufferedImageOp
     int blue  = getMultipliedValue(sourceColour.getBlue(),  blurredColour.getBlue());
 
     Color destinationColour = new Color(red, green, blue);
-    dest.setRGB(x, y, destinationColour.getRGB());
+    outputImage.setRGB(x, y, destinationColour.getRGB());
   }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.buffered.diffusion;
+package org.skyllias.alomatia.filter.buffered.hdr.naive;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -17,7 +17,7 @@ import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
 import org.skyllias.alomatia.test.ImageUtils;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HueDiffusionOpTest
+public class NaiveHdrOperationTest
 {
   @Mock
   private ImageFilter blurringFilter;
@@ -25,8 +25,7 @@ public class HueDiffusionOpTest
   private FilteredBufferedImageGenerator filteredImageGenerator;
 
   @InjectMocks
-  private HueDiffusionOp imageOp;
-
+  private NaiveHdrOperation imageOperation;
 
   @Test
   public void test()
@@ -36,7 +35,8 @@ public class HueDiffusionOpTest
     when(filteredImageGenerator.generate(srcImage, blurringFilter))
         .thenReturn(buildBlurredImage());
 
-    BufferedImage destImage = imageOp.filter(srcImage, null);
+    BufferedImage destImage = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+    imageOperation.filter(srcImage, destImage);
 
     assertTrue(ImageUtils.areEqual(destImage, buildExpectedImage()));
   }
@@ -45,10 +45,10 @@ public class HueDiffusionOpTest
   private BufferedImage buildInputImage()
   {
     BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
-    image.setRGB(0, 0, Color.HSBtoRGB(0.1f, 0.2f, 0.3f));
-    image.setRGB(0, 1, Color.HSBtoRGB(0.4f, 0.5f, 0.6f));
-    image.setRGB(1, 0, Color.HSBtoRGB(0.7f, 0.8f, 0.9f));
-    image.setRGB(1, 1, Color.HSBtoRGB(0.35f, 0.55f, 0.75f));
+    image.setRGB(0, 0, Color.RED.getRGB());
+    image.setRGB(0, 1, Color.GREEN.getRGB());
+    image.setRGB(1, 0, Color.BLUE.getRGB());
+    image.setRGB(1, 1, new Color(100, 200, 50).getRGB());
 
     return image;
   }
@@ -56,10 +56,10 @@ public class HueDiffusionOpTest
   private BufferedImage buildBlurredImage()
   {
     BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
-    image.setRGB(0, 0, Color.HSBtoRGB(0.16f, 0.25f, 0.35f));
-    image.setRGB(0, 1, Color.HSBtoRGB(0.45f, 0.55f, 0.65f));
-    image.setRGB(1, 0, Color.HSBtoRGB(0.75f, 0.85f, 0.95f));
-    image.setRGB(1, 1, Color.HSBtoRGB(0.3f, 0.5f, 0.7f));
+    image.setRGB(0, 0, Color.BLACK.getRGB());
+    image.setRGB(0, 1, Color.LIGHT_GRAY.getRGB());
+    image.setRGB(1, 0, Color.WHITE.getRGB());
+    image.setRGB(1, 1, new Color(200, 50, 100).getRGB());
 
     return image;
   }
@@ -67,10 +67,10 @@ public class HueDiffusionOpTest
   private BufferedImage buildExpectedImage()
   {
     BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
-    image.setRGB(0, 0, Color.HSBtoRGB(0.16f, 0.2f, 0.3f));
-    image.setRGB(0, 1, Color.HSBtoRGB(0.45f, 0.5f, 0.6f));
-    image.setRGB(1, 0, Color.HSBtoRGB(0.75f, 0.8f, 0.9f));
-    image.setRGB(1, 1, Color.HSBtoRGB(0.3f, 0.55f, 0.75f));
+    image.setRGB(0, 0, Color.BLACK.getRGB());
+    image.setRGB(0, 1, new Color(129, 255, 129).getRGB());
+    image.setRGB(1, 0, Color.WHITE.getRGB());
+    image.setRGB(1, 1, new Color(188, 78, 39).getRGB());
 
     return image;
   }

@@ -9,8 +9,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.skyllias.alomatia.filter.buffered.KernelCroppingBufferedImageOp;
-import org.skyllias.alomatia.filter.buffered.KernelExpandingBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
+import org.skyllias.alomatia.filter.buffered.KernelCroppingBufferedImageOperation;
+import org.skyllias.alomatia.filter.buffered.KernelExpandingBufferedImageOperation;
+import org.skyllias.alomatia.filter.buffered.ResizableBufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
@@ -72,7 +74,7 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
     List<ImageFilter> filtersToCompose = new LinkedList<>();
 
-    ImageFilter expandingFilter = new SingleFrameBufferedImageFilter(new KernelExpandingBufferedImageOp(maximalKernel));
+    ImageFilter expandingFilter = getFilter(new KernelExpandingBufferedImageOperation(maximalKernel));
     filtersToCompose.add(expandingFilter);
 
     for (Kernel kernel : kernels)
@@ -84,7 +86,7 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
     ImageFilter alphalessFitler = RgbFilterFactory.forVoid();
     filtersToCompose.add(alphalessFitler);
-    ImageFilter croppingFilter = new SingleFrameBufferedImageFilter(new KernelCroppingBufferedImageOp(maximalKernel));
+    ImageFilter croppingFilter = getFilter(new KernelCroppingBufferedImageOperation(maximalKernel));
     filtersToCompose.add(croppingFilter);
 
     return new ComposedFilter(filtersToCompose.toArray(new ImageFilter[0]));
@@ -133,6 +135,13 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
     int totalSize = maxWidth * maxHeight;
     return new Kernel(maxWidth, maxHeight, new float[totalSize]);
+  }
+
+//------------------------------------------------------------------------------
+
+  private ImageFilter getFilter(ResizableBufferedImageOperation resizableBufferedImageOperation)
+  {
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(resizableBufferedImageOperation));
   }
 
 //------------------------------------------------------------------------------

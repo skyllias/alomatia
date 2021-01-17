@@ -5,6 +5,7 @@ import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.buffered.FilteredBufferedImageGenerator;
+import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
@@ -20,7 +21,10 @@ public class NaiveHdrFilterFactory
 
   public static ImageFilter forSmallBlur(int blurLength)
   {
-    return new ComposedFilter(new SingleFrameBufferedImageFilter(new NaiveHdrOp(BlurFilterFactory.forParaboloid(blurLength), filteredImageGenerator)),
+    NaiveHdrOperation naiveHdrOperation = new NaiveHdrOperation(BlurFilterFactory.forParaboloid(blurLength),
+                                                                filteredImageGenerator);
+
+    return new ComposedFilter(new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(naiveHdrOperation)),
                               BlurFilterFactory.forSharpening());
   }
 
