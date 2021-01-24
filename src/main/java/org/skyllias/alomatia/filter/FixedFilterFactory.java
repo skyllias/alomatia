@@ -125,6 +125,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String DEC_GRN_SA_FILTER_NAME    = "filter.hsb.green.saturation.down.name";
   private static final String INC_BLU_SA_FILTER_NAME    = "filter.hsb.blue.saturation.up.name";
   private static final String DEC_BLU_SA_FILTER_NAME    = "filter.hsb.blue.saturation.down.name";
+  private static final String REVERSE_ORANG_FILTER_NAME = "filter.hsb.hue.reverse.orange-azure.name";
+  private static final String REVERSE_TEAL_FILTER_NAME  = "filter.hsb.hue.reverse.teal-crimson.name";
+  private static final String REVERSE_VIOLE_FILTER_NAME = "filter.hsb.hue.reverse.violet-chartreuse.name";
   private static final String DEC_CCT_XL_FILTER_NAME    = "filter.rgb.colourcontrast-xl.name";
   private static final String DEC_CCT_L_FILTER_NAME     = "filter.rgb.colourcontrast-l.name";
   private static final String DEC_CCT_M_FILTER_NAME     = "filter.rgb.colourcontrast-m.name";
@@ -441,15 +444,19 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(RgbFilterFactory.forRtoGtoBtoR(),       RGBR_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBtoGtoRtoB(),       BGRB_FILTER_NAME));
-    filters.add(new NamedFilter(RgbFilterFactory.forRedAndGreenSwap(),  SWAP_RG_FILTER_NAME));
-    filters.add(new NamedFilter(RgbFilterFactory.forGreenAndBlueSwap(), SWAP_GB_FILTER_NAME));
-    filters.add(new NamedFilter(RgbFilterFactory.forBlueAndRedSwap(),   SWAP_BR_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forRedChannelOnly(),   REDONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forGreenChannelOnly(), GREENONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBlueChannelOnly(),  BLUEONLY_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forRedless(),          REDLESS_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forGreenless(),        GREENLESS_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forBlueless(),         BLUELESS_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forRedAndGreenSwap(),  SWAP_RG_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forGreenAndBlueSwap(), SWAP_GB_FILTER_NAME));
+    filters.add(new NamedFilter(RgbFilterFactory.forBlueAndRedSwap(),   SWAP_BR_FILTER_NAME));
+
+    filters.add(new NamedFilter(HsbFilterFactory.forHueReverser(0.083f), REVERSE_ORANG_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forHueReverser(0.417f), REVERSE_TEAL_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forHueReverser(0.750f), REVERSE_VIOLE_FILTER_NAME));
 
     filters.add(new NamedFilter(RgbFilterFactory.forYellowEqualizer(),  YELLOW_EQ_FILTER_NAME));
     filters.add(new NamedFilter(RgbFilterFactory.forMagentaEqualizer(), MAGENTA_EQ_FILTER_NAME));

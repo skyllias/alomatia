@@ -12,8 +12,8 @@ public class HuePosterizerConverter extends HsbAdapter
 
 //==============================================================================
 
-  /** Creates a filter that divides the hue spectrum in amountOfBuckets centered
-   *  stripes, with one of the buckets beginning at startingHue. */
+  /** Creates a converter that divides the hue spectrum in amountOfBuckets
+   *  centered stripes, with one of the buckets beginning at startingHue. */
 
   public HuePosterizerConverter(int amountOfBuckets, float startingHue)
   {

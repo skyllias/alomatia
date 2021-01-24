@@ -19,7 +19,7 @@ public class FilterSelector
   public FilterSelector(JComponent component,
                         RadioSelector<JRadioButton, NamedFilter> radioSelector)
   {
-    this.component = component;
+    this.component     = component;
     this.radioSelector = radioSelector;
   }
 
