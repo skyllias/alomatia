@@ -3,43 +3,68 @@ package org.skyllias.alomatia.filter.daltonism;
 
 import java.awt.Color;
 
-/** Representation of a colour in some particular {@link ColourSpace} that admits
- *  projections by means of a {@link ColourProjector}.
- *  <p>
- *  Instances can be derived from a {@link Color} instance and then modified by
- *  applying a projection (matrix multiplication) with a projector.
- *  This class is not thread-safe. */
+/** Colour that can be converted into another one by transformation to
+ *  {@link ColourSpace} and projections by means of a {@link ColourProjector}. */
 
 public class ProjectableColour
 {
-  private ColourSpace space;                                                    // the space where the coordinates are defined
-  private double[] coords = new double[3];                                      // the coordinates in the corresponding space. The valid range is space-dependent
+  private final Color originalColour;
 
 //==============================================================================
 
-  /** Creates a representation of rgbColor in colourSpace. */
-
-  public ProjectableColour(ColourSpace colourSpace, Color rgbColor)
+  public ProjectableColour(Color rgbColor)
   {
-    space                       = colourSpace;
-    double[][] conversionMatrix = space.getConversionMatrix();
+    originalColour = rgbColor;
+  }
 
-    int r = rgbColor.getRed();
-    int g = rgbColor.getGreen();
-    int b = rgbColor.getBlue();
+//==============================================================================
 
-    coords[0] = conversionMatrix[0][0] * r + conversionMatrix[0][1] * g + conversionMatrix[0][2] * b;
-    coords[1] = conversionMatrix[1][0] * r + conversionMatrix[1][1] * g + conversionMatrix[1][2] * b;
-    coords[2] = conversionMatrix[2][0] * r + conversionMatrix[2][1] * g + conversionMatrix[2][2] * b;
+  /** Transforms the colour to the space of the projector, performs the
+   * projection and transforms back to RGB space, making sure that the
+   * components are in the valid range. */
+
+  public Color project(ColourProjector projector)
+  {
+    double[] transformedCoords = getCoordinatesIn(projector.getSpace());
+    double[] projectedCoords   = project(projector, transformedCoords);
+    return getRgbColour(projectedCoords, projector.getSpace());
   }
 
 //------------------------------------------------------------------------------
 
-  /** Returns the best Color represented by the current coordinates.
-   *  If no projection has been applied, this should be equal to the Color passed
-   *  to the constructor. */
+  private double[] getCoordinatesIn(ColourSpace space)
+  {
+    double[][] conversionMatrix = space.getConversionMatrix();
 
-  public Color getColor()
+    int r = originalColour.getRed();
+    int g = originalColour.getGreen();
+    int b = originalColour.getBlue();
+
+    double coords1 = conversionMatrix[0][0] * r + conversionMatrix[0][1] * g + conversionMatrix[0][2] * b;
+    double coords2 = conversionMatrix[1][0] * r + conversionMatrix[1][1] * g + conversionMatrix[1][2] * b;
+    double coords3 = conversionMatrix[2][0] * r + conversionMatrix[2][1] * g + conversionMatrix[2][2] * b;
+
+    return new double[] {coords1, coords2, coords3};
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Makes the projection of coords with projector. */
+
+  private double[] project(ColourProjector projector, double[] coords)
+  {
+    double projection1 = projector.getO1ToR1() * coords[0] + projector.getO2ToR1() * coords[1] + projector.getO3ToR1() * coords[2];
+    double projection2 = projector.getO1ToR2() * coords[0] + projector.getO2ToR2() * coords[1] + projector.getO3ToR2() * coords[2];
+    double projection3 = projector.getO1ToR3() * coords[0] + projector.getO2ToR3() * coords[1] + projector.getO3ToR3() * coords[2];
+
+    return new double[] {projection1, projection2, projection3};
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Returns the best Color represented by coords. */
+
+  private Color getRgbColour(double[] coords, ColourSpace space)
   {
     double[][] inverseMatrix = space.getInverseConversionMatrix();
 
@@ -48,26 +73,6 @@ public class ProjectableColour
     double b = inverseMatrix[2][0] * coords[0] + inverseMatrix[2][1] * coords[1] + inverseMatrix[2][2] * coords[2];
 
     return new Color(fix(r), fix(g), fix(b));
-  }
-
-//------------------------------------------------------------------------------
-
-  /** If the projector works on the same space that this colour is represented in,
-   *  modifies the components of the colour by linearly combining them with
-   *  the factors from the projector.
-   *  Otherwise, an exception is thrown. */
-
-  public void project(ColourProjector projector)
-  {
-    if (!space.equals(projector.getSpace())) throw new IllegalArgumentException("Trying to apply a projector for a colour space different from the space the projectable colour lives in");
-
-    double new1 = projector.getO1ToR1() * coords[0] + projector.getO2ToR1() * coords[1] + projector.getO3ToR1() * coords[2];
-    double new2 = projector.getO1ToR2() * coords[0] + projector.getO2ToR2() * coords[1] + projector.getO3ToR2() * coords[2];
-    double new3 = projector.getO1ToR3() * coords[0] + projector.getO2ToR3() * coords[1] + projector.getO3ToR3() * coords[2];
-
-    coords[0] = new1;
-    coords[1] = new2;
-    coords[2] = new3;
   }
 
 //------------------------------------------------------------------------------

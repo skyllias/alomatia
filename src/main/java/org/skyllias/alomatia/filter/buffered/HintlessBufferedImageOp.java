@@ -9,10 +9,29 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
 
-/** Superclass for the {@link BufferedImageOp}s that do not manipulate rendering hints. */
+/** Implementation of {@link BufferedImageOp} that does not manipulate rendering hints.
+ *  The business logic is delegated to a {@link ResizableBufferedImageOperation}. */
 
-public abstract class HintlessBufferedImageOp implements BufferedImageOp
+public class HintlessBufferedImageOp implements BufferedImageOp
 {
+  private final ResizableBufferedImageOperation resizableBufferedImageOperation;
+
+//==============================================================================
+
+  public HintlessBufferedImageOp(ResizableBufferedImageOperation resizableBufferedImageOperation)
+  {
+    this.resizableBufferedImageOperation = resizableBufferedImageOperation;
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Sugar for this(new SameSizeBufferedImageOperation(bufferedImageOperation)) */
+
+  public HintlessBufferedImageOp(BufferedImageOperation bufferedImageOperation)
+  {
+    this(new SameSizeBufferedImageOperation(bufferedImageOperation));
+  }
+
 //==============================================================================
 
   /** Copied from java.awt.image.RescaleOp. */
@@ -51,7 +70,7 @@ public abstract class HintlessBufferedImageOp implements BufferedImageOp
   @Override
   public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM)
   {
-    Dimension destSize = getDestImageDimensions(src);
+    Dimension destSize = resizableBufferedImageOperation.getOutputImageDimension(src);
     int width          = (int) destSize.getWidth();
     int height         = (int) destSize.getHeight();
 
@@ -63,13 +82,16 @@ public abstract class HintlessBufferedImageOp implements BufferedImageOp
 
 //------------------------------------------------------------------------------
 
-  /** Returns the size of the resulting image for an input image src.
-   *  By default, returns the imput image's dimensions, but subclasses may
-   *  override it. */
+  /** Delegates the filter operation to resizableBufferedImageOperation,
+   *  taking care of null safety of dest. */
 
-  protected Dimension getDestImageDimensions(BufferedImage src)
+  @Override
+  public BufferedImage filter(BufferedImage src, BufferedImage dest)
   {
-    return new Dimension(src.getWidth(), src.getHeight());
+    if (dest == null) dest = createCompatibleDestImage(src, null);
+
+    resizableBufferedImageOperation.filter(src, dest);
+    return dest;
   }
 
 //------------------------------------------------------------------------------

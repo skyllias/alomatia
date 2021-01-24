@@ -14,7 +14,7 @@ public class FilteredImageGenerator
 {
 //==============================================================================
 
-  /* Returns a new image resulting from applying imageFilter to inputImage. */
+  /** Returns a new image resulting from applying imageFilter to inputImage. */
 
   public Image generate(Image inputImage, ImageFilter imageFilter)
   {

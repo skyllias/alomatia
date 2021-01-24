@@ -59,6 +59,10 @@ public class HsbFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forHueReverser(float centralHue) {return forHsbConverter(new HueReverserConverter(centralHue));}
+
+//------------------------------------------------------------------------------
+
   private static ImageFilter forHsbConverter(HsbConverter hsbConverter) {return new ColourFilter(new HsbColourConverter(hsbConverter));}
 
 //------------------------------------------------------------------------------

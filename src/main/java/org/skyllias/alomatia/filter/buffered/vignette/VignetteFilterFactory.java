@@ -3,6 +3,7 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 
 import java.awt.image.ImageFilter;
 
+import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 
 /** Helper class to get the most usual vignette filters. */
@@ -36,7 +37,7 @@ public class VignetteFilterFactory
 
   private static ImageFilter getFilterForProfile(VignetteProfile profile)
   {
-    return new SingleFrameBufferedImageFilter(new ResizingVignetteOp(profile));
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(new ResizingVignetteOperation(profile)));
   }
 
 //------------------------------------------------------------------------------
