@@ -283,17 +283,17 @@ public class FixedFilterFactory implements FilterFactory
   private static final String AXE_S_L_FILTER_NAME       = "filter.axe.s+l.name";
   private static final String AXE_L_S_FILTER_NAME       = "filter.axe.l+s.name";
   private static final String AXE_L_L_FILTER_NAME       = "filter.axe.l+l.name";
-  private static final String INST_ALOPO_FILTER_NAME    = "Allopo";                // these are proper names and needn't i18n
-  private static final String INST_EARBY_FILTER_NAME    = "Earby lird";
-  private static final String INST_TOGAM_FILTER_NAME    = "Thogam";
-  private static final String INST_VASHN_FILTER_NAME    = "Vashnille";
-  private static final String INST_FEHE_FILTER_NAME     = "Fehe";
-  private static final String INST_MOLO_FILTER_NAME     = "Molo";
-  private static final String INST_KEVLN_FILTER_NAME    = "Kevlin";
-  private static final String INST_1976_FILTER_NAME     = "1976";
-  private static final String INST_SOATR_FILTER_NAME    = "Soater";
-  private static final String INST_LAWDN_FILTER_NAME    = "Lawden";
-  private static final String INST_PROX_FILTER_NAME     = "Prox";
+  private static final String INST_ALLOPO_FILTER_NAME   = "filter.lookup.allopo.name";
+  private static final String INST_EARBY_FILTER_NAME    = "filter.lookup.earbylird.name";
+  private static final String INST_THOGAM_FILTER_NAME   = "filter.lookup.thogam.name";
+  private static final String INST_VASHNILL_FILTER_NAME = "filter.lookup.vashnille.name";
+  private static final String INST_FEHE_FILTER_NAME     = "filter.lookup.fehe.name";
+  private static final String INST_MOLO_FILTER_NAME     = "filter.lookup.molo.name";
+  private static final String INST_KEVLIN_FILTER_NAME   = "filter.lookup.kevlin.name";
+  private static final String INST_1976_FILTER_NAME     = "filter.lookup.1976.name";
+  private static final String INST_SOATER_FILTER_NAME   = "filter.lookup.soater.name";
+  private static final String INST_LAWDEN_FILTER_NAME   = "filter.lookup.lawden.name";
+  private static final String INST_PROX_FILTER_NAME     = "filter.lookup.prox.name";
 
   private static Collection<NamedFilter> filters = new LinkedList<>();
 
@@ -316,17 +316,17 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(LmsFilterFactory.forDeuteranopia(), LMSDEUPIA_FILTER_NAME));
     filters.add(new NamedFilter(LmsFilterFactory.forTritanopia(),   LMSTRIPIA_FILTER_NAME));
 
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forThogam(),    INST_TOGAM_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forThogam(),    INST_THOGAM_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forProx(),      INST_PROX_FILTER_NAME));
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forLawden(),    INST_LAWDN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forLawden(),    INST_LAWDEN_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forFehe(),      INST_FEHE_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forMolo(),      INST_MOLO_FILTER_NAME));
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forAllopo(),    INST_ALOPO_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forAllopo(),    INST_ALLOPO_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.forEarbyLird(), INST_EARBY_FILTER_NAME));
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forSoater(),    INST_SOATR_FILTER_NAME));
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forVashnille(), INST_VASHN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forSoater(),    INST_SOATER_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forVashnille(), INST_VASHNILL_FILTER_NAME));
     filters.add(new NamedFilter(ChannelLookupFilterFactory.for1976(),      INST_1976_FILTER_NAME));
-    filters.add(new NamedFilter(ChannelLookupFilterFactory.forKevlin(),    INST_KEVLN_FILTER_NAME));
+    filters.add(new NamedFilter(ChannelLookupFilterFactory.forKevlin(),    INST_KEVLIN_FILTER_NAME));
 
     filters.add(new NamedFilter(VignetteFilterFactory.forRound(), VIGNETTE_R_FILTER_NAME));
     filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_NAME));
