@@ -96,8 +96,7 @@ public class EdgeConvolvingComposedFilter extends ImageFilter
 
   /* Returns a Kernel with the values from matrixData.
    * If it is a jagged or empty array, an {@link IndexOutOfBoundsException}
-   * may be thrown.
-   * Copied from the deprecated class ConvolutingFilter. */
+   * may be thrown. */
 
   private Kernel getKernel(KernelDataFactory kernelFactory)
   {
