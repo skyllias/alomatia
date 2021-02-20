@@ -4,7 +4,7 @@ package org.skyllias.alomatia.filter.convolve;
 import java.awt.image.Kernel;
 
 /** Provider of {@link Kernel} data matrices, suitable to be passed to
- *  {@link ConvolutingFilter#ConvolutingFilter(KernelDataFactory)}. */
+ *  {@link EdgeConvolvingComposedFilter}. */
 
 public interface KernelDataFactory
 {
