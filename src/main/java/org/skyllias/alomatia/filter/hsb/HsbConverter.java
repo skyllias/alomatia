@@ -1,47 +1,32 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-/** Converter of coordinates in the HSB colour-space. */
+/** Converter of coordinates in the HSB colour-space.
+ *
+ *  Implementations only have to override the methods that do not return the
+ *  original component unaltered. */
 
 public interface HsbConverter
 {
   /** Returns the transformed hue for a colour with the passed HSB values. */
 
-  float getNewHue(float hue, float saturation, float brightness);
+  default float getNewHue(float hue, float saturation, float brightness)
+  {
+    return hue;
+  }
 
   /** Returns the transformed saturation for a colour with the passed HSB values. */
 
-  float getNewSaturation(float hue, float saturation, float brightness);
+  default float getNewSaturation(float hue, float saturation, float brightness)
+  {
+    return saturation;
+  }
 
   /** Returns the transformed brightness for a colour with the passed HSB values. */
 
-  float getNewBrightness(float hue, float saturation, float brightness);
-
-//******************************************************************************
-
-  /** Dummy implementation of HsbConverter that returns the original values unaltered.
-   *  Meant to serve as a superclass for HsbConverters that only override one
-   *  dimension, as Java 8 default interface methods are not available. */
-
-  public class HsbAdapter implements HsbConverter
+  default float getNewBrightness(float hue, float saturation, float brightness)
   {
-//==============================================================================
-
-    @Override
-    public float getNewHue(float hue, float saturation, float brightness) {return hue;}
-
-//------------------------------------------------------------------------------
-
-    @Override
-    public float getNewSaturation(float hue, float saturation, float brightness) {return saturation;}
-
-//------------------------------------------------------------------------------
-
-    @Override
-    public float getNewBrightness(float hue, float saturation, float brightness) {return brightness;}
-
-//------------------------------------------------------------------------------
-
+    return brightness;
   }
 
 }

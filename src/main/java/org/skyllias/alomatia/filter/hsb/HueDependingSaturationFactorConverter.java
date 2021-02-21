@@ -3,12 +3,11 @@ package org.skyllias.alomatia.filter.hsb;
 
 import org.skyllias.alomatia.filter.factor.AntiBoostingFactor;
 import org.skyllias.alomatia.filter.factor.UnitFactor;
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
 /** Converter that increases or decreases the saturation of the colours in an
  *  image depending on their hue. */
 
-public class HueDependingSaturationFactorConverter extends HsbAdapter
+public class HueDependingSaturationFactorConverter implements HsbConverter
 {
   private final HueFunction hueFunction;
 
