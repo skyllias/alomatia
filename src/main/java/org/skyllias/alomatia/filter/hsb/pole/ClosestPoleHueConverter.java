@@ -3,11 +3,11 @@ package org.skyllias.alomatia.filter.hsb.pole;
 
 import java.awt.Color;
 
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
+import org.skyllias.alomatia.filter.hsb.HsbConverter;
 
 /** Converter that shifts hue towards the closest of one or more poles. */
 
-public class ClosestPoleHueConverter extends HsbAdapter
+public class ClosestPoleHueConverter implements HsbConverter
 {
   private final AttractionPoles attractionPoles;
 

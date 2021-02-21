@@ -3,11 +3,11 @@ package org.skyllias.alomatia.filter.hsb.pole;
 
 import java.awt.Color;
 
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
+import org.skyllias.alomatia.filter.hsb.HsbConverter;
 
 /** Converter that shifts hue combining the attractions of multiple poles. */
 
-public class CombinedPoleHueConverter extends HsbAdapter
+public class CombinedPoleHueConverter implements HsbConverter
 {
   private final AttractionPoles attractionPoles;
 

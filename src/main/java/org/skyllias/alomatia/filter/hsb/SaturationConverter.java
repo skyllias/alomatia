@@ -3,14 +3,13 @@ package org.skyllias.alomatia.filter.hsb;
 
 import org.skyllias.alomatia.filter.factor.AntiBoostingFactor;
 import org.skyllias.alomatia.filter.factor.UnitFactor;
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
 /** Converter that increases or decreases the saturation of the colours in an
  *  image by a non-linear factor.
  *  <p>
  *  This could be a particular case of {@link HueDependingSaturationFactorConverter}. */
 
-public class SaturationConverter extends HsbAdapter
+public class SaturationConverter implements HsbConverter
 {
   private final UnitFactor unitFactor;
 

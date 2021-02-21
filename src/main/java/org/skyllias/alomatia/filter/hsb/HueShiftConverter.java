@@ -1,11 +1,9 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
-
 /** Converter that "rotates" the hue by a factor. */
 
-public class HueShiftConverter extends HsbAdapter
+public class HueShiftConverter implements HsbConverter
 {
   private final float shift;
 

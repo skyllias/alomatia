@@ -1,11 +1,9 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
-
 /** Converter that quantizes the saturation of each pixel. */
 
-public class SaturationPosterizerConverter extends HsbAdapter
+public class SaturationPosterizerConverter implements HsbConverter
 {
   private final UnitQuantizer quantizer;
 
