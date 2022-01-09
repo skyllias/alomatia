@@ -25,7 +25,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.skyllias.alomatia.display.FilterableDisplay;
-import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
@@ -35,9 +34,13 @@ import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
+import org.skyllias.alomatia.ui.frame.MainApplicationFrameSupplier;
+import org.skyllias.alomatia.ui.save.ImageSaver;
 
 /** Provider of the logic for windows where the filtered images are drawn. The
  *  real frame is managed by means of a {@link FrameAdaptorFactory}.
+ *  <p>
+ *  There is one instance of controller per window/frame.
  *  <p>
  *  In an application there can be zero or more of these windows, all with the
  *  same original image but potentially with a different filter applied to each
@@ -55,6 +58,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   private static final String PANEL_TOOLTIP = "display.panel.tooltip";
 
   private final LabelLocalizer labelLocalizer;
+  private final LogoProducer logoProducer;
 
   private final DisplayPanelController displayPanel;
 
@@ -74,11 +78,13 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   /** Creates a new window containing the passed display panel. */
 
-  public DisplayFrameController(LabelLocalizer localizer, FrameAdaptor adaptor,
-                                DisplayPanelController panel, FilterFactory filterFactory,
-                                FilteredImageGenerator filteredImageGenerator, ImageSaver saver)
+  public DisplayFrameController(LabelLocalizer localizer, LogoProducer logoProducer, FrameAdaptor adaptor,
+                                DisplayPanelController panel, FilterSelectorComposer filterSelectorComposer,
+                                FilteredImageGenerator filteredImageGenerator, ImageSaver saver,
+                                DisplayOptionsDialogComposer dialogComposer)
   {
     labelLocalizer              = localizer;
+    this.logoProducer           = logoProducer;
     displayPanel                = panel;
     frameAdaptor                = adaptor;
     this.filteredImageGenerator = filteredImageGenerator;
@@ -91,16 +97,14 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
     frameAdaptor.addClosingFrameListener(this);
 
-    filterSelector = new FilterSelectorComposer(labelLocalizer, this, filterFactory).createFilterSelector();
+    filterSelector = filterSelectorComposer.createFilterSelector(this);
     setUpFilterKeyListeners(filterSelector);
     setOutputKeyListeners();
 
     frameAdaptor.setMaximized(false);
     frameAdaptor.setVisible(true);
 
-    DisplayOptionsDialogComposer dialogComposer = new DisplayOptionsDialogComposer(labelLocalizer,
-                                                                                   this, filterSelector);
-    JDialog optionsDialog                       = dialogComposer.getDialog();
+    JDialog optionsDialog = dialogComposer.getDialog(this, filterSelector);
     displayPanel.getComponent().addMouseListener(new DisplayPanelClickListener(optionsDialog));
   }
 
@@ -344,13 +348,13 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
 //------------------------------------------------------------------------------
 
-  /** Returns the logo used when there is no filter applied.
-   *  Copied from BasicAlomatiaWindow. */
+  /* Returns the logo used when there is no filter applied.
+   * Copied from ControlFrameManager. */
 
   private Image getDefaultLogo()
   {
-    return new LogoProducer().createImage(ControlFrameManager.ICON_WIDTH,
-                                          ControlFrameManager.ICON_HEIGHT);            // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
+    return logoProducer.createImage(MainApplicationFrameSupplier.ICON_WIDTH,
+                                    MainApplicationFrameSupplier.ICON_HEIGHT);  // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
   }
 
 //------------------------------------------------------------------------------

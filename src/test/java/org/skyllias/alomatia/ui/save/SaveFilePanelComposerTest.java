@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.save;
 
 import static org.assertj.swing.fixture.Containers.showInFrame;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.ui.BarePanelComposer;
 
 /* The destination dir changes cannot be tested because they involve a JFileChooser. */
 
@@ -36,6 +38,8 @@ public class SaveFilePanelComposerTest
   private FileImageSaver imageSaver;
   @Mock
   private Preferences preferences;
+  @Mock
+  private BarePanelComposer bareControlPanelComposer;
 
   @BeforeClass
   public static void setUpOnce()
@@ -56,7 +60,8 @@ public class SaveFilePanelComposerTest
 
   private void setUpUi()
   {
-    final SaveFilePanelComposer panelComposer = new SaveFilePanelComposer(new KeyLabelLocalizer(), imageSaver);
+    final SaveFilePanelComposer panelComposer = new SaveFilePanelComposer(new KeyLabelLocalizer(),
+                                                                          bareControlPanelComposer);
     panelComposer.setPreferences(preferences);
 
     JComponent savePanel = GuiActionRunner.execute(new Callable<JComponent>()
@@ -64,7 +69,10 @@ public class SaveFilePanelComposerTest
       @Override
       public JComponent call() throws Exception
       {
-        return panelComposer.getComponent();
+        when(bareControlPanelComposer.getPanel("save.control.title"))
+            .thenReturn(new JPanel());
+
+        return panelComposer.getComponent(imageSaver);
       }
     });
     frameFixture = showInFrame(savePanel);

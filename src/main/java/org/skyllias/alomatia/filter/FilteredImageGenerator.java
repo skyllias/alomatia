@@ -7,9 +7,12 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 
+import org.springframework.stereotype.Component;
+
 /** Generator of {@link Image}s obtained after applying an {@link ImageFilter}
  *  to an input image. */
 
+@Component
 public class FilteredImageGenerator
 {
 //==============================================================================

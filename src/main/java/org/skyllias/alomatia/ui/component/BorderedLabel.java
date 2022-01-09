@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.component;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;

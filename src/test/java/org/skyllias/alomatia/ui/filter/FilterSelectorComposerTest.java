@@ -3,7 +3,6 @@ package org.skyllias.alomatia.ui.filter;
 
 import static org.assertj.swing.fixture.Containers.showInFrame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -14,6 +13,7 @@ import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
@@ -35,6 +35,7 @@ import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.filter.rgb.BrighterConverter;
 import org.skyllias.alomatia.filter.rgb.DarkerConverter;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.ui.BarePanelComposer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FilterSelectorComposerTest
@@ -50,9 +51,9 @@ public class FilterSelectorComposerTest
   @Mock
   private FilterFactory filterFactory;
   @Mock
-  private FilterSearchHistoryFactory filterSearchHistoryFactory;
-  @Mock
   private HistorySuggestionDecorator historySuggestionDecorator;
+  @Mock
+  private BarePanelComposer bareControlPanelComposer;
 
   private NamedFilter nullFilter     = new NamedFilter(null,                                      NO_FILTER_NAME);
   private NamedFilter brighterFilter = new NamedFilter(new ColourFilter(new BrighterConverter()), LIGHTER_FILTER_NAME);
@@ -69,22 +70,24 @@ public class FilterSelectorComposerTest
   @Before
   public void setUp()
   {
-    when(filterSearchHistoryFactory.newInstance()).thenReturn(filterSearchHistory);
-
-    when(filterFactory.getAllAvailableFilters()).
-         thenReturn(Arrays.asList(nullFilter, brighterFilter, darkerFilter));
+    when(filterFactory.getAllAvailableFilters())
+        .thenReturn(Arrays.asList(nullFilter, brighterFilter, darkerFilter));
 
     final FilterSelectorComposer filterSelector = new FilterSelectorComposer(new KeyLabelLocalizer(),
-                                                                             filterableDisplay, filterFactory,
-                                                                             filterSearchHistoryFactory,
-                                                                             historySuggestionDecorator);
+                                                                             filterFactory,
+                                                                             filterSearchHistory,
+                                                                             historySuggestionDecorator,
+                                                                             bareControlPanelComposer);
 
     JComponent filterPanel = GuiActionRunner.execute(new Callable<JComponent>()
     {
       @Override
       public JComponent call() throws Exception
       {
-        return filterSelector.createFilterSelector().getComponent();
+        when(bareControlPanelComposer.getPanel("filter.selector.title"))
+            .thenReturn(new JPanel());
+
+        return filterSelector.createFilterSelector(filterableDisplay).getComponent();
       }
     });
     frameFixture = showInFrame(filterPanel);
@@ -101,7 +104,7 @@ public class FilterSelectorComposerTest
   @Test
   public void shouldDecorateTextFieldForSuggestions()
   {
-    verify(historySuggestionDecorator).decorate(any(JTextField.class), eq(filterSearchHistory));
+    verify(historySuggestionDecorator).decorate(any(JTextField.class));
   }
 
   @Test

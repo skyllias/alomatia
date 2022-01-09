@@ -3,10 +3,13 @@ package org.skyllias.alomatia.ui.frame;
 
 import java.util.prefs.Preferences;
 
+import org.springframework.stereotype.Component;
+
 /** Configuration for the behaviour when displaying frames.
  *  Maybe in the future this will become an interface, and a bigger variety of
  *  policies are supported. */
 
+@Component
 public class FramePolicyAtStartUp
 {
   private static final String VM_ARG_INTERNALFRAMES   = "alomatia.frames.inner";

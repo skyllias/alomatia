@@ -7,7 +7,9 @@ import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.FixedFilterFactory;
 import org.skyllias.alomatia.save.FileSaver;
 
-/** Application that executes a filter command. */
+/** Application that executes a filter command.
+ *  To avoid the overhead of component scanning, this does not rely on
+ *  dependency injection. */
 
 public class CliAlomatia
 {
@@ -26,7 +28,8 @@ public class CliAlomatia
     try
     {
       FilterCommand filterCommand = new FilterCommand(args, new FixedFilterFactory(),
-                                                      new FilteredImageGenerator(), new FileSaver());
+                                                      new FilteredImageGenerator(),
+                                                      new FileSaver());
       filterCommand.execute();
 
       System.exit(0);

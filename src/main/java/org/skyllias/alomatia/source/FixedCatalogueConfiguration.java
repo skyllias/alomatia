@@ -3,11 +3,13 @@ package org.skyllias.alomatia.source;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/** Provider of instances of {@link SourceCatalogue} with instances from some
- *  known {@link ImageSource}s. */
+/** Probably the whole catalogue idea will be refactored in the future. */
 
-public class FixedCatalogueGenerator
+@Configuration
+public class FixedCatalogueConfiguration
 {
 //==============================================================================
 
@@ -15,6 +17,7 @@ public class FixedCatalogueGenerator
    *  Other particular source properties (eg the file in a SingleFileSource) are
    *  not informed. */
 
+  @Bean
   public SourceCatalogue getNewCatalogue(ImageDisplay display)
   {
     SourceCatalogue catalogue = new SourceCatalogue();

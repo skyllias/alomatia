@@ -21,7 +21,7 @@ public class LogoApp
 
   public static void main(String[] args) throws Exception
   {
-    Image logo = new LogoProducer().createImage(WIDTH, HEIGHT);
+    Image logo = new LogoProducer(new ColourCoordinator()).createImage(WIDTH, HEIGHT);
 
     BufferedImage bufferedImage = new BufferedImage(logo.getWidth(null), logo.getHeight(null), BufferedImage.TYPE_INT_RGB);
     Graphics2D imageGraphics    = bufferedImage.createGraphics();

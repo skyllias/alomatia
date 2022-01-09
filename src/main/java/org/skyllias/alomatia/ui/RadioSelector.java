@@ -27,7 +27,7 @@ public class RadioSelector<RADIO extends AbstractButton, SELECTABLE> implements 
   private ButtonGroup radioGroup = new ButtonGroup();                           // group for all radio buttons of this selector
 
   private Map<String, SELECTABLE> commandObjects = new LinkedHashMap<String, SELECTABLE>();  // radio buttons do not support referencing objects, only string as action commands, so this will contain the relationship between each action commands and the real object selected by each radio button
-  private Map<SELECTABLE, RADIO> objectRadios    = new LinkedHashMap<SELECTABLE, RADIO>();   // same as commandObjects, so that objectRadios.get(commandObjects.get(actionCommand).equals(actionCommand), unless there is some null anywhere
+  private Map<SELECTABLE, RADIO> objectRadios    = new LinkedHashMap<SELECTABLE, RADIO>();   // same as commandObjects, so that objectRadios.get(commandObjects.get(actionCommand)).getActionCommand().equals(actionCommand), unless there is some null anywhere
 
   private final LabelLocalizer labelLocalizer;
   private final RadioSelectorListener<SELECTABLE> listener;

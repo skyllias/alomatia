@@ -5,9 +5,12 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import org.springframework.stereotype.Component;
+
 /** Composer of bare empty panels that can be used to contain controls. */
 
-public class BasicControlPanelComposer
+@Component
+public class BarePanelComposer
 {
 //==============================================================================
 

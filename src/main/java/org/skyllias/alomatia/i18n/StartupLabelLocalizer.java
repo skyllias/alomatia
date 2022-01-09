@@ -9,6 +9,7 @@ import java.util.prefs.Preferences;
 import javax.swing.UIManager;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.stereotype.Component;
 
 /** LabelLocalizer that applies the same locale over a JVM, retrieving it from
  *  the user properties. It may be overriden by means of VM arguments.
@@ -20,6 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
  *  the language cannot be changed at runtime. Instead, a language can be
  *  selected in order to be used the next time the application is run. */
 
+@Component
 public class StartupLabelLocalizer implements LabelLocalizer
 {
   protected static final String PREFKEY_NEXTLANG = "nextExecLocale";

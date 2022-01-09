@@ -32,6 +32,7 @@ import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.DisplayFrameController.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
+import org.skyllias.alomatia.ui.component.BorderedLabel;
 import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 /** Composer of panels to manage display frames: Create, count and rearrange them.
@@ -42,6 +43,7 @@ import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
  *  <p>
  *  A global key listener is added to open windows when Ctrl + N is pressed. */
 
+@org.springframework.stereotype.Component
 public class WindowControlPanelComposer implements DisplayFrameCloseListener
 {
   private static final String TITLE_LABEL          = "frame.control.title";
@@ -74,6 +76,8 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   private DisplayFrameManager manager;
   private FramePolicyAtStartUp framePolicy;
 
+  private final BarePanelComposer bareControlPanelComposer;
+
   private Repeater repeaterDisplay;
 
   private LabelLocalizer labelLocalizer;
@@ -89,15 +93,17 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   /** Does NOT open a new window automatically. {@link #openNewWindowIfRequired()}
    *  must be explicitly called. */
 
-  protected WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
-                                       DropTargetListener dropTargetListener,
-                                       DisplayFrameManager frameManager, FramePolicyAtStartUp policy)
+  public WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
+                                    DropTargetListenerSupplier dropTargetListenerSupplier,
+                                    DisplayFrameManager frameManager, FramePolicyAtStartUp policy,
+                                    BarePanelComposer panelComposer)
   {
-    labelLocalizer  = localizer;
-    repeaterDisplay = displayRepeater;
-    manager         = frameManager;
-    dropListener    = dropTargetListener;
-    framePolicy     = policy;
+    labelLocalizer           = localizer;
+    repeaterDisplay          = displayRepeater;
+    manager                  = frameManager;
+    dropListener             = dropTargetListenerSupplier.getDropTargetListener();
+    framePolicy              = policy;
+    bareControlPanelComposer = panelComposer;
 
     addNewDisplayKeyListener();
   }
@@ -108,7 +114,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   public JComponent createComponent()
   {
-    JPanel windowControlPanel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(TITLE_LABEL));
+    JPanel windowControlPanel = bareControlPanelComposer.getPanel(labelLocalizer.getString(TITLE_LABEL));
 
     addAdditionComponents(windowControlPanel);
     addRearrangeComponents(windowControlPanel);
