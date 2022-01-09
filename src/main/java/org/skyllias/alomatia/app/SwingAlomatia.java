@@ -6,13 +6,9 @@ import java.util.Properties;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.skyllias.alomatia.display.Repeater;
-import org.skyllias.alomatia.filter.FixedFilterFactory;
+import org.skyllias.alomatia.dependency.BeanFactoryLoader;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.i18n.StartupLabelLocalizer;
-import org.skyllias.alomatia.source.FixedCatalogueGenerator;
-import org.skyllias.alomatia.ui.ControlFrameManager;
-import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
+import org.skyllias.alomatia.ui.controls.ControlsFrameManager;
 
 import com.jtattoo.plaf.aero.AeroLookAndFeel;
 
@@ -27,6 +23,11 @@ public class SwingAlomatia
 
   public static void main(String[] args)
   {
+    BeanFactoryLoader beanFactoryLoader = new BeanFactoryLoader();
+
+    ControlsFrameManager controlFrameController = beanFactoryLoader.getLoadedBean(ControlsFrameManager.class);
+    LabelLocalizer labelLocalizer               = beanFactoryLoader.getLoadedBean(LabelLocalizer.class);
+
     SwingUtilities.invokeLater(new Runnable()
     {
       @Override
@@ -34,21 +35,12 @@ public class SwingAlomatia
       {
         try
         {
-          LabelLocalizer labelLocalizer = new StartupLabelLocalizer();
-
           Properties lnfProperties = new Properties();
           lnfProperties.put(LNF_LOGO_STRING_PROPERTY, labelLocalizer.getString(APP_NAME));
           AeroLookAndFeel.setCurrentTheme(lnfProperties);
           UIManager.setLookAndFeel(new AeroLookAndFeel());                      // TODO make it optional
 
-          FixedCatalogueGenerator catalogueGenerator = new FixedCatalogueGenerator();
-          Repeater repeater                          = new Repeater();
-          FramePolicyAtStartUp framePolicy           = new FramePolicyAtStartUp();
-
-          ControlFrameManager controlFrameController = new ControlFrameManager();
-          controlFrameController.createControlFrame(labelLocalizer,
-                                                    catalogueGenerator.getNewCatalogue(repeater),
-                                                    repeater, new FixedFilterFactory(), framePolicy);    // TODO instead of passing these instances everywhere use an injection framework like Spring
+          controlFrameController.createControlFrame();
         }
         catch (Exception e) {e.printStackTrace();}                              // TODO log
       }

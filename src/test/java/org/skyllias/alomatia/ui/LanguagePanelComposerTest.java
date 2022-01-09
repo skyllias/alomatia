@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -32,6 +33,8 @@ public class LanguagePanelComposerTest
   private FrameFixture frameFixture;
   @Mock
   private LabelLocalizer labelLocalizer;
+  @Mock
+  private BarePanelComposer bareControlPanelComposer;
 
   @BeforeClass
   public static void setUpOnce()
@@ -44,7 +47,8 @@ public class LanguagePanelComposerTest
   {
     MockitoAnnotations.initMocks(this);
 
-    when(labelLocalizer.getString(any(String.class))).thenReturn("");           // avoid NPE
+    when(labelLocalizer.getString(any(String.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
   }
 
   @After
@@ -55,12 +59,18 @@ public class LanguagePanelComposerTest
 
   private void setUpFixture()
   {
+    LanguagePanelComposer composer = new LanguagePanelComposer(labelLocalizer,
+                                                               bareControlPanelComposer);
+
     JComponent languagePanel = GuiActionRunner.execute(new Callable<JComponent>()
     {
       @Override
       public JComponent call() throws Exception
       {
-        return new LanguagePanelComposer(labelLocalizer).getComponent();
+        when(bareControlPanelComposer.getPanel("language.selector.title"))
+            .thenReturn(new JPanel());
+
+        return composer.getComponent();
       }
     });
     frameFixture = showInFrame(languagePanel);

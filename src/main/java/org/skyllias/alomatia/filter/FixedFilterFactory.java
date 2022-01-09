@@ -39,9 +39,11 @@ import org.skyllias.alomatia.filter.hsb.pole.DistantAttraction;
 import org.skyllias.alomatia.filter.hsb.pole.LinearRepulsion;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 import org.skyllias.alomatia.filter.rgb.lookup.ChannelLookupFilterFactory;
+import org.springframework.stereotype.Component;
 
 /** FilterFactory with a hardcoded set of available filters. */
 
+@Component
 public class FixedFilterFactory implements FilterFactory
 {
   private static final String NO_FILTER_NAME            = "filter.selector.none";

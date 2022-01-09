@@ -10,8 +10,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.stereotype.Component;
+
 /** Saver of images to files. */
 
+@Component
 public class FileSaver
 {
   private static final String IMAGE_FORMAT = "PNG";

@@ -21,9 +21,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.component.BorderedLabel;
 
 /** Composer of a panel to display the current language and to select the next one. */
 
+@org.springframework.stereotype.Component
 public class LanguagePanelComposer
 {
   private static final String TITLE_LABEL    = "language.selector.title";
@@ -31,24 +33,27 @@ public class LanguagePanelComposer
 
   protected static final String LANG_SELECTOR_NAME = "language.selector";       // name for the combobox
 
-  private LabelLocalizer labelLocalizer;
+  private final LabelLocalizer labelLocalizer;
+  private final BarePanelComposer bareControlPanelComposer;
 
 //==============================================================================
 
   /** Creates a new panel with the components to display and change the language. */
 
-  protected LanguagePanelComposer(LabelLocalizer localizer)
+  protected LanguagePanelComposer(LabelLocalizer localizer,
+                                  BarePanelComposer panelComposer)
   {
-    labelLocalizer = localizer;
+    labelLocalizer           = localizer;
+    bareControlPanelComposer = panelComposer;
   }
 
 //==============================================================================
 
-  /** Returns a new panel with the required controls */
+  /** Returns a new panel with the required controls. */
 
   public JComponent getComponent()
   {
-    JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(TITLE_LABEL));
+    JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(TITLE_LABEL));
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 

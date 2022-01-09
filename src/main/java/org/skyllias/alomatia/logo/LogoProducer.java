@@ -5,14 +5,24 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
+import org.springframework.stereotype.Component;
+
 /** Generator of images whose pixels depend on their location according to a ColourCoordinator. */
 
+@Component
 public class LogoProducer
 {
   private static final int MARGIN_SATURATION = 2;                               // amount of pixels to keep away from the uttermost unsaturated colours
   private static final int MARGIN_BRIGHTNESS = 2;                               // amount of pixels to keep away from the uttermost darkened colours
 
-  private ColourCoordinator coordinator = new ColourCoordinator();
+  private final ColourCoordinator coordinator;
+
+//==============================================================================
+
+  public LogoProducer(ColourCoordinator coordinator)
+  {
+    this.coordinator = coordinator;
+  }
 
 //==============================================================================
 

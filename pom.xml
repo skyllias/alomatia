@@ -13,9 +13,48 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
+    <spring.version>5.3.14</spring.version>
   </properties>
 
   <dependencies>
+    <!-- business -->
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <!-- UI -->
+
+    <dependency>
+      <groupId>com.jtattoo</groupId>
+      <artifactId>JTattoo</artifactId>
+      <version>1.6.11</version>
+    </dependency>    
+
     <!-- test -->
 
     <dependency>
@@ -35,27 +74,6 @@
       <artifactId>assertj-swing</artifactId>
       <version>3.6.0</version>
       <scope>test</scope>
-    </dependency>
-
-    <!-- business -->
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.5</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
-    </dependency>
-
-    <!-- UI -->
-
-    <dependency>
-      <groupId>com.jtattoo</groupId>
-      <artifactId>JTattoo</artifactId>
-      <version>1.6.11</version>
     </dependency>
   </dependencies>
 

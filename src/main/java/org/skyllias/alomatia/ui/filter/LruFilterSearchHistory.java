@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 /** Naive implementatation of {@link FilterSearchHistory} that keeps track of
  *  all searched strings and returns them based on the inverse order with which
  *  they were last used. Frequency or age are not taken into account. */
 
+@Component
 public class LruFilterSearchHistory implements FilterSearchHistory
 {
   private final SortedHistoryRepository sortedHistoryRepository;

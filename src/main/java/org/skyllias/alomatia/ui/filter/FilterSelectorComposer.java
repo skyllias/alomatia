@@ -4,8 +4,6 @@ package org.skyllias.alomatia.ui.filter;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Collection;
-import java.util.LinkedList;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -20,88 +18,65 @@ import org.skyllias.alomatia.display.FilterableDisplay;
 import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.ui.BasicControlPanelComposer;
+import org.skyllias.alomatia.ui.BarePanelComposer;
 import org.skyllias.alomatia.ui.RadioSelector;
 import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 
 /** Composer of a selector of the filter to apply in a {@link FilterableDisplay}. */
 
-public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter>
+@org.springframework.stereotype.Component
+public class FilterSelectorComposer
 {
   protected static final String FILTER_LABEL = "filter.selector.title";
   protected static final String SEARCH_LABEL = "filter.selector.search";
 
-  private final FilterSearchHistoryFactory filterSearchHistoryFactory;
+  private final FilterSearchHistory filterSearchHistory;
   private final HistorySuggestionDecorator historySuggestionDecorator;
 
   private final LabelLocalizer labelLocalizer;
+  private final BarePanelComposer bareControlPanelComposer;
 
-  private final FilterableDisplay filterableDisplay;
   private final FilterFactory factory;
-
-  private final Collection<FilterSelectionListener> filterSelectionListeners = new LinkedList<>();
 
 //==============================================================================
 
   /** Creates a new selector that will modify the passed display's filter with
    *  one of the items from filterFactory. */
 
-  public FilterSelectorComposer(LabelLocalizer localizer, FilterableDisplay imageDisplay,
-                                FilterFactory filterFactory)
+  public FilterSelectorComposer(LabelLocalizer localizer, FilterFactory filterFactory,
+                                FilterSearchHistory filterSearchHistory,
+                                HistorySuggestionDecorator historySuggestionDecorator,
+                                BarePanelComposer panelComposer)
   {
-    this(localizer, imageDisplay, filterFactory,
-         new FilterSearchHistoryFactory(), new HistorySuggestionDecorator());
-  }
+    labelLocalizer           = localizer;
+    factory                  = filterFactory;
+    bareControlPanelComposer = panelComposer;
 
-//------------------------------------------------------------------------------
-
-  protected FilterSelectorComposer(LabelLocalizer localizer, FilterableDisplay imageDisplay,
-                                   FilterFactory filterFactory,
-                                   FilterSearchHistoryFactory filterSearchHistoryFactory,
-                                   HistorySuggestionDecorator historySuggestionDecorator)
-  {
-    labelLocalizer    = localizer;
-    filterableDisplay = imageDisplay;
-    factory           = filterFactory;
-
-    this.filterSearchHistoryFactory = filterSearchHistoryFactory;
+    this.filterSearchHistory        = filterSearchHistory;
     this.historySuggestionDecorator = historySuggestionDecorator;
   }
 
 //==============================================================================
 
-  /** Returns a new component with the filter controls set up. */
+  /** Returns a new component with the filter controls set up for the display. */
 
-  public FilterSelector createFilterSelector()
+  public FilterSelector createFilterSelector(FilterableDisplay imageDisplay)
   {
-    final JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(FILTER_LABEL));
+    final JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(FILTER_LABEL));
 
     JTextField searchField = createSearchField(panel);
     panel.add(searchField);
 
-    RadioSelector<JRadioButton, NamedFilter> radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, this);
 
-    for (NamedFilter namedFilter : factory.getAllAvailableFilters())            // consider sorting them
+    FilterSelectionListener filterSelectionListener        = new FilterSelectionListener(searchField, imageDisplay, filterSearchHistory);
+    RadioSelector<JRadioButton, NamedFilter> radioSelector = new RadioSelector<>(JRadioButton.class, labelLocalizer, filterSelectionListener);
+
+    for (NamedFilter namedFilter : factory.getAllAvailableFilters())
     {
       panel.add(radioSelector.createRadioObject(namedFilter.getNameKey(), namedFilter));
     }
 
     return new FilterSelector(panel, radioSelector);
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the selected filter to the image display. */
-
-  @Override
-  public void onSelectionChanged(NamedFilter filter)
-  {
-    filterableDisplay.setImageFilter(filter);
-
-    for (FilterSelectionListener filterSelectionListener : filterSelectionListeners)
-    {
-      filterSelectionListener.onFilterSelected();
-    }
   }
 
 //------------------------------------------------------------------------------
@@ -115,13 +90,9 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
     searchField.setMaximumSize(new Dimension(Integer.MAX_VALUE,
                                              searchField.getPreferredSize().height));       // prevent the containing layout from streching the field vertically
 
-    searchField.getDocument().addDocumentListener(new SearchFieldListener(panel));
+    searchField.getDocument().addDocumentListener(new SearchFieldDocumentListener(panel));
 
-    FilterSearchHistory filterSearchHistory = filterSearchHistoryFactory.newInstance();
-
-    historySuggestionDecorator.decorate(searchField, filterSearchHistory);
-
-    filterSelectionListeners.add(new FilterSearchHistoryUpdateListener(searchField, filterSearchHistory));
+    historySuggestionDecorator.decorate(searchField);
 
     return searchField;
   }
@@ -154,11 +125,11 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
 
 //******************************************************************************
 
-  private final class SearchFieldListener implements DocumentListener
+  private final class SearchFieldDocumentListener implements DocumentListener
   {
     private final JPanel panel;
 
-    private SearchFieldListener(JPanel panel)
+    private SearchFieldDocumentListener(JPanel panel)
     {
       this.panel = panel;
     }
@@ -187,33 +158,29 @@ public class FilterSelectorComposer implements RadioSelectorListener<NamedFilter
 
 //******************************************************************************
 
-  /* Interface to get notified whenever a new filter is selected. */
+  /* RadioSelectorListener that registers the non-empty contents of a text
+   * field in a FilterSearchHistory after updating the filter in a display. */
 
-  private static interface FilterSelectionListener
-  {
-    void onFilterSelected();
-  }
-
-//******************************************************************************
-
-  /* FilterSelectionListener that registers the non-empty contents of a text
-   * field in a FilterSearchHistory. */
-
-  private static class FilterSearchHistoryUpdateListener implements FilterSelectionListener
+  private class FilterSelectionListener implements RadioSelectorListener<NamedFilter>
   {
     private final JTextField searchField;
+    private final FilterableDisplay filterableDisplay;
     private final FilterSearchHistory filterSearchHistory;
 
-    public FilterSearchHistoryUpdateListener(JTextField searchField,
-                                             FilterSearchHistory filterSearchHistory)
+    public FilterSelectionListener(JTextField searchField,
+                                   FilterableDisplay filterableDisplay,
+                                   FilterSearchHistory filterSearchHistory)
     {
       this.searchField         = searchField;
+      this.filterableDisplay   = filterableDisplay;
       this.filterSearchHistory = filterSearchHistory;
     }
 
     @Override
-    public void onFilterSelected()
+    public void onSelectionChanged(NamedFilter filter)
     {
+      filterableDisplay.setImageFilter(filter);
+
       String currentSearch = searchField.getText();
       if (StringUtils.isNotBlank(currentSearch)) filterSearchHistory.registerSearchString(currentSearch);
     }

@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.save;
 
 import java.awt.Image;
 import java.io.File;

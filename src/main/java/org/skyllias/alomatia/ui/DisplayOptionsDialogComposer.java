@@ -24,6 +24,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.filter.FilterSelector;
+import org.springframework.stereotype.Component;
 
 /** Composer of non-modal dialog with the display options for a given {@link DisplayFrameController}.
  *  <p>
@@ -32,6 +33,7 @@ import org.skyllias.alomatia.ui.filter.FilterSelector;
  *  <p>
  *  The dialog can be hidden both with the close button and the ESC key. */
 
+@Component
 public class DisplayOptionsDialogComposer
 {
   private static final String TITLE                  = "display.options.title";
@@ -46,21 +48,18 @@ public class DisplayOptionsDialogComposer
 
   private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. TODO remove sometime after the dialog disposal
 
-  private DisplayFrameController ownerDisplayFrame;
-  private LabelLocalizer labelLocalizer;
-  private FilterSelector filterSelector;
+  private final LabelLocalizer labelLocalizer;
+  private final ZoomSelectorComposer zoomSelectorComposer;
 
   private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
   public DisplayOptionsDialogComposer(LabelLocalizer localizer,
-                                      DisplayFrameController ownerFrame,
-                                      FilterSelector selector)
+                                      ZoomSelectorComposer zoomComposer)
   {
-    labelLocalizer    = localizer;
-    ownerDisplayFrame = ownerFrame;
-    filterSelector    = selector;
+    labelLocalizer       = localizer;
+    zoomSelectorComposer = zoomComposer;
   }
 
 //==============================================================================
@@ -69,13 +68,14 @@ public class DisplayOptionsDialogComposer
    *  any subsequent that may be created afterwards, and offers no special
    *  advantage in this case. */
 
-  public JDialog getDialog()
+  public JDialog getDialog(DisplayFrameController ownerDisplayFrame,
+                           FilterSelector filterSelector)
   {
     boolean showImmediately = preferences.getBoolean(PREFKEY_SHOW, SHOW_IMMEDIATELY_DEFAULT);
 
     JDialog dialog = new JDialog(ownerDisplayFrame.getOwnerFrame(), labelLocalizer.getString(TITLE), false);
 
-    JPanel selectorsPanel = getSelectorsPanel();
+    JPanel selectorsPanel = getSelectorsPanel(ownerDisplayFrame, filterSelector);
     JPanel optionsPanel   = getOptionsPanel(selectorsPanel, showImmediately);
     JPanel buttonsPanel   = getButtonsPanel(dialog);
 
@@ -94,10 +94,10 @@ public class DisplayOptionsDialogComposer
 
   /* Returns a panel containing the filter selector and a zoom selector. */
 
-  private JPanel getSelectorsPanel()
+  private JPanel getSelectorsPanel(DisplayFrameController ownerDisplayFrame,
+                                   FilterSelector filterSelector)
   {
-    ZoomSelectorComposer zoomComposer = new ZoomSelectorComposer(labelLocalizer, ownerDisplayFrame.getDisplayPanel());
-    JComponent zoomPanel              = zoomComposer.getComponent();
+    JComponent zoomPanel = zoomSelectorComposer.getComponent(ownerDisplayFrame.getDisplayPanel());
 
     JPanel selectorsPanel     = new JPanel();
     JScrollPane filtersScroll = new JScrollPane(filterSelector.getComponent());

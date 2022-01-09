@@ -12,8 +12,14 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import org.skyllias.alomatia.dependency.Profiles;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
 /** {@link FrameAdaptorFactory} that returns {@link JFrameAdaptor}s. */
 
+@Component
+@Profile(Profiles.SEPARATE_WINDOWS)
 public class JFrameAdaptorFactory implements FrameAdaptorFactory
 {
   private static final Dimension DEFAULT_SIZE = new Dimension(600, 400);

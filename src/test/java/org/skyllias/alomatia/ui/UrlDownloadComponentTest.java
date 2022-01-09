@@ -29,6 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.AsynchronousUrlSource.DownloadListener;
+import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubcomponent;
 
 /** AssertJ does not support writing strings with chars that are typed with
  *  modifiers (shift, alt, etc.), so there is not much effort placed in restoring
@@ -44,7 +45,8 @@ public class UrlDownloadComponentTest
   private AsynchronousUrlSource source;
   @Mock
   private Preferences preferences;
-  private UrlDownloadSubcomponentComposer downloadComponent;
+  private UrlDownloadSubcomponentComposer downloadComponentComposer;
+  private UrlDownloadSubcomponent downloadComponent;
 
   @BeforeClass
   public static void setUpOnce()
@@ -59,14 +61,15 @@ public class UrlDownloadComponentTest
 
     when(preferences.get(eq(UrlDownloadSubcomponentComposer.PREFKEY_DEFAULTURL), any(String.class))).thenReturn(null);
 
+    downloadComponentComposer = new UrlDownloadSubcomponentComposer(new KeyLabelLocalizer());
+    downloadComponentComposer.setPreferences(preferences);
+
     JPanel container = GuiActionRunner.execute(new Callable<JPanel>()
     {
       @Override
       public JPanel call() throws Exception
       {
-        downloadComponent = new UrlDownloadSubcomponentComposer(new KeyLabelLocalizer(), source);
-        downloadComponent.setPreferences(preferences);
-
+        downloadComponent = downloadComponentComposer.getUrlDownloadSubcomponent(source);
         JButton button      = downloadComponent.getButton();
         JTextField urlField = downloadComponent.getTextField();
         JPanel container    = new JPanel();
