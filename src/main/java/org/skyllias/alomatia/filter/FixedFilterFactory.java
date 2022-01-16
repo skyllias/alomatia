@@ -85,6 +85,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_SAT_M_FILTER_NAME     = "filter.hsb.saturation+m.name";
   private static final String INC_SAT_S_FILTER_NAME     = "filter.hsb.saturation+s.name";
   private static final String INC_SAT_XS_FILTER_NAME    = "filter.hsb.saturation+xs.name";
+  private static final String FIX_HUE_RED_FILTER_NAME   = "filter.hsb.hue.fixed.red.name";
+  private static final String FIX_HUE_YELW_FILTER_NAME  = "filter.hsb.hue.fixed.yellow.name";
+  private static final String FIX_HUE_GREEN_FILTER_NAME = "filter.hsb.hue.fixed.green.name";
+  private static final String FIX_HUE_CYAN_FILTER_NAME  = "filter.hsb.hue.fixed.cyan.name";
+  private static final String FIX_HUE_BLUE_FILTER_NAME  = "filter.hsb.hue.fixed.blue.name";
+  private static final String FIX_HUE_PRPL_FILTER_NAME  = "filter.hsb.hue.fixed.purple.name";
   private static final String DEC_HUE_XL_FILTER_NAME    = "filter.hsb.hue-xl.name";
   private static final String DEC_HUE_L_FILTER_NAME     = "filter.hsb.hue-l.name";
   private static final String DEC_HUE_M_FILTER_NAME     = "filter.hsb.hue-m.name";
@@ -338,6 +344,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_NAME));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 4, new AngularMap()),  AXE_L_S_FILTER_NAME));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 6, new RadialMap()),   AXE_L_L_FILTER_NAME));
+
+    filters.add(new NamedFilter(HsbFilterFactory.forFixedHue(0.0f),  FIX_HUE_RED_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forFixedHue(0.17f), FIX_HUE_YELW_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forFixedHue(0.33f), FIX_HUE_GREEN_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forFixedHue(0.5f),  FIX_HUE_CYAN_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forFixedHue(0.67f), FIX_HUE_BLUE_FILTER_NAME));
+    filters.add(new NamedFilter(HsbFilterFactory.forFixedHue(0.83f), FIX_HUE_PRPL_FILTER_NAME));
 
     filters.add(new NamedFilter(HsbFilterFactory.forHueShift(-0.1f),  DEC_HUE_XL_FILTER_NAME));
     filters.add(new NamedFilter(HsbFilterFactory.forHueShift(-0.05f), DEC_HUE_L_FILTER_NAME));
