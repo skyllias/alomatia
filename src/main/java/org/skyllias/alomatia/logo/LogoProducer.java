@@ -30,7 +30,7 @@ public class LogoProducer
 
   public Image createImage(int width, int height)
   {
-    BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
     for (int i = 0; i < width; i++)
     {

@@ -98,6 +98,9 @@
             <manifest>
               <mainClass>org.skyllias.alomatia.app.SwingAlomatia</mainClass>
             </manifest>
+             <manifestEntries>
+               <SplashScreen-Image>img/splash.png</SplashScreen-Image>
+             </manifestEntries>
             <addMavenDescriptor>false</addMavenDescriptor>                      <!-- this removes both pom.xml and pom.properties from the jar, but there is no obvious way to leave only the xml -->
           </archive>
         </configuration>
