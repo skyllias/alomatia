@@ -61,6 +61,20 @@ public class StartupLabelLocalizer implements LabelLocalizer
     initializeSelectedLocale();
   }
 
+//------------------------------------------------------------------------------
+
+  /** Only meant for testing purposes.
+   *  TODO refactor to avoid code repetition. */
+
+  protected StartupLabelLocalizer(Preferences preferences)
+  {
+    this.preferences = preferences;
+
+    availableLocales = findLocalesInClasspath();
+
+    initializeSelectedLocale();
+  }
+
 //==============================================================================
 
   @Override
@@ -101,13 +115,6 @@ public class StartupLabelLocalizer implements LabelLocalizer
   {
     return Collections.unmodifiableCollection(availableLocales);
   }
-
-//------------------------------------------------------------------------------
-
-  /** Meant only for testing purposes.
-   *  This must be called before getString. */
-
-  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
