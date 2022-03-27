@@ -22,8 +22,7 @@ public class StartupLabelLocalizerTest
     Preferences preferences = mock(Preferences.class);
     when(preferences.get(eq(StartupLabelLocalizer.PREFKEY_NEXTLANG), any(String.class))).thenReturn("en");
 
-    StartupLabelLocalizer localizer = new StartupLabelLocalizer();
-    localizer.setPreferences(preferences);
+    StartupLabelLocalizer localizer = new StartupLabelLocalizer(preferences);
     localizer.getString("control.window.title");
 
     verify(preferences).get(StartupLabelLocalizer.PREFKEY_NEXTLANG, "en");
@@ -36,8 +35,7 @@ public class StartupLabelLocalizerTest
     Preferences preferences = mock(Preferences.class);
     when(preferences.get(eq(StartupLabelLocalizer.PREFKEY_NEXTLANG), any(String.class))).thenReturn("es");
 
-    StartupLabelLocalizer localizer = new StartupLabelLocalizer();
-    localizer.setPreferences(preferences);
+    StartupLabelLocalizer localizer = new StartupLabelLocalizer(preferences);
     localizer.getString("control.window.title");
 
     verify(preferences).get(StartupLabelLocalizer.PREFKEY_NEXTLANG, "es");
@@ -49,8 +47,7 @@ public class StartupLabelLocalizerTest
     Preferences preferences = mock(Preferences.class);
     when(preferences.get(eq(StartupLabelLocalizer.PREFKEY_NEXTLANG), any(String.class))).thenReturn("en");
 
-    StartupLabelLocalizer localizer = new StartupLabelLocalizer();
-    localizer.setPreferences(preferences);
+    StartupLabelLocalizer localizer = new StartupLabelLocalizer(preferences);
 
     assertEquals("Next execution locale 'en' should produce messages in English",
                  "Control window - Alomatia", localizer.getString("control.window.title"));
@@ -62,8 +59,7 @@ public class StartupLabelLocalizerTest
     Preferences preferences = mock(Preferences.class);
     when(preferences.get(eq(StartupLabelLocalizer.PREFKEY_NEXTLANG), any(String.class))).thenReturn("es");
 
-    StartupLabelLocalizer localizer = new StartupLabelLocalizer();
-    localizer.setPreferences(preferences);
+    StartupLabelLocalizer localizer = new StartupLabelLocalizer(preferences);
 
     assertEquals("Next execution locale 'es' should produce messages in Spanish",
                  "Ventana de control - Alomatia", localizer.getString("control.window.title"));
@@ -73,9 +69,9 @@ public class StartupLabelLocalizerTest
   public void shouldSaveLocaleWhenSet()
   {
     Preferences preferences = mock(Preferences.class);
+    when(preferences.get(eq(StartupLabelLocalizer.PREFKEY_NEXTLANG), any(String.class))).thenReturn("ca");
 
-    StartupLabelLocalizer localizer = new StartupLabelLocalizer();
-    localizer.setPreferences(preferences);
+    StartupLabelLocalizer localizer = new StartupLabelLocalizer(preferences);
     localizer.setLocale(new Locale("whatever"));
 
     verify(preferences).put(StartupLabelLocalizer.PREFKEY_NEXTLANG, "whatever");
