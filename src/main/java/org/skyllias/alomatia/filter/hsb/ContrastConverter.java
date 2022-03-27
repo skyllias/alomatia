@@ -3,7 +3,6 @@ package org.skyllias.alomatia.filter.hsb;
 
 import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
 import org.skyllias.alomatia.filter.factor.UnitFactor;
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
 /** Converter that increases the difference in brightness of the colours in an image.
  *  <p>
@@ -13,7 +12,7 @@ import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
  *  the differences either in the middle range of brightnesses or in the lowest
  *  and highest brightnesses. */
 
-public class ContrastConverter extends HsbAdapter
+public class ContrastConverter implements HsbConverter
 {
   private final ComposedUnitFactor factor;
 

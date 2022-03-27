@@ -7,23 +7,31 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
+import org.skyllias.alomatia.ui.save.FileImageSaver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /** Factory for {@link DisplayFrameController} instances that keeps track of them. */
 
+@Component
 public class DisplayFrameManager
 {
-  private FrameAdaptorFactory adaptorFactory;
+  private final LabelLocalizer labelLocalizer;
+  private final LogoProducer logoProducer;
+  private final FrameAdaptorFactory frameAdaptorFactory;
+  private final FilteredImageGenerator filteredImageGenerator;
+  private final FilterSelectorComposer filterSelectorComposer;
+  private final DisplayOptionsDialogComposer displayOptionsDialogComposer;
+  private final FileImageSaver fileImageSaver;
 
   private List<DisplayFrameController> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrameController>());  // every new window is added here in order of creation, and removed when closed. The order is used to apply filters sequentially
 
-  private LabelLocalizer localizer;
-  private FilterFactory filterFactory;
-  private ImageSaver imageSaver;
 
   private Collection<DisplayAmountChangeListener> listeners = new LinkedList<>(); // probably there will be just one, but just in case
 
@@ -32,29 +40,35 @@ public class DisplayFrameManager
   /** frameFactory is used both when getting DisplayFrame instances and when
    *  rearranging them. */
 
-  public DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory aFilterFactory,
-                             FrameAdaptorFactory frameFactory, ImageSaver saver)
+  @Autowired
+
+  public DisplayFrameManager(LabelLocalizer labelLocalizer,
+                             LogoProducer logoProducer,
+                             FrameAdaptorFactory frameAdaptorFactory,
+                             FilteredImageGenerator filteredImageGenerator,
+                             FilterSelectorComposer filterSelectorComposer,
+                             DisplayOptionsDialogComposer displayOptionsDialogComposer,
+                             FileImageSaver fileImageSaver)
   {
-    localizer      = labelLocalizer;
-    filterFactory  = aFilterFactory;
-    adaptorFactory = frameFactory;
-    imageSaver     = saver;
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Just for testing purposes, this should NOT be used in production code. */
-
-  protected DisplayFrameManager(LabelLocalizer labelLocalizer, FilterFactory filterFactory,
-                                FrameAdaptorFactory frameFactory, ImageSaver saver,
-                                List<DisplayFrameController> displayFrames)
-  {
-    this(labelLocalizer, filterFactory, frameFactory, saver);
-
-    existingFrames.addAll(displayFrames);
+    this.labelLocalizer               = labelLocalizer;
+    this.logoProducer                 = logoProducer;
+    this.frameAdaptorFactory          = frameAdaptorFactory;
+    this.filteredImageGenerator       = filteredImageGenerator;
+    this.filterSelectorComposer       = filterSelectorComposer;
+    this.displayOptionsDialogComposer = displayOptionsDialogComposer;
+    this.fileImageSaver               = fileImageSaver;
   }
 
 //==============================================================================
+
+  /** Just for testing purposes, this should NOT be used in production code. */
+
+  protected void addExistingFrames(List<DisplayFrameController> displayFrames)
+  {
+    existingFrames.addAll(displayFrames);
+  }
+
+//------------------------------------------------------------------------------
 
   /** Creates a new window and returns it, so that it can be used for example to
    *  register other DisplayFrameCloseListener.
@@ -63,12 +77,13 @@ public class DisplayFrameManager
 
   public DisplayFrameController createDisplayFrame(boolean applySequentialFilter)
   {
-    FilteredImageGenerator filteredImageGenerator = new FilteredImageGenerator();
-
     DisplayPanelController displayPanel = new DisplayPanelController(filteredImageGenerator);
-    FrameAdaptor frameAdaptor           = adaptorFactory.getNewFrame(displayPanel.getComponent());
-    DisplayFrameController frame        = new DisplayFrameController(localizer, frameAdaptor, displayPanel,
-                                                                     filterFactory, filteredImageGenerator, imageSaver);
+    FrameAdaptor frameAdaptor           = frameAdaptorFactory.getNewFrame(displayPanel.getComponent());
+    DisplayFrameController frame        = new DisplayFrameController(labelLocalizer,logoProducer,
+                                                                     frameAdaptor, displayPanel,
+                                                                     filterSelectorComposer,
+                                                                     filteredImageGenerator, fileImageSaver,
+                                                                     displayOptionsDialogComposer);
     frame.addListener(new DisplayFrameCloseListener());
 
     if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());
@@ -112,7 +127,7 @@ public class DisplayFrameManager
 
   public void rearrangeWindows(int amountOfLines, boolean horizontally)
   {
-    Rectangle screenBounds = adaptorFactory.getRearrengementBounds();
+    Rectangle screenBounds = frameAdaptorFactory.getRearrengementBounds();
 
     if (!existingFrames.isEmpty() && amountOfLines > 0 && screenBounds != null)
     {

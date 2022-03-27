@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.save;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,10 +18,15 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.BarePanelComposer;
+import org.skyllias.alomatia.ui.component.BorderedLabel;
+import org.skyllias.alomatia.ui.component.PathTextField;
+import org.springframework.stereotype.Component;
 
 /** Composer of the panel with the save-to-file controls.
- *  The panel can be obtained by calling {@link #getComponent()}. */
+ *  The panel can be obtained by calling {@link #getComponent(FileImageSaver)}. */
 
+@Component
 public class SaveFilePanelComposer
 {
   private static final String USER_HOME_PROP = "user.home";
@@ -36,25 +41,27 @@ public class SaveFilePanelComposer
   protected static final String PREFKEY_DESTINATION = "saveDestinationDirectory";
   protected static final String PREFKEY_PROMPT      = "promptFileToSave";
 
-  private LabelLocalizer labelLocalizer;
-  private FileImageSaver imageSaver;
+  private final LabelLocalizer labelLocalizer;
+  private final BarePanelComposer bareControlPanelComposer;
 
   private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
-  public SaveFilePanelComposer(LabelLocalizer localizer, FileImageSaver saver)
+  public SaveFilePanelComposer(LabelLocalizer localizer,
+                               BarePanelComposer panelComposer)
   {
-    labelLocalizer = localizer;
-    imageSaver     = saver;
+    labelLocalizer           = localizer;
+    bareControlPanelComposer = panelComposer;
   }
 
 //==============================================================================
 
-  /** Returns a new panel with the required controls.
+  /** Returns a new panel with the required controls to save through the passed
+   *  {@link ImageSaver}.
    *  The image saver is modified now with the values found in the preferences. */
 
-  public JComponent getComponent()
+  public JComponent getComponent(FileImageSaver imageSaver)
   {
     String initialDestinationPath = preferences.get(PREFKEY_DESTINATION,
                                                     System.getProperty(USER_HOME_PROP));
@@ -62,9 +69,9 @@ public class SaveFilePanelComposer
     imageSaver.setDestinationDir(new File(initialDestinationPath));
     imageSaver.setPrompt(initialPrompt);
 
-    JPanel savePanel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(TITLE_LABEL));
-    addDestinationComponents(savePanel, initialDestinationPath);
-    addPromptComponents(savePanel, initialPrompt);
+    JPanel savePanel = bareControlPanelComposer.getPanel(labelLocalizer.getString(TITLE_LABEL));
+    addDestinationComponents(savePanel, initialDestinationPath, imageSaver);
+    addPromptComponents(savePanel, initialPrompt, imageSaver);
     return savePanel;
   }
 
@@ -79,7 +86,8 @@ public class SaveFilePanelComposer
   /* Adds a line with a non-editable textfield and a button to display and change
    * the destinationPath. */
 
-  private void addDestinationComponents(JPanel savePanel, String destinationPath)
+  private void addDestinationComponents(JPanel savePanel, String destinationPath,
+                                        FileImageSaver imageSaver)
   {
     JPanel configPanel = new JPanel();
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
@@ -123,7 +131,8 @@ public class SaveFilePanelComposer
 
   /* Adds a line with a checkbox to display and change the prompt behaviour of imageSaver. */
 
-  private void addPromptComponents(JPanel savePanel, boolean initialPrompt)
+  private void addPromptComponents(JPanel savePanel, boolean initialPrompt,
+                                   FileImageSaver imageSaver)
   {
     JPanel configPanel = new JPanel();
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));

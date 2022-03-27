@@ -1,8 +1,6 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
-
 /** Converter that flips the hue around a certain central value.
  *
  *  If the central value is aligned with red, green or blue (or their
@@ -11,7 +9,7 @@ import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
  *  Performance of this converter is worse, though, so for those three cases it
  *  is advisable to use the RGB version. */
 
-public class HueReverserConverter extends HsbAdapter
+public class HueReverserConverter implements HsbConverter
 {
   private final float centralHue;
 

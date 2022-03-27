@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 /** Repository to save and retrieve a list of strings.
  *  The storage is based on {@link Preferences}. */
 
+@Component
 public class SortedHistoryRepository
 {
   private static final String PREFKEY_SORTED_SEARCH_HISTORY = "sortedSearchHistory";

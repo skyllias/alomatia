@@ -25,7 +25,9 @@ import org.skyllias.alomatia.filter.FilteredImageGenerator;
  *  <p>
  *  For an image to be modified, both an original image and a filter are needed.
  *  If there is no original image, nothing is displayed; if no filter, the
- *  original image is shown without change. */
+ *  original image is shown without change.
+ *  <p>
+ *  There is one instance per display panel. */
 
 @SuppressWarnings("serial")
 public class DisplayPanelController implements ImageDisplay, ResizableDisplay, ComponentListener

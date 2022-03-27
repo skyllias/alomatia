@@ -3,14 +3,13 @@ package org.skyllias.alomatia.filter.hsb;
 
 import org.skyllias.alomatia.filter.factor.SimpleFactor;
 import org.skyllias.alomatia.filter.factor.UnitFactor;
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
 
 /** Converter that increases or decreases the brightness of the colours in an
  *  image by a non-linear factor.
  *  <p>
  *  This could be a particular case of {@link HueDependingBrightnessConverter}. */
 
-public class BrightnessConverter extends HsbAdapter
+public class BrightnessConverter implements HsbConverter
 {
   private final UnitFactor unitFactor;
 

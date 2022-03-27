@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.save;
 
 import java.awt.Image;
 import java.io.File;
@@ -15,13 +15,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.lang.StringUtils;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.save.FileSaver;
+import org.springframework.stereotype.Component;
 
 /** {@link ImageSaver} that stores images in files.
  *  The format is initially fixed to PNG.
  *  By default, the user's home is used as output directory, but the path can be
  *  modified externally. Whether the user is prompted when saving interactively
- *  a file can also be set externally. */
+ *  a file can also be set externally.
+ *  This class is mutable. */
 
+@Component
 public class FileImageSaver implements ImageSaver
 {
   private static final String USER_HOME_PROP = "user.home";

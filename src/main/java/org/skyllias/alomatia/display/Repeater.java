@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.skyllias.alomatia.ImageDisplay;
+import org.springframework.stereotype.Component;
 
 /** Display that only transfers the received images to other displays (receivers). */
 
+@Component
 public class Repeater implements ImageDisplay
 {
   private Collection<ImageDisplay> receivers = new HashSet<>();                 // may be empty but never null
@@ -28,7 +30,7 @@ public class Repeater implements ImageDisplay
    *  <p>
    *  They can be removed later on with {@link #removeReceiver(ImageDisplay)}. */
 
-  public Repeater(Collection<ImageDisplay> initialReceivers)
+  protected Repeater(Collection<ImageDisplay> initialReceivers)
   {
     if (initialReceivers != null) receivers.addAll(initialReceivers);
   }

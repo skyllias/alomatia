@@ -11,11 +11,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.awt.dnd.DropTargetListener;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -40,7 +40,7 @@ public class WindowControlPanelComposerTest
   @Mock
   private Repeater repeater;
   @Mock
-  private DropTargetListener dropTargetListener;
+  private DropTargetListenerSupplier dropTargetListenerSupplier;
   @Mock
   private DisplayPanelController displayPanel;
   @Mock
@@ -49,6 +49,8 @@ public class WindowControlPanelComposerTest
   private DisplayFrameManager displayFrameManager;
   @Mock
   private FramePolicyAtStartUp framePolicy;
+  @Mock
+  private BarePanelComposer bareControlPanelComposer;
   @Mock
   private Preferences preferences;
   @Captor
@@ -76,7 +78,8 @@ public class WindowControlPanelComposerTest
   private void setUpUi()
   {
     windowControlPanelComposer = new WindowControlPanelComposer(new StartupLabelLocalizer(), repeater,
-                                                                dropTargetListener, displayFrameManager, framePolicy); // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
+                                                                dropTargetListenerSupplier, displayFrameManager,
+                                                                framePolicy, bareControlPanelComposer); // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
     windowControlPanelComposer.setPreferences(preferences);
 
     JComponent controlPanel = GuiActionRunner.execute(new Callable<JComponent>()
@@ -84,6 +87,9 @@ public class WindowControlPanelComposerTest
       @Override
       public JComponent call() throws Exception
       {
+        when(bareControlPanelComposer.getPanel("Windows:"))
+            .thenReturn(new JPanel());
+
         return windowControlPanelComposer.createComponent();
       }
     });

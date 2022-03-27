@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.logo;
+package org.skyllias.alomatia.logo.app;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+
+import org.skyllias.alomatia.logo.ColourCoordinator;
+import org.skyllias.alomatia.logo.LogoProducer;
 
 /** Application to generate the logo as a file in the project. */
 
@@ -21,7 +24,7 @@ public class LogoApp
 
   public static void main(String[] args) throws Exception
   {
-    Image logo = new LogoProducer().createImage(WIDTH, HEIGHT);
+    Image logo = new LogoProducer(new ColourCoordinator()).createImage(WIDTH, HEIGHT);
 
     BufferedImage bufferedImage = new BufferedImage(logo.getWidth(null), logo.getHeight(null), BufferedImage.TYPE_INT_RGB);
     Graphics2D imageGraphics    = bufferedImage.createGraphics();

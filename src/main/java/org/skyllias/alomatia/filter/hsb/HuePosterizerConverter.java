@@ -1,11 +1,9 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import org.skyllias.alomatia.filter.hsb.HsbConverter.HsbAdapter;
-
 /** Converter that quantizes the hue of each pixel. */
 
-public class HuePosterizerConverter extends HsbAdapter
+public class HuePosterizerConverter implements HsbConverter
 {
   private final UnitQuantizer quantizer;
   private final float startHue;

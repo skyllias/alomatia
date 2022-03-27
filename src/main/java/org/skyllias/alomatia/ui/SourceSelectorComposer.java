@@ -38,10 +38,14 @@ import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
 import org.skyllias.alomatia.source.VoidSource;
 import org.skyllias.alomatia.ui.CaptureFrameComposer.CaptureBoundsListener;
+import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubcomponent;
+import org.skyllias.alomatia.ui.component.PathTextField;
+import org.springframework.stereotype.Component;
 
 /** Composer of a panel with the controls to select a {@link ImageSource}.
  *  TODO Make it more OO by obtaining a component for each source type. */
 
+@Component
 public class SourceSelectorComposer
 {
   private static final String SOURCE_LABEL             = "source.selector.title";
@@ -66,7 +70,9 @@ public class SourceSelectorComposer
 
   private final LabelLocalizer labelLocalizer;
   private final CaptureFrameComposer captureFrameComposer;
+  private final UrlDownloadSubcomponentComposer urlDownloadSubcomponentComposer;
   private final SourceCatalogue sourceCatalogue;
+  private final BarePanelComposer bareControlPanelComposer;
 
   private SourceRadioSelector<JRadioButton> radioSelector;
 
@@ -79,12 +85,16 @@ public class SourceSelectorComposer
 
   public SourceSelectorComposer(LabelLocalizer localizer, SourceCatalogue catalogue,
                                 CaptureFrameComposer captureFrame,
-                                SourceRadioSelector<JRadioButton> sourceRadioSelector)
+                                UrlDownloadSubcomponentComposer urlDownloadComposer,
+                                SourceRadioSelector<JRadioButton> sourceRadioSelector,
+                                BarePanelComposer panelComposer)
   {
-    labelLocalizer       = localizer;
-    sourceCatalogue      = catalogue;
-    captureFrameComposer = captureFrame;
-    radioSelector        = sourceRadioSelector;
+    labelLocalizer                  = localizer;
+    sourceCatalogue                 = catalogue;
+    captureFrameComposer            = captureFrame;
+    urlDownloadSubcomponentComposer = urlDownloadComposer;
+    radioSelector                   = sourceRadioSelector;
+    bareControlPanelComposer        = panelComposer;
   }
 
 //==============================================================================
@@ -93,7 +103,7 @@ public class SourceSelectorComposer
 
   public JComponent getComponent()
   {
-    JPanel panel = new BasicControlPanelComposer().getPanel(labelLocalizer.getString(SOURCE_LABEL));
+    JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
     initVoidSelector(panel);
     initDropSelector(panel);
@@ -230,8 +240,8 @@ public class SourceSelectorComposer
     final AsynchronousUrlSource urlSource = sourceCatalogue.get(AsynchronousUrlSource.class);
     if (urlSource != null)
     {
-      UrlDownloadSubcomponentComposer downloadComponent = new UrlDownloadSubcomponentComposer(labelLocalizer,
-                                                                        urlSource);
+      UrlDownloadSubcomponent downloadComponent = urlDownloadSubcomponentComposer.getUrlDownloadSubcomponent(urlSource);
+
       JPanel configPanel = new JPanel();
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
