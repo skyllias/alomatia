@@ -29,12 +29,12 @@ import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.convolve.emboss.EmbossFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.LmsFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.XyzFilterFactory;
-import org.skyllias.alomatia.filter.hsb.CosineHueFunction;
-import org.skyllias.alomatia.filter.hsb.FlatStepHueFunction;
 import org.skyllias.alomatia.filter.hsb.HsbFilterFactory;
-import org.skyllias.alomatia.filter.hsb.MultiplyingHueFactor;
-import org.skyllias.alomatia.filter.hsb.PitStepHueFunction;
-import org.skyllias.alomatia.filter.hsb.PositiveFilteringHueFunction;
+import org.skyllias.alomatia.filter.hsb.function.CosineHueFunction;
+import org.skyllias.alomatia.filter.hsb.function.FlatStepHueFunction;
+import org.skyllias.alomatia.filter.hsb.function.MultiplyingHueFactor;
+import org.skyllias.alomatia.filter.hsb.function.PitStepHueFunction;
+import org.skyllias.alomatia.filter.hsb.function.PositiveFilteringHueFunction;
 import org.skyllias.alomatia.filter.hsb.pole.DistantAttraction;
 import org.skyllias.alomatia.filter.hsb.pole.LinearRepulsion;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
@@ -181,6 +181,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String YELLOWPHOB_FILTER_KEY    = "filter.phobic.yellow";
   private static final String CYANPHOB_FILTER_KEY      = "filter.phobic.cyan";
   private static final String MAGENTPHOB_FILTER_KEY    = "filter.phobic.magenta";
+  private static final String SEAM_RED_FILTER_KEY      = "filter.seamless.red";
+  private static final String SEAM_GREEN_FILTER_KEY    = "filter.seamless.green";
+  private static final String SEAM_BLUE_FILTER_KEY     = "filter.seamless.blue";
+  private static final String SEAM_YELLOW_FILTER_KEY   = "filter.seamless.yellow";
+  private static final String SEAM_CYAN_FILTER_KEY     = "filter.seamless.cyan";
+  private static final String SEAM_MAGENTA_FILTER_KEY  = "filter.seamless.magenta";
   private static final String WHITEDYE_FILTER_KEY      = "filter.dye.white";
   private static final String BLACKDYE_FILTER_KEY      = "filter.dye.black";
   private static final String REDDYE_FILTER_KEY        = "filter.dye.red";
@@ -446,16 +452,23 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(1), BNW_SCATT_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(3), BNW_SNOW_FILTER_KEY));
 
-    filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(255, 128, 0)), ORANGEPHIL_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(43, 255, 0)),  GREENPHIL_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), new Color(149, 0, 255)), PURPLEPHIL_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.083f), ORANGEPHIL_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.3f),   GREENPHIL_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.7f),   PURPLEPHIL_FILTER_KEY));
 
-    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), new Color(255, 0, 0)),   REDPHOB_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), new Color(0, 255, 0)),   GREENPHOB_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), new Color(0, 0, 255)),   BLUEPHOB_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), new Color(255, 255, 0)), YELLOWPHOB_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), new Color(0, 255, 255)), CYANPHOB_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), new Color(255, 0, 255)), MAGENTPHOB_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), 0),      REDPHOB_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), 0.333f), GREENPHOB_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), 0.667f), BLUEPHOB_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), 0.167f), YELLOWPHOB_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), 0.5f),   CYANPHOB_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forCombinedPole(new LinearRepulsion(0.12f, 0.22f), 0.833f), MAGENTPHOB_FILTER_KEY));
+
+    filters.add(new NamedFilter(HsbFilterFactory.forSeamlessRepulsion(0, 0.05f, 0.12f, 0.22f),      SEAM_RED_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forSeamlessRepulsion(0.333f, 0.05f, 0.12f, 0.22f), SEAM_GREEN_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forSeamlessRepulsion(0.667f, 0.05f, 0.12f, 0.22f), SEAM_BLUE_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forSeamlessRepulsion(0.167f, 0.05f, 0.12f, 0.22f), SEAM_YELLOW_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forSeamlessRepulsion(0.5f, 0.05f, 0.12f, 0.22f),   SEAM_CYAN_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forSeamlessRepulsion(0.833f, 0.05f, 0.12f, 0.22f), SEAM_MAGENTA_FILTER_KEY));
 
     filters.add(new NamedFilter(RgbFilterFactory.forRtoGtoBtoR(),       RGBR_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forBtoGtoRtoB(),       BGRB_FILTER_KEY));

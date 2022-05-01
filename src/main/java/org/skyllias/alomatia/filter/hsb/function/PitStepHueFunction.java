@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.function;
 
 /** {@link HueFunction} that returns a zero for hues inside an interval and a
  *  big negative number for the rest.
@@ -14,10 +14,10 @@ public class PitStepHueFunction extends BasicStepHueFunction
 
 //==============================================================================
 
-  /** Creates an instance that will return zerp between stepStart and stepEnd
+  /** Creates an instance that will return zero between stepStart and stepEnd
    *  (both inclusive).
-   *  If stepStart > stepEnd, then the circular property of the hue is applied as
-   *  if the step stretches from stepStart to 1 + stepEnd. */
+   *  If stepStart > stepEnd, then the circular property of the hue is applied
+   *  as if the step stretches from stepStart to 1 + stepEnd. */
 
   public PitStepHueFunction(float stepStart, float stepEnd)
   {

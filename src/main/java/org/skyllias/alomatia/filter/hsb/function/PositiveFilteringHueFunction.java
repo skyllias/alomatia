@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.function;
 
 /** {@link HueFunction} that delegates the call to another one and only returns
  *  values that were positive in the delegate, and zero for the others. */

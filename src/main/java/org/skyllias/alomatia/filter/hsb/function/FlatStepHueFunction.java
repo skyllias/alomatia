@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.function;
 
 /** {@link HueFunction} that returns a fixed value for hues inside an interval
  *  and 0 for the rest. */
