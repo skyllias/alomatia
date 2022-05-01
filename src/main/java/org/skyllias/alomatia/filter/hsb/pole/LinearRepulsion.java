@@ -15,7 +15,7 @@ public class LinearRepulsion implements Attraction
 
   /** @param strength Shift suffered by the hue on the pole itself. The resulting
    *  image will lack hues in the range (pole - strength, pole + strength].
-   *  @param range Furthest diatance where shifts happen. It should be greater
+   *  @param range Furthest distance where shifts happen. It should be greater
    *  than strength in order to prevent hue cluttering. */
 
   public LinearRepulsion(float strength, float range)

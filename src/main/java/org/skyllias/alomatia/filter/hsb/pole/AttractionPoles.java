@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.filter.hsb.pole;
 
-import java.awt.Color;
+import org.apache.commons.lang.ArrayUtils;
 
 /** Composition of an {@link Attraction} and one or more hue values, which
  *  together specify how an original hue may be shifted depending on its
@@ -16,18 +16,10 @@ public class AttractionPoles
 
 //==============================================================================
 
-  protected AttractionPoles(Attraction attraction, Color... colourPoles)
+  protected AttractionPoles(Attraction attraction, float... huePoles)
   {
     this.attraction = attraction;
-
-    this.poles = new float[colourPoles.length];
-    for (int i = 0; i < poles.length; i++)
-    {
-      Color currentColour = colourPoles[i];
-      poles[i]            = Color.RGBtoHSB(currentColour.getRed(),
-                                           currentColour.getGreen(),
-                                           currentColour.getBlue(), null)[0];
-    }
+    this.poles = ArrayUtils.clone(huePoles);
   }
 
 //==============================================================================

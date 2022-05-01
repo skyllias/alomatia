@@ -1,13 +1,16 @@
 
 package org.skyllias.alomatia.filter.hsb;
 
-import java.awt.Color;
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.ColourFilter;
+import org.skyllias.alomatia.filter.compose.ComposedFilter;
+import org.skyllias.alomatia.filter.hsb.function.FangHueFunction;
+import org.skyllias.alomatia.filter.hsb.function.HueFunction;
 import org.skyllias.alomatia.filter.hsb.pole.Attraction;
 import org.skyllias.alomatia.filter.hsb.pole.ClosestPoleHueConverter;
 import org.skyllias.alomatia.filter.hsb.pole.CombinedPoleHueConverter;
+import org.skyllias.alomatia.filter.hsb.pole.LinearRepulsion;
 
 /** Instantiator of filters that play with the HSB components of colours. */
 
@@ -39,11 +42,19 @@ public class HsbFilterFactory
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forClosestPole(Attraction attraction, Color... colourPoles) {return forHsbConverter(new ClosestPoleHueConverter(attraction, colourPoles));}
+  public static ImageFilter forClosestPole(Attraction attraction, float... huePoles) {return forHsbConverter(new ClosestPoleHueConverter(attraction, huePoles));}
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forCombinedPole(Attraction attraction, Color... colourPoles) {return forHsbConverter(new CombinedPoleHueConverter(attraction, colourPoles));}
+  public static ImageFilter forCombinedPole(Attraction attraction, float... huePoles) {return forHsbConverter(new CombinedPoleHueConverter(attraction, huePoles));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forSeamlessRepulsion(float repulsedHue, float suppressionHalfWidth, float repulsionStrength, float repulsionRange)
+  {
+    return new ComposedFilter(forHueDependingSaturation(new FangHueFunction(repulsedHue, suppressionHalfWidth)),
+                              forCombinedPole(new LinearRepulsion(repulsionStrength, repulsionRange), repulsedHue));
+  }
 
 //------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.function;
 
 /** {@link HueFunction} that follows a full cosine phase centered at a certain hue. */
 

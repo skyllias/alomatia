@@ -3,6 +3,7 @@ package org.skyllias.alomatia.filter.hsb;
 
 import org.skyllias.alomatia.filter.factor.SimpleFactor;
 import org.skyllias.alomatia.filter.factor.UnitFactor;
+import org.skyllias.alomatia.filter.hsb.function.HueFunction;
 
 /** Converter that increases or decreases the brightness of the colours in an
  *  image depending on their hue. */
