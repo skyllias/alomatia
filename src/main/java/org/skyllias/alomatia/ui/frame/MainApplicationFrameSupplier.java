@@ -6,7 +6,7 @@ import java.awt.Image;
 import javax.swing.JFrame;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.logo.IconSupplier;
 import org.springframework.stereotype.Component;
 
 /** Supplier of the main frame of the application.
@@ -15,23 +15,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class MainApplicationFrameSupplier
 {
-  public static final int ICON_WIDTH  = 32;
-  public static final int ICON_HEIGHT = 32;
-
   private static final String DESKTOP_TITLE = "desktop.window.title";
 
   private final LabelLocalizer labelLocalizer;
-  private final LogoProducer logoProducer;
+  private final IconSupplier iconSupplier;
 
   private JFrame mainFrame;
 
 //==============================================================================
 
   public MainApplicationFrameSupplier(LabelLocalizer labelLocalizer,
-                                      LogoProducer logoProducer)
+                                      IconSupplier iconSupplier)
   {
     this.labelLocalizer = labelLocalizer;
-    this.logoProducer   = logoProducer;
+    this.iconSupplier   = iconSupplier;
   }
 
 //==============================================================================
@@ -65,7 +62,7 @@ public class MainApplicationFrameSupplier
 
   private Image getDefaultLogo()
   {
-    return logoProducer.createImage(ICON_WIDTH, ICON_HEIGHT);
+    return iconSupplier.getIcon();
   }
 
 //------------------------------------------------------------------------------

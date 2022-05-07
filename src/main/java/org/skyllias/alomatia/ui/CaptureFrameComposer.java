@@ -10,9 +10,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.logo.IconSupplier;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
-import org.skyllias.alomatia.ui.frame.MainApplicationFrameSupplier;
 import org.springframework.stereotype.Component;
 
 /** Opener of frames used to select a region to capture images from. */
@@ -27,15 +26,15 @@ public class CaptureFrameComposer
   private static final int INITIAL_FRAME_HEIGHT = 300;
 
   private final LabelLocalizer labelLocalizer;
-  private final LogoProducer logoProducer;
+  private final IconSupplier iconSupplier;
 
 //==============================================================================
 
   public CaptureFrameComposer(LabelLocalizer localizer,
-                              LogoProducer logoProducer)
+                              IconSupplier iconSupplier)
   {
     labelLocalizer    = localizer;
-    this.logoProducer = logoProducer;
+    this.iconSupplier = iconSupplier;
   }
 
 //==============================================================================
@@ -52,8 +51,7 @@ public class CaptureFrameComposer
     frame.setLocationRelativeTo(null);
     frame.setSize(INITIAL_FRAME_WIDTH, INITIAL_FRAME_HEIGHT);
 
-    frame.setIconImage(logoProducer.createImage(MainApplicationFrameSupplier.ICON_WIDTH,
-                                                MainApplicationFrameSupplier.ICON_HEIGHT));
+    frame.setIconImage(iconSupplier.getIcon());
 
     Button captureButton = new Button(labelLocalizer.getString(BUTTON_LABEL));
     captureButton.addActionListener(new CaptureButtonListener(frame, listener));
