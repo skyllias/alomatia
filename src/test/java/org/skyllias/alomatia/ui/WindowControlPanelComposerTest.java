@@ -30,13 +30,15 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.display.Repeater;
-import org.skyllias.alomatia.i18n.StartupLabelLocalizer;
+import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
 import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 public class WindowControlPanelComposerTest
 {
   private FrameFixture frameFixture;
+  @Mock
+  private LabelLocalizer labelLocalizer;
   @Mock
   private Repeater repeater;
   @Mock
@@ -71,15 +73,22 @@ public class WindowControlPanelComposerTest
 
     when(displayFrame.getDisplayPanel()).thenReturn(displayPanel);
     when(displayFrameManager.createDisplayFrame(any(Boolean.class))).thenReturn(displayFrame);
+
+    when(labelLocalizer.getString(any())).thenAnswer(invocation ->              // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern and does not allow to test changes in the label with the amount of windows
+    {
+      String key = invocation.getArgument(0, String.class);
+      if ("frame.control.amount".equals(key)) return "{0}";
+      else                                    return key;
+    });
   }
 
   /* Cannot be called inside setUp() if preferences are to be tuned up. */
 
   private void setUpUi()
   {
-    windowControlPanelComposer = new WindowControlPanelComposer(new StartupLabelLocalizer(), repeater,
+    windowControlPanelComposer = new WindowControlPanelComposer(labelLocalizer, repeater,
                                                                 dropTargetListenerSupplier, displayFrameManager,
-                                                                framePolicy, bareControlPanelComposer); // KeyLabelLocalizer cannot be used because it does not provide any TextMessage pattern
+                                                                framePolicy, bareControlPanelComposer);
     windowControlPanelComposer.setPreferences(preferences);
 
     JComponent controlPanel = GuiActionRunner.execute(new Callable<JComponent>()
@@ -87,7 +96,7 @@ public class WindowControlPanelComposerTest
       @Override
       public JComponent call() throws Exception
       {
-        when(bareControlPanelComposer.getPanel("Windows:"))
+        when(bareControlPanelComposer.getPanel("frame.control.title"))
             .thenReturn(new JPanel());
 
         return windowControlPanelComposer.createComponent();
