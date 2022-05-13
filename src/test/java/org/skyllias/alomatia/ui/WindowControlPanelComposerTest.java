@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.Callable;
-import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -31,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.WindowControlPreferences;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
 import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
@@ -54,7 +54,7 @@ public class WindowControlPanelComposerTest
   @Mock
   private BarePanelComposer bareControlPanelComposer;
   @Mock
-  private Preferences preferences;
+  private WindowControlPreferences windowControlPreferences;
   @Captor
   private ArgumentCaptor<DisplayAmountChangeListener> listenerCaptor;
 
@@ -88,8 +88,8 @@ public class WindowControlPanelComposerTest
   {
     windowControlPanelComposer = new WindowControlPanelComposer(labelLocalizer, repeater,
                                                                 dropTargetListenerSupplier, displayFrameManager,
-                                                                framePolicy, bareControlPanelComposer);
-    windowControlPanelComposer.setPreferences(preferences);
+                                                                framePolicy, bareControlPanelComposer,
+                                                                windowControlPreferences);
 
     JComponent controlPanel = GuiActionRunner.execute(new Callable<JComponent>()
     {
@@ -116,8 +116,7 @@ public class WindowControlPanelComposerTest
   @Test
   public void shouldNotAddDisplayPanelWhenStartingWithoutAutoopen()
   {
-    when(preferences.getBoolean(eq(WindowControlPanelComposer.PREFKEY_AUTOOPEN),
-                                any(Boolean.class))).thenReturn(false);
+    when(windowControlPreferences.isAutoOpenWindowOnStartup()).thenReturn(false);
     setUpUi();
 
     windowControlPanelComposer.openNewWindowIfRequired();
@@ -127,8 +126,7 @@ public class WindowControlPanelComposerTest
   @Test
   public void shouldAddDisplayPanelWhenStartingWithAutoopen()
   {
-    when(preferences.getBoolean(eq(WindowControlPanelComposer.PREFKEY_AUTOOPEN),
-                                any(Boolean.class))).thenReturn(true);
+    when(windowControlPreferences.isAutoOpenWindowOnStartup()).thenReturn(true);
     setUpUi();
 
     windowControlPanelComposer.openNewWindowIfRequired();
@@ -138,8 +136,7 @@ public class WindowControlPanelComposerTest
   @Test
   public void shouldOpenNewWindowWithFilterWhenButtonClickedWithCheckbox()
   {
-    when(preferences.getBoolean(eq(WindowControlPanelComposer.PREFKEY_APPLYFILTER),
-                                any(Boolean.class))).thenReturn(true);
+    when(windowControlPreferences.isSequentialFilterApplied()).thenReturn(true);
     setUpUi();
 
     frameFixture.checkBox(WindowControlPanelComposer.AUTOAPPLY_FILTER_NAME).check(true);
@@ -152,8 +149,7 @@ public class WindowControlPanelComposerTest
   @Test
   public void shouldOpenNewWindowWithoutFilterWhenButtonClickedWithoutCheckbox()
   {
-    when(preferences.getBoolean(eq(WindowControlPanelComposer.PREFKEY_APPLYFILTER),
-                                any(Boolean.class))).thenReturn(false);
+    when(windowControlPreferences.isSequentialFilterApplied()).thenReturn(false);
     setUpUi();
 
     frameFixture.checkBox(WindowControlPanelComposer.AUTOAPPLY_FILTER_NAME).check(false);
@@ -187,8 +183,6 @@ public class WindowControlPanelComposerTest
   @Test
   public void shouldUpdatePolicyWhenCheckboxChecked()
   {
-    when(preferences.getBoolean(eq(WindowControlPanelComposer.INTERNALFRAMES_CHECKBOX_NAME),
-                                any(Boolean.class))).thenReturn(false);
     setUpUi();
 
     frameFixture.checkBox(WindowControlPanelComposer.INTERNALFRAMES_CHECKBOX_NAME).check(true);

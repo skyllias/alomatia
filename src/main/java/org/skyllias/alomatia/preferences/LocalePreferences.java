@@ -12,7 +12,7 @@ public class LocalePreferences
 {
   private static final String PREFKEY_NEXTLANG = "nextExecLocale";
 
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 

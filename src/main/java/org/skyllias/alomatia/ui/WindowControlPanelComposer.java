@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
-import java.util.prefs.Preferences;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -30,6 +29,7 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.WindowControlPreferences;
 import org.skyllias.alomatia.ui.DisplayFrameController.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
 import org.skyllias.alomatia.ui.component.BorderedLabel;
@@ -68,11 +68,6 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   protected static final String AUTOAPPLY_FILTER_NAME        = "checkbox.autoapply";
   protected static final String REFILTER_BUTTON_NAME         = "button.refilter";
 
-  protected static final String PREFKEY_HORIZONTAL  = "arrangeHorizontally";
-  protected static final String PREFKEY_LINES       = "amountOfLinesToRearrangeIn";
-  protected static final String PREFKEY_APPLYFILTER = "applySequentialFilterToNewWindow";
-  protected static final String PREFKEY_AUTOOPEN    = "automaticallyOpenNewWindowOnStartup";
-
   private DisplayFrameManager manager;
   private FramePolicyAtStartUp framePolicy;
 
@@ -86,7 +81,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private boolean applySequentialFilters = false;
 
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final WindowControlPreferences windowControlPreferences;
 
 //==============================================================================
 
@@ -96,7 +91,8 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   public WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
                                     DropTargetListenerSupplier dropTargetListenerSupplier,
                                     DisplayFrameManager frameManager, FramePolicyAtStartUp policy,
-                                    BarePanelComposer panelComposer)
+                                    BarePanelComposer panelComposer,
+                                    WindowControlPreferences preferences)
   {
     labelLocalizer           = localizer;
     repeaterDisplay          = displayRepeater;
@@ -104,6 +100,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
     dropListener             = dropTargetListenerSupplier.getDropTargetListener();
     framePolicy              = policy;
     bareControlPanelComposer = panelComposer;
+    windowControlPreferences = preferences;
 
     addNewDisplayKeyListener();
   }
@@ -143,12 +140,6 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   {
     if (isAutoOpenOn()) createNewDisplayFrame();
   }
-
-//------------------------------------------------------------------------------
-
-  /** Meant only for testing purposes. */
-
-  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
@@ -195,7 +186,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   /* Returns true if the preferences contain a value with which the user requests
    * that a new display frame is automatically opened on startup. */
 
-  private boolean isAutoOpenOn() {return preferences.getBoolean(PREFKEY_AUTOOPEN, false);}
+  private boolean isAutoOpenOn() {return windowControlPreferences.isAutoOpenWindowOnStartup();}
 
 //------------------------------------------------------------------------------
 //                        PANEL & COMPONENTS
@@ -330,9 +321,8 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
     final int STEP_LINES = 1;
     final int MIN_LINES  = 1;
     final int MAX_LINES  = 20;
-    final int DEF_LINES  = MIN_LINES;
 
-    int initialLinesValue = preferences.getInt(PREFKEY_LINES, DEF_LINES);
+    int initialLinesValue = windowControlPreferences.getAmountOfLinesToArrangeIn();
     if (initialLinesValue < MIN_LINES) initialLinesValue = MIN_LINES;
     if (initialLinesValue > MAX_LINES) initialLinesValue = MAX_LINES;
     JSpinner linesSpinner = new JSpinner(new SpinnerNumberModel(initialLinesValue, MIN_LINES,
@@ -347,7 +337,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private JComboBox<Boolean> getColumnsOrRowsComboBox()
   {
-    boolean initialHorizontal = preferences.getBoolean(PREFKEY_HORIZONTAL, true);
+    boolean initialHorizontal = windowControlPreferences.isHorizontallyArranged();
 
     JComboBox<Boolean> horizontalCombobox = new JComboBox<>(new Boolean[] {true, false});
     horizontalCombobox.setName(COMBO_HORIZONTAL_NAME);
@@ -373,8 +363,8 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
         boolean horizontally = (boolean) horizontalCombobox.getSelectedItem();
         manager.rearrangeWindows(amountOfLines, horizontally);
 
-        preferences.putInt(PREFKEY_LINES, amountOfLines);
-        preferences.putBoolean(PREFKEY_HORIZONTAL, horizontally);
+        windowControlPreferences.setAmountOfLinesToArrangeIn(amountOfLines);
+        windowControlPreferences.setHorizontallyArranged(horizontally);
       }
     });
 
@@ -385,7 +375,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private JCheckBox getSequentialFiltersCheckbox()
   {
-    applySequentialFilters = preferences.getBoolean(PREFKEY_APPLYFILTER, false);
+    applySequentialFilters = windowControlPreferences.isSequentialFilterApplied();
 
     final JCheckBox checkBox = new JCheckBox(labelLocalizer.getString(AUTOAPPLY_LABEL),
                                              applySequentialFilters);
@@ -396,7 +386,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
       public void stateChanged(ChangeEvent e)
       {
         applySequentialFilters = checkBox.isSelected();
-        preferences.putBoolean(PREFKEY_APPLYFILTER, applySequentialFilters);
+        windowControlPreferences.setSequentialFilterApplied(applySequentialFilters);
       }
     });
 
@@ -470,7 +460,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
     {
       JCheckBox sourceCheckbox = (JCheckBox) event.getSource();
       boolean autoOpenNextTime = sourceCheckbox.isSelected();
-      preferences.putBoolean(PREFKEY_AUTOOPEN, autoOpenNextTime);
+      windowControlPreferences.setAutoOpenWindowOnStartup(autoOpenNextTime);
     }
   }
 
