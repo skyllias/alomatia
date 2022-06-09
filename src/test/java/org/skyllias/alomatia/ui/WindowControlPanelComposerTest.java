@@ -30,9 +30,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.FramePolicyPreferences;
 import org.skyllias.alomatia.preferences.WindowControlPreferences;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
-import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 public class WindowControlPanelComposerTest
 {
@@ -50,7 +50,7 @@ public class WindowControlPanelComposerTest
   @Mock
   private DisplayFrameManager displayFrameManager;
   @Mock
-  private FramePolicyAtStartUp framePolicy;
+  private FramePolicyPreferences framePolicyPreferences;
   @Mock
   private BarePanelComposer bareControlPanelComposer;
   @Mock
@@ -88,7 +88,7 @@ public class WindowControlPanelComposerTest
   {
     windowControlPanelComposer = new WindowControlPanelComposer(labelLocalizer, repeater,
                                                                 dropTargetListenerSupplier, displayFrameManager,
-                                                                framePolicy, bareControlPanelComposer,
+                                                                framePolicyPreferences, bareControlPanelComposer,
                                                                 windowControlPreferences);
 
     JComponent controlPanel = GuiActionRunner.execute(new Callable<JComponent>()
@@ -187,7 +187,7 @@ public class WindowControlPanelComposerTest
 
     frameFixture.checkBox(WindowControlPanelComposer.INTERNALFRAMES_CHECKBOX_NAME).check(true);
 
-    verify(framePolicy, atLeastOnce()).setUsingInternalFramesNextTime(true);    // checkboxes also change state when hovered
+    verify(framePolicyPreferences, atLeastOnce()).setUsingInternalFramesNextTime(true);    // checkboxes also change state when hovered
   }
 
   @Test

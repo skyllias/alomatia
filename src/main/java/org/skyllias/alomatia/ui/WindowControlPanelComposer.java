@@ -29,11 +29,11 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.skyllias.alomatia.display.Repeater;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.FramePolicyPreferences;
 import org.skyllias.alomatia.preferences.WindowControlPreferences;
 import org.skyllias.alomatia.ui.DisplayFrameController.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
 import org.skyllias.alomatia.ui.component.BorderedLabel;
-import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
 
 /** Composer of panels to manage display frames: Create, count and rearrange them.
  *  This takes care of the UI, while a {@link DisplayFrameManager} is in charge
@@ -69,7 +69,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   protected static final String REFILTER_BUTTON_NAME         = "button.refilter";
 
   private DisplayFrameManager manager;
-  private FramePolicyAtStartUp framePolicy;
+  private final FramePolicyPreferences framePolicyPreferences;
 
   private final BarePanelComposer bareControlPanelComposer;
 
@@ -90,7 +90,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   public WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
                                     DropTargetListenerSupplier dropTargetListenerSupplier,
-                                    DisplayFrameManager frameManager, FramePolicyAtStartUp policy,
+                                    DisplayFrameManager frameManager, FramePolicyPreferences policy,
                                     BarePanelComposer panelComposer,
                                     WindowControlPreferences preferences)
   {
@@ -98,7 +98,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
     repeaterDisplay          = displayRepeater;
     manager                  = frameManager;
     dropListener             = dropTargetListenerSupplier.getDropTargetListener();
-    framePolicy              = policy;
+    framePolicyPreferences   = policy;
     bareControlPanelComposer = panelComposer;
     windowControlPreferences = preferences;
 
@@ -299,14 +299,14 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   private JCheckBox getFramePolicyCheckbox()
   {
     final JCheckBox framesCheckBox = new JCheckBox(labelLocalizer.getString(INTERNALFRAMES_LABEL),
-                                                   framePolicy.isUsingInternalFrames());
+                                                   framePolicyPreferences.isUsingInternalFrames());
     framesCheckBox.addChangeListener(new ChangeListener()
     {
       @Override
       public void stateChanged(ChangeEvent e)
       {
         boolean useInternalFramesNextTime = framesCheckBox.isSelected();
-        framePolicy.setUsingInternalFramesNextTime(useInternalFramesNextTime);
+        framePolicyPreferences.setUsingInternalFramesNextTime(useInternalFramesNextTime);
       }
     });
     framesCheckBox.setName(INTERNALFRAMES_CHECKBOX_NAME);

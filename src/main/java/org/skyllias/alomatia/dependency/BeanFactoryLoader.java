@@ -1,7 +1,7 @@
 
 package org.skyllias.alomatia.dependency;
 
-import org.skyllias.alomatia.ui.frame.FramePolicyAtStartUp;
+import org.skyllias.alomatia.preferences.FramePolicyPreferences;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -29,8 +29,8 @@ public class BeanFactoryLoader
   {
     AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 
-    FramePolicyAtStartUp framePolicy = new FramePolicyAtStartUp();
-    if (framePolicy.isUsingInternalFrames()) applicationContext.getEnvironment().setActiveProfiles(Profiles.INTERNAL_WINDOWS);
+    FramePolicyPreferences framePolicyPreferences = new FramePolicyPreferences(); // has to be manually instantiated to set the active profile before component scan
+    if (framePolicyPreferences.isUsingInternalFrames()) applicationContext.getEnvironment().setActiveProfiles(Profiles.INTERNAL_WINDOWS);
 
     applicationContext.scan(BASE_PACKAGE_TO_SCAN);
     applicationContext.refresh();
