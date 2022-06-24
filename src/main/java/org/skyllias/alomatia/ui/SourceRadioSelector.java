@@ -1,12 +1,11 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.util.prefs.Preferences;
-
 import javax.swing.AbstractButton;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 
 /** Creator of radio buttons used to select one of the available {@link ImageSource}s.
@@ -15,22 +14,21 @@ import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 
 public class SourceRadioSelector<RADIO extends AbstractButton> implements RadioSelectorListener<ImageSource>
 {
-  protected static final String PREFKEY_SOURCECOMMAND = "sourceCommandName";
-
   private final RadioSelector<RADIO, ImageSource> radioSelector;
+  private final SourcePreferences sourcePreferences;
 
   private ImageSource previousSource;
-
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
   /** Creates a new instance that will create radio buttons of radioClazz type
    *  and enable or disable the sources as the radio buttons are selected. */
 
-  public SourceRadioSelector(Class<RADIO> radioClazz, LabelLocalizer localizer)
+  public SourceRadioSelector(Class<RADIO> radioClazz, LabelLocalizer localizer,
+                             SourcePreferences sourcePreferences)
   {
-    radioSelector = new RadioSelector<>(radioClazz, localizer, this);
+    radioSelector          = new RadioSelector<>(radioClazz, localizer, this);
+    this.sourcePreferences = sourcePreferences;
   }
 
 //==============================================================================
@@ -47,7 +45,7 @@ public class SourceRadioSelector<RADIO extends AbstractButton> implements RadioS
   {
     RADIO radio = radioSelector.createRadioObject(actionCommand, source);
 
-    String previousSelectionCommand = preferences.get(PREFKEY_SOURCECOMMAND, null);
+    String previousSelectionCommand = sourcePreferences.getSourceCommandName();
     if (actionCommand.equals(previousSelectionCommand))
     {
       radioSelector.setSelectionByActionCommand(previousSelectionCommand);
@@ -71,16 +69,7 @@ public class SourceRadioSelector<RADIO extends AbstractButton> implements RadioS
     }
     previousSource = selectedSource;
 
-    preferences.put(PREFKEY_SOURCECOMMAND, radioSelector.getCurrentSelectionAsActionCommand());
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Meant only for testing purposes. */
-
-  protected void setPreferences(Preferences preferences)
-  {
-    this.preferences = preferences;
+    sourcePreferences.setSourceCommandName(radioSelector.getCurrentSelectionAsActionCommand());
   }
 
 //------------------------------------------------------------------------------
