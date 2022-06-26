@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -23,6 +22,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.DisplayOptionsPreferences;
 import org.skyllias.alomatia.ui.filter.FilterSelector;
 import org.springframework.stereotype.Component;
 
@@ -38,11 +38,7 @@ public class DisplayOptionsDialogComposer
 {
   private static final String TITLE                  = "display.options.title";
   private static final String OPEN_IMMEDIATELY_LABEL = "display.options.show";
-  private static final String CLOSE_LABEL            = "display.options.close";
-
-  private static final boolean SHOW_IMMEDIATELY_DEFAULT = true;
-
-  private static final String PREFKEY_SHOW = "showDialogImmediately";
+  protected static final String CLOSE_LABEL          = "display.options.close";
 
   private static final int SCROLL_UNIT = 16;
 
@@ -51,15 +47,17 @@ public class DisplayOptionsDialogComposer
   private final LabelLocalizer labelLocalizer;
   private final ZoomSelectorComposer zoomSelectorComposer;
 
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final DisplayOptionsPreferences displayOptionsPreferences;
 
 //==============================================================================
 
   public DisplayOptionsDialogComposer(LabelLocalizer localizer,
-                                      ZoomSelectorComposer zoomComposer)
+                                      ZoomSelectorComposer zoomComposer,
+                                      DisplayOptionsPreferences displayPreferences)
   {
-    labelLocalizer       = localizer;
-    zoomSelectorComposer = zoomComposer;
+    labelLocalizer            = localizer;
+    zoomSelectorComposer      = zoomComposer;
+    displayOptionsPreferences = displayPreferences;
   }
 
 //==============================================================================
@@ -71,7 +69,7 @@ public class DisplayOptionsDialogComposer
   public JDialog getDialog(DisplayFrameController ownerDisplayFrame,
                            FilterSelector filterSelector)
   {
-    boolean showImmediately = preferences.getBoolean(PREFKEY_SHOW, SHOW_IMMEDIATELY_DEFAULT);
+    boolean showImmediately = displayOptionsPreferences.isDialogShownImmediately();
 
     JDialog dialog = new JDialog(ownerDisplayFrame.getOwnerFrame(), labelLocalizer.getString(TITLE), false);
 
@@ -134,6 +132,7 @@ public class DisplayOptionsDialogComposer
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
     JButton closeButton = new JButton(labelLocalizer.getString(CLOSE_LABEL));
+    closeButton.setName(CLOSE_LABEL);
     closeButton.addActionListener(new CloseListener(dialog));
     registerEscKeyAction(dialog);
     buttonsPanel.add(closeButton);
@@ -190,7 +189,7 @@ public class DisplayOptionsDialogComposer
         if (currentCheckbox.isSelected() != showImmediately) currentCheckbox.setSelected(showImmediately);  // probably the verification is redundant and there will not be a cascade of change events, but it does not hurt just in case
       }
 
-      preferences.putBoolean(PREFKEY_SHOW, showImmediately);
+      displayOptionsPreferences.setDialogShownImmediately(showImmediately);
     }
   }
 

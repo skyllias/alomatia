@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -21,6 +20,7 @@ import javax.swing.event.ChangeListener;
 import org.skyllias.alomatia.display.DisplayFitPolicy;
 import org.skyllias.alomatia.display.ResizableDisplay;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.ZoomPreferences;
 import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
 import org.springframework.stereotype.Component;
 
@@ -33,35 +33,35 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZoomSelectorComposer
 {
+  protected static final String CUSTOM_LABEL         = "zoom.custom.name";
+  protected static final String FIT_FULL_LABEL       = "zoom.full.name";
+  protected static final String FIT_HORIZONTAL_LABEL = "zoom.width.name";
+  protected static final String FIT_VERTICAL_LABEL   = "zoom.height.name";
+  protected static final String FIT_LARGEST_LABEL    = "zoom.largest.name";
+
   private static final String ZOOM_LABEL           = "zoom.selector.title";
   private static final String ZOOM_TOOLTIP         = "zoom.custom.tooltip";
-  private static final String CUSTOM_LABEL         = "zoom.custom.name";
-  private static final String FIT_FULL_LABEL       = "zoom.full.name";
-  private static final String FIT_HORIZONTAL_LABEL = "zoom.width.name";
-  private static final String FIT_VERTICAL_LABEL   = "zoom.height.name";
-  private static final String FIT_LARGEST_LABEL    = "zoom.largest.name";
 
   private static final int SLIDER_SCALE     = 100;                              // since JSlider does not support decimal values, it will go between -SLIDER_SCALE and SLIDER_SCALE, with 0 being the initial value
   private static final int SLIDER_INCREMENT = 10;
   private static final int SLIDER_INITIAL   = 0;
 
-  private static final String PREFKEY_FIT  = "fitPolicy";
-  private static final String PREFKEY_ZOOM = "zoomSlider";
-
   private final LabelLocalizer labelLocalizer;
   private final BarePanelComposer bareControlPanelComposer;
 
-  private Preferences preferences = Preferences.userNodeForPackage(ZoomSelectorComposer.class);
+  private final ZoomPreferences zoomPreferences;
 
 //==============================================================================
 
   /** Creates a new selector that will modify some display's zoom. */
 
   public ZoomSelectorComposer(LabelLocalizer localizer,
-                              BarePanelComposer panelComposer)
+                              BarePanelComposer panelComposer,
+                              ZoomPreferences preferences)
   {
     labelLocalizer           = localizer;
     bareControlPanelComposer = panelComposer;
+    zoomPreferences          = preferences;
   }
 
 //==============================================================================
@@ -72,28 +72,29 @@ public class ZoomSelectorComposer
   {
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(ZOOM_LABEL));
 
-    JSlider zoomSlider = getNewSlider(resizableDisplay);
+    JSlider zoomSlider = getNewSlider(resizableDisplay,
+                                      zoomPreferences.getSliderValue(SLIDER_INITIAL));
     panel.add(zoomSlider);
 
     setUpFitPolicyRadioSelector(panel, zoomSlider, resizableDisplay);
-
-    zoomSlider.setValue(preferences.getInt(PREFKEY_ZOOM, SLIDER_INITIAL));
 
     return panel;
   }
 
 //------------------------------------------------------------------------------
 
-  /* Returns a new JSlider instance with all the configurations set to work as a zoom selector. */
+  /* Returns a new JSlider instance with all the configurations set to work as a
+   * zoom selector.
+   * The value of the slider is set to initialValue before any change listener
+   * is set up. Therefore, the resizableDisplay does NOT get any value set and
+   * is only used for configurations of future events. */
 
-  private JSlider getNewSlider(ResizableDisplay resizableDisplay)
+  private JSlider getNewSlider(ResizableDisplay resizableDisplay, int initialValue)
   {
     JSlider newSlider = new JSlider(JSlider.HORIZONTAL, -SLIDER_SCALE, SLIDER_SCALE, SLIDER_INITIAL);
     newSlider.setMajorTickSpacing(SLIDER_INCREMENT);
     newSlider.setMinorTickSpacing(SLIDER_INCREMENT);
     newSlider.setPaintTicks(true);
-    newSlider.addChangeListener(new ZoomSliderChangeListener(newSlider, resizableDisplay));
-    newSlider.addMouseListener(new ResetSliderMouseListener(newSlider));
     newSlider.setToolTipText(labelLocalizer.getString(ZOOM_TOOLTIP));
 
     Dictionary<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
@@ -104,6 +105,11 @@ public class ZoomSelectorComposer
     addSliderLabel(labels, SLIDER_SCALE);
     newSlider.setLabelTable(labels);
     newSlider.setPaintLabels(true);
+
+    newSlider.setValue(initialValue);
+
+    newSlider.addChangeListener(new ZoomSliderChangeListener(newSlider, resizableDisplay));
+    newSlider.addMouseListener(new ResetSliderMouseListener(newSlider));
 
     return newSlider;
   }
@@ -141,9 +147,7 @@ public class ZoomSelectorComposer
 
     addPolicyKeyListener(radioSelector);
 
-    DisplayFitPolicy initialPolicy = DisplayFitPolicy.FREE;
-    try {initialPolicy = DisplayFitPolicy.valueOf(preferences.get(PREFKEY_FIT, DisplayFitPolicy.FREE.toString()));}
-    catch (Exception e) {}                                                      // preferences are optional
+    DisplayFitPolicy initialPolicy = zoomPreferences.getDisplayFitPolicy();
     radioSelector.setSelection(initialPolicy);
   }
 
@@ -159,7 +163,7 @@ public class ZoomSelectorComposer
     double expValue = getZoomFactorFromSlider(sliderValue);
     resizableDisplay.setZoomFactor(expValue);
 
-    preferences.putInt(PREFKEY_ZOOM, sliderValue);
+    zoomPreferences.setSilderValue(sliderValue);
   }
 
 //------------------------------------------------------------------------------
@@ -238,7 +242,7 @@ public class ZoomSelectorComposer
       if (isFreePolicy) setZoomFactorFromSlider(zoomSlider, resizableDisplay);
       resizableDisplay.setFitZoom(type);
 
-      preferences.put(PREFKEY_FIT, type.toString());
+      zoomPreferences.setDisplayFitPolicy(type);
     }
   }
 

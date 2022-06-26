@@ -2,16 +2,12 @@
 package org.skyllias.alomatia.ui.save;
 
 import static org.assertj.swing.fixture.Containers.showInFrame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.concurrent.Callable;
-import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -26,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.preferences.SavePreferences;
 import org.skyllias.alomatia.ui.BarePanelComposer;
 
 /* The destination dir changes cannot be tested because they involve a JFileChooser. */
@@ -37,7 +34,7 @@ public class SaveFilePanelComposerTest
   @Mock
   private FileImageSaver imageSaver;
   @Mock
-  private Preferences preferences;
+  private SavePreferences savePreferences;
   @Mock
   private BarePanelComposer bareControlPanelComposer;
 
@@ -52,8 +49,7 @@ public class SaveFilePanelComposerTest
   {
     MockitoAnnotations.initMocks(this);
 
-    when(preferences.get(eq(SaveFilePanelComposer.PREFKEY_DESTINATION),
-                         any(String.class))).thenReturn("some/path");           // this is always required for the method not to throw a NPE
+    when(savePreferences.getDestinationPath()).thenReturn("some/path");
   }
 
   /* Cannot be called inside setUp() if preferences are to be tuned up. */
@@ -61,8 +57,8 @@ public class SaveFilePanelComposerTest
   private void setUpUi()
   {
     final SaveFilePanelComposer panelComposer = new SaveFilePanelComposer(new KeyLabelLocalizer(),
-                                                                          bareControlPanelComposer);
-    panelComposer.setPreferences(preferences);
+                                                                          bareControlPanelComposer,
+                                                                          savePreferences);
 
     JComponent savePanel = GuiActionRunner.execute(new Callable<JComponent>()
     {
@@ -97,8 +93,7 @@ public class SaveFilePanelComposerTest
   @Test
   public void shouldSetPromptWhenInitiatedAsTrue()
   {
-    doReturn(true).when(preferences).getBoolean(eq(SaveFilePanelComposer.PREFKEY_PROMPT),
-                                                any(Boolean.class));
+    when(savePreferences.isPromptOn()).thenReturn(true);
 
     setUpUi();
 
@@ -109,8 +104,7 @@ public class SaveFilePanelComposerTest
   @Test
   public void shouldSetPromptWhenInitiatedAsFalse()
   {
-    doReturn(false).when(preferences).getBoolean(eq(SaveFilePanelComposer.PREFKEY_PROMPT),
-                                                 any(Boolean.class));
+    when(savePreferences.isPromptOn()).thenReturn(false);
 
     setUpUi();
 
@@ -121,8 +115,7 @@ public class SaveFilePanelComposerTest
   @Test
   public void shouldChangePromptWhenCheckboxChecked()
   {
-    doReturn(false).when(preferences).getBoolean(eq(SaveFilePanelComposer.PREFKEY_PROMPT),
-                                                 any(Boolean.class));
+    when(savePreferences.isPromptOn()).thenReturn(false);
 
     setUpUi();
     frameFixture.checkBox(SaveFilePanelComposer.PROMPT_CHECKBOX_NAME).check(true);
@@ -133,8 +126,7 @@ public class SaveFilePanelComposerTest
   @Test
   public void shouldChangePromptWhenCheckboxUnchecked()
   {
-    doReturn(true).when(preferences).getBoolean(eq(SaveFilePanelComposer.PREFKEY_PROMPT),
-                                                any(Boolean.class));
+    when(savePreferences.isPromptOn()).thenReturn(true);
 
     setUpUi();
     frameFixture.checkBox(SaveFilePanelComposer.PROMPT_CHECKBOX_NAME).check(false);

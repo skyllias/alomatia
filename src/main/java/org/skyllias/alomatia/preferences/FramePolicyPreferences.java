@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui.frame;
+package org.skyllias.alomatia.preferences;
 
 import java.util.prefs.Preferences;
 
@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
  *  policies are supported. */
 
 @Component
-public class FramePolicyAtStartUp
+public class FramePolicyPreferences
 {
   private static final String VM_ARG_INTERNALFRAMES   = "alomatia.frames.inner";
   private static final String PREFKEY_INTERNALFRAMES  = "useInternalFrames";
   private static final boolean DEFAULT_INTERNALFRAMES = false;
 
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
   /** Returns true if display frames should be internal frames, false if they
    *  should be separate windows.
    *  This value is modified by means of
-   *  {@link FramePolicyAtStartUp#setUsingInternalFramesNextTime(boolean)}, but
+   *  {@link FramePolicyPreferences#setUsingInternalFramesNextTime(boolean)}, but
    *  the behaviour should not really change until next execution.
    *  If a VM argument is passed, it's boolean value is used; otherwise, the
    *  preferences are looked up. */

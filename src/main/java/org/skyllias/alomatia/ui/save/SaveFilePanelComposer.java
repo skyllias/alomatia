@@ -4,7 +4,6 @@ package org.skyllias.alomatia.ui.save;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.prefs.Preferences;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,6 +17,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SavePreferences;
 import org.skyllias.alomatia.ui.BarePanelComposer;
 import org.skyllias.alomatia.ui.component.BorderedLabel;
 import org.skyllias.alomatia.ui.component.PathTextField;
@@ -29,8 +29,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SaveFilePanelComposer
 {
-  private static final String USER_HOME_PROP = "user.home";
-
   private static final String TITLE_LABEL       = "save.control.title";
   private static final String DESTINATION_LABEL = "save.control.destination";
   private static final String CHANGE_LABEL      = "save.control.change";
@@ -38,21 +36,20 @@ public class SaveFilePanelComposer
 
   protected static final String PROMPT_CHECKBOX_NAME = "checkbox.prompt";
 
-  protected static final String PREFKEY_DESTINATION = "saveDestinationDirectory";
-  protected static final String PREFKEY_PROMPT      = "promptFileToSave";
-
   private final LabelLocalizer labelLocalizer;
   private final BarePanelComposer bareControlPanelComposer;
 
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final SavePreferences savePreferences;
 
 //==============================================================================
 
   public SaveFilePanelComposer(LabelLocalizer localizer,
-                               BarePanelComposer panelComposer)
+                               BarePanelComposer panelComposer,
+                               SavePreferences savePreferences)
   {
     labelLocalizer           = localizer;
     bareControlPanelComposer = panelComposer;
+    this.savePreferences     = savePreferences;
   }
 
 //==============================================================================
@@ -63,9 +60,8 @@ public class SaveFilePanelComposer
 
   public JComponent getComponent(FileImageSaver imageSaver)
   {
-    String initialDestinationPath = preferences.get(PREFKEY_DESTINATION,
-                                                    System.getProperty(USER_HOME_PROP));
-    boolean initialPrompt         = preferences.getBoolean(PREFKEY_PROMPT, true);
+    String initialDestinationPath = savePreferences.getDestinationPath();
+    boolean initialPrompt         = savePreferences.isPromptOn();
     imageSaver.setDestinationDir(new File(initialDestinationPath));
     imageSaver.setPrompt(initialPrompt);
 
@@ -74,12 +70,6 @@ public class SaveFilePanelComposer
     addPromptComponents(savePanel, initialPrompt, imageSaver);
     return savePanel;
   }
-
-//------------------------------------------------------------------------------
-
-  /** Meant only for testing purposes. */
-
-  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
@@ -116,7 +106,7 @@ public class SaveFilePanelComposer
           imageSaver.setDestinationDir(selectedFile);
           pathField.setText(selectedPath);
 
-          preferences.put(PREFKEY_DESTINATION, selectedPath);
+          savePreferences.setDestinationPath(selectedPath);
         }
       }
     });
@@ -147,7 +137,7 @@ public class SaveFilePanelComposer
         boolean askUser = promptCheckbox.isSelected();
         imageSaver.setPrompt(askUser);
 
-        preferences.putBoolean(PREFKEY_PROMPT, askUser);
+        savePreferences.setPromptOn(askUser);
       }
     });
     promptCheckbox.setName(PROMPT_CHECKBOX_NAME);

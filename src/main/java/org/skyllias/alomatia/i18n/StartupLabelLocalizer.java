@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.UIManager;
 
+import org.skyllias.alomatia.preferences.LocalePreferences;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -29,8 +29,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class StartupLabelLocalizer implements LabelLocalizer
 {
-  protected static final String PREFKEY_NEXTLANG = "nextExecLocale";
-
   private static final String VM_ARG_LANGUAGE = "alomatia.language";
 
   private static final Pattern PROPERTIES_FILE_NAME_PATTERN          = Pattern.compile("Labels_(.*)\\.properties");             // all these three strings must be modified consistently
@@ -40,8 +38,7 @@ public class StartupLabelLocalizer implements LabelLocalizer
   private static final Locale DEFAULT_LANGUAGE = Locale.ENGLISH;
 
   private final Collection<Locale> availableLocales;
-
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final LocalePreferences localePreferences;
 
 //==============================================================================
 
@@ -54,21 +51,9 @@ public class StartupLabelLocalizer implements LabelLocalizer
 
 //==============================================================================
 
-  public StartupLabelLocalizer()
+  public StartupLabelLocalizer(LocalePreferences localePreferences)
   {
-    availableLocales = findLocalesInClasspath();
-
-    initializeSelectedLocale();
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Only meant for testing purposes.
-   *  TODO refactor to avoid code repetition. */
-
-  protected StartupLabelLocalizer(Preferences preferences)
-  {
-    this.preferences = preferences;
+    this.localePreferences = localePreferences;
 
     availableLocales = findLocalesInClasspath();
 
@@ -102,13 +87,13 @@ public class StartupLabelLocalizer implements LabelLocalizer
   @Override
   public void setLocale(Locale nextLocale)
   {
-    if (nextLocale == null) preferences.remove(PREFKEY_NEXTLANG);
-    else                    preferences.put(PREFKEY_NEXTLANG, nextLocale.getLanguage());
+    if (nextLocale == null) localePreferences.clearNextLanguageCode();
+    else                    localePreferences.setNextLanguageCode(nextLocale.getLanguage());
   }
 
 //------------------------------------------------------------------------------
 
-  /** Changing the contents of the collection has no effect. */
+  /** Returns an unmodifiable collection with all the supported locales. */
 
   @Override
   public Collection<Locale> getAvailableLocales()
@@ -155,8 +140,8 @@ public class StartupLabelLocalizer implements LabelLocalizer
   private void initializeSelectedLocale()
   {
     String defaultLangId = getDefaultLocaleId();
-    String languageId    = preferences.get(PREFKEY_NEXTLANG, defaultLangId);
-    Locale languageToUse = new Locale(getSelectedLocaleId(languageId));
+    String languageCode  = localePreferences.getNextLanguageCode(defaultLangId);
+    Locale languageToUse = new Locale(getSelectedLocaleId(languageCode));
 
     UIManager.getDefaults().setDefaultLocale(languageToUse);
     Locale.setDefault(languageToUse);                                           // for some reason, Swing built-in components do not use UIManager defaults but this one

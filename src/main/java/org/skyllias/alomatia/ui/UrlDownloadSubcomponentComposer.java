@@ -2,7 +2,6 @@
 package org.skyllias.alomatia.ui;
 
 import java.awt.event.ActionEvent;
-import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -12,6 +11,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.DownloadPreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.springframework.stereotype.Component;
@@ -29,31 +29,24 @@ public class UrlDownloadSubcomponentComposer
   protected static final String BUTTON_CANCEL_LABEL  = "source.selector.url.button.cancel";
   protected static final String ERROR_TOOLTIP_PREFIX = "source.selector.url.field.tooltip.error.";
 
-  protected static final String PREFKEY_DEFAULTURL = "defaultSourceUrl";
-
   private final LabelLocalizer labelLocalizer;
-
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final DownloadPreferences downloadPreferences;
 
 //==============================================================================
 
-  public UrlDownloadSubcomponentComposer(LabelLocalizer localizer)
+  public UrlDownloadSubcomponentComposer(LabelLocalizer localizer,
+                                         DownloadPreferences preferences)
   {
-    labelLocalizer = localizer;
+    labelLocalizer      = localizer;
+    downloadPreferences = preferences;
   }
 
 //==============================================================================
 
   public UrlDownloadSubcomponent getUrlDownloadSubcomponent(AsynchronousUrlSource source)
   {
-    return new UrlDownloadSubcomponent(source, labelLocalizer, preferences);
+    return new UrlDownloadSubcomponent(source, labelLocalizer, downloadPreferences);
   }
-
-//------------------------------------------------------------------------------
-
-  /** Meant only for testing. */
-
-  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +67,7 @@ public class UrlDownloadSubcomponentComposer
 
     public UrlDownloadSubcomponent(AsynchronousUrlSource urlSource,
                                    LabelLocalizer labelLocalizer,
-                                   Preferences preferences)
+                                   DownloadPreferences preferences)
     {
       this.urlSource      = urlSource;
       this.labelLocalizer = labelLocalizer;
@@ -82,7 +75,7 @@ public class UrlDownloadSubcomponentComposer
       enableComponents(false);
       button.setText(labelLocalizer.getString(BUTTON_READY_LABEL));
 
-      String initialUrl = preferences.get(PREFKEY_DEFAULTURL, null);
+      String initialUrl = preferences.getLastUrl();
       if (initialUrl != null) urlField.setText(initialUrl);
 
       Action urlAction = new UrlAction(this, preferences);
@@ -216,11 +209,11 @@ public class UrlDownloadSubcomponentComposer
   private static class UrlAction extends AbstractAction
   {
     private final UrlDownloadSubcomponent urlDownloadSubcomponent;
-    private final Preferences preferences;
+    private final DownloadPreferences preferences;
 
 
     public UrlAction(UrlDownloadSubcomponent urlDownloadSubcomponent,
-                     Preferences preferences)
+                     DownloadPreferences preferences)
     {
       this.urlDownloadSubcomponent = urlDownloadSubcomponent;
       this.preferences             = preferences;
@@ -236,7 +229,7 @@ public class UrlDownloadSubcomponentComposer
         String url = urlDownloadSubcomponent.getUrl();
         urlDownloadSubcomponent.startDownload(url);
 
-        preferences.put(PREFKEY_DEFAULTURL, url);
+        preferences.setLastUrl(url);
       }
     }
   }

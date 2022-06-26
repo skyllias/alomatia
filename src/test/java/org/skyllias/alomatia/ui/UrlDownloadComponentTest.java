@@ -3,14 +3,12 @@ package org.skyllias.alomatia.ui;
 
 import static org.assertj.swing.fixture.Containers.showInFrame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.Callable;
-import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -27,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.preferences.DownloadPreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.AsynchronousUrlSource.DownloadListener;
 import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubcomponent;
@@ -44,7 +43,7 @@ public class UrlDownloadComponentTest
   @Mock
   private AsynchronousUrlSource source;
   @Mock
-  private Preferences preferences;
+  private DownloadPreferences preferences;
   private UrlDownloadSubcomponentComposer downloadComponentComposer;
   private UrlDownloadSubcomponent downloadComponent;
 
@@ -59,10 +58,9 @@ public class UrlDownloadComponentTest
   {
     MockitoAnnotations.initMocks(this);
 
-    when(preferences.get(eq(UrlDownloadSubcomponentComposer.PREFKEY_DEFAULTURL), any(String.class))).thenReturn(null);
+    when(preferences.getLastUrl()).thenReturn(null);
 
-    downloadComponentComposer = new UrlDownloadSubcomponentComposer(new KeyLabelLocalizer());
-    downloadComponentComposer.setPreferences(preferences);
+    downloadComponentComposer = new UrlDownloadSubcomponentComposer(new KeyLabelLocalizer(), preferences);
 
     JPanel container = GuiActionRunner.execute(new Callable<JPanel>()
     {
@@ -145,8 +143,9 @@ public class UrlDownloadComponentTest
     frameFixture.textBox(FIELD_NAME).enterText("whatever");
     frameFixture.button(BUTTON_NAME).click();
 
-    verify(source, times(1)).setUrl("whatever", downloadComponent);
+    verify(source).setUrl("whatever", downloadComponent);
     frameFixture.button(BUTTON_NAME).requireText(UrlDownloadSubcomponentComposer.BUTTON_CANCEL_LABEL);
+    verify(preferences).setLastUrl("whatever");
   }
 
   @Test
