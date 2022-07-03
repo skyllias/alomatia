@@ -5,6 +5,7 @@ import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.ColourFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
+import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
 import org.skyllias.alomatia.filter.hsb.function.FangHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.HueFunction;
 import org.skyllias.alomatia.filter.hsb.pole.Attraction;
@@ -75,6 +76,13 @@ public class HsbFilterFactory
 //------------------------------------------------------------------------------
 
   public static ImageFilter forFixedHue(float fixedHue) {return forHsbConverter(new FixedHueConverter(fixedHue));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forBrightnessDependingHue(float lowestBrightnessHue, float highestBrightnessHue, double openFactor)
+  {
+    return forHsbConverter(new BrightnessDependingHueConverter(lowestBrightnessHue, highestBrightnessHue, new ComposedUnitFactor(openFactor)));
+  }
 
 //------------------------------------------------------------------------------
 
