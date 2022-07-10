@@ -2,12 +2,13 @@
 package org.skyllias.alomatia.app;
 
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.skyllias.alomatia.dependency.BeanFactoryLoader;
-import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.controls.ControlsFrameManager;
 
 import com.jtattoo.plaf.aero.AeroLookAndFeel;
@@ -17,16 +18,17 @@ import com.jtattoo.plaf.aero.AeroLookAndFeel;
 public class SwingAlomatia
 {
   private static final String LNF_LOGO_STRING_PROPERTY = "logoString";
-  private static final String APP_NAME                 = "app.name";
+  private static final String APP_NAME                 = "Alomatia";
 
 //==============================================================================
 
   public static void main(String[] args)
   {
-    BeanFactoryLoader beanFactoryLoader = new BeanFactoryLoader();
-
-    ControlsFrameManager controlFrameController = beanFactoryLoader.getLoadedBean(ControlsFrameManager.class);
-    LabelLocalizer labelLocalizer               = beanFactoryLoader.getLoadedBean(LabelLocalizer.class);
+    Future<ControlsFrameManager> controlFrameController = Executors.newSingleThreadExecutor().submit(() ->
+    {
+      BeanFactoryLoader beanFactoryLoader = new BeanFactoryLoader();
+      return beanFactoryLoader.getLoadedBean(ControlsFrameManager.class);
+    });
 
     SwingUtilities.invokeLater(new Runnable()
     {
@@ -36,11 +38,11 @@ public class SwingAlomatia
         try
         {
           Properties lnfProperties = new Properties();
-          lnfProperties.put(LNF_LOGO_STRING_PROPERTY, labelLocalizer.getString(APP_NAME));
+          lnfProperties.put(LNF_LOGO_STRING_PROPERTY, APP_NAME);
           AeroLookAndFeel.setCurrentTheme(lnfProperties);
           UIManager.setLookAndFeel(new AeroLookAndFeel());                      // TODO make it optional
 
-          controlFrameController.createControlFrame();
+          controlFrameController.get().createControlFrame();
         }
         catch (Exception e) {e.printStackTrace();}                              // TODO log
       }

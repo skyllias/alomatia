@@ -307,7 +307,7 @@ public class SourceSelectorComposer
     JPanel configPanel = new JPanel();
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
-    File initialFile       = null;
+    File initialFile = null;
     if (initialFilePath != null) initialFile = new File(initialFilePath);
     fileSource.setFileSource(initialFile);
 
