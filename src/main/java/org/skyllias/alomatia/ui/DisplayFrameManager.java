@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.logo.IconSupplier;
 import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class DisplayFrameManager
 {
   private final LabelLocalizer labelLocalizer;
-  private final LogoProducer logoProducer;
+  private final IconSupplier iconSupplier;
   private final FrameAdaptorFactory frameAdaptorFactory;
   private final FilteredImageGenerator filteredImageGenerator;
   private final FilterSelectorComposer filterSelectorComposer;
@@ -43,7 +43,7 @@ public class DisplayFrameManager
   @Autowired
 
   public DisplayFrameManager(LabelLocalizer labelLocalizer,
-                             LogoProducer logoProducer,
+                             IconSupplier iconSupplier,
                              FrameAdaptorFactory frameAdaptorFactory,
                              FilteredImageGenerator filteredImageGenerator,
                              FilterSelectorComposer filterSelectorComposer,
@@ -51,7 +51,7 @@ public class DisplayFrameManager
                              FileImageSaver fileImageSaver)
   {
     this.labelLocalizer               = labelLocalizer;
-    this.logoProducer                 = logoProducer;
+    this.iconSupplier                 = iconSupplier;
     this.frameAdaptorFactory          = frameAdaptorFactory;
     this.filteredImageGenerator       = filteredImageGenerator;
     this.filterSelectorComposer       = filterSelectorComposer;
@@ -79,7 +79,7 @@ public class DisplayFrameManager
   {
     DisplayPanelController displayPanel = new DisplayPanelController(filteredImageGenerator);
     FrameAdaptor frameAdaptor           = frameAdaptorFactory.getNewFrame(displayPanel.getComponent());
-    DisplayFrameController frame        = new DisplayFrameController(labelLocalizer,logoProducer,
+    DisplayFrameController frame        = new DisplayFrameController(labelLocalizer,iconSupplier,
                                                                      frameAdaptor, displayPanel,
                                                                      filterSelectorComposer,
                                                                      filteredImageGenerator, fileImageSaver,

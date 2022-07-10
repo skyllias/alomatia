@@ -94,7 +94,7 @@ public class FilterCommand
   {
     for (NamedFilter currentNamedFilter : filterFactory.getAllAvailableFilters())
     {
-      if (currentNamedFilter.getNameKey().equals(filterKey)) return currentNamedFilter.getFilter();
+      if (currentNamedFilter.getFilterKey().equals(filterKey)) return currentNamedFilter.getFilter();
     }
 
     throw new FilterNotFoundException("No filter can be found with key " + filterKey);

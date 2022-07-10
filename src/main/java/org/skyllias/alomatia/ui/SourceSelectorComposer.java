@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.prefs.Preferences;
+import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -27,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.BasicFileSource;
 import org.skyllias.alomatia.source.ClipboardSource;
@@ -42,8 +43,9 @@ import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubco
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.springframework.stereotype.Component;
 
-/** Composer of a panel with the controls to select a {@link ImageSource}.
- *  TODO Make it more OO by obtaining a component for each source type. */
+/** Composer of a panel with the controls to select an {@link ImageSource}.
+ *  TODO Make it more OO by obtaining a component for each source type.
+ *  TODO Test. */
 
 @Component
 public class SourceSelectorComposer
@@ -64,19 +66,13 @@ public class SourceSelectorComposer
 
   protected static final String CLIPBOARD_AUTOMODE_NAME = "checkbox.clipboard.automode";
 
-  protected static final String PREFKEY_CLIPBOARDAUTO = "sourceClipboardAuto";
-  protected static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
-  protected static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
-
   private final LabelLocalizer labelLocalizer;
   private final CaptureFrameComposer captureFrameComposer;
   private final UrlDownloadSubcomponentComposer urlDownloadSubcomponentComposer;
   private final SourceCatalogue sourceCatalogue;
   private final BarePanelComposer bareControlPanelComposer;
-
-  private SourceRadioSelector<JRadioButton> radioSelector;
-
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final SourceRadioSelector<JRadioButton> radioSelector;
+  private final SourcePreferences sourcePreferences;
 
 //==============================================================================
 
@@ -87,7 +83,8 @@ public class SourceSelectorComposer
                                 CaptureFrameComposer captureFrame,
                                 UrlDownloadSubcomponentComposer urlDownloadComposer,
                                 SourceRadioSelector<JRadioButton> sourceRadioSelector,
-                                BarePanelComposer panelComposer)
+                                BarePanelComposer panelComposer,
+                                SourcePreferences preferences)
   {
     labelLocalizer                  = localizer;
     sourceCatalogue                 = catalogue;
@@ -95,6 +92,7 @@ public class SourceSelectorComposer
     urlDownloadSubcomponentComposer = urlDownloadComposer;
     radioSelector                   = sourceRadioSelector;
     bareControlPanelComposer        = panelComposer;
+    sourcePreferences               = preferences;
   }
 
 //==============================================================================
@@ -115,12 +113,6 @@ public class SourceSelectorComposer
 
     return panel;
   }
-
-//------------------------------------------------------------------------------
-
-  /** Only meant for testing. */
-
-  protected void setPreferences(Preferences prefs) {preferences = prefs;}
 
 //------------------------------------------------------------------------------
 
@@ -165,7 +157,7 @@ public class SourceSelectorComposer
     final ClipboardSource clipboardSource = sourceCatalogue.get(ClipboardSource.class);
     if (clipboardSource != null)
     {
-      boolean isAutoMode = preferences.getBoolean(PREFKEY_CLIPBOARDAUTO, true);
+      boolean isAutoMode = sourcePreferences.isClipboardAutoMode();
 
       JPanel configPanel = new JPanel();
       configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
@@ -180,7 +172,7 @@ public class SourceSelectorComposer
         {
           boolean newAutoMode = autoCheckbox.isSelected();
           clipboardSource.setAutoMode(newAutoMode);
-          preferences.putBoolean(PREFKEY_CLIPBOARDAUTO, newAutoMode);
+          sourcePreferences.setClipboardAutoMode(newAutoMode);
         }
       });
 
@@ -269,8 +261,8 @@ public class SourceSelectorComposer
       chooser.setAcceptAllFileFilterUsed(false);
       chooser.addChoosableFileFilter(imageFilter);
 
-      initFileSelector(fileSource, chooser, panel, PREFKEY_DEFAULTFILE,
-                       FILE_LABEL, FILE_SOURCE_LABEL);
+      initFileSelector(fileSource, chooser, panel, sourcePreferences.getDefaultFilePath(),
+                       sourcePreferences::setDefaultFilePath, FILE_LABEL, FILE_SOURCE_LABEL);
     }
   }
 
@@ -287,8 +279,8 @@ public class SourceSelectorComposer
       JFileChooser chooser = new JFileChooser();
       chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-      initFileSelector(dirSource, chooser, panel, PREFKEY_DEFAULTDIR,
-                       DIR_LABEL, DIR_SOURCE_LABEL);
+      initFileSelector(dirSource, chooser, panel, sourcePreferences.getDefaultDirPath(),
+                       sourcePreferences::setDefaultDirPath, DIR_LABEL, DIR_SOURCE_LABEL);
 
       addNavigationKeyListener(dirSource);
     }
@@ -308,14 +300,14 @@ public class SourceSelectorComposer
    * is selected then both are activated. */
 
   private void initFileSelector(final BasicFileSource fileSource, final JFileChooser chooser,
-                                JPanel panel, final String preferencesKey,
+                                JPanel panel, String initialFilePath,
+                                final Consumer<String> preferencesSetter,
                                 String buttonLabelKey, String sourceLabel)
   {
     JPanel configPanel = new JPanel();
     configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
 
-    File initialFile       = null;
-    String initialFilePath = preferences.get(preferencesKey, null);
+    File initialFile = null;
     if (initialFilePath != null) initialFile = new File(initialFilePath);
     fileSource.setFileSource(initialFile);
 
@@ -338,7 +330,7 @@ public class SourceSelectorComposer
           fileSource.setFileSource(selectedFile);
           pathField.setText(selectedPath);
 
-          preferences.put(preferencesKey, selectedPath);
+          preferencesSetter.accept(selectedPath);
         }
       }
     });

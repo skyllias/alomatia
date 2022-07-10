@@ -28,13 +28,12 @@ import org.skyllias.alomatia.display.FilterableDisplay;
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.logo.LogoProducer;
+import org.skyllias.alomatia.logo.IconSupplier;
 import org.skyllias.alomatia.ui.filter.FilterSelector;
 import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
 import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
-import org.skyllias.alomatia.ui.frame.MainApplicationFrameSupplier;
 import org.skyllias.alomatia.ui.save.ImageSaver;
 
 /** Provider of the logic for windows where the filtered images are drawn. The
@@ -58,7 +57,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   private static final String PANEL_TOOLTIP = "display.panel.tooltip";
 
   private final LabelLocalizer labelLocalizer;
-  private final LogoProducer logoProducer;
+  private final IconSupplier iconSupplier;
 
   private final DisplayPanelController displayPanel;
 
@@ -78,20 +77,20 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   /** Creates a new window containing the passed display panel. */
 
-  public DisplayFrameController(LabelLocalizer localizer, LogoProducer logoProducer, FrameAdaptor adaptor,
+  public DisplayFrameController(LabelLocalizer localizer, IconSupplier iconSupplier, FrameAdaptor adaptor,
                                 DisplayPanelController panel, FilterSelectorComposer filterSelectorComposer,
                                 FilteredImageGenerator filteredImageGenerator, ImageSaver saver,
                                 DisplayOptionsDialogComposer dialogComposer)
   {
     labelLocalizer              = localizer;
-    this.logoProducer           = logoProducer;
+    this.iconSupplier           = iconSupplier;
     displayPanel                = panel;
     frameAdaptor                = adaptor;
     this.filteredImageGenerator = filteredImageGenerator;
     imageSaver                  = saver;
 
     frameAdaptor.setTitle(labelLocalizer.getString(DEFAULT_TITLE));
-    frameAdaptor.setIcon(getDefaultLogo());
+    frameAdaptor.setIcon(iconSupplier.getIcon());
 
     displayPanel.getComponent().setToolTipText(labelLocalizer.getString(PANEL_TOOLTIP));
 
@@ -340,21 +339,10 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   private void applyFilterToIcon(ImageFilter filter)
   {
-    Image logo = getDefaultLogo();
+    Image logo = iconSupplier.getIcon();
     if (filter != null) logo = filteredImageGenerator.generate(logo, filter);
 
     frameAdaptor.setIcon(logo);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Returns the logo used when there is no filter applied.
-   * Copied from ControlFrameManager. */
-
-  private Image getDefaultLogo()
-  {
-    return logoProducer.createImage(MainApplicationFrameSupplier.ICON_WIDTH,
-                                    MainApplicationFrameSupplier.ICON_HEIGHT);  // dynamically generated every time instead of reading it from file or even caching it: it is not such a big overhead
   }
 
 //------------------------------------------------------------------------------

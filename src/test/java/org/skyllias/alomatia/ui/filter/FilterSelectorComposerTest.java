@@ -110,7 +110,7 @@ public class FilterSelectorComposerTest
   @Test
   public void shouldSetNullFilterWhenVoidOptionSelected()
   {
-    JRadioButtonFixture radioButton = frameFixture.radioButton(NO_FILTER_NAME);
+    JRadioButtonFixture radioButton = getRadioButton(NO_FILTER_NAME);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
 
@@ -122,7 +122,7 @@ public class FilterSelectorComposerTest
   @Test
   public void shouldSetBrighterFilterWhenLighterOptionSelected()
   {
-    JRadioButtonFixture radioButton = frameFixture.radioButton(LIGHTER_FILTER_NAME);
+    JRadioButtonFixture radioButton = getRadioButton(LIGHTER_FILTER_NAME);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
 
@@ -132,7 +132,7 @@ public class FilterSelectorComposerTest
   @Test
   public void shouldNotRegisterSearchHistoryWhenRadioSelectedAndEmptyField()
   {
-    JRadioButtonFixture radioButton = frameFixture.radioButton(LIGHTER_FILTER_NAME);
+    JRadioButtonFixture radioButton = getRadioButton(LIGHTER_FILTER_NAME);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
 
@@ -145,7 +145,7 @@ public class FilterSelectorComposerTest
     JTextComponentFixture searchField = frameFixture.textBox("filter.selector.search");
     searchField.enterText("filter");
 
-    JRadioButtonFixture radioButton = frameFixture.radioButton(LIGHTER_FILTER_NAME);
+    JRadioButtonFixture radioButton = getRadioButton(LIGHTER_FILTER_NAME);
     radioButton.uncheck();                                                      // always uncheck in case this was the initial selection
     radioButton.check();
 
@@ -179,9 +179,9 @@ public class FilterSelectorComposerTest
   private void shouldShowOrHideSearchedFilters(String searchText, boolean nullRadioVisible,
                                                boolean lighterRadioVisible, boolean darkerRadioVisible)
   {
-    JRadioButtonFixture radioButton1 = frameFixture.radioButton(NO_FILTER_NAME);
-    JRadioButtonFixture radioButton2 = frameFixture.radioButton(LIGHTER_FILTER_NAME);
-    JRadioButtonFixture radioButton3 = frameFixture.radioButton(DARKER_FILTER_NAME);
+    JRadioButtonFixture radioButton1 = getRadioButton(NO_FILTER_NAME);
+    JRadioButtonFixture radioButton2 = getRadioButton(LIGHTER_FILTER_NAME);
+    JRadioButtonFixture radioButton3 = getRadioButton(DARKER_FILTER_NAME);
 
     JTextComponentFixture searchField = frameFixture.textBox("filter.selector.search");
     searchField.enterText(searchText);
@@ -197,5 +197,11 @@ public class FilterSelectorComposerTest
   {
     if (visible) radioButton.requireVisible();
     else         radioButton.requireNotVisible();
+  }
+
+  private JRadioButtonFixture getRadioButton(String filterName)
+  {
+    final String SUFFIX_AUTOMATICALLY_ADDED_TO_KEYS = ".name";
+    return frameFixture.radioButton(filterName + SUFFIX_AUTOMATICALLY_ADDED_TO_KEYS);
   }
 }

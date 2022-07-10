@@ -9,18 +9,20 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 
 public class NamedFilter
 {
-  private ImageFilter filter;
-  private String nameKey;
+  private static final String NAME_KEY_FORMAT = "%s.name";
+
+  private final ImageFilter imageFilter;
+  private final String filterKey;
 
 //==============================================================================
 
-  /** Associates imageFilter to an identifying string (most probably localizable
-   *  by means of a {@link LabelLocalizer}). */
+  /** Associates imageFilter to an identifying string (localizable by means of a
+   *  {@link LabelLocalizer}) by appending a fixed suffix). */
 
-  public NamedFilter(ImageFilter imageFilter, String key)
+  public NamedFilter(ImageFilter imageFilter, String filterKey)
   {
-    filter  = imageFilter;
-    nameKey = key;
+    this.imageFilter = imageFilter;
+    this.filterKey   = filterKey;
   }
 
 //==============================================================================
@@ -30,7 +32,17 @@ public class NamedFilter
 
   public ImageFilter getFilter()
   {
-    return filter;
+    return imageFilter;
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Returns the key associated to the filter.
+   *  It should never be null. */
+
+  public String getFilterKey()
+  {
+    return filterKey;
   }
 
 //------------------------------------------------------------------------------
@@ -40,7 +52,7 @@ public class NamedFilter
 
   public String getNameKey()
   {
-    return nameKey;
+    return String.format(NAME_KEY_FORMAT, filterKey);
   }
 
 //------------------------------------------------------------------------------

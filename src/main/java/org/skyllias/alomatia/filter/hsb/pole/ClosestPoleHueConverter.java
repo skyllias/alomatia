@@ -1,8 +1,6 @@
 
 package org.skyllias.alomatia.filter.hsb.pole;
 
-import java.awt.Color;
-
 import org.skyllias.alomatia.filter.hsb.HsbConverter;
 
 /** Converter that shifts hue towards the closest of one or more poles. */
@@ -15,13 +13,11 @@ public class ClosestPoleHueConverter implements HsbConverter
 
   /** Creates a filter that modifies the hue of images by finding the closest
    *  from the hues of poles and then applying the passed attraction.
-   *  A pole passed twice makes no difference.
-   *  A colour with saturation 0 may have unexpected effects over the inner
-   *  calculations, since the hue is then indeterministically defined. */
+   *  A pole passed twice makes no difference. */
 
-  public ClosestPoleHueConverter(Attraction attraction, Color... colourPoles)
+  public ClosestPoleHueConverter(Attraction attraction, float... huePoles)
   {
-    attractionPoles = new AttractionPoles(attraction, colourPoles);
+    attractionPoles = new AttractionPoles(attraction, huePoles);
   }
 
 //==============================================================================

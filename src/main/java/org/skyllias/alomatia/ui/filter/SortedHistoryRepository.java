@@ -10,7 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 /** Repository to save and retrieve a list of strings.
- *  The storage is based on {@link Preferences}. */
+ *  The storage is based on {@link Preferences}.
+ *  Initially, all saved items are stored forever. */
 
 @Component
 public class SortedHistoryRepository
@@ -18,11 +19,14 @@ public class SortedHistoryRepository
   private static final String PREFKEY_SORTED_SEARCH_HISTORY = "sortedSearchHistory";
   private static final String ENTRY_SEPARATOR               = "///";
 
-  private Preferences preferences = Preferences.userNodeForPackage(getClass());
+  private final Preferences preferences;
 
 //==============================================================================
 
-  public SortedHistoryRepository() {}
+  public SortedHistoryRepository()
+  {
+    this(Preferences.userNodeForPackage(SortedHistoryRepository.class));
+  }
 
 //------------------------------------------------------------------------------
 

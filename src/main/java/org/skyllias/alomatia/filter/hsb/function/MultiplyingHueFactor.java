@@ -1,8 +1,8 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.function;
 
-/** {@link HueFunction} that delegates the call to another function and multiplies
- *  its results by some factor.
+/** {@link HueFunction} that delegates the call to another function and
+ *  multiplies its results by some factor.
  *  <p>
  *  This can be used to get negative values for positive only functions. */
 
