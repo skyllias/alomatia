@@ -58,6 +58,24 @@ public class FixedFilterFactory implements FilterFactory
   private static final String XYZTRIMALY_FILTER_KEY    = "filter.dalton.xyz.tritanomaly";
   private static final String XYZACHSIA_FILTER_KEY     = "filter.dalton.xyz.achromatopsia";
   private static final String XYZACHMALY_FILTER_KEY    = "filter.dalton.xyz.achromatomaly";
+  private static final String TRITONE_RGB_FILTER_KEY   = "filter.tritone.rgb";
+  private static final String TRITONE_RBG_FILTER_KEY   = "filter.tritone.rbg";
+  private static final String TRITONE_GBR_FILTER_KEY   = "filter.tritone.gbr";
+  private static final String TRITONE_GRB_FILTER_KEY   = "filter.tritone.grb";
+  private static final String TRITONE_BRG_FILTER_KEY   = "filter.tritone.brg";
+  private static final String TRITONE_BGR_FILTER_KEY   = "filter.tritone.bgr";
+  private static final String TRITONE_RGC_FILTER_KEY   = "filter.tritone.rgc";
+  private static final String TRITONE_GGP_FILTER_KEY   = "filter.tritone.ggp";
+  private static final String TRITONE_BGY_FILTER_KEY   = "filter.tritone.bgy";
+  private static final String TRITONE_NRY_FILTER_KEY   = "filter.tritone.nry";
+  private static final String TRITONE_NRP_FILTER_KEY   = "filter.tritone.nrp";
+  private static final String TRITONE_NGC_FILTER_KEY   = "filter.tritone.ngc";
+  private static final String TRITONE_NGY_FILTER_KEY   = "filter.tritone.ngy";
+  private static final String TRITONE_NBP_FILTER_KEY   = "filter.tritone.nbp";
+  private static final String TRITONE_NBC_FILTER_KEY   = "filter.tritone.nbc";
+  private static final String TRITONE_NRW_FILTER_KEY   = "filter.tritone.nrw";
+  private static final String TRITONE_NGW_FILTER_KEY   = "filter.tritone.ngw";
+  private static final String TRITONE_NBW_FILTER_KEY   = "filter.tritone.nbw";
   private static final String RGBR_FILTER_KEY          = "filter.rgb.gbr";
   private static final String BGRB_FILTER_KEY          = "filter.rgb.brg";
   private static final String SWAP_RG_FILTER_KEY       = "filter.rgb.swap.rg";
@@ -362,6 +380,26 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(VignetteFilterFactory.forRound(), VIGNETTE_R_FILTER_KEY));
     filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_KEY));
     filters.add(new NamedFilter(VignetteFilterFactory.forEdges(), VIGNETTE_E_FILTER_KEY));
+
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(100, 0, 0), new Color(50, 150, 50), new Color(200, 200, 255)),   TRITONE_RGB_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(100, 0, 0), new Color(50, 50, 150), new Color(200, 255, 200)),   TRITONE_RBG_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 100, 0), new Color(50, 50, 150), new Color(255, 200, 200)),   TRITONE_GBR_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 100, 0), new Color(150, 50, 50), new Color(200, 200, 255)),   TRITONE_GRB_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 100), new Color(150, 50, 50), new Color(200, 255, 200)),   TRITONE_BRG_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 100), new Color(50, 150, 50), new Color(255, 200, 200)),   TRITONE_BGR_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(127, 0, 0), new Color(127, 127, 127), new Color(0, 255, 255)),   TRITONE_RGC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 127, 0), new Color(127, 127, 127), new Color(255, 127, 255)), TRITONE_GGP_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 127), new Color(127, 127, 127), new Color(255, 255, 0)),   TRITONE_BGY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 255, 0)),         TRITONE_NRY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 127, 255)),       TRITONE_NRP_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(0, 255, 255)),         TRITONE_NGC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 0)),         TRITONE_NGY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 127, 255)),       TRITONE_NBP_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(0, 255, 255)),         TRITONE_NBC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 255, 255)),       TRITONE_NRW_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 255)),       TRITONE_NGW_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 255)),       TRITONE_NBW_FILTER_KEY));
+
 
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 4, new DiagonalMap()), AXE_S_S_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_KEY));

@@ -1,6 +1,7 @@
 
 package org.skyllias.alomatia.filter.rgb;
 
+import java.awt.Color;
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.ColourFilter;
@@ -92,6 +93,10 @@ public class RgbFilterFactory
 //------------------------------------------------------------------------------
 
   public static ImageFilter forMaxOnly(int threshold) {return new ColourFilter(new MaxOnlyConverter(threshold));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forTritone(Color dark, Color mid, Color bright) {return new ColourFilter(new TritoneConverter(dark, mid, bright));}
 
 //------------------------------------------------------------------------------
 
