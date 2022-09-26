@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
@@ -37,10 +38,11 @@ import org.skyllias.alomatia.source.ScreenSource;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
-import org.skyllias.alomatia.source.VoidSource;
 import org.skyllias.alomatia.ui.CaptureFrameComposer.CaptureBoundsListener;
 import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubcomponent;
 import org.skyllias.alomatia.ui.component.PathTextField;
+import org.skyllias.alomatia.ui.source.SourceSelection;
+import org.skyllias.alomatia.ui.source.SourceSelectionComposer;
 import org.springframework.stereotype.Component;
 
 /** Composer of a panel with the controls to select an {@link ImageSource}.
@@ -50,8 +52,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SourceSelectorComposer
 {
+  private static final String SOURCE_ACTION_COMMAND_FORMAT = "source.%s.name";
+
   private static final String SOURCE_LABEL             = "source.selector.title";
-  protected static final String NO_SOURCE_LABEL        = "source.none.name";    // protected to be accessible in tests
   protected static final String DND_SOURCE_LABEL       = "source.dnd.name";
   protected static final String CLIPBOARD_SOURCE_LABEL = "source.clipboard.name";
   protected static final String FILE_SOURCE_LABEL      = "source.file.name";
@@ -66,6 +69,7 @@ public class SourceSelectorComposer
 
   protected static final String CLIPBOARD_AUTOMODE_NAME = "checkbox.clipboard.automode";
 
+  private final List<SourceSelectionComposer> sourceSelectionComposers;
   private final LabelLocalizer labelLocalizer;
   private final CaptureFrameComposer captureFrameComposer;
   private final UrlDownloadSubcomponentComposer urlDownloadSubcomponentComposer;
@@ -79,13 +83,15 @@ public class SourceSelectorComposer
   /** Creates a new selector to choose from the known types in the catalogue.
    *  The unknown types are ignored, and the missing known types are gently skipped. */
 
-  public SourceSelectorComposer(LabelLocalizer localizer, SourceCatalogue catalogue,
+  public SourceSelectorComposer(List<SourceSelectionComposer> sourceSelectionComposers,
+                                LabelLocalizer localizer, SourceCatalogue catalogue,
                                 CaptureFrameComposer captureFrame,
                                 UrlDownloadSubcomponentComposer urlDownloadComposer,
                                 SourceRadioSelector<JRadioButton> sourceRadioSelector,
                                 BarePanelComposer panelComposer,
                                 SourcePreferences preferences)
   {
+    this.sourceSelectionComposers   = sourceSelectionComposers;
     labelLocalizer                  = localizer;
     sourceCatalogue                 = catalogue;
     captureFrameComposer            = captureFrame;
@@ -103,7 +109,7 @@ public class SourceSelectorComposer
   {
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
-    initVoidSelector(panel);
+    sourceSelectionComposers.forEach(composer -> addSourceSelector(composer, panel));
     initDropSelector(panel);
     initClipboardSelector(panel);
     initScreenSelector(panel);
@@ -116,19 +122,24 @@ public class SourceSelectorComposer
 
 //------------------------------------------------------------------------------
 
-  /* Sets up the drop selector radio if the catalogue contains a VoidSource. */
+  /* Sets up the selector radio for the passed composer and adds it to the panel
+   * along with the controls component. */
 
-  private void initVoidSelector(JPanel panel)
+  private void addSourceSelector(SourceSelectionComposer sourceSelectionComposer,
+                                 JPanel panel)
   {
-    VoidSource voidSource = sourceCatalogue.get(VoidSource.class);
-    if (voidSource != null)
-    {
-      JPanel configPanel = new JPanel();
-      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-      configPanel.add(radioSelector.createRadioObject(NO_SOURCE_LABEL, voidSource));
-      configPanel.add(Box.createHorizontalGlue());
-      panel.add(configPanel);
-    }
+    SourceSelection sourceSelection = sourceSelectionComposer.buildSelector();
+
+    JPanel configPanel = new JPanel();
+    configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
+
+    String sourceActionCommand = String.format(SOURCE_ACTION_COMMAND_FORMAT,
+                                               sourceSelectionComposer.getSourceKey());
+    JRadioButton radioButton   = radioSelector.createRadioObject(sourceActionCommand,
+                                                                 sourceSelection.getSource());
+    configPanel.add(radioButton);
+    configPanel.add(sourceSelection.getControls());
+    panel.add(configPanel);
   }
 
 //------------------------------------------------------------------------------
