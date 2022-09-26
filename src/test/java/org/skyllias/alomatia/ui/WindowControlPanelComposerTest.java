@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.awt.dnd.DropTargetListener;
 import java.util.concurrent.Callable;
 
 import javax.swing.JComponent;
@@ -42,7 +43,7 @@ public class WindowControlPanelComposerTest
   @Mock
   private Repeater repeater;
   @Mock
-  private DropTargetListenerSupplier dropTargetListenerSupplier;
+  private DropTargetListener dropTargetListener;
   @Mock
   private DisplayPanelController displayPanel;
   @Mock
@@ -87,7 +88,7 @@ public class WindowControlPanelComposerTest
   private void setUpUi()
   {
     windowControlPanelComposer = new WindowControlPanelComposer(labelLocalizer, repeater,
-                                                                dropTargetListenerSupplier, displayFrameManager,
+                                                                dropTargetListener, displayFrameManager,
                                                                 framePolicyPreferences, bareControlPanelComposer,
                                                                 windowControlPreferences);
 

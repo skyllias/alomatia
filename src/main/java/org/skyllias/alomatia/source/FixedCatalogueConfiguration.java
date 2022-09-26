@@ -23,7 +23,7 @@ public class FixedCatalogueConfiguration
     SourceCatalogue catalogue = new SourceCatalogue();
 
     catalogue.add(VoidSource.class,            new VoidSource());
-    catalogue.add(DropSource.class,            new DropSource());
+    catalogue.add(DropSource.class,            new DropSource(display));
     catalogue.add(ClipboardSource.class,       new ClipboardSource());
     catalogue.add(ScreenSource.class,          new ScreenSource());
     catalogue.add(AsynchronousUrlSource.class, new AsynchronousUrlSource());

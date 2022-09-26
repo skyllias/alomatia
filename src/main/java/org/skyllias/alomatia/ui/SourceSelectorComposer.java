@@ -33,7 +33,6 @@ import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.BasicFileSource;
 import org.skyllias.alomatia.source.ClipboardSource;
 import org.skyllias.alomatia.source.DirFileSource;
-import org.skyllias.alomatia.source.DropSource;
 import org.skyllias.alomatia.source.ScreenSource;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 import org.skyllias.alomatia.source.SingleFileSource;
@@ -55,7 +54,6 @@ public class SourceSelectorComposer
   private static final String SOURCE_ACTION_COMMAND_FORMAT = "source.%s.name";
 
   private static final String SOURCE_LABEL             = "source.selector.title";
-  protected static final String DND_SOURCE_LABEL       = "source.dnd.name";
   protected static final String CLIPBOARD_SOURCE_LABEL = "source.clipboard.name";
   protected static final String FILE_SOURCE_LABEL      = "source.file.name";
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
@@ -110,7 +108,6 @@ public class SourceSelectorComposer
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
     sourceSelectionComposers.forEach(composer -> addSourceSelector(composer, panel));
-    initDropSelector(panel);
     initClipboardSelector(panel);
     initScreenSelector(panel);
     initUrlSelector(panel);
@@ -140,23 +137,6 @@ public class SourceSelectorComposer
     configPanel.add(radioButton);
     configPanel.add(sourceSelection.getControls());
     panel.add(configPanel);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets up the drop selector radio if the catalogue contains a DropSource. */
-
-  private void initDropSelector(JPanel panel)
-  {
-    DropSource dropSource = sourceCatalogue.get(DropSource.class);
-    if (dropSource != null)
-    {
-      JPanel configPanel = new JPanel();
-      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-      configPanel.add(radioSelector.createRadioObject(DND_SOURCE_LABEL, dropSource));
-      configPanel.add(Box.createHorizontalGlue());
-      panel.add(configPanel);
-    }
   }
 
 //------------------------------------------------------------------------------
