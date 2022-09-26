@@ -7,7 +7,7 @@ import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 
 /** Superclass for most source implementations. */
-
+@Deprecated
 public abstract class BasicSource implements ImageSource
 {
   private ImageDisplay imageDisplay;

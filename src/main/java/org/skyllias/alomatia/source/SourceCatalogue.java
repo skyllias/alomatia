@@ -14,6 +14,7 @@ import org.skyllias.alomatia.ImageSource;
  *  The instances are created externally and all this class does is to carry
  *  them in a sorted way. */
 
+@Deprecated
 public class SourceCatalogue
 {
   private Map<Class<? extends ImageSource>, ImageSource> sourcesByClass = new HashMap<>();
