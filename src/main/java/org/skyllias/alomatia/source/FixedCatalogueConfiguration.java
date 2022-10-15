@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /** Probably the whole catalogue idea will be refactored in the future. */
 
 @Configuration
+@Deprecated
 public class FixedCatalogueConfiguration
 {
 //==============================================================================
@@ -22,9 +23,6 @@ public class FixedCatalogueConfiguration
   {
     SourceCatalogue catalogue = new SourceCatalogue();
 
-    catalogue.add(VoidSource.class,            new VoidSource());
-    catalogue.add(DropSource.class,            new DropSource(display));
-    catalogue.add(ClipboardSource.class,       new ClipboardSource());
     catalogue.add(ScreenSource.class,          new ScreenSource());
     catalogue.add(AsynchronousUrlSource.class, new AsynchronousUrlSource());
     catalogue.add(SingleFileSource.class,      new SingleFileSource());

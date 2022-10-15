@@ -20,8 +20,6 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -31,7 +29,6 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.BasicFileSource;
-import org.skyllias.alomatia.source.ClipboardSource;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.source.ScreenSource;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
@@ -59,13 +56,10 @@ public class SourceSelectorComposer
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
   protected static final String SCREEN_SOURCE_LABEL    = "source.screen.name";
   protected static final String URL_SOURCE_LABEL       = "source.url.name";
-  private static final String CLIPBOARD_AUTO_LABEL     = "source.selector.clipboard.checkbox";
   private static final String CAPTURE_LABEL            = "source.selector.screen.button";
   private static final String FILE_LABEL               = "source.selector.file.button";
   private static final String DIR_LABEL                = "source.selector.directory.button";
   private static final String IMAGE_FILES_FILTER       = "source.selector.file.filter";
-
-  protected static final String CLIPBOARD_AUTOMODE_NAME = "checkbox.clipboard.automode";
 
   private final List<SourceSelectionComposer> sourceSelectionComposers;
   private final LabelLocalizer labelLocalizer;
@@ -108,7 +102,6 @@ public class SourceSelectorComposer
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
     sourceSelectionComposers.forEach(composer -> addSourceSelector(composer, panel));
-    initClipboardSelector(panel);
     initScreenSelector(panel);
     initUrlSelector(panel);
     initSingleFileSelector(panel);
@@ -137,45 +130,6 @@ public class SourceSelectorComposer
     configPanel.add(radioButton);
     configPanel.add(sourceSelection.getControls());
     panel.add(configPanel);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets up the clipboard selector radio and checkbox if the catalogue contains a ClipboardSource. */
-
-  private void initClipboardSelector(JPanel panel)
-  {
-    final ClipboardSource clipboardSource = sourceCatalogue.get(ClipboardSource.class);
-    if (clipboardSource != null)
-    {
-      boolean isAutoMode = sourcePreferences.isClipboardAutoMode();
-
-      JPanel configPanel = new JPanel();
-      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-
-      final JCheckBox autoCheckbox = new JCheckBox(labelLocalizer.getString(CLIPBOARD_AUTO_LABEL), isAutoMode);
-      autoCheckbox.setName(CLIPBOARD_AUTOMODE_NAME);
-      autoCheckbox.setEnabled(false);
-      autoCheckbox.addChangeListener(new ChangeListener()
-      {
-        @Override
-        public void stateChanged(ChangeEvent event)
-        {
-          boolean newAutoMode = autoCheckbox.isSelected();
-          clipboardSource.setAutoMode(newAutoMode);
-          sourcePreferences.setClipboardAutoMode(newAutoMode);
-        }
-      });
-
-      addPasteKeyListener(clipboardSource);
-
-      ButtonSource wrapperSource = new ButtonSource(clipboardSource,
-                                                    new CheckBoxEnabable(autoCheckbox), false);
-      configPanel.add(radioSelector.createRadioObject(CLIPBOARD_SOURCE_LABEL, wrapperSource));
-      configPanel.add(autoCheckbox);
-      configPanel.add(Box.createHorizontalGlue());
-      panel.add(configPanel);
-    }
   }
 
 //------------------------------------------------------------------------------
@@ -333,33 +287,6 @@ public class SourceSelectorComposer
     configPanel.add(pathField);
     configPanel.add(fileButton);
     panel.add(configPanel);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Adds a global listener that makes clipboardSource show the contents of the
-   * clipboard when the proper keys are pressed: Ctrl + V or Shift + Insert. */
-
-  private void addPasteKeyListener(final ClipboardSource clipboardSource)
-  {
-    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-    manager.addKeyEventDispatcher(new KeyEventDispatcher()
-    {
-      @Override
-      public boolean dispatchKeyEvent(KeyEvent e)
-      {
-        if(e.getID() == KeyEvent.KEY_PRESSED)
-        {
-          int pressedKeyCode    = e.getKeyCode();
-          boolean isControlDown = EventUtils.isControlDown(e);
-          boolean isShiftDown   = e.isShiftDown();
-          boolean isPaste = (isControlDown && pressedKeyCode == KeyEvent.VK_V) ||
-                            (isShiftDown && pressedKeyCode == KeyEvent.VK_INSERT);
-          if (isPaste) clipboardSource.readFromClipboard();
-        }
-        return false;                                                           // allow the event to be redispatched
-      }
-    });
   }
 
 //------------------------------------------------------------------------------
