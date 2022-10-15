@@ -1,7 +1,6 @@
 
 package org.skyllias.alomatia.ui;
 
-import java.awt.AWTException;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -12,10 +11,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -30,11 +27,8 @@ import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.BasicFileSource;
 import org.skyllias.alomatia.source.DirFileSource;
-import org.skyllias.alomatia.source.ScreenSource;
-import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
-import org.skyllias.alomatia.ui.CaptureFrameComposer.CaptureBoundsListener;
 import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubcomponent;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.source.SourceSelection;
@@ -51,19 +45,15 @@ public class SourceSelectorComposer
   private static final String SOURCE_ACTION_COMMAND_FORMAT = "source.%s.name";
 
   private static final String SOURCE_LABEL             = "source.selector.title";
-  protected static final String CLIPBOARD_SOURCE_LABEL = "source.clipboard.name";
   protected static final String FILE_SOURCE_LABEL      = "source.file.name";
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
-  protected static final String SCREEN_SOURCE_LABEL    = "source.screen.name";
   protected static final String URL_SOURCE_LABEL       = "source.url.name";
-  private static final String CAPTURE_LABEL            = "source.selector.screen.button";
   private static final String FILE_LABEL               = "source.selector.file.button";
   private static final String DIR_LABEL                = "source.selector.directory.button";
   private static final String IMAGE_FILES_FILTER       = "source.selector.file.filter";
 
   private final List<SourceSelectionComposer> sourceSelectionComposers;
   private final LabelLocalizer labelLocalizer;
-  private final CaptureFrameComposer captureFrameComposer;
   private final UrlDownloadSubcomponentComposer urlDownloadSubcomponentComposer;
   private final SourceCatalogue sourceCatalogue;
   private final BarePanelComposer bareControlPanelComposer;
@@ -77,7 +67,6 @@ public class SourceSelectorComposer
 
   public SourceSelectorComposer(List<SourceSelectionComposer> sourceSelectionComposers,
                                 LabelLocalizer localizer, SourceCatalogue catalogue,
-                                CaptureFrameComposer captureFrame,
                                 UrlDownloadSubcomponentComposer urlDownloadComposer,
                                 SourceRadioSelector<JRadioButton> sourceRadioSelector,
                                 BarePanelComposer panelComposer,
@@ -86,7 +75,6 @@ public class SourceSelectorComposer
     this.sourceSelectionComposers   = sourceSelectionComposers;
     labelLocalizer                  = localizer;
     sourceCatalogue                 = catalogue;
-    captureFrameComposer            = captureFrame;
     urlDownloadSubcomponentComposer = urlDownloadComposer;
     radioSelector                   = sourceRadioSelector;
     bareControlPanelComposer        = panelComposer;
@@ -102,7 +90,6 @@ public class SourceSelectorComposer
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
     sourceSelectionComposers.forEach(composer -> addSourceSelector(composer, panel));
-    initScreenSelector(panel);
     initUrlSelector(panel);
     initSingleFileSelector(panel);
     initDirFileSelector(panel);
@@ -130,41 +117,6 @@ public class SourceSelectorComposer
     configPanel.add(radioButton);
     configPanel.add(sourceSelection.getControls());
     panel.add(configPanel);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets up the screen selector radio and button if the catalogue contains a ScreenSource. */
-
-  private void initScreenSelector(JPanel panel)
-  {
-    final ScreenSource screenSource = sourceCatalogue.get(ScreenSource.class);
-    if (screenSource != null)
-    {
-      JPanel configPanel = new JPanel();
-      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-
-      JButton screenButton = new JButton(labelLocalizer.getString(CAPTURE_LABEL));
-      screenButton.setEnabled(false);
-      screenButton.addActionListener(new ActionListener()
-      {
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-          CaptureFrameListener captureListener = new CaptureFrameListener(screenSource);
-
-          screenSource.setActive(false);                                        // always disable capture when the capture frame is open
-          captureFrameComposer.openNewFrame(captureListener);
-        }
-      });
-
-      ButtonSource wrapperSource = new ButtonSource(screenSource,
-                                                    new ButtonEnabable(screenButton));
-      configPanel.add(radioSelector.createRadioObject(SCREEN_SOURCE_LABEL, wrapperSource));
-      configPanel.add(screenButton);
-      configPanel.add(Box.createHorizontalGlue());
-      panel.add(configPanel);
-    }
   }
 
 //------------------------------------------------------------------------------
@@ -324,31 +276,6 @@ public class SourceSelectorComposer
 
 //******************************************************************************
 
-  /* Listener to invoke when the CaptureFrame button is clicked. */
-
-  private class CaptureFrameListener implements CaptureBoundsListener
-  {
-    private ScreenSource screenSource;
-
-    public CaptureFrameListener(ScreenSource source) {screenSource = source;}
-
-    /** Passes the bounds to the source and activates it. */
-
-    @Override
-    public void boundsSelected(ScreenRectangle bounds)
-    {
-      try
-      {
-        screenSource.setScreenBounds(bounds);
-        screenSource.setActive(true);
-      }
-      catch (AWTException awte) {awte.printStackTrace();}                       // TODO log
-    }
-
-  }
-
-//******************************************************************************
-
   /** Wrapper around a component that can be enabled.
    *  It should be better explained and designed. */
 
@@ -373,20 +300,6 @@ public class SourceSelectorComposer
 
 //******************************************************************************
 
-  /* Wrapper around a JCheckBox. */
-
-  private class CheckBoxEnabable implements Enabable
-  {
-    private JCheckBox checkbox;
-
-    public CheckBoxEnabable(JCheckBox jCheckbox) {checkbox = jCheckbox;}
-
-    @Override
-    public void setEnabled(boolean active) {checkbox.setEnabled(active);}
-  }
-
-//******************************************************************************
-
   /* Fake source wrapping a real one that instead of activating it directly
    * enables a JButton that may eventually activate the delegate source. This
    * "delay", though, can be turned off.
@@ -398,11 +311,6 @@ public class SourceSelectorComposer
     private ImageSource realSource;
     private Enabable button;
     private boolean delay = true;
-
-    public ButtonSource(ImageSource wrappedSource, Enabable enablyButton)
-    {
-      this(wrappedSource, enablyButton, true);
-    }
 
     public ButtonSource(ImageSource wrappedSource, Enabable enablyButton, boolean delaySourceActivation)
     {
