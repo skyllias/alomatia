@@ -24,12 +24,10 @@ import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.SourcePreferences;
-import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.BasicFileSource;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
-import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer.UrlDownloadSubcomponent;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.source.SourceSelection;
 import org.skyllias.alomatia.ui.source.SourceSelectionComposer;
@@ -47,14 +45,12 @@ public class SourceSelectorComposer
   private static final String SOURCE_LABEL             = "source.selector.title";
   protected static final String FILE_SOURCE_LABEL      = "source.file.name";
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
-  protected static final String URL_SOURCE_LABEL       = "source.url.name";
   private static final String FILE_LABEL               = "source.selector.file.button";
   private static final String DIR_LABEL                = "source.selector.directory.button";
   private static final String IMAGE_FILES_FILTER       = "source.selector.file.filter";
 
   private final List<SourceSelectionComposer> sourceSelectionComposers;
   private final LabelLocalizer labelLocalizer;
-  private final UrlDownloadSubcomponentComposer urlDownloadSubcomponentComposer;
   private final SourceCatalogue sourceCatalogue;
   private final BarePanelComposer bareControlPanelComposer;
   private final SourceRadioSelector<JRadioButton> radioSelector;
@@ -67,7 +63,6 @@ public class SourceSelectorComposer
 
   public SourceSelectorComposer(List<SourceSelectionComposer> sourceSelectionComposers,
                                 LabelLocalizer localizer, SourceCatalogue catalogue,
-                                UrlDownloadSubcomponentComposer urlDownloadComposer,
                                 SourceRadioSelector<JRadioButton> sourceRadioSelector,
                                 BarePanelComposer panelComposer,
                                 SourcePreferences preferences)
@@ -75,7 +70,6 @@ public class SourceSelectorComposer
     this.sourceSelectionComposers   = sourceSelectionComposers;
     labelLocalizer                  = localizer;
     sourceCatalogue                 = catalogue;
-    urlDownloadSubcomponentComposer = urlDownloadComposer;
     radioSelector                   = sourceRadioSelector;
     bareControlPanelComposer        = panelComposer;
     sourcePreferences               = preferences;
@@ -90,7 +84,6 @@ public class SourceSelectorComposer
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
     sourceSelectionComposers.forEach(composer -> addSourceSelector(composer, panel));
-    initUrlSelector(panel);
     initSingleFileSelector(panel);
     initDirFileSelector(panel);
 
@@ -117,29 +110,6 @@ public class SourceSelectorComposer
     configPanel.add(radioButton);
     configPanel.add(sourceSelection.getControls());
     panel.add(configPanel);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets up the asynchronous URL selector radio and button, reading and writing
-   * preferences to remember the last selection between executions. */
-
-  private void initUrlSelector(JPanel panel)
-  {
-    final AsynchronousUrlSource urlSource = sourceCatalogue.get(AsynchronousUrlSource.class);
-    if (urlSource != null)
-    {
-      UrlDownloadSubcomponent downloadComponent = urlDownloadSubcomponentComposer.getUrlDownloadSubcomponent(urlSource);
-
-      JPanel configPanel = new JPanel();
-      configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-
-      ButtonSource wrapperSource = new ButtonSource(urlSource, downloadComponent, false);
-      configPanel.add(radioSelector.createRadioObject(URL_SOURCE_LABEL, wrapperSource));
-      configPanel.add(downloadComponent.getTextField());
-      configPanel.add(downloadComponent.getButton());
-      panel.add(configPanel);
-    }
   }
 
 //------------------------------------------------------------------------------
@@ -276,10 +246,10 @@ public class SourceSelectorComposer
 
 //******************************************************************************
 
-  /** Wrapper around a component that can be enabled.
-   *  It should be better explained and designed. */
+  /* Wrapper around a component that can be enabled.
+   * It will disappear soon. */
 
-  public interface Enabable
+  private interface Enabable
   {
     void setEnabled(boolean active);
   }

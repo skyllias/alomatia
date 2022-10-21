@@ -23,7 +23,6 @@ public class FixedCatalogueConfiguration
   {
     SourceCatalogue catalogue = new SourceCatalogue();
 
-    catalogue.add(AsynchronousUrlSource.class, new AsynchronousUrlSource());
     catalogue.add(SingleFileSource.class,      new SingleFileSource());
     catalogue.add(DirFileSource.class,         new DirFileSource());
 

@@ -52,8 +52,7 @@ public class UrlDownloadSubcomponentComposer
 
 //******************************************************************************
 
-  public static class UrlDownloadSubcomponent implements AsynchronousUrlSource.DownloadListener,
-                                                         SourceSelectorComposer.Enabable
+  public static class UrlDownloadSubcomponent implements AsynchronousUrlSource.DownloadListener
   {
     private final AsynchronousUrlSource urlSource;
     private final LabelLocalizer labelLocalizer;
@@ -91,7 +90,6 @@ public class UrlDownloadSubcomponentComposer
 
 //------------------------------------------------------------------------------
 
-    @Override
     public void setEnabled(boolean active)
     {
       enableComponents(active);
