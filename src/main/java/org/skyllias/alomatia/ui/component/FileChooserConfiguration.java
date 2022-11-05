@@ -17,7 +17,7 @@ public class FileChooserConfiguration
 {
   private static final String IMAGE_FILES_FILTER_LABEL = "source.selector.file.filter";
 
-  //==============================================================================
+//==============================================================================
 
   @Bean("singleFileChooser")
   public JFileChooser singleFileChooser(LabelLocalizer labelLocalizer)
@@ -27,6 +27,17 @@ public class FileChooserConfiguration
                                                          ImageIO.getReaderFileSuffixes());
     chooser.setAcceptAllFileFilterUsed(false);
     chooser.addChoosableFileFilter(imageFilter);
+
+    return chooser;
+  }
+
+//------------------------------------------------------------------------------
+
+  @Bean("dirFileChooser")
+  public JFileChooser dirFileChooser(LabelLocalizer labelLocalizer)
+  {
+    JFileChooser chooser = new JFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
     return chooser;
   }
