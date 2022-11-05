@@ -23,7 +23,6 @@ public class FixedCatalogueConfiguration
   {
     SourceCatalogue catalogue = new SourceCatalogue();
 
-    catalogue.add(SingleFileSource.class,      new SingleFileSource());
     catalogue.add(DirFileSource.class,         new DirFileSource());
 
     setDisplay(catalogue, display);

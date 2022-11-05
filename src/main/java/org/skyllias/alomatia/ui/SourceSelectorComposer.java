@@ -10,15 +10,12 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
@@ -26,7 +23,6 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.source.BasicFileSource;
 import org.skyllias.alomatia.source.DirFileSource;
-import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.source.SourceCatalogue;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.source.SourceSelection;
@@ -43,11 +39,8 @@ public class SourceSelectorComposer
   private static final String SOURCE_ACTION_COMMAND_FORMAT = "source.%s.name";
 
   private static final String SOURCE_LABEL             = "source.selector.title";
-  protected static final String FILE_SOURCE_LABEL      = "source.file.name";
   protected static final String DIR_SOURCE_LABEL       = "source.directory.name";
-  private static final String FILE_LABEL               = "source.selector.file.button";
   private static final String DIR_LABEL                = "source.selector.directory.button";
-  private static final String IMAGE_FILES_FILTER       = "source.selector.file.filter";
 
   private final List<SourceSelectionComposer> sourceSelectionComposers;
   private final LabelLocalizer labelLocalizer;
@@ -84,7 +77,6 @@ public class SourceSelectorComposer
     JPanel panel = bareControlPanelComposer.getPanel(labelLocalizer.getString(SOURCE_LABEL));
 
     sourceSelectionComposers.forEach(composer -> addSourceSelector(composer, panel));
-    initSingleFileSelector(panel);
     initDirFileSelector(panel);
 
     return panel;
@@ -110,27 +102,6 @@ public class SourceSelectorComposer
     configPanel.add(radioButton);
     configPanel.add(sourceSelection.getControls());
     panel.add(configPanel);
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets up the single file selector radio and button, reading and writing
-   * preferences to remember the last selection between executions. */
-
-  private void initSingleFileSelector(JPanel panel)
-  {
-    final SingleFileSource fileSource = sourceCatalogue.get(SingleFileSource.class);
-    if (fileSource != null)
-    {
-      JFileChooser chooser   = new JFileChooser();
-      FileFilter imageFilter = new FileNameExtensionFilter(labelLocalizer.getString(IMAGE_FILES_FILTER),
-                                                           ImageIO.getReaderFileSuffixes());
-      chooser.setAcceptAllFileFilterUsed(false);
-      chooser.addChoosableFileFilter(imageFilter);
-
-      initFileSelector(fileSource, chooser, panel, sourcePreferences.getDefaultFilePath(),
-                       sourcePreferences::setDefaultFilePath, FILE_LABEL, FILE_SOURCE_LABEL);
-    }
   }
 
 //------------------------------------------------------------------------------
