@@ -77,7 +77,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private LabelLocalizer labelLocalizer;
 
-  private DropTargetListener dropListener;                                      // may be null. Otherwise, used to dispatch drops on the display frames
+  private DropTargetListener dropListener;
 
   private boolean applySequentialFilters = false;
 
@@ -89,7 +89,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
    *  must be explicitly called. */
 
   public WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
-                                    DropTargetListenerSupplier dropTargetListenerSupplier,
+                                    DropTargetListener dropTargetListener,
                                     DisplayFrameManager frameManager, FramePolicyPreferences policy,
                                     BarePanelComposer panelComposer,
                                     WindowControlPreferences preferences)
@@ -97,7 +97,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
     labelLocalizer           = localizer;
     repeaterDisplay          = displayRepeater;
     manager                  = frameManager;
-    dropListener             = dropTargetListenerSupplier.getDropTargetListener();
+    dropListener             = dropTargetListener;
     framePolicyPreferences   = policy;
     bareControlPanelComposer = panelComposer;
     windowControlPreferences = preferences;

@@ -13,6 +13,9 @@ import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
+import org.springframework.stereotype.Component;
 
 /** ImageSource that retrieves the image from a URL.
  *  <p>
@@ -33,12 +36,32 @@ import org.apache.commons.io.IOUtils;
  *  The inner interface DownloadListener can be implemented in order to be
  *  notified when the download completes, either successfully or not. */
 
-public class AsynchronousUrlSource extends BasicSource
+@Component
+public class AsynchronousUrlSource implements ImageSource
 {
+  private final ImageDisplay imageDisplay;
+  private final Executor executor = Executors.newCachedThreadPool();
+
   private Downloader currentDownload;
-  private Executor executor = Executors.newCachedThreadPool();
 
 //==============================================================================
+
+  public AsynchronousUrlSource(ImageDisplay imageDisplay)
+  {
+    this.imageDisplay = imageDisplay;
+  }
+
+//==============================================================================
+
+  /** Stops the download, if any. */
+
+  @Override
+  public void setActive(boolean active)
+  {
+    if (!active) cancel();
+  }
+
+//------------------------------------------------------------------------------
 
   /** Begins the download of the image located at url, returning immediately but
    *  notifying listener (if not null) when finished.
@@ -71,13 +94,6 @@ public class AsynchronousUrlSource extends BasicSource
   {
     if (currentDownload != null) currentDownload.cancel(silently);
   }
-
-//------------------------------------------------------------------------------
-
-  /** Modifies the executor used to run the download tasks.
-   *  This will be used seldom, but anyway here it is. */
-
-  public void setExecutor(Executor newExecutor) {executor = newExecutor;}
 
 //------------------------------------------------------------------------------
 
@@ -120,7 +136,7 @@ public class AsynchronousUrlSource extends BasicSource
           else
           {
             if (image == null) error = DownloadListener.ErrorType.IMAGE;
-            else               sendImageToDisplay(image);
+            else               imageDisplay.setOriginalImage(image);
           }
         }
       }

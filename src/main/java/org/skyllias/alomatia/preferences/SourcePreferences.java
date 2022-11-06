@@ -3,11 +3,10 @@ package org.skyllias.alomatia.preferences;
 
 import java.util.prefs.Preferences;
 
-import org.skyllias.alomatia.ui.SourceSelectorComposer;
 import org.springframework.stereotype.Component;
 
 /** Preferences for sources.
- *  TODO Split in multiple classes when {@link SourceSelectorComposer} is refactored. */
+ *  TODO Consider splitting. */
 
 @Component
 public class SourcePreferences
@@ -16,7 +15,6 @@ public class SourcePreferences
   private static final String PREFKEY_CLIPBOARDAUTO = "sourceClipboardAuto";
   private static final String PREFKEY_DEFAULTDIR    = "defaultSourceDir";
   private static final String PREFKEY_DEFAULTFILE   = "defaultSourceFile";
-
 
   private final Preferences preferences = Preferences.userNodeForPackage(getClass());
 

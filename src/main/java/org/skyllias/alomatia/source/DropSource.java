@@ -15,6 +15,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
+import org.springframework.stereotype.Component;
+
 /** Source that takes images dropped on some component (supposedly, the display
  * panel itself).
  * <p>
@@ -24,10 +28,25 @@ import javax.imageio.ImageIO;
  * fragments rather images. Maybe TransferHandler should be used instead of
  * DropTargetListener. */
 
-public class DropSource extends BasicSource
-                        implements DropTargetListener
+@Component
+public class DropSource implements ImageSource, DropTargetListener
 {
+  private final ImageDisplay imageDisplay;
+  private boolean active;
+
 //==============================================================================
+
+  public DropSource(ImageDisplay imageDisplay)
+  {
+    this.imageDisplay = imageDisplay;
+  }
+
+//==============================================================================
+
+  @Override
+  public void setActive(boolean active) {this.active = active;}
+
+//------------------------------------------------------------------------------
 
   /** Takes the dropped object. If it is an image, it is sent to the display.
    *  If a single file, it is opened and if it contains an image, it is sent to
@@ -39,7 +58,7 @@ public class DropSource extends BasicSource
   {
     boolean completed = false;
 
-    if (isActive())
+    if (active)
     {
       try
       {
@@ -58,7 +77,7 @@ public class DropSource extends BasicSource
           {
             File file           = fileList.get(0);
             BufferedImage image = ImageIO.read(file);                           // this returns null if an image cannot be read from the file
-            if (image != null) sendImageToDisplay(image);
+            sendImageToDisplay(image);
             completed = true;
           }
         }
@@ -76,7 +95,7 @@ public class DropSource extends BasicSource
   @Override
   public void dragEnter(DropTargetDragEvent dtde)
   {
-    if (isActive())
+    if (active)
     {
       Transferable transferable = dtde.getTransferable();
       if (!transferable.isDataFlavorSupported(DataFlavor.imageFlavor) &&
@@ -98,6 +117,16 @@ public class DropSource extends BasicSource
 
   @Override
   public void dragOver(DropTargetDragEvent arg0) {}
+
+//------------------------------------------------------------------------------
+
+  /* If the image is not null, it is sent to the display.
+   * Else, nothing happens. */
+
+  private void sendImageToDisplay(Image image)
+  {
+    if (image != null) imageDisplay.setOriginalImage(image);
+  }
 
 //------------------------------------------------------------------------------
 

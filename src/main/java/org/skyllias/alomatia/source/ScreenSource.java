@@ -15,6 +15,10 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
 
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
+import org.springframework.stereotype.Component;
+
 /** Source of periodic screenshots.
  *  <p>
  *  For it to produce images, the portion of screen to take them from must be
@@ -22,27 +26,30 @@ import javax.swing.Timer;
  *  The speed at which they are produced can be tuned externally too by means
  *  of {@link #setFrequency(int)}. */
 
-public class ScreenSource extends BasicSource
-                          implements ActionListener
+@Component
+public class ScreenSource implements ImageSource, ActionListener
 {
-  private static final int DEFAULT_PERIOD = 40;                                 // slow enough for old machines to work, fast enough for an active refreshment
+  private static final int DEFAULT_PERIOD_MS = 40;                              // slow enough for old machines to work, fast enough for an active refreshment
 
-  private Rectangle sourceRectangle  = new Rectangle(0, 0, 450, 700);
+  private static final boolean showPointer = true;                              // if true, a pointer is added to the image right over the position of the mouse on the source. Someday this could be externally set
+
+  private final ImageDisplay imageDisplay;
+  private final Timer captureTimer;
+
+  private Rectangle sourceRectangle = new Rectangle(0, 0, 450, 700);
   private GraphicsDevice graphDevice;                                           // the graphics device from which captures must be taken
   private Robot captureRobot;
-
-  private boolean showPointer = true;                                           // if true, a pointer is added to the image right over the position of the mouse on the source. Someday this could be externally set
-
-  private Timer captureTimer;
 
 //==============================================================================
 
   /** Creates a new instance ready to get the display and screen bundle set
    *  before producing images. */
 
-  public ScreenSource()
+  public ScreenSource(ImageDisplay imageDisplay)
   {
-    captureTimer = new Timer(DEFAULT_PERIOD, this);
+    this.imageDisplay = imageDisplay;
+
+    captureTimer = new Timer(DEFAULT_PERIOD_MS, this);
   }
 
 //==============================================================================
@@ -52,7 +59,6 @@ public class ScreenSource extends BasicSource
   @Override
   public void setActive(boolean active)
   {
-    super.setActive(active);
     if (active) captureTimer.start();
     else        captureTimer.stop();
   }
@@ -67,13 +73,6 @@ public class ScreenSource extends BasicSource
    *  the period, but it is a more usual word. */
 
   public void setFrequency(int millis) {captureTimer.setDelay(millis);}
-
-//------------------------------------------------------------------------------
-
-  /** Sets the bounds of screen that are to be taken in each capture, keeping
-   *  the same graphics device. */
-
-  public void setScreenBounds(Rectangle rectangle) {sourceRectangle = rectangle;}
 
 //------------------------------------------------------------------------------
 
@@ -98,7 +97,7 @@ public class ScreenSource extends BasicSource
   @Override
   public void actionPerformed(ActionEvent event)
   {
-    if (getDisplay() != null && graphDevice != null)                            // this ensures that captureRobot != null
+    if (graphDevice != null)                                                    // this also ensures that captureRobot != null
     {
       PointerInfo pointerInfo     = MouseInfo.getPointerInfo();                 // this is taken before the capture because it is expected to be faster, but probably there would be no difference
       BufferedImage capturedImage = captureRobot.createScreenCapture(sourceRectangle);
@@ -109,9 +108,16 @@ public class ScreenSource extends BasicSource
                                           pointerInfo.getLocation());
       }
 
-      sendImageToDisplay(capturedImage);
+      imageDisplay.setOriginalImage(capturedImage);
     }
   }
+
+//------------------------------------------------------------------------------
+
+  /* Sets the bounds of screen that are to be taken in each capture, keeping
+   * the same graphics device. */
+
+  private void setScreenBounds(Rectangle rectangle) {sourceRectangle = rectangle;}
 
 //------------------------------------------------------------------------------
 
