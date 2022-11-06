@@ -42,7 +42,6 @@ public class AsynchronousUrlSource implements ImageSource
   private final ImageDisplay imageDisplay;
   private final Executor executor = Executors.newCachedThreadPool();
 
-  private boolean active;
   private Downloader currentDownload;
 
 //==============================================================================
@@ -59,15 +58,8 @@ public class AsynchronousUrlSource implements ImageSource
   @Override
   public void setActive(boolean active)
   {
-    this.active = active;
-
     if (!active) cancel();
   }
-
-//------------------------------------------------------------------------------
-
-  @Override
-  public void setDisplay(ImageDisplay display) {}
 
 //------------------------------------------------------------------------------
 

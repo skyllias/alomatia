@@ -91,11 +91,6 @@ public class DirFileSource implements ImageSource
 
 //------------------------------------------------------------------------------
 
-  @Override
-  public void setDisplay(ImageDisplay display) {}
-
-//------------------------------------------------------------------------------
-
   /** Displays the next (alphabetically) image from the source dir, cycling to
    *  the beginning if the current one is the last.
    *  <p>

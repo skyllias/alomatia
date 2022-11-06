@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.source.ClipboardSource;
@@ -111,9 +110,6 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
     {
       return new ImageSource()
       {
-        @Override
-        public void setDisplay(ImageDisplay display) {}
-
         @Override
         public void setActive(boolean active)
         {

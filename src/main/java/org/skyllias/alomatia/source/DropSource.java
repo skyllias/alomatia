@@ -44,9 +44,6 @@ public class DropSource implements ImageSource, DropTargetListener
 //==============================================================================
 
   @Override
-  public void setDisplay(ImageDisplay display) {}
-
-  @Override
   public void setActive(boolean active) {this.active = active;}
 
 //------------------------------------------------------------------------------

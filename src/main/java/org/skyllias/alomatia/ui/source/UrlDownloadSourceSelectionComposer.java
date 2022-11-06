@@ -4,7 +4,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.ui.UrlDownloadSubcomponentComposer;
@@ -71,9 +70,6 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
     {
       return new ImageSource()
       {
-        @Override
-        public void setDisplay(ImageDisplay display) {}
-
         @Override
         public void setActive(boolean active)
         {

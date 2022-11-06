@@ -63,11 +63,6 @@ public class ClipboardSource implements ImageSource, FlavorListener
 
 //------------------------------------------------------------------------------
 
-  @Override
-  public void setDisplay(ImageDisplay display) {}
-
-//------------------------------------------------------------------------------
-
   /** If the mode is auto and the source is active, reads the contents of the
    *  clipboard in search of an image. Else, nothing happens.
    *  To be invoked when the clipboard contents change. The clipboard used is

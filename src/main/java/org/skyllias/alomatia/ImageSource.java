@@ -16,12 +16,6 @@ package org.skyllias.alomatia;
 
 public interface ImageSource
 {
-  /** Sets the display where original images must be sent.
-   *  If null, no images are produced. */
-
-  @Deprecated
-  void setDisplay(ImageDisplay display);
-
   /** Turns the production of images on (if active is true) or off (if active is false). */
 
   void setActive(boolean active);

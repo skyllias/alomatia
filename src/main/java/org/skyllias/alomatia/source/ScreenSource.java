@@ -65,11 +65,6 @@ public class ScreenSource implements ImageSource, ActionListener
 
 //------------------------------------------------------------------------------
 
-  @Override
-  public void setDisplay(ImageDisplay display) {}
-
-//------------------------------------------------------------------------------
-
   /** Sets the amount of milliseconds between screenshots.
    *  <p>
    *  The amount should be greater than 0.

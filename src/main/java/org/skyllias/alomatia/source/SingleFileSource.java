@@ -47,11 +47,6 @@ public class SingleFileSource implements ImageSource
 
 //------------------------------------------------------------------------------
 
-  @Override
-  public void setDisplay(ImageDisplay display) {}
-
-//------------------------------------------------------------------------------
-
   public Optional<File> getSourceFile() {return Optional.ofNullable(sourceFile);}
 
 //------------------------------------------------------------------------------
