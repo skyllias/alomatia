@@ -169,6 +169,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HUE_DIFFUSION_FILTER_KEY = "filter.hsb.diffusion.hue";
   private static final String BNW_PIXEL_FILTER_KEY     = "filter.b&w.pixel";
   private static final String BNW_BLOT_FILTER_KEY      = "filter.b&w.blot";
+  private static final String BNW_BLACK_RED_FILTER_KEY = "filter.b&w.black&red";
+  private static final String BNW_PRPL_YLW_FILTER_KEY  = "filter.b&w.purple&yellow";
+  private static final String BNW_BLUE_ORNG_FILTER_KEY = "filter.b&w.blue&orange";
+  private static final String BNW_GREEN_FILTER_KEY     = "filter.b&w.green";
+  private static final String BNW_RED_WHITE_FILTER_KEY = "filter.b&w.red&white";
   private static final String BNW_SCATT_FILTER_KEY     = "filter.b&w.scatter";
   private static final String BNW_SNOW_FILTER_KEY      = "filter.b&w.snow";
   private static final String BLUR_SMALL_FILTER_KEY    = "filter.blur.small";
@@ -502,10 +507,15 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(DiffusionFilterFactory.forHueDiffusion(31), HUE_DIFFUSION_FILTER_KEY));
 
-    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(0),        BNW_PIXEL_FILTER_KEY));
-    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2),        BNW_BLOT_FILTER_KEY));
-    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(1), BNW_SCATT_FILTER_KEY));
-    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(3), BNW_SNOW_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(0, Color.BLACK, Color.WHITE),                         BNW_PIXEL_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(1),                                            BNW_SCATT_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(3),                                            BNW_SNOW_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, Color.BLACK, Color.WHITE),                         BNW_BLOT_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, Color.BLACK, Color.RED),                           BNW_BLACK_RED_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, new Color(100, 32, 145), new Color(255, 255, 50)), BNW_PRPL_YLW_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, new Color(0, 0, 150), new Color(255, 111, 00)),    BNW_BLUE_ORNG_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, new Color(0, 50, 0), new Color(200, 255, 200)),    BNW_GREEN_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, Color.RED, Color.WHITE),                           BNW_RED_WHITE_FILTER_KEY));
 
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.083f), ORANGEPHIL_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.3f),   GREENPHIL_FILTER_KEY));
