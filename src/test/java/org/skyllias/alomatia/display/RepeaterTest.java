@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,16 +23,6 @@ public class RepeaterTest
   public void setUp()
   {
     MockitoAnnotations.initMocks(this);
-  }
-
-  @Test
-  public void shouldDispatchToReceiversFromConstructor()
-  {
-    Repeater repeater = new Repeater(Arrays.asList(receiver1, receiver2, receiver3));
-    repeater.setOriginalImage(image);
-    verify(receiver1, times(1)).setOriginalImage(image);
-    verify(receiver2, times(1)).setOriginalImage(image);
-    verify(receiver3, times(1)).setOriginalImage(image);
   }
 
   @Test

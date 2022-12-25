@@ -26,8 +26,6 @@ public class ProbabilisticBlackOrWhiteSelectorTest
   @Before
   public void setUp()
   {
-    selector.setRandom(random);
-
     when(random.nextFloat()).thenReturn(0.1f, 0.4f, 0.6f, 0.9f);
   }
 

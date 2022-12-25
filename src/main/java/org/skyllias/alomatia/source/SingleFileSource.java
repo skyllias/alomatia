@@ -20,8 +20,7 @@ public class SingleFileSource implements ImageSource
   private final ImageDisplay imageDisplay;
   private final SourcePreferences sourcePreferences;
 
-  private boolean active;
-  private File sourceFile;
+  private final State state = new State();
 
 //==============================================================================
 
@@ -41,13 +40,13 @@ public class SingleFileSource implements ImageSource
   @Override
   public void setActive(boolean active)
   {
-    this.active = active;
-    if (active) setImageFromFile(sourceFile);
+    state.active = active;
+    if (active) setImageFromFile(state.sourceFile);
   }
 
 //------------------------------------------------------------------------------
 
-  public Optional<File> getSourceFile() {return Optional.ofNullable(sourceFile);}
+  public Optional<File> getSourceFile() {return Optional.ofNullable(state.sourceFile);}
 
 //------------------------------------------------------------------------------
 
@@ -56,11 +55,11 @@ public class SingleFileSource implements ImageSource
 
   public void setFileSource(File imageFile)
   {
-    sourceFile = imageFile;
+    state.sourceFile = imageFile;
 
-    setImageFromFile(sourceFile);
+    setImageFromFile(state.sourceFile);
 
-    sourcePreferences.setDefaultFilePath(sourceFile.getAbsolutePath());
+    sourcePreferences.setDefaultFilePath(state.sourceFile.getAbsolutePath());
   }
 
 //------------------------------------------------------------------------------
@@ -70,7 +69,7 @@ public class SingleFileSource implements ImageSource
 
   private void setImageFromFile(File imageFile)
   {
-    if (active && imageFile != null)
+    if (state.active && imageFile != null)
     {
       try
       {
@@ -88,9 +87,17 @@ public class SingleFileSource implements ImageSource
   private void initSourceFile()
   {
     String defaultFilePath = sourcePreferences.getDefaultFilePath();
-    if (defaultFilePath != null) sourceFile = new File(defaultFilePath);
+    if (defaultFilePath != null) state.sourceFile = new File(defaultFilePath);
   }
 
 //------------------------------------------------------------------------------
+
+//******************************************************************************
+
+  private static class State
+  {
+    boolean active;
+    File sourceFile;
+  }
 
 }

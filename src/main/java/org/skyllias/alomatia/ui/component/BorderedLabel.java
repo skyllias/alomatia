@@ -14,18 +14,9 @@ public class BorderedLabel extends JLabel
 {
   private static final int BORDER_SIZE = 5;
 
-  private Border fixedBorder = BorderFactory.createEmptyBorder(0, BORDER_SIZE, 0, BORDER_SIZE);
+  private final Border fixedBorder = BorderFactory.createEmptyBorder(0, BORDER_SIZE, 0, BORDER_SIZE);
 
 //==============================================================================
-
-  public BorderedLabel()
-  {
-    super();
-
-    setBorder(fixedBorder);
-  }
-
-//------------------------------------------------------------------------------
 
   public BorderedLabel(String text)
   {

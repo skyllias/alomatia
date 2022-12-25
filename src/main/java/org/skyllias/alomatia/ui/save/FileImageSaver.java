@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  *  By default, the user's home is used as output directory, but the path can be
  *  modified externally. Whether the user is prompted when saving interactively
  *  a file can also be set externally.
- *  This class is mutable. */
+ *  This class is stateful. */
 
 @Component
 public class FileImageSaver implements ImageSaver
@@ -36,9 +36,7 @@ public class FileImageSaver implements ImageSaver
   private final LabelLocalizer labelLocalizer;
   private final FileSaver fileSaver;
 
-  private File destinationDir   = new File(System.getProperty(USER_HOME_PROP));
-  private boolean promptForFile = true;
-  private int discriminator     = 0;                                            // sequential number used to avoid collisions when multiple images are saved at the same time
+  private final State state = new State();
 
 //==============================================================================
 
@@ -52,7 +50,7 @@ public class FileImageSaver implements ImageSaver
 
   /** Modifies the directory where files are created by default. */
 
-  public void setDestinationDir(File dir) {destinationDir = dir;}
+  public void setDestinationDir(File dir) {state.destinationDir = dir;}
 
 //------------------------------------------------------------------------------
 
@@ -60,7 +58,7 @@ public class FileImageSaver implements ImageSaver
    *  a file chooser will appear so that the user chooses where to save the
    *  image; if false, a file will be created automatically. */
 
-  public void setPrompt(boolean prompt) {promptForFile = prompt;}
+  public void setPrompt(boolean prompt) {state.promptForFile = prompt;}
 
 //------------------------------------------------------------------------------
 
@@ -92,8 +90,9 @@ public class FileImageSaver implements ImageSaver
   {
     final String EXTENSION = ".png";
 
-    if (!silently && promptForFile) return getChosenFile(EXTENSION);
-    else                            return getAutomaticFile(nameHint, EXTENSION);
+    boolean prompt = !silently && state.promptForFile;
+    if (prompt) return getChosenFile(EXTENSION);
+    else        return getAutomaticFile(nameHint, EXTENSION);
   }
 
 //------------------------------------------------------------------------------
@@ -110,10 +109,10 @@ public class FileImageSaver implements ImageSaver
     for (char forbiddenChar : FORBIDDEN_CHARS) nameHint = StringUtils.remove(nameHint, forbiddenChar);    // not efficient at all, but this will hardly ever be critical
 
     String dateNameFragment          = new SimpleDateFormat(DATE_NAME_PATTERN).format(new Date());
-    String discriminatorNameFragment = new DecimalFormat(NUMBER_NAME_PATTERN).format(discriminator++);
+    String discriminatorNameFragment = new DecimalFormat(NUMBER_NAME_PATTERN).format(state.discriminator++);
     String defaultFileName           = MessageFormat.format(AUTO_NAME_PATTERN, dateNameFragment,
                                                             discriminatorNameFragment, nameHint);
-    return new File(destinationDir, defaultFileName);
+    return new File(state.destinationDir, defaultFileName);
   }
 
 //------------------------------------------------------------------------------
@@ -126,7 +125,7 @@ public class FileImageSaver implements ImageSaver
   private File getChosenFile(String extension)
   {
     JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setCurrentDirectory(destinationDir);
+    fileChooser.setCurrentDirectory(state.destinationDir);
     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooser.setMultiSelectionEnabled(false);
     fileChooser.setFileFilter(new FileNameExtensionFilter(extension, IMAGE_FORMAT));
@@ -145,4 +144,12 @@ public class FileImageSaver implements ImageSaver
 
 //------------------------------------------------------------------------------
 
+//******************************************************************************
+
+  private static class State
+  {
+    File destinationDir   = new File(System.getProperty(USER_HOME_PROP));
+    boolean promptForFile = true;
+    int discriminator     = 0;                                                  // sequential number used to avoid collisions when multiple images are saved at the same time
+  }
 }

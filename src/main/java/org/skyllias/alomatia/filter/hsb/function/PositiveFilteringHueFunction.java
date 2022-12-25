@@ -6,7 +6,7 @@ package org.skyllias.alomatia.filter.hsb.function;
 
 public class PositiveFilteringHueFunction implements HueFunction
 {
-  private HueFunction delegate;
+  private final HueFunction delegate;
 
 //==============================================================================
 

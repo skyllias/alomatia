@@ -6,8 +6,8 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 
 public class CrossProfile implements VignetteProfile
 {
-  private VignetteProfile delegate = new MultiplyingProfile(new LinearProfile(true),
-                                                            new LinearProfile(false));
+  private final VignetteProfile delegate = new MultiplyingProfile(new LinearProfile(true),
+                                                                  new LinearProfile(false));
 
 //==============================================================================
 
@@ -18,4 +18,5 @@ public class CrossProfile implements VignetteProfile
   }
 
 //------------------------------------------------------------------------------
+
 }

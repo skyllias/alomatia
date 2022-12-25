@@ -32,7 +32,8 @@ import org.springframework.stereotype.Component;
 public class DropSource implements ImageSource, DropTargetListener
 {
   private final ImageDisplay imageDisplay;
-  private boolean active;
+
+  private final State state = new State();
 
 //==============================================================================
 
@@ -44,7 +45,7 @@ public class DropSource implements ImageSource, DropTargetListener
 //==============================================================================
 
   @Override
-  public void setActive(boolean active) {this.active = active;}
+  public void setActive(boolean active) {state.active = active;}
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +59,7 @@ public class DropSource implements ImageSource, DropTargetListener
   {
     boolean completed = false;
 
-    if (active)
+    if (state.active)
     {
       try
       {
@@ -95,7 +96,7 @@ public class DropSource implements ImageSource, DropTargetListener
   @Override
   public void dragEnter(DropTargetDragEvent dtde)
   {
-    if (active)
+    if (state.active)
     {
       Transferable transferable = dtde.getTransferable();
       if (!transferable.isDataFlavorSupported(DataFlavor.imageFlavor) &&
@@ -129,5 +130,12 @@ public class DropSource implements ImageSource, DropTargetListener
   }
 
 //------------------------------------------------------------------------------
+
+//******************************************************************************
+
+  private static class State
+  {
+    boolean active;
+  }
 
 }

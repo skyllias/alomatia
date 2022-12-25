@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class MinMaxChannelCalculator implements SurroundingColoursCalculator
 {
-  private boolean useMaxRed, useMaxGreen, useMaxBlue;                           // if true, the maximum is to be used; if false, the minimum
+  private final boolean useMaxRed, useMaxGreen, useMaxBlue;                     // if true, the maximum is to be used; if false, the minimum
 
 //==============================================================================
 

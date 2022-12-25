@@ -6,9 +6,9 @@ package org.skyllias.alomatia.filter.hsb.function;
 
 public abstract class BasicStepHueFunction implements HueFunction
 {
-  private double valueInsideStep, valueOutsideStep;
-  private boolean crossingZero;                                                 // if false, the step begins at the lower limit and ends at the upper; if true, it's the other way round
-  private float lowerLimit, upperLimit;
+  private final double valueInsideStep, valueOutsideStep;
+  private final boolean crossingZero;                                           // if false, the step begins at the lower limit and ends at the upper; if true, it's the other way round
+  private final float lowerLimit, upperLimit;
 
 //==============================================================================
 

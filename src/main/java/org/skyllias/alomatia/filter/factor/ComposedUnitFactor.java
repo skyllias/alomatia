@@ -10,8 +10,8 @@ package org.skyllias.alomatia.filter.factor;
 
 public class ComposedUnitFactor
 {
-  private UnitFactor directFactor;                                              // the factor applied to the half of magnitude values that have to increase with positive factors
-  private UnitFactor inverseFactor;                                             // the factor applied to the half of magnitude values that have to increase with negative factors
+  private final UnitFactor directFactor;                                        // the factor applied to the half of magnitude values that have to increase with positive factors
+  private final UnitFactor inverseFactor;                                       // the factor applied to the half of magnitude values that have to increase with negative factors
 
 //==============================================================================
 

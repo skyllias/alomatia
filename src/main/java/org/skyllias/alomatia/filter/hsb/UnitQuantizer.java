@@ -9,18 +9,11 @@ import org.skyllias.alomatia.filter.rgb.RgbPosterizerConverter;
 
 public class UnitQuantizer
 {
-  private int buckets;
-  private float bucketSize;
-  private boolean center;
+  private final int buckets;
+  private final float bucketSize;
+  private final boolean center;
 
 //==============================================================================
-
-  public UnitQuantizer(int amountOfBuckets)
-  {
-    this(amountOfBuckets, false);
-  }
-
-//------------------------------------------------------------------------------
 
   /** Creates a quantizer with amountOfBuckets divisions. The amount should be
    *  at least 2.

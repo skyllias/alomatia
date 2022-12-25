@@ -8,8 +8,8 @@ package org.skyllias.alomatia.filter.hsb.function;
 
 public class MultiplyingHueFactor implements HueFunction
 {
-  private HueFunction delegate;
-  private double factor;
+  private final HueFunction delegate;
+  private final double factor;
 
 //==============================================================================
 

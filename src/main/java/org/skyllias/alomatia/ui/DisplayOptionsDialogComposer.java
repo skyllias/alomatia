@@ -42,7 +42,7 @@ public class DisplayOptionsDialogComposer
 
   private static final int SCROLL_UNIT = 16;
 
-  private static Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. TODO remove sometime after the dialog disposal
+  private static final Collection<JCheckBox> allShowCheckBoxes = new HashSet<>();     // since there is no checkbox model, to keep all the checboxes with the same value they have to be collected. TODO remove sometime after the dialog disposal
 
   private final LabelLocalizer labelLocalizer;
   private final ZoomSelectorComposer zoomSelectorComposer;
