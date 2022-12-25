@@ -28,10 +28,7 @@ public class DirFileSource implements ImageSource
   private final ImageDisplay imageDisplay;
   private final SourcePreferences sourcePreferences;
 
-  private boolean active;
-  private File currentDir;
-  private File[] sourceDirContents = new File[0];                               // never null
-  private int currentFileIndex;
+  private final State state = new State();
 
 //==============================================================================
 
@@ -59,23 +56,23 @@ public class DirFileSource implements ImageSource
     if (imageDir != null)
     {
       FilenameFilter imageFilter = new SuffixFileFilter(ImageIO.getReaderFileSuffixes());
-      sourceDirContents          = imageDir.listFiles(imageFilter);             // null if not a directory
-      if (sourceDirContents == null) sourceDirContents = new File[0];
-      if (sourceDirContents.length > 0)
+      state.sourceDirContents    = imageDir.listFiles(imageFilter);             // null if not a directory
+      if (state.sourceDirContents == null) state.sourceDirContents = new File[0];
+      if (state.sourceDirContents.length > 0)
       {
-        Arrays.sort(sourceDirContents);                                         // File is Comparable (lexicographically by default)
-        currentFileIndex = 0;
+        Arrays.sort(state.sourceDirContents);                                   // File is Comparable (lexicographically by default)
+        state.currentFileIndex = 0;
         setCurrentImageFile();
       }
 
-      currentDir = imageDir;
+      state.currentDir = imageDir;
       sourcePreferences.setDefaultDirPath(imageDir.getAbsolutePath());
     }
   }
 
 //------------------------------------------------------------------------------
 
-  public Optional<File> getCurrentDir() {return Optional.ofNullable(currentDir);}
+  public Optional<File> getCurrentDir() {return Optional.ofNullable(state.currentDir);}
 
 //------------------------------------------------------------------------------
 
@@ -84,7 +81,7 @@ public class DirFileSource implements ImageSource
   @Override
   public void setActive(boolean active)
   {
-    this.active = active;
+    state.active = active;
 
     if (active) setCurrentImageFile();
   }
@@ -98,10 +95,10 @@ public class DirFileSource implements ImageSource
 
   public void nextImageFile()
   {
-    if (active && sourceDirContents.length > 0)
+    if (state.active && state.sourceDirContents.length > 0)
     {
-      currentFileIndex++;
-      if (currentFileIndex >= sourceDirContents.length) currentFileIndex = 0;
+      state.currentFileIndex++;
+      if (state.currentFileIndex >= state.sourceDirContents.length) state.currentFileIndex = 0;
       setCurrentImageFile();
     }
   }
@@ -115,10 +112,10 @@ public class DirFileSource implements ImageSource
 
   public void previousImageFile()
   {
-    if (active && sourceDirContents.length > 0)
+    if (state.active && state.sourceDirContents.length > 0)
     {
-      currentFileIndex--;
-      if (currentFileIndex < 0) currentFileIndex = sourceDirContents.length - 1;
+      state.currentFileIndex--;
+      if (state.currentFileIndex < 0) state.currentFileIndex = state.sourceDirContents.length - 1;
       setCurrentImageFile();
     }
   }
@@ -129,8 +126,8 @@ public class DirFileSource implements ImageSource
 
   private void setCurrentImageFile()
   {
-    if (sourceDirContents.length > currentFileIndex)
-      setImageFromFile(sourceDirContents[currentFileIndex]);
+    if (state.sourceDirContents.length > state.currentFileIndex)
+      setImageFromFile(state.sourceDirContents[state.currentFileIndex]);
   }
 
 //------------------------------------------------------------------------------
@@ -140,7 +137,7 @@ public class DirFileSource implements ImageSource
 
   private void setImageFromFile(File imageFile)
   {
-    if (active && imageFile != null)
+    if (state.active && imageFile != null)
     {
       try
       {
@@ -160,11 +157,21 @@ public class DirFileSource implements ImageSource
     String defaultDirPath = sourcePreferences.getDefaultDirPath();
     if (defaultDirPath != null)
     {
-      currentDir = new File(defaultDirPath);
-      setFileSource(currentDir);
+      state.currentDir = new File(defaultDirPath);
+      setFileSource(state.currentDir);
     }
   }
 
 //------------------------------------------------------------------------------
+
+//******************************************************************************
+
+  private static class State
+  {
+    boolean active;
+    File currentDir;
+    File[] sourceDirContents = new File[0];                                     // never null
+    int currentFileIndex;
+  }
 
 }

@@ -5,8 +5,8 @@ package org.skyllias.alomatia.filter.buffered.distortion.radial;
 
 public class MagnifierRadialDistortionProfile implements RadialDistortionProfile
 {
-  private float distortionFactor;
-  private float radialFactor;
+  private final float distortionFactor;
+  private final float radialFactor;
 
 //==============================================================================
 

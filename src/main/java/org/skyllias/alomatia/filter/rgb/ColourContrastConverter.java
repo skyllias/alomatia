@@ -15,7 +15,7 @@ import org.skyllias.alomatia.filter.hsb.ContrastConverter;
 
 public class ColourContrastConverter implements ColourConverter
 {
-  private ComposedUnitFactor factor;
+  private final ComposedUnitFactor factor;
 
 //==============================================================================
 

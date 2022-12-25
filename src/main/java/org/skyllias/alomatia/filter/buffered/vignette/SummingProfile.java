@@ -6,7 +6,7 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 
 public class SummingProfile implements VignetteProfile
 {
-  private VignetteProfile[] profiles;
+  private final VignetteProfile[] profiles;
 
 //==============================================================================
 

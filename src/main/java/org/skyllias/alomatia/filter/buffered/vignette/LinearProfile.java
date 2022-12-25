@@ -6,7 +6,7 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 
 public class LinearProfile implements VignetteProfile
 {
-  private boolean horizontal;
+  private final boolean horizontal;
 
 //==============================================================================
 

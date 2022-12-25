@@ -6,8 +6,8 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 
 public class EdgesProfile implements VignetteProfile
 {
-  private VignetteProfile delegate = new SummingProfile(new PowerProfile(true),
-                                                        new PowerProfile(false));
+  private final VignetteProfile delegate = new SummingProfile(new PowerProfile(true),
+                                                              new PowerProfile(false));
 
 //==============================================================================
 

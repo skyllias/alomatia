@@ -29,7 +29,7 @@ import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 public class EdgeConvolvingComposedFilter extends ImageFilter
 {
-  private ComposedFilter composedFilter;
+  private final ComposedFilter composedFilter;
 
 //==============================================================================
 

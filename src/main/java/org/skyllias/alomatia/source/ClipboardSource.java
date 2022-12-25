@@ -29,8 +29,7 @@ public class ClipboardSource implements ImageSource, FlavorListener
   private final Clipboard clipboard;
   private final SourcePreferences sourcePreferences;
 
-  private boolean active;
-  private boolean autoMode;                                                     // see setAutoMode
+  private final State state = new State();
 
 //==============================================================================
 
@@ -41,7 +40,7 @@ public class ClipboardSource implements ImageSource, FlavorListener
     this.clipboard         = clipboard;
     this.sourcePreferences = sourcePreferences;
 
-    autoMode = sourcePreferences.isClipboardAutoMode();
+    state.autoMode = sourcePreferences.isClipboardAutoMode();
   }
 
 //==============================================================================
@@ -51,11 +50,11 @@ public class ClipboardSource implements ImageSource, FlavorListener
   @Override
   public void setActive(boolean active)
   {
-    this.active = active;
+    state.active = active;
 
     if (active)
     {
-      if (autoMode) takeImageFromClipboard(clipboard);
+      if (state.autoMode) takeImageFromClipboard(clipboard);
       clipboard.addFlavorListener(this);
     }
     else clipboard.removeFlavorListener(this);
@@ -72,7 +71,7 @@ public class ClipboardSource implements ImageSource, FlavorListener
   @Override
   public void flavorsChanged(FlavorEvent event)
   {
-    if (autoMode && active) takeImageFromClipboard((Clipboard) event.getSource());
+    if (state.autoMode && state.active) takeImageFromClipboard((Clipboard) event.getSource());
   }
 
 //------------------------------------------------------------------------------
@@ -83,7 +82,7 @@ public class ClipboardSource implements ImageSource, FlavorListener
 
   public void readFromClipboard()
   {
-    if (!autoMode && active) takeImageFromClipboard(clipboard);
+    if (!state.autoMode && state.active) takeImageFromClipboard(clipboard);
   }
 
 //------------------------------------------------------------------------------
@@ -96,14 +95,14 @@ public class ClipboardSource implements ImageSource, FlavorListener
 
   public void setAutoMode(boolean auto)
   {
-    autoMode = auto;
+    state.autoMode = auto;
 
     sourcePreferences.setClipboardAutoMode(auto);
   }
 
 //------------------------------------------------------------------------------
 
-  public boolean isAutoMode() {return autoMode;}
+  public boolean isAutoMode() {return state.autoMode;}
 
 //------------------------------------------------------------------------------
 
@@ -127,11 +126,18 @@ public class ClipboardSource implements ImageSource, FlavorListener
       Image clipboardImage = (Image) clipboard.getData(DataFlavor.imageFlavor);
       if (clipboardImage != null) imageDisplay.setOriginalImage(clipboardImage);
 
-      if (autoMode) clipboard.setContents(new StringSelection(EMPTY_TEXT), null);
+      if (state.autoMode) clipboard.setContents(new StringSelection(EMPTY_TEXT), null);
     }
     catch (Exception e) {}                                                      // the clipboard may not contain an image, so do nothing then
   }
 
 //------------------------------------------------------------------------------
 
+//******************************************************************************
+
+  private static class State
+  {
+    boolean active;
+    boolean autoMode;                                                           // see setAutoMode
+  }
 }

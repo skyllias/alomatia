@@ -5,7 +5,6 @@ import java.awt.Frame;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -59,19 +58,14 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   private final LabelLocalizer labelLocalizer;
   private final IconSupplier iconSupplier;
 
-  private final DisplayPanelController displayPanel;
-
-  private Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
-  private FilterSelector filterSelector;                                        // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
-
   private final FrameAdaptor frameAdaptor;                                      // the Swing component with the frame
-
+  private final DisplayPanelController displayPanel;
+  private final FilterSelector filterSelector;                                  // the selector from the associated DisplayOptionsDialog, used to set the selected filter externally
   private final FilteredImageGenerator filteredImageGenerator;
+  private final ImageSaver imageSaver;
+  private final Clipboard clipboard;
 
-  private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-  private ImageSaver imageSaver;
-  private KeyEventDispatcher saveAllEventDispatcher;                            // listener of the key combinations used to save all images, to be removed when the frame is disposed
-  private String currentFilterName = "";
+  private final State state = new State();
 
 //==============================================================================
 
@@ -80,7 +74,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   public DisplayFrameController(LabelLocalizer localizer, IconSupplier iconSupplier, FrameAdaptor adaptor,
                                 DisplayPanelController panel, FilterSelectorComposer filterSelectorComposer,
                                 FilteredImageGenerator filteredImageGenerator, ImageSaver saver,
-                                DisplayOptionsDialogComposer dialogComposer)
+                                DisplayOptionsDialogComposer dialogComposer, Clipboard clipboard)
   {
     labelLocalizer              = localizer;
     this.iconSupplier           = iconSupplier;
@@ -88,6 +82,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
     frameAdaptor                = adaptor;
     this.filteredImageGenerator = filteredImageGenerator;
     imageSaver                  = saver;
+    this.clipboard              = clipboard;
 
     frameAdaptor.setTitle(labelLocalizer.getString(DEFAULT_TITLE));
     frameAdaptor.setIcon(iconSupplier.getIcon());
@@ -113,7 +108,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   public void addListener(DisplayFrameCloseListener listener)
   {
-    if (listener != null) listeners.add(listener);
+    if (listener != null) state.listeners.add(listener);
   }
 
 //------------------------------------------------------------------------------
@@ -166,13 +161,6 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
    *  If index is below zero or above the amount of filters, nothing happens. */
 
   public void applyFilterAt(int index) {filterSelector.selectFilterAt(index);}
-
-//------------------------------------------------------------------------------
-
-  /** Sets the clipboard where filtered images are to be copied.
-   *  This method should only be called in tests. */
-
-  protected void setClipboard(Clipboard clip) {clipboard = clip;}
 
 //------------------------------------------------------------------------------
 //                            KEY LISTENERS
@@ -273,7 +261,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
       public void actionPerformed(ActionEvent event)
       {
         Image filteredImage = displayPanel.getFilteredImage();
-        if (filteredImage != null) imageSaver.save(filteredImage, currentFilterName, false);
+        if (filteredImage != null) imageSaver.save(filteredImage, state.currentFilterName, false);
       }
     });
   }
@@ -289,7 +277,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   private void setSaveAllKeyListeners()
   {
-    saveAllEventDispatcher = new KeyEventDispatcher()
+    state.saveAllEventDispatcher = new KeyEventDispatcher()
     {
       @Override
       public boolean dispatchKeyEvent(KeyEvent e)
@@ -299,14 +287,14 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
           if (e.getKeyCode() == KeyEvent.VK_S)
           {
             Image filteredImage = displayPanel.getFilteredImage();
-            if (filteredImage != null) imageSaver.save(filteredImage, currentFilterName, true);
+            if (filteredImage != null) imageSaver.save(filteredImage, state.currentFilterName, true);
           }
         }
         return false;                                                           // allow the event to be redispatched
       }
     };
 
-    getKeyboardFocusManager().addKeyEventDispatcher(saveAllEventDispatcher);
+    getKeyboardFocusManager().addKeyEventDispatcher(state.saveAllEventDispatcher);
   }
 
 //------------------------------------------------------------------------------
@@ -327,9 +315,9 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   private void applyFilterToTitle(NamedFilter filter)
   {
-    currentFilterName         = labelLocalizer.getString(filter.getNameKey());
+    state.currentFilterName   = labelLocalizer.getString(filter.getNameKey());
     MessageFormat titleFormat = new MessageFormat(labelLocalizer.getString(TITLE_PATTERN));
-    String title              = titleFormat.format(new Object[] {currentFilterName});
+    String title              = titleFormat.format(new Object[] {state.currentFilterName});
     frameAdaptor.setTitle(title);
   }
 
@@ -354,13 +342,23 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   @Override
   public void onClosingFrame(FrameAdaptor adaptor)
   {
-    for (DisplayFrameCloseListener currentListener : listeners) currentListener.onDisplayFrameClosed(this);
+    for (DisplayFrameCloseListener currentListener : state.listeners) currentListener.onDisplayFrameClosed(this);
 
-    getKeyboardFocusManager().removeKeyEventDispatcher(saveAllEventDispatcher);
+    getKeyboardFocusManager().removeKeyEventDispatcher(state.saveAllEventDispatcher);
     adaptor.dispose();
   }
 
 //------------------------------------------------------------------------------
+
+//******************************************************************************
+
+  private static class State
+  {
+    final Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
+
+    KeyEventDispatcher saveAllEventDispatcher;                                  // listener of the key combinations used to save all images, to be removed when the frame is disposed
+    String currentFilterName = "";
+  }
 
 //******************************************************************************
 

@@ -7,20 +7,12 @@ package org.skyllias.alomatia.filter.convolve;
 
 public class ParaboloidBlurKernelDataFactory implements KernelDataFactory
 {
-  private static final int DEFAULT_BOX_SIZE = 7;
-
-  private int sideSize;
+  private final int sideSize;
 
 //==============================================================================
 
-  /** Uses a default size. */
-
-  public ParaboloidBlurKernelDataFactory() {this(DEFAULT_BOX_SIZE);}
-
-//------------------------------------------------------------------------------
-
-  /** width must be bigger than 1. Odd values produce more symmetric results than
-   *  even, but both are accepted. */
+  /** width must be bigger than 1. Odd values produce more symmetric results
+   *  than even, but both are accepted. */
 
   public ParaboloidBlurKernelDataFactory(int width) {sideSize = width;}
 

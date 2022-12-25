@@ -7,7 +7,7 @@ package org.skyllias.alomatia.filter.buffered.vignette;
 
 public class MultiplyingProfile implements VignetteProfile
 {
-  private VignetteProfile[] profiles;
+  private final VignetteProfile[] profiles;
 
 //==============================================================================
 

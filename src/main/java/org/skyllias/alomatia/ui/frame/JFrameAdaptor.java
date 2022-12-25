@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 
 public class JFrameAdaptor implements FrameAdaptor
 {
-  private JFrame jFrame;
+  private final JFrame jFrame;
 
 //==============================================================================
 

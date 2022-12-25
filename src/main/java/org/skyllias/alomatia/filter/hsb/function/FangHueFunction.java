@@ -9,8 +9,8 @@ public class FangHueFunction implements HueFunction
 {
   private static final double LOW_VALUE = -2;
 
-  private float centre;
-  private float halfWidth;
+  private final float centre;
+  private final float halfWidth;
 
 //==============================================================================
 
@@ -19,8 +19,8 @@ public class FangHueFunction implements HueFunction
 
   public FangHueFunction(float centre, float halfWidth)
   {
-    this.centre = centre;
-    this.halfWidth  = halfWidth;
+    this.centre    = centre;
+    this.halfWidth = halfWidth;
   }
 
 //==============================================================================

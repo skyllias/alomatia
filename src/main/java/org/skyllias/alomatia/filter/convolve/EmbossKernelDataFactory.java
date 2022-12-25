@@ -15,25 +15,9 @@ package org.skyllias.alomatia.filter.convolve;
 
 public class EmbossKernelDataFactory implements KernelDataFactory
 {
-  private static final float DEFAULT_GRADIENT = 1;
-  private static final float DEFAULT_VOLUME   = 0;
-
-  private float slope, volume;
+  private final float slope, volume;
 
 //==============================================================================
-
-  /** Creates a factory that produces the default emboss kernel. */
-
-  public EmbossKernelDataFactory() {this(DEFAULT_VOLUME);}
-
-//------------------------------------------------------------------------------
-
-  /** Creates a factory that produces a kernel with a total volume of kernelVolume
-   *  and a default slope. */
-
-  public EmbossKernelDataFactory(float kernelVolume) {this(kernelVolume, DEFAULT_GRADIENT);}
-
-//------------------------------------------------------------------------------
 
   /** Creates a factory that produces a kernel with a total volume of kernelVolume
    *  and a slope of gradientSlope.

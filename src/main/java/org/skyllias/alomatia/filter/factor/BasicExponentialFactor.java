@@ -11,7 +11,7 @@ package org.skyllias.alomatia.filter.factor;
 
 public abstract class BasicExponentialFactor implements UnitFactor
 {
-  private double slope;                                                         // this goes from 0 to infinite, with 1 producing no change, lower values reducing the magnitude and higher values increasing it
+  private final double slope;                                                   // this goes from 0 to infinite, with 1 producing no change, lower values reducing the magnitude and higher values increasing it
 
 //==============================================================================
 

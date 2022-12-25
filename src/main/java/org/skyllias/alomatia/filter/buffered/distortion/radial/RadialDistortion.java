@@ -11,8 +11,8 @@ import org.skyllias.alomatia.filter.buffered.distortion.Distortion;
 
 public class RadialDistortion implements Distortion
 {
-  private RadialDistortionProfile profile;
-  private boolean usingSmallestDimension;
+  private final RadialDistortionProfile profile;
+  private final boolean usingSmallestDimension;
 
 //==============================================================================
 

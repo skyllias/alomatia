@@ -14,8 +14,8 @@ public class RecursiveImageAction extends RecursiveAction
 {
   private static final int MAX_SIZE = 100;                                      // this could be flexibilized if needed
 
-  private int xFrom, xTo, yFrom, yTo;                                           // *From inclusive, *To exclusive
-  private ImageProcessor imageProcessor;
+  private final int xFrom, xTo, yFrom, yTo;                                     // *From inclusive, *To exclusive
+  private final ImageProcessor imageProcessor;
 
 //==============================================================================
 

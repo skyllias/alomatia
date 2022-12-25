@@ -36,9 +36,7 @@ public class ScreenSource implements ImageSource, ActionListener
   private final ImageDisplay imageDisplay;
   private final Timer captureTimer;
 
-  private Rectangle sourceRectangle = new Rectangle(0, 0, 450, 700);
-  private GraphicsDevice graphDevice;                                           // the graphics device from which captures must be taken
-  private Robot captureRobot;
+  private final State state = new State();
 
 //==============================================================================
 
@@ -97,14 +95,14 @@ public class ScreenSource implements ImageSource, ActionListener
   @Override
   public void actionPerformed(ActionEvent event)
   {
-    if (graphDevice != null)                                                    // this also ensures that captureRobot != null
+    if (state.graphDevice != null)                                              // this also ensures that captureRobot != null
     {
       PointerInfo pointerInfo     = MouseInfo.getPointerInfo();                 // this is taken before the capture because it is expected to be faster, but probably there would be no difference
-      BufferedImage capturedImage = captureRobot.createScreenCapture(sourceRectangle);
+      BufferedImage capturedImage = state.captureRobot.createScreenCapture(state.sourceRectangle);
       if (pointerInfo != null)
       {
-        boolean sameDevice = pointerInfo.getDevice().equals(graphDevice);
-        if (sameDevice) paintMousePointer(capturedImage, sourceRectangle,
+        boolean sameDevice = pointerInfo.getDevice().equals(state.graphDevice);
+        if (sameDevice) paintMousePointer(capturedImage, state.sourceRectangle,
                                           pointerInfo.getLocation());
       }
 
@@ -117,7 +115,7 @@ public class ScreenSource implements ImageSource, ActionListener
   /* Sets the bounds of screen that are to be taken in each capture, keeping
    * the same graphics device. */
 
-  private void setScreenBounds(Rectangle rectangle) {sourceRectangle = rectangle;}
+  private void setScreenBounds(Rectangle rectangle) {state.sourceRectangle = rectangle;}
 
 //------------------------------------------------------------------------------
 
@@ -125,9 +123,9 @@ public class ScreenSource implements ImageSource, ActionListener
 
   private void setDevice(GraphicsDevice device) throws AWTException
   {
-    graphDevice = device;
+    state.graphDevice = device;
 
-    captureRobot = new Robot(graphDevice);
+    state.captureRobot = new Robot(state.graphDevice);
   }
 
 //------------------------------------------------------------------------------
@@ -203,5 +201,14 @@ public class ScreenSource implements ImageSource, ActionListener
     public GraphicsDevice getDevice() {return device;}
 
     public Rectangle getBonuds() {return bounds;}
+  }
+
+//******************************************************************************
+
+  private static class State
+  {
+    Rectangle sourceRectangle = new Rectangle(0, 0, 450, 700);
+    GraphicsDevice graphDevice;                                                 // the graphics device from which captures must be taken
+    Robot captureRobot;
   }
 }
