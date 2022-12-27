@@ -1,19 +1,15 @@
 
-package org.skyllias.alomatia.filter.rgb;
+package org.skyllias.alomatia.filter.rgb.grey;
 
-import java.awt.Color;
+/** Mixer of all channels according to some weights. */
 
-import org.skyllias.alomatia.filter.ColourConverter;
-
-/** Converter of any colour into grey shades. */
-
-public class WeighedGreyScaleConverter implements ColourConverter
+public class WeighedGreyShadeProvider implements GreyShadeProvider
 {
   private final ChannelWeights channelWeights;
 
 //==============================================================================
 
-  public WeighedGreyScaleConverter(ChannelWeights channelWeights)
+  public WeighedGreyShadeProvider(ChannelWeights channelWeights)
   {
     this.channelWeights = channelWeights;
   }
@@ -21,12 +17,8 @@ public class WeighedGreyScaleConverter implements ColourConverter
 //==============================================================================
 
   @Override
-  public Color convertColour(Color original)
+  public int getShade(int red, int green, int blue)
   {
-    int red   = original.getRed();
-    int green = original.getGreen();
-    int blue  = original.getBlue();
-
     int redWheight   = channelWeights.getRedWeight();
     int greenWheight = channelWeights.getGreenWeight();
     int blueWheight  = channelWeights.getBlueWeight();
@@ -34,10 +26,10 @@ public class WeighedGreyScaleConverter implements ColourConverter
 
     int totalLight = red * redWheight +
                      green * greenWheight +
-                     blue + blueWheight +
+                     blue * blueWheight +
                      totalWheight / 2;                                          // the last term makes the average round instead of truncate
-    int average    = totalLight / totalWheight;
-    return new Color(average, average, average);
+
+    return totalLight / totalWheight;
   }
 
 //------------------------------------------------------------------------------
