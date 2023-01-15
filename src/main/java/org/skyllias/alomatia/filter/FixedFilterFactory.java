@@ -76,6 +76,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String TRITONE_NRW_FILTER_KEY   = "filter.tritone.nrw";
   private static final String TRITONE_NGW_FILTER_KEY   = "filter.tritone.ngw";
   private static final String TRITONE_NBW_FILTER_KEY   = "filter.tritone.nbw";
+  private static final String SEPIA_S_FILTER_KEY       = "filter.sepia.s";
+  private static final String SEPIA_M_FILTER_KEY       = "filter.sepia.m";
+  private static final String SEPIA_L_FILTER_KEY       = "filter.sepia.l";
+  private static final String SEPIA_LUNAPIC_FILTER_KEY = "filter.sepia.lunapic";
+  private static final String SEPIA_TUXPI_FILTER_KEY   = "filter.sepia.tuxpi";
+  private static final String SEPIA_PIXLIED_FILTER_KEY = "filter.sepia.pixelied";
   private static final String RGBR_FILTER_KEY          = "filter.rgb.gbr";
   private static final String BGRB_FILTER_KEY          = "filter.rgb.brg";
   private static final String SWAP_RG_FILTER_KEY       = "filter.rgb.swap.rg";
@@ -408,7 +414,6 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 255)),       TRITONE_NGW_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 255)),       TRITONE_NBW_FILTER_KEY));
 
-
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 4, new DiagonalMap()), AXE_S_S_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 4, new AngularMap()),  AXE_L_S_FILTER_KEY));
@@ -504,6 +509,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(EmbossFilterFactory.forSmoothEmboss(),  SMTHEMBOSS_FILTER_KEY));
 
     filters.add(new NamedFilter(RgbFilterFactory.forNegative(), NEGATIVE_FILTER_KEY));
+
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(33, 0, 0), new Color(112, 66, 20), new Color(255, 231, 145)),  SEPIA_L_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(45, 12, 0), new Color(112, 66, 20), new Color(200, 174, 161)), SEPIA_M_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(49, 5, 4), new Color(112, 66, 20), new Color(250, 225, 200)),  SEPIA_S_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(4, 0, 0), new Color(182, 139, 74), new Color(255, 255, 219)),  SEPIA_LUNAPIC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(138, 123, 94), new Color(254, 227, 172)),  SEPIA_TUXPI_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(173, 154, 120), new Color(255, 255, 239)), SEPIA_PIXLIED_FILTER_KEY));
 
     filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(),          EQUAL_GREY_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forHumanSensitiveGreyScale(), HUMAN_GREY_FILTER_KEY));
