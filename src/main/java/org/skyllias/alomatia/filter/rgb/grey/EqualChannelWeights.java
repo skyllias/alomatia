@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.filter.rgb;
+package org.skyllias.alomatia.filter.rgb.grey;
 
 /** ChannelWights where all channels contribute the same. */
 

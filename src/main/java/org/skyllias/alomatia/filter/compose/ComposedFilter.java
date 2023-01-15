@@ -18,7 +18,7 @@ import org.skyllias.alomatia.display.FilterableDisplay;
 
 public class ComposedFilter extends ImageFilter
 {
-  private List<ImageFilter> filters;                                            // the real filters, with the first one to apply at 0
+  private final List<ImageFilter> filters;                                      // the real filters, with the first one to apply at 0
 
 //==============================================================================
 

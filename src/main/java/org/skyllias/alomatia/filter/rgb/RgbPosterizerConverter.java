@@ -10,9 +10,9 @@ import org.skyllias.alomatia.filter.ColourConverter;
 
 public class RgbPosterizerConverter implements ColourConverter
 {
-  private int buckets;
-  private float bucketSize;
-  private boolean center;
+  private final int buckets;
+  private final float bucketSize;
+  private final boolean center;
 
 //==============================================================================
 

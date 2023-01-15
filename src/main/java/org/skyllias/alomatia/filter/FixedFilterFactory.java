@@ -58,6 +58,30 @@ public class FixedFilterFactory implements FilterFactory
   private static final String XYZTRIMALY_FILTER_KEY    = "filter.dalton.xyz.tritanomaly";
   private static final String XYZACHSIA_FILTER_KEY     = "filter.dalton.xyz.achromatopsia";
   private static final String XYZACHMALY_FILTER_KEY    = "filter.dalton.xyz.achromatomaly";
+  private static final String TRITONE_RGB_FILTER_KEY   = "filter.tritone.rgb";
+  private static final String TRITONE_RBG_FILTER_KEY   = "filter.tritone.rbg";
+  private static final String TRITONE_GBR_FILTER_KEY   = "filter.tritone.gbr";
+  private static final String TRITONE_GRB_FILTER_KEY   = "filter.tritone.grb";
+  private static final String TRITONE_BRG_FILTER_KEY   = "filter.tritone.brg";
+  private static final String TRITONE_BGR_FILTER_KEY   = "filter.tritone.bgr";
+  private static final String TRITONE_RGC_FILTER_KEY   = "filter.tritone.rgc";
+  private static final String TRITONE_GGP_FILTER_KEY   = "filter.tritone.ggp";
+  private static final String TRITONE_BGY_FILTER_KEY   = "filter.tritone.bgy";
+  private static final String TRITONE_NRY_FILTER_KEY   = "filter.tritone.nry";
+  private static final String TRITONE_NRP_FILTER_KEY   = "filter.tritone.nrp";
+  private static final String TRITONE_NGC_FILTER_KEY   = "filter.tritone.ngc";
+  private static final String TRITONE_NGY_FILTER_KEY   = "filter.tritone.ngy";
+  private static final String TRITONE_NBP_FILTER_KEY   = "filter.tritone.nbp";
+  private static final String TRITONE_NBC_FILTER_KEY   = "filter.tritone.nbc";
+  private static final String TRITONE_NRW_FILTER_KEY   = "filter.tritone.nrw";
+  private static final String TRITONE_NGW_FILTER_KEY   = "filter.tritone.ngw";
+  private static final String TRITONE_NBW_FILTER_KEY   = "filter.tritone.nbw";
+  private static final String SEPIA_S_FILTER_KEY       = "filter.sepia.s";
+  private static final String SEPIA_M_FILTER_KEY       = "filter.sepia.m";
+  private static final String SEPIA_L_FILTER_KEY       = "filter.sepia.l";
+  private static final String SEPIA_LUNAPIC_FILTER_KEY = "filter.sepia.lunapic";
+  private static final String SEPIA_TUXPI_FILTER_KEY   = "filter.sepia.tuxpi";
+  private static final String SEPIA_PIXLIED_FILTER_KEY = "filter.sepia.pixelied";
   private static final String RGBR_FILTER_KEY          = "filter.rgb.gbr";
   private static final String BGRB_FILTER_KEY          = "filter.rgb.brg";
   private static final String SWAP_RG_FILTER_KEY       = "filter.rgb.swap.rg";
@@ -65,6 +89,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String SWAP_BR_FILTER_KEY       = "filter.rgb.swap.br";
   private static final String EQUAL_GREY_FILTER_KEY    = "filter.rgb.greys.equal";
   private static final String HUMAN_GREY_FILTER_KEY    = "filter.rgb.greys.human";
+  private static final String MAX_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.max";
+  private static final String MED_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.median";
+  private static final String MIN_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.min";
   private static final String REDONLY_FILTER_KEY       = "filter.rgb.redonly";
   private static final String GREENONLY_FILTER_KEY     = "filter.rgb.greenonly";
   private static final String BLUEONLY_FILTER_KEY      = "filter.rgb.blueonly";
@@ -151,6 +178,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String HUE_DIFFUSION_FILTER_KEY = "filter.hsb.diffusion.hue";
   private static final String BNW_PIXEL_FILTER_KEY     = "filter.b&w.pixel";
   private static final String BNW_BLOT_FILTER_KEY      = "filter.b&w.blot";
+  private static final String BNW_BLACK_RED_FILTER_KEY = "filter.b&w.black&red";
+  private static final String BNW_PRPL_YLW_FILTER_KEY  = "filter.b&w.purple&yellow";
+  private static final String BNW_BLUE_ORNG_FILTER_KEY = "filter.b&w.blue&orange";
+  private static final String BNW_GREEN_FILTER_KEY     = "filter.b&w.green";
+  private static final String BNW_RED_WHITE_FILTER_KEY = "filter.b&w.red&white";
   private static final String BNW_SCATT_FILTER_KEY     = "filter.b&w.scatter";
   private static final String BNW_SNOW_FILTER_KEY      = "filter.b&w.snow";
   private static final String BLUR_SMALL_FILTER_KEY    = "filter.blur.small";
@@ -363,6 +395,25 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(VignetteFilterFactory.forCross(), VIGNETTE_C_FILTER_KEY));
     filters.add(new NamedFilter(VignetteFilterFactory.forEdges(), VIGNETTE_E_FILTER_KEY));
 
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(100, 0, 0), new Color(50, 150, 50), new Color(200, 200, 255)),   TRITONE_RGB_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(100, 0, 0), new Color(50, 50, 150), new Color(200, 255, 200)),   TRITONE_RBG_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 100, 0), new Color(50, 50, 150), new Color(255, 200, 200)),   TRITONE_GBR_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 100, 0), new Color(150, 50, 50), new Color(200, 200, 255)),   TRITONE_GRB_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 100), new Color(150, 50, 50), new Color(200, 255, 200)),   TRITONE_BRG_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 100), new Color(50, 150, 50), new Color(255, 200, 200)),   TRITONE_BGR_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(127, 0, 0), new Color(127, 127, 127), new Color(0, 255, 255)),   TRITONE_RGC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 127, 0), new Color(127, 127, 127), new Color(255, 127, 255)), TRITONE_GGP_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 127), new Color(127, 127, 127), new Color(255, 255, 0)),   TRITONE_BGY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 255, 0)),         TRITONE_NRY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 127, 255)),       TRITONE_NRP_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(0, 255, 255)),         TRITONE_NGC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 0)),         TRITONE_NGY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 127, 255)),       TRITONE_NBP_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(0, 255, 255)),         TRITONE_NBC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 255, 255)),       TRITONE_NRW_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 255)),       TRITONE_NGW_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 255)),       TRITONE_NBW_FILTER_KEY));
+
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 4, new DiagonalMap()), AXE_S_S_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 4, new AngularMap()),  AXE_L_S_FILTER_KEY));
@@ -459,15 +510,30 @@ public class FixedFilterFactory implements FilterFactory
 
     filters.add(new NamedFilter(RgbFilterFactory.forNegative(), NEGATIVE_FILTER_KEY));
 
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(33, 0, 0), new Color(112, 66, 20), new Color(255, 231, 145)),  SEPIA_L_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(45, 12, 0), new Color(112, 66, 20), new Color(200, 174, 161)), SEPIA_M_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(49, 5, 4), new Color(112, 66, 20), new Color(250, 225, 200)),  SEPIA_S_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(4, 0, 0), new Color(182, 139, 74), new Color(255, 255, 219)),  SEPIA_LUNAPIC_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(138, 123, 94), new Color(254, 227, 172)),  SEPIA_TUXPI_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(173, 154, 120), new Color(255, 255, 239)), SEPIA_PIXLIED_FILTER_KEY));
+
     filters.add(new NamedFilter(RgbFilterFactory.forEqualGreyScale(),          EQUAL_GREY_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forHumanSensitiveGreyScale(), HUMAN_GREY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forMaxChannelGreyScale(),     MAX_CH_GREY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forMedianChannelGreyScale(),  MED_CH_GREY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forMinChannelGreyScale(),     MIN_CH_GREY_FILTER_KEY));
 
     filters.add(new NamedFilter(DiffusionFilterFactory.forHueDiffusion(31), HUE_DIFFUSION_FILTER_KEY));
 
-    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(0),        BNW_PIXEL_FILTER_KEY));
-    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2),        BNW_BLOT_FILTER_KEY));
-    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(1), BNW_SCATT_FILTER_KEY));
-    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(3), BNW_SNOW_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(0, Color.BLACK, Color.WHITE),                         BNW_PIXEL_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(1),                                            BNW_SCATT_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forProbabilisticBlackOrWhite(3),                                            BNW_SNOW_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, Color.BLACK, Color.WHITE),                         BNW_BLOT_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, Color.BLACK, Color.RED),                           BNW_BLACK_RED_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, new Color(100, 32, 145), new Color(255, 255, 50)), BNW_PRPL_YLW_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, new Color(0, 0, 150), new Color(255, 111, 00)),    BNW_BLUE_ORNG_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, new Color(0, 50, 0), new Color(200, 255, 200)),    BNW_GREEN_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackOrWhite(2, Color.RED, Color.WHITE),                           BNW_RED_WHITE_FILTER_KEY));
 
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.083f), ORANGEPHIL_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forClosestPole(new DistantAttraction(0.2f), 0.3f),   GREENPHIL_FILTER_KEY));

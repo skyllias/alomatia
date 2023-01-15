@@ -2,12 +2,16 @@
 package org.skyllias.alomatia.source;
 
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.StringSelection;
+
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
+import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.springframework.stereotype.Component;
 
 /** Source that extracts images from the system's clipboard. If the clipboard
  *  does not contain an image, nothing is generated.
@@ -18,12 +22,26 @@ import java.awt.datatransfer.StringSelection;
  *  listeners, the clipboard is cleared. The second only reads the clipboard
  *  when the method {@link #readFromClipboard()} is invoked from outside. */
 
-public class ClipboardSource extends BasicSource
-                             implements FlavorListener
+@Component
+public class ClipboardSource implements ImageSource, FlavorListener
 {
-  private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  private final ImageDisplay imageDisplay;
+  private final Clipboard clipboard;
+  private final SourcePreferences sourcePreferences;
 
-  private boolean autoMode = true;                                              // see setAutoMode
+  private final State state = new State();
+
+//==============================================================================
+
+  public ClipboardSource(ImageDisplay imageDisplay, Clipboard clipboard,
+                         SourcePreferences sourcePreferences)
+  {
+    this.imageDisplay      = imageDisplay;
+    this.clipboard         = clipboard;
+    this.sourcePreferences = sourcePreferences;
+
+    state.autoMode = sourcePreferences.isClipboardAutoMode();
+  }
 
 //==============================================================================
 
@@ -32,11 +50,11 @@ public class ClipboardSource extends BasicSource
   @Override
   public void setActive(boolean active)
   {
-    super.setActive(active);
+    state.active = active;
 
     if (active)
     {
-      if (autoMode) takeImageFromClipboard(clipboard);
+      if (state.autoMode) takeImageFromClipboard(clipboard);
       clipboard.addFlavorListener(this);
     }
     else clipboard.removeFlavorListener(this);
@@ -47,13 +65,13 @@ public class ClipboardSource extends BasicSource
   /** If the mode is auto and the source is active, reads the contents of the
    *  clipboard in search of an image. Else, nothing happens.
    *  To be invoked when the clipboard contents change. The clipboard used is
-   *  the one in event. It sohlud be the same used internally to register as
+   *  the one in event. It should be the same used internally to register as
    *  listener, but it is not enforced. */
 
   @Override
   public void flavorsChanged(FlavorEvent event)
   {
-    if (autoMode && isActive()) takeImageFromClipboard((Clipboard) event.getSource());
+    if (state.autoMode && state.active) takeImageFromClipboard((Clipboard) event.getSource());
   }
 
 //------------------------------------------------------------------------------
@@ -64,7 +82,7 @@ public class ClipboardSource extends BasicSource
 
   public void readFromClipboard()
   {
-    if (!autoMode && isActive()) takeImageFromClipboard(clipboard);
+    if (!state.autoMode && state.active) takeImageFromClipboard(clipboard);
   }
 
 //------------------------------------------------------------------------------
@@ -72,16 +90,19 @@ public class ClipboardSource extends BasicSource
   /** Modifies the mode of the source, switching auto on or off.
    *  If true, the clipboard is listened to for changes, and images are removed
    *  after copy; else, the clipboard is only read upon external invocation.
-   *  This method can be called any time. */
+   *  This method can be called any time.
+   *  The new value is stored in the preferences. */
 
-  public void setAutoMode(boolean auto) {autoMode = auto;}
+  public void setAutoMode(boolean auto)
+  {
+    state.autoMode = auto;
+
+    sourcePreferences.setClipboardAutoMode(auto);
+  }
 
 //------------------------------------------------------------------------------
 
-  /** Modifies the clipboard used to take images from when the source is activated.
-   *  This only needs to be called when testing. */
-
-  protected void setClipboard(Clipboard newClipboard) {clipboard = newClipboard;}
+  public boolean isAutoMode() {return state.autoMode;}
 
 //------------------------------------------------------------------------------
 
@@ -103,13 +124,20 @@ public class ClipboardSource extends BasicSource
     try
     {
       Image clipboardImage = (Image) clipboard.getData(DataFlavor.imageFlavor);
-      sendImageToDisplay(clipboardImage);
+      if (clipboardImage != null) imageDisplay.setOriginalImage(clipboardImage);
 
-      if (autoMode) clipboard.setContents(new StringSelection(EMPTY_TEXT), null);
+      if (state.autoMode) clipboard.setContents(new StringSelection(EMPTY_TEXT), null);
     }
     catch (Exception e) {}                                                      // the clipboard may not contain an image, so do nothing then
   }
 
 //------------------------------------------------------------------------------
 
+//******************************************************************************
+
+  private static class State
+  {
+    boolean active;
+    boolean autoMode;                                                           // see setAutoMode
+  }
 }

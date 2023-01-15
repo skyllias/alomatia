@@ -8,7 +8,14 @@ import java.util.Random;
 
 public class ProbabilisticBlackOrWhiteSelector implements BlackOrWhiteSelector
 {
-  private Random random = new Random();
+  private final Random random;
+
+//==============================================================================
+
+  public ProbabilisticBlackOrWhiteSelector(Random random)
+  {
+    this.random = random;
+  }
 
 //==============================================================================
 
@@ -18,15 +25,6 @@ public class ProbabilisticBlackOrWhiteSelector implements BlackOrWhiteSelector
     float threshold = random.nextFloat();
 
     return (lightness < threshold) ? Color.BLACK : Color.WHITE;
-  }
-
-//------------------------------------------------------------------------------
-
-  /** For testing purposes only. */
-
-  protected void setRandom(Random random)
-  {
-    this.random = random;
   }
 
 //------------------------------------------------------------------------------

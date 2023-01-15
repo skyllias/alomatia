@@ -1,6 +1,8 @@
 
 package org.skyllias.alomatia.source;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -13,47 +15,69 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.image.BufferedImage;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.preferences.SourcePreferences;
 
 /** The system's clipboard cannot be used to generate the events because it is
  *  asynchronous. */
 
+@RunWith(MockitoJUnitRunner.class)
 public class ClipboardSourceTest
 {
-  private ClipboardSource source = new ClipboardSource();
   @Mock
   private ImageDisplay imageDisplay;
   @Mock
   private Clipboard clipboard;
+  @Mock
+  private SourcePreferences sourcePreferences;
 
-  @Before
-  public void setUp()
+  private ClipboardSource source;
+
+  private void setUp()
   {
-    MockitoAnnotations.initMocks(this);
-
-    source.setActive(false);
-    source.setClipboard(clipboard);
-    source.setDisplay(imageDisplay);
-  }
-
-  @After
-  public void tearDown()
-  {
-    source.setActive(false);
+    source = new ClipboardSource(imageDisplay, clipboard, sourcePreferences);
   }
 
 //------------------------------------------------------------------------------
 
   @Test
+  public void shouldHaveAutoModeOffAccordingToPreferences()
+  {
+    when(sourcePreferences.isClipboardAutoMode()).thenReturn(false);
+    setUp();
+
+    assertFalse(source.isAutoMode());
+  }
+
+  @Test
+  public void shouldHaveAutoModeOnAccordingToPreferences()
+  {
+    when(sourcePreferences.isClipboardAutoMode()).thenReturn(true);
+    setUp();
+
+    assertTrue(source.isAutoMode());
+  }
+
+  @Test
+  public void shouldSavePreferencesWhenAutoModeSet()
+  {
+    setUp();
+
+    source.setAutoMode(true);
+    verify(sourcePreferences).setClipboardAutoMode(true);
+  }
+
+  @Test
   public void shouldDoNothingWhenNothingCopiedInAutoMode()
   {
+    setUp();
+
+    source.setActive(true);                                                     // order matters between setActive and setAutoMode
     source.setAutoMode(true);
-    source.setActive(true);
 
     FlavorEvent event = new FlavorEvent(clipboard);
     source.flavorsChanged(event);
@@ -62,10 +86,12 @@ public class ClipboardSourceTest
   }
 
   @Test
-  public void shouldDoNothingWhenNothingCopiedInNotAutoMode()
+  public void shouldDoNothingWhenNothingCopied()
   {
-    source.setAutoMode(false);
+    setUp();
+
     source.setActive(true);
+    source.setAutoMode(false);
 
     source.readFromClipboard();
 
@@ -75,6 +101,8 @@ public class ClipboardSourceTest
   @Test
   public void shouldReadClipboardContentsWhenActivatedInAutoMode() throws Exception
   {
+    setUp();
+
     source.setAutoMode(true);
     source.setActive(true);
     verify(clipboard).getData(DataFlavor.imageFlavor);
@@ -83,6 +111,8 @@ public class ClipboardSourceTest
   @Test
   public void shouldNotReadClipboardContentsWhenActivatedInNotAutoMode() throws Exception
   {
+    setUp();
+
     source.setAutoMode(false);
     source.setActive(true);
     verify(clipboard, never()).getData(DataFlavor.imageFlavor);
@@ -91,6 +121,8 @@ public class ClipboardSourceTest
   @Test
   public void shouldRegisterListenerWhenActivated()
   {
+    setUp();
+
     source.setActive(true);
     verify(clipboard, atLeastOnce()).addFlavorListener(source);
   }
@@ -98,6 +130,8 @@ public class ClipboardSourceTest
   @Test
   public void shouldUnregisterListenerWhenInactive() throws Exception
   {
+    setUp();
+
     source.setActive(false);
     verify(clipboard).removeFlavorListener(source);
   }
@@ -105,8 +139,10 @@ public class ClipboardSourceTest
   @Test
   public void shouldDisplayImageWhenCopiedInAutoMode() throws Exception
   {
-    source.setAutoMode(true);
+    setUp();
+
     source.setActive(true);
+    source.setAutoMode(true);
 
     Image copiedImage = getNewImage();
     when(clipboard.getData(DataFlavor.imageFlavor)).thenReturn(copiedImage);
@@ -118,32 +154,36 @@ public class ClipboardSourceTest
   @Test
   public void shouldNotDisplayImageWhenCopiedInNotAutoMode() throws Exception
   {
-    source.setAutoMode(false);
-    source.setActive(true);
+    setUp();
 
-    Image copiedImage = getNewImage();
-    when(clipboard.getData(DataFlavor.imageFlavor)).thenReturn(copiedImage);
+    source.setActive(true);
+    source.setAutoMode(false);
+
     source.flavorsChanged(new FlavorEvent(clipboard));
 
-    verify(imageDisplay, never()).setOriginalImage(copiedImage);
+    verify(clipboard, never()).getData(any());
+    verify(imageDisplay, never()).setOriginalImage(any());
   }
 
   @Test
   public void shouldNotDisplayImageWhenCopiedInAutoMode() throws Exception
   {
-    source.setAutoMode(true);
-    source.setActive(true);
+    setUp();
 
-    Image copiedImage = getNewImage();
-    when(clipboard.getData(DataFlavor.imageFlavor)).thenReturn(copiedImage);
+    source.setActive(true);
+    source.setAutoMode(true);
+
     source.readFromClipboard();
 
-    verify(imageDisplay, never()).setOriginalImage(copiedImage);
+    verify(clipboard, never()).getData(any());
+    verify(imageDisplay, never()).setOriginalImage(any());
   }
 
   @Test
   public void shouldDisplayImageWhenCopiedInNotAutoMode() throws Exception
   {
+    setUp();
+
     source.setAutoMode(false);
     source.setActive(true);
 
@@ -157,13 +197,14 @@ public class ClipboardSourceTest
   @Test
   public void shouldDisplaySubsequentImages() throws Exception
   {
+    setUp();
+
     source.setAutoMode(true);
     source.setActive(true);
 
     Image firstImage  = getNewImage();
     Image secondImage = getAnotherImage();
-    when(clipboard.getData(DataFlavor.imageFlavor)).thenReturn(firstImage).
-                                                    thenReturn(secondImage);
+    when(clipboard.getData(DataFlavor.imageFlavor)).thenReturn(firstImage, secondImage);
 
     source.flavorsChanged(new FlavorEvent(clipboard));
     source.flavorsChanged(new FlavorEvent(clipboard));

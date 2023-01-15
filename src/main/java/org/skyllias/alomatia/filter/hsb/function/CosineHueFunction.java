@@ -5,8 +5,8 @@ package org.skyllias.alomatia.filter.hsb.function;
 
 public class CosineHueFunction implements HueFunction
 {
-  private float center;
-  private double max, min;
+  private final float center;
+  private final double max, min;
 
 //==============================================================================
 

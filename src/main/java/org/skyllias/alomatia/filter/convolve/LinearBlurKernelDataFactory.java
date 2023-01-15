@@ -12,9 +12,9 @@ package org.skyllias.alomatia.filter.convolve;
 
 public class LinearBlurKernelDataFactory implements KernelDataFactory
 {
-  private float length;
-  private double angle;
-  private BlurLineProfile blurPorfile;
+  private final float length;
+  private final double angle;
+  private final BlurLineProfile blurPorfile;
 
 //==============================================================================
 

@@ -9,7 +9,7 @@ import org.skyllias.alomatia.filter.ColourConverter;
 
 public class ChannelLookupConverter implements ColourConverter
 {
-  private ColourLookup lookup;
+  private final ColourLookup lookup;
 
 //==============================================================================
 

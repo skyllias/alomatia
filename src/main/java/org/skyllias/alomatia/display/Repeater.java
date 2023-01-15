@@ -8,32 +8,12 @@ import java.util.HashSet;
 import org.skyllias.alomatia.ImageDisplay;
 import org.springframework.stereotype.Component;
 
-/** Display that only transfers the received images to other displays (receivers). */
+/** Stateful display that simply transfers the received images to other displays (receivers). */
 
 @Component
 public class Repeater implements ImageDisplay
 {
-  private Collection<ImageDisplay> receivers = new HashSet<>();                 // may be empty but never null
-  private Image currentImage;
-
-//==============================================================================
-
-  /** Creates a new repeater without any receiver.
-   *  <p>
-   *  They can be added later on with {@link #addReceiver(ImageDisplay)}. */
-
-  public Repeater() {}
-
-//------------------------------------------------------------------------------
-
-  /** Creates a new repeater with all the passed displays receiving the images this one gets.
-   *  <p>
-   *  They can be removed later on with {@link #removeReceiver(ImageDisplay)}. */
-
-  protected Repeater(Collection<ImageDisplay> initialReceivers)
-  {
-    if (initialReceivers != null) receivers.addAll(initialReceivers);
-  }
+  private final State state = new State();
 
 //==============================================================================
 
@@ -42,11 +22,11 @@ public class Repeater implements ImageDisplay
   @Override
   public void setOriginalImage(Image image)
   {
-    for (ImageDisplay imageDisplay : receivers)
+    for (ImageDisplay imageDisplay : state.receivers)
     {
       imageDisplay.setOriginalImage(image);
     }
-    currentImage = image;
+    state.currentImage = image;
   }
 
 //------------------------------------------------------------------------------
@@ -56,8 +36,8 @@ public class Repeater implements ImageDisplay
 
   public void addReceiver(ImageDisplay newReceiver)
   {
-    if (currentImage != null) newReceiver.setOriginalImage(currentImage);
-    receivers.add(newReceiver);
+    if (state.currentImage != null) newReceiver.setOriginalImage(state.currentImage);
+    state.receivers.add(newReceiver);
   }
 
 //------------------------------------------------------------------------------
@@ -67,9 +47,14 @@ public class Repeater implements ImageDisplay
 
   public void removeReceiver(ImageDisplay formerReceiver)
   {
-    receivers.remove(formerReceiver);
+    state.receivers.remove(formerReceiver);
   }
 
 //------------------------------------------------------------------------------
 
+  private static class State
+  {
+    final Collection<ImageDisplay> receivers = new HashSet<>();                 // may be empty
+    Image currentImage;                                                         // kept to be able to pass it to new receivers
+  }
 }

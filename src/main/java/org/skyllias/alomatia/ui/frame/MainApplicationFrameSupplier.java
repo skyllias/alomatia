@@ -10,7 +10,7 @@ import org.skyllias.alomatia.logo.IconSupplier;
 import org.springframework.stereotype.Component;
 
 /** Supplier of the main frame of the application.
- *  Only one frame is created. */
+ *  Only one frame exists per supplier. */
 
 @Component
 public class MainApplicationFrameSupplier
@@ -20,7 +20,7 @@ public class MainApplicationFrameSupplier
   private final LabelLocalizer labelLocalizer;
   private final IconSupplier iconSupplier;
 
-  private JFrame mainFrame;
+  private final JFrame mainFrame;
 
 //==============================================================================
 
@@ -29,19 +29,13 @@ public class MainApplicationFrameSupplier
   {
     this.labelLocalizer = labelLocalizer;
     this.iconSupplier   = iconSupplier;
+
+    mainFrame = getNewFrame();
   }
 
 //==============================================================================
 
-  /** If the frame already exists, it is returned; otherwise, a new one is
-   *  created. */
-
-  public JFrame getMainFrame()
-  {
-    if (mainFrame == null) mainFrame = getNewFrame();
-
-    return mainFrame;
-  }
+  public JFrame getMainFrame() {return mainFrame;}
 
 //------------------------------------------------------------------------------
 

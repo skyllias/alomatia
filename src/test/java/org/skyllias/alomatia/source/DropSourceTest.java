@@ -28,9 +28,8 @@ public class DropSourceTest
     DropTargetDropEvent event = mock(DropTargetDropEvent.class);
     ImageDisplay imageDisplay = mock(ImageDisplay.class);
 
-    DropSource dropSource = new DropSource();
+    DropSource dropSource = new DropSource(imageDisplay);
     dropSource.setActive(false);
-    dropSource.setDisplay(imageDisplay);
 
     dropSource.drop(event);
     verify(imageDisplay, never()).setOriginalImage(any(Image.class));
@@ -48,9 +47,8 @@ public class DropSourceTest
 
     ImageDisplay display = mock(ImageDisplay.class);
 
-    DropSource dropSource = new DropSource();
+    DropSource dropSource = new DropSource(display);
     dropSource.setActive(true);
-    dropSource.setDisplay(display);
 
     dropSource.drop(event);
     verify(display, times(1)).setOriginalImage(image);
@@ -66,7 +64,9 @@ public class DropSourceTest
   {
     DropTargetDragEvent event = mock(DropTargetDragEvent.class);
 
-    DropSource dropSource = new DropSource();
+    ImageDisplay display = mock(ImageDisplay.class);
+
+    DropSource dropSource = new DropSource(display);
     dropSource.setActive(false);
 
     dropSource.dragEnter(event);
@@ -81,7 +81,9 @@ public class DropSourceTest
     DropTargetDragEvent event = mock(DropTargetDragEvent.class);
     when(event.getTransferable()).thenReturn(transferable);
 
-    DropSource dropSource = new DropSource();
+    ImageDisplay display = mock(ImageDisplay.class);
+
+    DropSource dropSource = new DropSource(display);
     dropSource.setActive(true);
 
     dropSource.dragEnter(event);
@@ -96,7 +98,9 @@ public class DropSourceTest
     DropTargetDragEvent event = mock(DropTargetDragEvent.class);
     when(event.getTransferable()).thenReturn(transferable);
 
-    DropSource dropSource = new DropSource();
+    ImageDisplay display = mock(ImageDisplay.class);
+
+    DropSource dropSource = new DropSource(display);
     dropSource.setActive(true);
 
     dropSource.dragEnter(event);

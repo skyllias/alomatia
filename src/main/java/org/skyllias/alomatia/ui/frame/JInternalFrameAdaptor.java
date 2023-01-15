@@ -19,7 +19,7 @@ import javax.swing.event.InternalFrameListener;
 
 public class JInternalFrameAdaptor implements FrameAdaptor
 {
-  private JInternalFrame jInternalFrame;
+  private final JInternalFrame jInternalFrame;
 
 //==============================================================================
 

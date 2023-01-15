@@ -16,7 +16,7 @@ public class LruFilterSearchHistory implements FilterSearchHistory
 {
   private final SortedHistoryRepository sortedHistoryRepository;
 
-  private List<String> pastSearches;                                            // maintained in memory for searches
+  private final List<String> pastSearches = new LinkedList<>();                 // maintained in memory for searches. A LinkedHashSet is not a better alternative as it keeps insertion order when reinserting
 
 //==============================================================================
 
@@ -63,7 +63,7 @@ public class LruFilterSearchHistory implements FilterSearchHistory
 
   private void loadPastSearchesFromRepository()
   {
-    pastSearches = new LinkedList<>();                                          // a LinkedHashSet is not a better alternative as it keeps insertion order when reinserting
+    pastSearches.clear();
     pastSearches.addAll(sortedHistoryRepository.get());
   }
 

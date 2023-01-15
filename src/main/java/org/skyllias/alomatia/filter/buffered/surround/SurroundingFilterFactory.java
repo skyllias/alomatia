@@ -1,7 +1,9 @@
 
 package org.skyllias.alomatia.filter.buffered.surround;
 
+import java.awt.Color;
 import java.awt.image.ImageFilter;
+import java.util.Random;
 
 import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
@@ -19,16 +21,16 @@ public class SurroundingFilterFactory
 
 //------------------------------------------------------------------------------
 
-  public static ImageFilter forStrictBlackOrWhite(int boxSize)
+  public static ImageFilter forStrictBlackOrWhite(int boxSize, Color blackColor, Color whiteColor)
   {
-    return forCalculator(boxSize, new LightCalculator(new StrictBlackOrWhiteSelector()));
+    return forCalculator(boxSize, new LightCalculator(new StrictBlackOrWhiteSelector(blackColor, whiteColor)));
   }
 
 //------------------------------------------------------------------------------
 
   public static ImageFilter forProbabilisticBlackOrWhite(int boxSize)
   {
-    return forCalculator(boxSize, new LightCalculator(new ProbabilisticBlackOrWhiteSelector()));
+    return forCalculator(boxSize, new LightCalculator(new ProbabilisticBlackOrWhiteSelector(new Random())));
   }
 
 //------------------------------------------------------------------------------

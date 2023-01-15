@@ -17,18 +17,19 @@ import javax.swing.event.DocumentListener;
 
 /** Decorator of a text field that shows a drop drown list of suggestions
  *  extracted from the filter search history as the user types.
- *  It is inspired by SwingX components, but not used directly due to the size
- *  of the library and the specific need in this project. */
+ *  SwingX components are the inspiration for this code, but they are not used
+ *  directly due to the size of the library and the specific need in this project. */
 
 public class HistorySuggestionDropDownDecoration
 {
   private final JTextField inputField;
   private final FilterSearchHistory filterSearchHistory;
 
-  private JPopupMenu popupMenu;
-  private JList<String> listComponent;
-  private DefaultListModel<String> listModel;
-  private boolean mustDispatchDocumentEvents = true;
+  private final JPopupMenu popupMenu;
+  private final JList<String> listComponent;
+  private final DefaultListModel<String> listModel;
+
+  private State state = new State();
 
 //==============================================================================
 
@@ -40,6 +41,10 @@ public class HistorySuggestionDropDownDecoration
   {
     this.inputField          = inputField;
     this.filterSearchHistory = filterSearchHistory;
+
+    popupMenu     = new JPopupMenu();
+    listModel     = new DefaultListModel<>();
+    listComponent = new JList<>(listModel);
 
     init();
   }
@@ -61,10 +66,6 @@ public class HistorySuggestionDropDownDecoration
 
   private void initPopup()
   {
-    popupMenu = new JPopupMenu();
-    listModel = new DefaultListModel<>();
-
-    listComponent = new JList<>(listModel);
     listComponent.setBorder(BorderFactory.createEmptyBorder(0, 2, 5, 2));
     listComponent.setFocusable(false);
 
@@ -91,7 +92,7 @@ public class HistorySuggestionDropDownDecoration
 
       private void update(DocumentEvent e)
       {
-        if (mustDispatchDocumentEvents)
+        if (state.mustDispatchDocumentEvents)
         {
           SwingUtilities.invokeLater(new Runnable()
           {
@@ -160,9 +161,9 @@ public class HistorySuggestionDropDownDecoration
       {
         popupMenu.setVisible(false);
         String selectedValue = listComponent.getSelectedValue();
-        mustDispatchDocumentEvents = false;
+        state.mustDispatchDocumentEvents = false;
         inputField.setText(selectedValue);
-        mustDispatchDocumentEvents = true;
+        state.mustDispatchDocumentEvents = true;
         e.consume();
       }
     }
@@ -200,4 +201,8 @@ public class HistorySuggestionDropDownDecoration
 
 //------------------------------------------------------------------------------
 
+  private static class State
+  {
+    boolean mustDispatchDocumentEvents = true;
+  }
 }

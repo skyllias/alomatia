@@ -29,7 +29,7 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 
   private final MainApplicationFrameSupplier mainApplicationFrameSupplier;
 
-  private JDesktopPane desktopPane;
+  private final JDesktopPane desktopPane;
 
 //==============================================================================
 
@@ -37,6 +37,8 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
                                       MainApplicationFrameSupplier mainApplicationFrameSupplier)
   {
     this.mainApplicationFrameSupplier = mainApplicationFrameSupplier;
+
+    desktopPane = createDesktopPane();
   }
 
 //==============================================================================
@@ -44,8 +46,6 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
   @Override
   public FrameAdaptor getNewFrame(JComponent displayPanel)
   {
-    if (desktopPane == null) desktopPane = createDesktopPane();
-
     JInternalFrame jInternalFrame = new JInternalFrame();
     jInternalFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jInternalFrame.getContentPane().add(displayPanel, BorderLayout.CENTER);

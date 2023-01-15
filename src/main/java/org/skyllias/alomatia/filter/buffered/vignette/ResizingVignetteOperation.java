@@ -26,7 +26,7 @@ import org.skyllias.alomatia.filter.buffered.simple.DyeOperation;
 
 public class ResizingVignetteOperation implements BufferedImageOperation
 {
-  private static ThreadFactory lowerPriorityThreadFactory;
+  private static final ThreadFactory lowerPriorityThreadFactory;
   private final ExecutorService executorService = Executors.newSingleThreadExecutor(lowerPriorityThreadFactory);
 
   private final Future<BufferedImage> futureVignetteImage;                      // the precalculated, semi-transparent image generated from a profile and a colour that is drawn in front of the source image; needs a lot of processing but usually is not immediately required

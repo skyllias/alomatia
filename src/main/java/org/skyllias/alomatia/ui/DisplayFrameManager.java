@@ -2,6 +2,7 @@
 package org.skyllias.alomatia.ui;
 
 import java.awt.Rectangle;
+import java.awt.datatransfer.Clipboard;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,11 +30,12 @@ public class DisplayFrameManager
   private final FilterSelectorComposer filterSelectorComposer;
   private final DisplayOptionsDialogComposer displayOptionsDialogComposer;
   private final FileImageSaver fileImageSaver;
+  private final Clipboard clipboard;
 
-  private List<DisplayFrameController> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrameController>());  // every new window is added here in order of creation, and removed when closed. The order is used to apply filters sequentially
+  private final List<DisplayFrameController> existingFrames = Collections.synchronizedList(new LinkedList<DisplayFrameController>());  // every new window is added here in order of creation, and removed when closed. The order is used to apply filters sequentially
 
 
-  private Collection<DisplayAmountChangeListener> listeners = new LinkedList<>(); // probably there will be just one, but just in case
+  private final Collection<DisplayAmountChangeListener> listeners = new LinkedList<>(); // probably there will be just one, but just in case
 
 //==============================================================================
 
@@ -48,7 +50,8 @@ public class DisplayFrameManager
                              FilteredImageGenerator filteredImageGenerator,
                              FilterSelectorComposer filterSelectorComposer,
                              DisplayOptionsDialogComposer displayOptionsDialogComposer,
-                             FileImageSaver fileImageSaver)
+                             FileImageSaver fileImageSaver,
+                             Clipboard clipboard)
   {
     this.labelLocalizer               = labelLocalizer;
     this.iconSupplier                 = iconSupplier;
@@ -57,6 +60,7 @@ public class DisplayFrameManager
     this.filterSelectorComposer       = filterSelectorComposer;
     this.displayOptionsDialogComposer = displayOptionsDialogComposer;
     this.fileImageSaver               = fileImageSaver;
+    this.clipboard                    = clipboard;
   }
 
 //==============================================================================
@@ -83,7 +87,8 @@ public class DisplayFrameManager
                                                                      frameAdaptor, displayPanel,
                                                                      filterSelectorComposer,
                                                                      filteredImageGenerator, fileImageSaver,
-                                                                     displayOptionsDialogComposer);
+                                                                     displayOptionsDialogComposer,
+                                                                     clipboard);
     frame.addListener(new DisplayFrameCloseListener());
 
     if (applySequentialFilter) frame.applyFilterAt(existingFrames.size());

@@ -3,6 +3,7 @@ package org.skyllias.alomatia.filter.buffered.patch;
 
 import java.awt.Point;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /** Contiguous collection of pixels from an image.
@@ -13,7 +14,7 @@ import java.util.LinkedList;
 
 public class Patch
 {
-  private Collection<Pixel> pixels = new LinkedList<>();                        // this does not ensure uniqueness, but will be much faster than a Set. Although it is a bad design practice, it can be assumed that the code generating the patches is unlikely to add a pixel twice
+  private final Collection<Pixel> pixels = new LinkedList<>();                  // this does not ensure uniqueness, but will be much faster than a Set. Although it is a bad design practice, it can be assumed that the code generating the patches is unlikely to add a pixel twice
 
 //==============================================================================
 
@@ -21,7 +22,7 @@ public class Patch
 
 //------------------------------------------------------------------------------
 
-  public Collection<Pixel> getPixels() {return pixels;}
+  public Collection<Pixel> getPixels() {return Collections.unmodifiableCollection(pixels);}
 
 //------------------------------------------------------------------------------
 

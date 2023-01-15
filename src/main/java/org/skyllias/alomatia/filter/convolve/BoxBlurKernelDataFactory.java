@@ -5,17 +5,9 @@ package org.skyllias.alomatia.filter.convolve;
 
 public class BoxBlurKernelDataFactory implements KernelDataFactory
 {
-  private static final int DEFAULT_BOX_SIZE = 7;
-
-  private int boxSize;
+  private final int boxSize;
 
 //==============================================================================
-
-  /** Uses a default size. */
-
-  public BoxBlurKernelDataFactory() {this(DEFAULT_BOX_SIZE);}
-
-//------------------------------------------------------------------------------
 
   /** boxWidth must be bigger than 1. Odd values produce more symmetric results
    *  than even, but both are accepted. */

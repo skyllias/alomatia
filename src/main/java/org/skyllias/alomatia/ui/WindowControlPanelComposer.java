@@ -39,7 +39,7 @@ import org.skyllias.alomatia.ui.component.BorderedLabel;
  *  This takes care of the UI, while a {@link DisplayFrameManager} is in charge
  *  of the logic.
  *  <p>
- *  Some configurations are stored as user preferences.
+ *  Some configurations are stored as user preferences but anyway this is stateful.
  *  <p>
  *  A global key listener is added to open windows when Ctrl + N is pressed. */
 
@@ -68,28 +68,23 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   protected static final String AUTOAPPLY_FILTER_NAME        = "checkbox.autoapply";
   protected static final String REFILTER_BUTTON_NAME         = "button.refilter";
 
-  private DisplayFrameManager manager;
+  private final LabelLocalizer labelLocalizer;
+  private final Repeater repeaterDisplay;
+  private final DropTargetListener dropListener;
+  private final DisplayFrameManager manager;
   private final FramePolicyPreferences framePolicyPreferences;
-
   private final BarePanelComposer bareControlPanelComposer;
-
-  private Repeater repeaterDisplay;
-
-  private LabelLocalizer labelLocalizer;
-
-  private DropTargetListener dropListener;                                      // may be null. Otherwise, used to dispatch drops on the display frames
-
-  private boolean applySequentialFilters = false;
-
   private final WindowControlPreferences windowControlPreferences;
+
+  private State state = new State();
 
 //==============================================================================
 
-  /** Does NOT open a new window automatically. {@link #openNewWindowIfRequired()}
-   *  must be explicitly called. */
+  /** Does NOT open a new window automatically.
+   *  {@link #openNewWindowIfRequired()} must be explicitly called. */
 
   public WindowControlPanelComposer(LabelLocalizer localizer, Repeater displayRepeater,
-                                    DropTargetListenerSupplier dropTargetListenerSupplier,
+                                    DropTargetListener dropTargetListener,
                                     DisplayFrameManager frameManager, FramePolicyPreferences policy,
                                     BarePanelComposer panelComposer,
                                     WindowControlPreferences preferences)
@@ -97,7 +92,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
     labelLocalizer           = localizer;
     repeaterDisplay          = displayRepeater;
     manager                  = frameManager;
-    dropListener             = dropTargetListenerSupplier.getDropTargetListener();
+    dropListener             = dropTargetListener;
     framePolicyPreferences   = policy;
     bareControlPanelComposer = panelComposer;
     windowControlPreferences = preferences;
@@ -173,7 +168,7 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private void createNewDisplayFrame()
   {
-    DisplayFrameController frame        = manager.createDisplayFrame(applySequentialFilters);
+    DisplayFrameController frame        = manager.createDisplayFrame(state.applySequentialFilters);
     DisplayPanelController displayPanel = frame.getDisplayPanel();
 
     repeaterDisplay.addReceiver(displayPanel);
@@ -375,18 +370,18 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
   private JCheckBox getSequentialFiltersCheckbox()
   {
-    applySequentialFilters = windowControlPreferences.isSequentialFilterApplied();
+    state.applySequentialFilters = windowControlPreferences.isSequentialFilterApplied();
 
     final JCheckBox checkBox = new JCheckBox(labelLocalizer.getString(AUTOAPPLY_LABEL),
-                                             applySequentialFilters);
+                                             state.applySequentialFilters);
     checkBox.setName(AUTOAPPLY_FILTER_NAME);
     checkBox.addChangeListener(new ChangeListener()
     {
       @Override
       public void stateChanged(ChangeEvent e)
       {
-        applySequentialFilters = checkBox.isSelected();
-        windowControlPreferences.setSequentialFilterApplied(applySequentialFilters);
+        state.applySequentialFilters = checkBox.isSelected();
+        windowControlPreferences.setSequentialFilterApplied(state.applySequentialFilters);
       }
     });
 
@@ -430,6 +425,13 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
   }
 
 //------------------------------------------------------------------------------
+
+//******************************************************************************
+
+  private static class State
+  {
+    boolean applySequentialFilters = false;
+  }
 
 //******************************************************************************
 

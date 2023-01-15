@@ -13,13 +13,13 @@ public class StrictBlackOrWhiteSelectorTest
   @Test
   public void shouldReturnBlackWhenDark()
   {
-    assertEquals(Color.BLACK, new StrictBlackOrWhiteSelector().chooseBlackOrWhite(0.4f));
+    assertEquals(Color.RED, new StrictBlackOrWhiteSelector(Color.RED, Color.BLUE).chooseBlackOrWhite(0.4f));
   }
 
   @Test
   public void shouldReturnWhiteWhenLight()
   {
-    assertEquals(Color.WHITE, new StrictBlackOrWhiteSelector().chooseBlackOrWhite(0.6f));
+    assertEquals(Color.WHITE, new StrictBlackOrWhiteSelector(Color.BLACK, Color.WHITE).chooseBlackOrWhite(0.6f));
   }
 
 }

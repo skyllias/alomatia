@@ -1,24 +1,45 @@
 
 package org.skyllias.alomatia.source;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.skyllias.alomatia.ImageDisplay;
+import org.skyllias.alomatia.ImageSource;
+import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.springframework.stereotype.Component;
 
 /** Source from a directory.
  *  <p>
  *  All files with supported extensions inside a given directory are read and
  *  shown one at a time. They can be cyclically browsed by means of the methods
- *  {@link #nextImageFile()} and {@link #previousImageFile()}. */
+ *  {@link #nextImageFile()} and {@link #previousImageFile()}.
+ *  TODO skip files that disappear or cannot be opened. */
 
-public class DirFileSource extends BasicFileSource
+@Component
+public class DirFileSource implements ImageSource
 {
-  private File[] sourceDirContents = new File[0];                               // never null
-  private int currentFileIndex;
+  private final ImageDisplay imageDisplay;
+  private final SourcePreferences sourcePreferences;
+
+  private final State state = new State();
+
+//==============================================================================
+
+  public DirFileSource(ImageDisplay imageDisplay,
+                       SourcePreferences sourcePreferences)
+  {
+    this.imageDisplay      = imageDisplay;
+    this.sourcePreferences = sourcePreferences;
+
+    initCurrentDir();
+  }
 
 //==============================================================================
 
@@ -30,22 +51,28 @@ public class DirFileSource extends BasicFileSource
    *  and the first one is displayed. The others are available for browsing by
    *  means of {@link #nextImageFile()} and {@link #previousImageFile()}. */
 
-  @Override
   public void setFileSource(File imageDir)
   {
     if (imageDir != null)
     {
       FilenameFilter imageFilter = new SuffixFileFilter(ImageIO.getReaderFileSuffixes());
-      sourceDirContents          = imageDir.listFiles(imageFilter);               // null if not a directory
-      if (sourceDirContents == null) sourceDirContents = new File[0];
-      if (sourceDirContents.length > 0)
+      state.sourceDirContents    = imageDir.listFiles(imageFilter);             // null if not a directory
+      if (state.sourceDirContents == null) state.sourceDirContents = new File[0];
+      if (state.sourceDirContents.length > 0)
       {
-        Arrays.sort(sourceDirContents);                                           // File is Comparable (lexicographically by default)
-        currentFileIndex = 0;
+        Arrays.sort(state.sourceDirContents);                                   // File is Comparable (lexicographically by default)
+        state.currentFileIndex = 0;
         setCurrentImageFile();
       }
+
+      state.currentDir = imageDir;
+      sourcePreferences.setDefaultDirPath(imageDir.getAbsolutePath());
     }
   }
+
+//------------------------------------------------------------------------------
+
+  public Optional<File> getCurrentDir() {return Optional.ofNullable(state.currentDir);}
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +81,8 @@ public class DirFileSource extends BasicFileSource
   @Override
   public void setActive(boolean active)
   {
-    super.setActive(active);
+    state.active = active;
+
     if (active) setCurrentImageFile();
   }
 
@@ -67,10 +95,10 @@ public class DirFileSource extends BasicFileSource
 
   public void nextImageFile()
   {
-    if (isActive() && sourceDirContents.length > 0)
+    if (state.active && state.sourceDirContents.length > 0)
     {
-      currentFileIndex++;
-      if (currentFileIndex >= sourceDirContents.length) currentFileIndex = 0;
+      state.currentFileIndex++;
+      if (state.currentFileIndex >= state.sourceDirContents.length) state.currentFileIndex = 0;
       setCurrentImageFile();
     }
   }
@@ -84,10 +112,10 @@ public class DirFileSource extends BasicFileSource
 
   public void previousImageFile()
   {
-    if (isActive() && sourceDirContents.length > 0)
+    if (state.active && state.sourceDirContents.length > 0)
     {
-      currentFileIndex--;
-      if (currentFileIndex < 0) currentFileIndex = sourceDirContents.length - 1;
+      state.currentFileIndex--;
+      if (state.currentFileIndex < 0) state.currentFileIndex = state.sourceDirContents.length - 1;
       setCurrentImageFile();
     }
   }
@@ -98,10 +126,52 @@ public class DirFileSource extends BasicFileSource
 
   private void setCurrentImageFile()
   {
-    if (sourceDirContents.length > currentFileIndex)
-      setImageFromFile(sourceDirContents[currentFileIndex]);
+    if (state.sourceDirContents.length > state.currentFileIndex)
+      setImageFromFile(state.sourceDirContents[state.currentFileIndex]);
   }
 
 //------------------------------------------------------------------------------
+
+  /* If source is active and the passed file is not null and contains an image,
+   * it is sent to the display. Else, nothing happens. */
+
+  private void setImageFromFile(File imageFile)
+  {
+    if (state.active && imageFile != null)
+    {
+      try
+      {
+        BufferedImage image = ImageIO.read(imageFile);                          // this returns null if an image cannot be read from the file
+        if (image != null) imageDisplay.setOriginalImage(image);
+      }
+      catch (Exception e) {e.printStackTrace();}                                // the file must be wrong, not critical. TODO log it
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Initializes currentDir from the preferences. */
+
+  private void initCurrentDir()
+  {
+    String defaultDirPath = sourcePreferences.getDefaultDirPath();
+    if (defaultDirPath != null)
+    {
+      state.currentDir = new File(defaultDirPath);
+      setFileSource(state.currentDir);
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+//******************************************************************************
+
+  private static class State
+  {
+    boolean active;
+    File currentDir;
+    File[] sourceDirContents = new File[0];                                     // never null
+    int currentFileIndex;
+  }
 
 }

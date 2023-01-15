@@ -14,8 +14,8 @@ package org.skyllias.alomatia.filter.daltonism;
 
 public class ColourProjector
 {
-  private ColourSpace space;
-  private double o1ToR1, o1ToR2, o1ToR3, o2ToR1, o2ToR2, o2ToR3, o3ToR1, o3ToR2, o3ToR3;
+  private final ColourSpace space;
+  private final double o1ToR1, o1ToR2, o1ToR3, o2ToR1, o2ToR2, o2ToR3, o3ToR1, o3ToR2, o3ToR3;
 
 //==============================================================================
 

@@ -37,17 +37,12 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
   private final FilteredImageGenerator filteredImageGenerator;
 
-  private ImageFilter filter;
-  private Image originalImage;
-  private Image filteredImage;                                                  // image after applying filters, if any. Cached because large images take a long time to filter, and it is redundant to filter them whenever a repaint happens
+  private final Executor executor = Executors.newSingleThreadExecutor();        // filter application can be very slow, so operations that imply it are thrown in separate threads. Using a single thread ensures that no race conditions will happen, but if this class were to be tested, the Executor implementation could be changed
 
-  private DisplayFitPolicy fitType = DisplayFitPolicy.FREE;
-  private double scale = 1;                                                     // zoom factor: 1: normal size; <1: smaller; >1: bigger
+  private final JScrollPane component;
+  private final ImagePanel imagePanel = new ImagePanel();
 
-  private JScrollPane component;
-  private ImagePanel imagePanel = new ImagePanel();
-
-  private Executor executor = Executors.newSingleThreadExecutor();              // filter application can be very slow, so operations that imply it are thrown in separate threads. Using a single thread ensures that no race conditions will happen, but if this class were to be tested, the Executor implementation could be changed
+  private final State state = new State();
 
 //==============================================================================
 
@@ -76,7 +71,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
   public void setImageFilter(ImageFilter imageFilter)
   {
-    filter = imageFilter;
+    state.filter = imageFilter;
 
     executor.execute(new Runnable()
     {
@@ -101,7 +96,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
   @Override
   public void setOriginalImage(Image image)
   {
-    originalImage = image;
+    state.originalImage = image;
 
     executor.execute(new Runnable()
     {
@@ -123,7 +118,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
    *  before a repaint or while the filter is being applied, it may not be
    *  updated yet. */
 
-  public Image getFilteredImage() {return filteredImage;}
+  public Image getFilteredImage() {return state.filteredImage;}
 
 //------------------------------------------------------------------------------
 
@@ -132,7 +127,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
   @Override
   public void setZoomFactor(double factor)
   {
-    scale = factor;
+    state.scale = factor;
 
     repaintAfterResize();
   }
@@ -146,7 +141,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
   @Override
   public void setFitZoom(DisplayFitPolicy type)
   {
-    fitType = type;
+    state.fitType = type;
 
     resizeImageToFit();
   }
@@ -181,12 +176,12 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
   @SuppressWarnings("incomplete-switch")
   private double getResizeFactorToFit()
   {
-    if (fitType != DisplayFitPolicy.FREE)
+    if (state.fitType != DisplayFitPolicy.FREE)
     {
-      if (originalImage != null)
+      if (state.originalImage != null)
       {
-        int imgHeight = originalImage.getHeight(null);                          // an ImageObserver could be used to repaint when the image is available again, but most producers are providing BufferedImages so dimensions will always be available
-        int imgWidth  = originalImage.getWidth(null);
+        int imgHeight = state.originalImage.getHeight(null);                    // an ImageObserver could be used to repaint when the image is available again, but most producers are providing BufferedImages so dimensions will always be available
+        int imgWidth  = state.originalImage.getWidth(null);
         if (imgHeight != UNAVAILABLE_SIZE && imgHeight != 0 &&
             imgWidth != UNAVAILABLE_SIZE && imgWidth != 0)
         {
@@ -195,7 +190,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
           double heightFactor = ((double) portHeight) / (double) imgHeight;     // amount to multiply the image by to fit the viewport
           double widthFactor  = ((double) portWidth) / (double) imgWidth;
 
-          switch (fitType)
+          switch (state.fitType)
           {
             case FULL:       return Math.min(heightFactor, widthFactor);
             case LARGEST:    return Math.max(heightFactor, widthFactor);
@@ -226,14 +221,14 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
   private Dimension getImageSize()
   {
-    if (originalImage != null)
+    if (state.originalImage != null)
     {
-      int height = originalImage.getHeight(null);                               // see comment at getResizeFactorToFit()
-      int width  = originalImage.getWidth(null);
+      int height = state.originalImage.getHeight(null);                         // see comment at getResizeFactorToFit()
+      int width  = state.originalImage.getWidth(null);
       if (height != UNAVAILABLE_SIZE && width != UNAVAILABLE_SIZE)
       {
-        height *= scale;
-        width  *= scale;
+        height *= state.scale;
+        width  *= state.scale;
         return new Dimension(width, height);
       }
     }
@@ -252,17 +247,17 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
   private void filterImage()
   {
-    if (originalImage != null)
+    if (state.originalImage != null)
     {
       component.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-      filteredImage = originalImage;
-      if (filter != null)
+      state.filteredImage = state.originalImage;
+      if (state.filter != null)
       {
-        filteredImage = filteredImageGenerator.generate(originalImage, filter);     // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
+        state.filteredImage = filteredImageGenerator.generate(state.originalImage, state.filter);     // when scale < 1, some performance improvement could be achieved if the filter were applied to the reduced image, but then it would have to be reapplied upon resizing
       }
 
-      filteredImage.getWidth(null);                                             // what really takes time in slow filters and big images is not the filtering lines above, because the image is not really generated until one method like getWidth() is called
+      state.filteredImage.getWidth(null);                                       // what really takes time in slow filters and big images is not the filtering lines above, because the image is not really generated until one method like getWidth() is called
 
       component.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
@@ -296,6 +291,18 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
 
 //******************************************************************************
 
+  private static class State
+  {
+    private ImageFilter filter;
+    private Image originalImage;
+    private Image filteredImage;                                                // image after applying filters, if any. Cached because large images take a long time to filter, and it is redundant to filter them whenever a repaint happens
+
+    private DisplayFitPolicy fitType = DisplayFitPolicy.FREE;
+    private double scale = 1;                                                   // zoom factor: 1: normal size; <1: smaller; >1: bigger
+  }
+
+//******************************************************************************
+
   /* Panel contained inside the scroll pane where the image is really drawn. */
 
   private class ImagePanel extends JPanel
@@ -322,7 +329,7 @@ public class DisplayPanelController implements ImageDisplay, ResizableDisplay, C
       int scaledWidth           = (int) scaledDimension.getWidth();
 
       g.clearRect(0, 0, getWidth(), getHeight());                               // clear the whole panel, not just the region to paint on
-      g.drawImage(filteredImage, 0, 0, scaledWidth, scaledHeight, null);        // getHeight() and getWidth() cannot be used because they are larger than the image's size if the viewport is bigger
+      g.drawImage(state.filteredImage, 0, 0, scaledWidth, scaledHeight, null);  // getHeight() and getWidth() cannot be used because they are larger than the image's size if the viewport is bigger
     }
 
 //------------------------------------------------------------------------------
