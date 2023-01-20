@@ -10,15 +10,15 @@ import java.awt.Color;
 
 public class StrictBlackOrWhiteSelector implements BlackOrWhiteSelector
 {
-  private static final float THRESHOLD = 0.5f;
-
+  private final float threshold;
   private final Color blackColor;
   private final Color whiteColor;
 
 //==============================================================================
 
-  public StrictBlackOrWhiteSelector(Color blackColor, Color whiteColor)
+  public StrictBlackOrWhiteSelector(float threshold, Color blackColor, Color whiteColor)
   {
+    this.threshold  = threshold;
     this.blackColor = blackColor;
     this.whiteColor = whiteColor;
   }
@@ -28,7 +28,7 @@ public class StrictBlackOrWhiteSelector implements BlackOrWhiteSelector
   @Override
   public Color chooseBlackOrWhite(float lightness)
   {
-    return (lightness < THRESHOLD) ? blackColor : whiteColor;
+    return (lightness < threshold) ? blackColor : whiteColor;
   }
 
 //------------------------------------------------------------------------------

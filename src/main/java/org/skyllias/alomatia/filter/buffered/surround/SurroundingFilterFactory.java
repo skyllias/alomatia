@@ -23,7 +23,14 @@ public class SurroundingFilterFactory
 
   public static ImageFilter forStrictBlackOrWhite(int boxSize, Color blackColor, Color whiteColor)
   {
-    return forCalculator(boxSize, new LightCalculator(new StrictBlackOrWhiteSelector(blackColor, whiteColor)));
+    return forStrictBlackOrWhite(boxSize,  0.5f, blackColor, whiteColor);
+  }
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forStrictBlackOrWhite(int boxSize, float threshold, Color blackColor, Color whiteColor)
+  {
+    return forCalculator(boxSize, new LightCalculator(new StrictBlackOrWhiteSelector(threshold, blackColor, whiteColor)));
   }
 
 //------------------------------------------------------------------------------

@@ -11,15 +11,27 @@ public class StrictBlackOrWhiteSelectorTest
 {
 
   @Test
-  public void shouldReturnBlackWhenDark()
+  public void shouldReturnBlackWhenLowLightBelowThreshold()
   {
-    assertEquals(Color.RED, new StrictBlackOrWhiteSelector(Color.RED, Color.BLUE).chooseBlackOrWhite(0.4f));
+    assertEquals(Color.RED, new StrictBlackOrWhiteSelector(0.5f, Color.RED, Color.BLUE).chooseBlackOrWhite(0.4f));
   }
 
   @Test
-  public void shouldReturnWhiteWhenLight()
+  public void shouldReturnBlackWhenHighLightBelowThreshold()
   {
-    assertEquals(Color.WHITE, new StrictBlackOrWhiteSelector(Color.BLACK, Color.WHITE).chooseBlackOrWhite(0.6f));
+    assertEquals(Color.RED, new StrictBlackOrWhiteSelector(0.7f, Color.RED, Color.BLUE).chooseBlackOrWhite(0.6f));
+  }
+
+  @Test
+  public void shouldReturnWhiteWhenHighLightAboveThreshold()
+  {
+    assertEquals(Color.WHITE, new StrictBlackOrWhiteSelector(0.5f, Color.BLACK, Color.WHITE).chooseBlackOrWhite(0.6f));
+  }
+
+  @Test
+  public void shouldReturnWhiteWhenLowLightAboveThreshold()
+  {
+    assertEquals(Color.WHITE, new StrictBlackOrWhiteSelector(0.3f, Color.BLACK, Color.WHITE).chooseBlackOrWhite(0.4f));
   }
 
 }
