@@ -30,7 +30,6 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.IconSupplier;
 import org.skyllias.alomatia.ui.filter.FilterSelector;
 import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
-import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 import org.skyllias.alomatia.ui.save.ImageSaver;
@@ -49,7 +48,7 @@ import org.skyllias.alomatia.ui.save.ImageSaver;
  *  when clicked. */
 
 @SuppressWarnings("serial")
-public class DisplayFrameController implements ClosingFrameListener, FilterableDisplay
+public class DisplayFrameController implements FrameAdaptor.ClosingFrameListener, FilterableDisplay
 {
   private static final String DEFAULT_TITLE = "display.window.title";
   private static final String TITLE_PATTERN = "display.window.title.filtered";
@@ -98,7 +97,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
     frameAdaptor.setMaximized(false);
     frameAdaptor.setVisible(true);
 
-    JDialog optionsDialog = dialogComposer.getDialog(this, filterSelector);
+    JDialog optionsDialog = dialogComposer.getDialog(frameAdaptor.getOwnerFrame(),
+                                                     displayPanel, filterSelector);
     displayPanel.getComponent().addMouseListener(new DisplayPanelClickListener(optionsDialog));
   }
 

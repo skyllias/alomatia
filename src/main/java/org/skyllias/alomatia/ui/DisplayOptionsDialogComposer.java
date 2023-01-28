@@ -3,6 +3,7 @@ package org.skyllias.alomatia.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
@@ -21,6 +22,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.skyllias.alomatia.display.ResizableDisplay;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.DisplayOptionsPreferences;
 import org.skyllias.alomatia.ui.filter.FilterSelector;
@@ -66,14 +68,14 @@ public class DisplayOptionsDialogComposer
    *  any subsequent that may be created afterwards, and offers no special
    *  advantage in this case. */
 
-  public JDialog getDialog(DisplayFrameController ownerDisplayFrame,
+  public JDialog getDialog(Frame ownerFrame, ResizableDisplay resizableDisplay,
                            FilterSelector filterSelector)
   {
     boolean showImmediately = displayOptionsPreferences.isDialogShownImmediately();
 
-    JDialog dialog = new JDialog(ownerDisplayFrame.getOwnerFrame(), labelLocalizer.getString(TITLE), false);
+    JDialog dialog = new JDialog(ownerFrame, labelLocalizer.getString(TITLE), false);
 
-    JPanel selectorsPanel = getSelectorsPanel(ownerDisplayFrame, filterSelector);
+    JPanel selectorsPanel = getSelectorsPanel(resizableDisplay, filterSelector);
     JPanel optionsPanel   = getOptionsPanel(selectorsPanel, showImmediately);
     JPanel buttonsPanel   = getButtonsPanel(dialog);
 
@@ -81,7 +83,7 @@ public class DisplayOptionsDialogComposer
     dialog.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 
     dialog.pack();
-    dialog.setLocationRelativeTo(ownerDisplayFrame.getOwnerFrame());
+    dialog.setLocationRelativeTo(ownerFrame);
     dialog.setResizable(false);
     dialog.setVisible(showImmediately);                                         // do this after setLocationRelativeTo, or the dialog will be left in the upper left corner
 
@@ -92,10 +94,10 @@ public class DisplayOptionsDialogComposer
 
   /* Returns a panel containing the filter selector and a zoom selector. */
 
-  private JPanel getSelectorsPanel(DisplayFrameController ownerDisplayFrame,
+  private JPanel getSelectorsPanel(ResizableDisplay resizableDisplay,
                                    FilterSelector filterSelector)
   {
-    JComponent zoomPanel = zoomSelectorComposer.getComponent(ownerDisplayFrame.getDisplayPanel());
+    JComponent zoomPanel = zoomSelectorComposer.getComponent(resizableDisplay);
 
     JPanel selectorsPanel     = new JPanel();
     JScrollPane filtersScroll = new JScrollPane(filterSelector.getComponent());
