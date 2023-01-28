@@ -15,8 +15,8 @@ import javax.swing.text.Document;
 
 import org.apache.commons.lang.StringUtils;
 import org.skyllias.alomatia.display.FilterableDisplay;
-import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.NamedFilter;
+import org.skyllias.alomatia.filter.factory.FilterFactory;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.BarePanelComposer;
 import org.skyllias.alomatia.ui.RadioSelector;

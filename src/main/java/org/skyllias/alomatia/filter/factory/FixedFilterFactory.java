@@ -1,11 +1,12 @@
 
-package org.skyllias.alomatia.filter;
+package org.skyllias.alomatia.filter.factory;
 
 import java.awt.Color;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.filter.affine.AffineFilterFactory;
 import org.skyllias.alomatia.filter.buffered.diffusion.DiffusionFilterFactory;
 import org.skyllias.alomatia.filter.buffered.distortion.DistortingFilterFactory;
