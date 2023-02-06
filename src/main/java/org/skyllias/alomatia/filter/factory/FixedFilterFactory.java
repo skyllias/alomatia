@@ -30,7 +30,7 @@ import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.convolve.emboss.EmbossFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.LmsFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.XyzFilterFactory;
-import org.skyllias.alomatia.filter.hsb.HsbFilterFactory;
+import org.skyllias.alomatia.filter.hsb.factory.HsbFilterFactory;
 import org.skyllias.alomatia.filter.hsb.function.CosineHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.FlatStepHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.MultiplyingHueFactor;
