@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.filter.affine.AffineFilterFactory;
 import org.skyllias.alomatia.filter.buffered.diffusion.DiffusionFilterFactory;
-import org.skyllias.alomatia.filter.buffered.distortion.DistortingFilterFactory;
+import org.skyllias.alomatia.filter.buffered.distortion.factory.DistortingFilterFactory;
 import org.skyllias.alomatia.filter.buffered.hdr.naive.NaiveHdrFilterFactory;
 import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
