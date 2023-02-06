@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.source;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import javax.swing.JRadioButton;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.SourcePreferences;
-import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
-import org.skyllias.alomatia.ui.source.SourceSelection;
-import org.skyllias.alomatia.ui.source.SourceSelectionComposer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
+import org.skyllias.alomatia.ui.radio.RadioSelector;
+import org.skyllias.alomatia.ui.radio.RadioSelector.RadioSelectorListener;
 import org.springframework.stereotype.Component;
 
 /** Composer of a panel with the controls to select an {@link ImageSource}. */
@@ -33,8 +33,7 @@ public class SourceSelectorComposer
 
 //==============================================================================
 
-  /** Creates a new selector to choose from the known types in the catalogue.
-   *  The unknown types are ignored, and the missing known types are gently skipped. */
+  /** Creates a new selector to choose from the available sources. */
 
   public SourceSelectorComposer(List<SourceSelectionComposer> sourceSelectionComposers,
                                 LabelLocalizer localizer,

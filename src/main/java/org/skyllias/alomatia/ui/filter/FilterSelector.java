@@ -5,7 +5,7 @@ import javax.swing.JComponent;
 import javax.swing.JRadioButton;
 
 import org.skyllias.alomatia.filter.NamedFilter;
-import org.skyllias.alomatia.ui.RadioSelector;
+import org.skyllias.alomatia.ui.radio.RadioSelector;
 
 /** Wrapper of a UI component that allows the selection of filters. */
 

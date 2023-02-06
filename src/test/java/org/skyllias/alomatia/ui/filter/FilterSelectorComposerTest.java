@@ -35,7 +35,7 @@ import org.skyllias.alomatia.filter.factory.FilterFactory;
 import org.skyllias.alomatia.filter.rgb.BrighterConverter;
 import org.skyllias.alomatia.filter.rgb.DarkerConverter;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.ui.BarePanelComposer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FilterSelectorComposerTest

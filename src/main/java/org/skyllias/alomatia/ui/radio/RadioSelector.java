@@ -1,5 +1,5 @@
 
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.radio;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

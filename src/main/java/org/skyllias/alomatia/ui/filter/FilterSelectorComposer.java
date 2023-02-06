@@ -18,9 +18,9 @@ import org.skyllias.alomatia.display.FilterableDisplay;
 import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.filter.factory.FilterFactory;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.ui.BarePanelComposer;
-import org.skyllias.alomatia.ui.RadioSelector;
-import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
+import org.skyllias.alomatia.ui.radio.RadioSelector;
+import org.skyllias.alomatia.ui.radio.RadioSelector.RadioSelectorListener;
 
 /** Composer of a selector of the filter to apply in a {@link FilterableDisplay}. */
 

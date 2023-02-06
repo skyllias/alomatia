@@ -7,10 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.skyllias.alomatia.ui.LanguagePanelComposer;
-import org.skyllias.alomatia.ui.SourceSelectorComposer;
 import org.skyllias.alomatia.ui.WindowControlPanelComposer;
 import org.skyllias.alomatia.ui.save.FileImageSaver;
 import org.skyllias.alomatia.ui.save.SaveFilePanelComposer;
+import org.skyllias.alomatia.ui.source.SourceSelectorComposer;
 import org.springframework.stereotype.Component;
 
 /** Composer of the container for the visual controls to choose the options.

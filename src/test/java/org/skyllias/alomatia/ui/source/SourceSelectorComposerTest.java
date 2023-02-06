@@ -1,4 +1,4 @@
-package org.skyllias.alomatia.ui;
+package org.skyllias.alomatia.ui.source;
 
 import static org.assertj.swing.fixture.Containers.showInFrame;
 import static org.mockito.Mockito.mock;
@@ -28,8 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 import org.skyllias.alomatia.preferences.SourcePreferences;
-import org.skyllias.alomatia.ui.source.SourceSelection;
-import org.skyllias.alomatia.ui.source.SourceSelectionComposer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SourceSelectorComposerTest
@@ -115,7 +114,6 @@ public class SourceSelectorComposerTest
   {
     Map<String, ImageSource> sourcesByKey = setUp(null, 3);
 
-    List<ImageSource> sources = new LinkedList<>(sourcesByKey.values());
     verify(sourcesByKey.get("source0")).setActive(true);
     verify(sourcesByKey.get("source1"), never()).setActive(true);
     verify(sourcesByKey.get("source2"), never()).setActive(true);
