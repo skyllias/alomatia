@@ -1,10 +1,11 @@
 
-package org.skyllias.alomatia.filter;
+package org.skyllias.alomatia.filter.factory;
 
 import java.awt.image.ImageFilter;
 import java.util.Collection;
 
 import org.skyllias.alomatia.display.FilterableDisplay;
+import org.skyllias.alomatia.filter.NamedFilter;
 
 /** Provider of instances of {@link NamedFilter} appliable to a {@link FilterableDisplay}.
  *  <p>

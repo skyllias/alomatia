@@ -18,7 +18,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.SavePreferences;
-import org.skyllias.alomatia.ui.BarePanelComposer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 import org.skyllias.alomatia.ui.component.BorderedLabel;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.springframework.stereotype.Component;

@@ -1,11 +1,25 @@
 
-package org.skyllias.alomatia.filter.hsb;
+package org.skyllias.alomatia.filter.hsb.factory;
 
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.ColourFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.factor.ComposedUnitFactor;
+import org.skyllias.alomatia.filter.hsb.BrightnessConverter;
+import org.skyllias.alomatia.filter.hsb.BrightnessDependingHueConverter;
+import org.skyllias.alomatia.filter.hsb.BrightnessPosterizerConverter;
+import org.skyllias.alomatia.filter.hsb.ContrastConverter;
+import org.skyllias.alomatia.filter.hsb.FixedHueConverter;
+import org.skyllias.alomatia.filter.hsb.HsbColourConverter;
+import org.skyllias.alomatia.filter.hsb.HsbConverter;
+import org.skyllias.alomatia.filter.hsb.HueDependingBrightnessConverter;
+import org.skyllias.alomatia.filter.hsb.HueDependingSaturationFactorConverter;
+import org.skyllias.alomatia.filter.hsb.HuePosterizerConverter;
+import org.skyllias.alomatia.filter.hsb.HueReverserConverter;
+import org.skyllias.alomatia.filter.hsb.HueShiftConverter;
+import org.skyllias.alomatia.filter.hsb.SaturationConverter;
+import org.skyllias.alomatia.filter.hsb.SaturationPosterizerConverter;
 import org.skyllias.alomatia.filter.hsb.function.FangHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.HueFunction;
 import org.skyllias.alomatia.filter.hsb.pole.Attraction;

@@ -21,7 +21,9 @@ import org.skyllias.alomatia.display.DisplayFitPolicy;
 import org.skyllias.alomatia.display.ResizableDisplay;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.ZoomPreferences;
-import org.skyllias.alomatia.ui.RadioSelector.RadioSelectorListener;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
+import org.skyllias.alomatia.ui.radio.RadioSelector;
+import org.skyllias.alomatia.ui.radio.RadioSelector.RadioSelectorListener;
 import org.springframework.stereotype.Component;
 
 /** Composer of a panel with controls to change the zoom of some {@link ResizableDisplay}.

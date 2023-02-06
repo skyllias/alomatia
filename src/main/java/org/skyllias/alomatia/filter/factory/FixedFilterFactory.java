@@ -1,14 +1,15 @@
 
-package org.skyllias.alomatia.filter;
+package org.skyllias.alomatia.filter.factory;
 
 import java.awt.Color;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.skyllias.alomatia.filter.NamedFilter;
 import org.skyllias.alomatia.filter.affine.AffineFilterFactory;
 import org.skyllias.alomatia.filter.buffered.diffusion.DiffusionFilterFactory;
-import org.skyllias.alomatia.filter.buffered.distortion.DistortingFilterFactory;
+import org.skyllias.alomatia.filter.buffered.distortion.factory.DistortingFilterFactory;
 import org.skyllias.alomatia.filter.buffered.hdr.naive.NaiveHdrFilterFactory;
 import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
@@ -29,7 +30,7 @@ import org.skyllias.alomatia.filter.convolve.SquareBlurLineProfile;
 import org.skyllias.alomatia.filter.convolve.emboss.EmbossFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.LmsFilterFactory;
 import org.skyllias.alomatia.filter.daltonism.XyzFilterFactory;
-import org.skyllias.alomatia.filter.hsb.HsbFilterFactory;
+import org.skyllias.alomatia.filter.hsb.factory.HsbFilterFactory;
 import org.skyllias.alomatia.filter.hsb.function.CosineHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.FlatStepHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.MultiplyingHueFactor;

@@ -30,12 +30,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.display.FilterableDisplay;
 import org.skyllias.alomatia.filter.ColourFilter;
-import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.NamedFilter;
+import org.skyllias.alomatia.filter.factory.FilterFactory;
 import org.skyllias.alomatia.filter.rgb.BrighterConverter;
 import org.skyllias.alomatia.filter.rgb.DarkerConverter;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.ui.BarePanelComposer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FilterSelectorComposerTest
