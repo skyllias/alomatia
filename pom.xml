@@ -50,10 +50,10 @@
     <!-- UI -->
 
     <dependency>
-      <groupId>com.jtattoo</groupId>
-      <artifactId>JTattoo</artifactId>
-      <version>1.6.11</version>
-    </dependency>    
+      <groupId>com.formdev</groupId>
+      <artifactId>flatlaf</artifactId>
+      <version>3.1.1</version>
+    </dependency>
 
     <!-- test -->
 
