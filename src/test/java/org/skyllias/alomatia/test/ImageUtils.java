@@ -1,14 +1,28 @@
 
 package org.skyllias.alomatia.test;
 
+import static java.util.stream.Collectors.joining;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.stream.IntStream;
 
 /** Helper class with methods to tell whether two images are equal. */
 
 public class ImageUtils
 {
 //==============================================================================
+
+  public static String toString(BufferedImage image)
+  {
+    return IntStream.range(0, image.getHeight())
+              .mapToObj(y -> IntStream.range(0, image.getWidth())
+                  .map(x -> image.getRGB(x, y))
+                  .mapToObj(Color::new)
+                  .map(Color::toString)
+                  .collect(joining("\t")))
+              .collect(joining("\n"));
+  }
 
   public static boolean areEqual(BufferedImage image1, BufferedImage image2)
   {

@@ -1,5 +1,8 @@
 
-package org.skyllias.alomatia.filter.convolve;
+package org.skyllias.alomatia.filter.convolve.emboss;
+
+import org.skyllias.alomatia.filter.convolve.EdgeDetectingKernelDataFactory;
+import org.skyllias.alomatia.filter.convolve.KernelDataFactory;
 
 /** {@link KernelDataFactory} that prepares an embossed surface illuminated from
  *  the top left corner.
