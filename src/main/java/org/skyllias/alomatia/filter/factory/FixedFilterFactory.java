@@ -38,6 +38,7 @@ import org.skyllias.alomatia.filter.hsb.function.PitStepHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.PositiveFilteringHueFunction;
 import org.skyllias.alomatia.filter.hsb.pole.DistantAttraction;
 import org.skyllias.alomatia.filter.hsb.pole.LinearRepulsion;
+import org.skyllias.alomatia.filter.operator.OperatorFilterFactory;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 import org.skyllias.alomatia.filter.rgb.lookup.ChannelLookupFilterFactory;
 import org.springframework.stereotype.Component;
@@ -202,6 +203,10 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MOTION_L90_FILTER_KEY    = "filter.blur.motion.fast.vertical";
   private static final String MOTION_L45_FILTER_KEY    = "filter.blur.motion.fast.oblique";
   private static final String SHARPEN_FILTER_KEY       = "filter.blur.sharpen";
+  private static final String OPER_SOBEL_FILTER_KEY    = "filter.convolve.edgedetection.operator.sobel";
+  private static final String OPER_SCHARR_FILTER_KEY   = "filter.convolve.edgedetection.operator.scharr";
+  private static final String OPER_PREWITT_FILTER_KEY  = "filter.convolve.edgedetection.operator.prewitt";
+  private static final String OPER_ROB_X_FILTER_KEY    = "filter.convolve.edgedetection.operator.robertscross";
   private static final String EDGEDETECT_FILTER_KEY    = "filter.convolve.edgedetection.standard";
   private static final String THICKEDGES_FILTER_KEY    = "filter.convolve.edgedetection.thick.s";
   private static final String THICKEDGEM_FILTER_KEY    = "filter.convolve.edgedetection.thick.m";
@@ -505,6 +510,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, 0, new SquareBlurLineProfile())),           MOTION_L0_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 4, new SquareBlurLineProfile())), MOTION_L45_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(30, Math.PI / 2, new SquareBlurLineProfile())), MOTION_L90_FILTER_KEY));
+
+    filters.add(new NamedFilter(OperatorFilterFactory.forSobel(),        OPER_SOBEL_FILTER_KEY));
+    filters.add(new NamedFilter(OperatorFilterFactory.forScharr(),       OPER_SCHARR_FILTER_KEY));
+    filters.add(new NamedFilter(OperatorFilterFactory.forPrewitt(),      OPER_PREWITT_FILTER_KEY));
+    filters.add(new NamedFilter(OperatorFilterFactory.forRobertsCross(), OPER_ROB_X_FILTER_KEY));
 
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                 EDGEDETECT_FILTER_KEY));
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f),             THICKEDGES_FILTER_KEY));
