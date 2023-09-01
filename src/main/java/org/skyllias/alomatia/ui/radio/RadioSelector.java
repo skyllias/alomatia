@@ -3,8 +3,10 @@ package org.skyllias.alomatia.ui.radio;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
@@ -166,6 +168,33 @@ public class RadioSelector<RADIO extends AbstractButton, SELECTABLE> implements 
       AbstractButton selectedRadio             = null;
       int currentIndex                         = 0;
       while (radioButtons.hasMoreElements() && currentIndex++ <= index) selectedRadio = radioButtons.nextElement();
+      if (selectedRadio != null) selectedRadio.doClick();
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Changes the selection to the radio at a position equal to the currently
+   *  selected plus increment. Increment can be any positive or negative number
+   *  (zero is possible but does not make much sense). If the resulting index is
+   *  below zero or above the amount of radios, the selection cycles.
+   *  <p>
+   *  If the selection changes, this will end up firing {@link #onSelectionChanged(SELECTABLE)}. */
+
+  public void setSelectionByIndexIncrement(int increment)
+  {
+    if (commandObjects.size() > 0)
+    {
+      List<String> actionCommands = new ArrayList<>(commandObjects.keySet());
+
+      String currentActionCommand = radioGroup.getSelection().getActionCommand();
+      int currentSelectionIndex   = Math.max(0, actionCommands.indexOf(currentActionCommand));
+
+      int finalSelectionIndex      = Math.floorMod(currentSelectionIndex + increment,
+                                                   actionCommands.size());
+      String selectedActionCommand = actionCommands.get(finalSelectionIndex);
+      AbstractButton selectedRadio = objectRadios.get(commandObjects.get(selectedActionCommand));
+
       if (selectedRadio != null) selectedRadio.doClick();
     }
   }
