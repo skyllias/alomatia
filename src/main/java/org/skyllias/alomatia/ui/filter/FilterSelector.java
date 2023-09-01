@@ -42,4 +42,14 @@ public class FilterSelector
 
 //------------------------------------------------------------------------------
 
+  /** Changes the selection to the named filter at a position equal to the
+   *  currently selected one plus increment, considering index cycles. */
+
+  public void incrementSelectedIndex(int increment)
+  {
+    radioSelector.setSelectionByIndexIncrement(increment);
+  }
+
+//------------------------------------------------------------------------------
+
 }

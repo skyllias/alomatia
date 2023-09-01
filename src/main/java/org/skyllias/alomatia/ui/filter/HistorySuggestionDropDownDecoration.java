@@ -145,7 +145,7 @@ public class HistorySuggestionDropDownDecoration
             if      (e.getKeyCode() == KeyEvent.VK_ENTER)  selectFromList(e);
             else if (e.getKeyCode() == KeyEvent.VK_UP)     moveUp(e);
             else if (e.getKeyCode() == KeyEvent.VK_DOWN)   moveDown(e);
-            else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) popupMenu.setVisible(false);
+            else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) close(e);
         }
     });
   }
@@ -181,6 +181,17 @@ public class HistorySuggestionDropDownDecoration
         listComponent.setSelectedIndex(selectedIndex - 1);
         e.consume();
       }
+    }
+  }
+
+//------------------------------------------------------------------------------
+
+  private void close(KeyEvent e)
+  {
+    if (popupMenu.isVisible())
+    {
+      popupMenu.setVisible(false);
+      e.consume();
     }
   }
 
