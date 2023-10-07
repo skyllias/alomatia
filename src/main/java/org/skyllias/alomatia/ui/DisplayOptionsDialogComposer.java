@@ -2,6 +2,7 @@
 package org.skyllias.alomatia.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -100,11 +101,16 @@ public class DisplayOptionsDialogComposer
     JComponent zoomPanel = zoomSelectorComposer.getComponent(resizableDisplay);
 
     JPanel selectorsPanel     = new JPanel();
-    JScrollPane filtersScroll = new JScrollPane(filterSelector.getComponent());
+    JComponent filterPanel    = filterSelector.getComponent();
+    JScrollPane filtersScroll = new JScrollPane(filterPanel);
     filtersScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    filtersScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    filtersScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     filtersScroll.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT);
-    filtersScroll.setPreferredSize(zoomPanel.getPreferredSize());
+
+    Dimension scrollPaneSize = new Dimension(filtersScroll.getPreferredSize().width,
+                                             zoomPanel.getPreferredSize().height);
+    filtersScroll.setPreferredSize(scrollPaneSize);
+
     selectorsPanel.add(filtersScroll);
     selectorsPanel.add(zoomPanel);
 
