@@ -31,6 +31,7 @@ import org.skyllias.alomatia.display.DisplayFitPolicy;
 import org.skyllias.alomatia.display.ResizableDisplay;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 import org.skyllias.alomatia.preferences.ZoomPreferences;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ZoomSelectorComposerTest

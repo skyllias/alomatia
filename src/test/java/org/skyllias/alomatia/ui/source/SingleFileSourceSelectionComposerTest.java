@@ -28,6 +28,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 import org.skyllias.alomatia.source.SingleFileSource;
+import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SingleFileSourceSelectionComposerTest
@@ -35,7 +36,7 @@ public class SingleFileSourceSelectionComposerTest
   @Mock
   private SingleFileSource singleFileSource;
   @Mock
-  private JFileChooser fileChooser;
+  private FileChooserAdapter fileChooserAdapter;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 
@@ -83,7 +84,7 @@ public class SingleFileSourceSelectionComposerTest
     getPathField().requireEmpty();
     getSelectButton().requireDisabled();
 
-    verify(fileChooser, never()).setSelectedFile(any());
+    verify(fileChooserAdapter, never()).setSelectedFile(any());
   }
 
   @Test
@@ -96,7 +97,7 @@ public class SingleFileSourceSelectionComposerTest
     getPathField().requireText("/full/path/file.png");
     getSelectButton().requireDisabled();
 
-    verify(fileChooser).setSelectedFile(new File("/full/path/file.png"));
+    verify(fileChooserAdapter).setSelectedFile(new File("/full/path/file.png"));
   }
 
   @Test
@@ -115,7 +116,7 @@ public class SingleFileSourceSelectionComposerTest
   public void shouldDoNothingWhenNoFileSelected()
   {
     when(singleFileSource.getSourceFile()).thenReturn(Optional.empty());
-    when(fileChooser.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
+    when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
     SourceSelection sourceSelection = setUpUi();
 
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
@@ -132,8 +133,8 @@ public class SingleFileSourceSelectionComposerTest
   public void shouldSetFileWhenFileSelected()
   {
     when(singleFileSource.getSourceFile()).thenReturn(Optional.empty());
-    when(fileChooser.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
-    when(fileChooser.getSelectedFile()).thenReturn(new File("/full/path/file.png"));
+    when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
+    when(fileChooserAdapter.getSelectedFile()).thenReturn(new File("/full/path/file.png"));
     SourceSelection sourceSelection = setUpUi();
 
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));

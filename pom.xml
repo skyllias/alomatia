@@ -4,7 +4,7 @@
 
   <groupId>org.skyllias</groupId>
   <artifactId>alomatia</artifactId>
-  <version>0.11.2</version>
+  <version>0.11.3</version>
   <packaging>jar</packaging>
 
   <name>alomatia</name>
@@ -14,7 +14,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <spring.version>5.3.21</spring.version>
+    <spring.version>5.3.27</spring.version>
   </properties>
 
   <dependencies>
@@ -50,10 +50,10 @@
     <!-- UI -->
 
     <dependency>
-      <groupId>com.jtattoo</groupId>
-      <artifactId>JTattoo</artifactId>
-      <version>1.6.11</version>
-    </dependency>    
+      <groupId>com.formdev</groupId>
+      <artifactId>flatlaf</artifactId>
+      <version>3.1.1</version>
+    </dependency>
 
     <!-- test -->
 

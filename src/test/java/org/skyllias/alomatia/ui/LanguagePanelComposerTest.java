@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 public class LanguagePanelComposerTest
 {

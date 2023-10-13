@@ -33,6 +33,7 @@ import org.skyllias.alomatia.preferences.FramePolicyPreferences;
 import org.skyllias.alomatia.preferences.WindowControlPreferences;
 import org.skyllias.alomatia.ui.DisplayFrameController.DisplayFrameCloseListener;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 import org.skyllias.alomatia.ui.component.BorderedLabel;
 
 /** Composer of panels to manage display frames: Create, count and rearrange them.

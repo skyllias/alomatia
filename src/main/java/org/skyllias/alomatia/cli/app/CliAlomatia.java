@@ -4,7 +4,7 @@ package org.skyllias.alomatia.cli.app;
 import org.skyllias.alomatia.cli.FilterCommand;
 import org.skyllias.alomatia.cli.exception.CliException;
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
-import org.skyllias.alomatia.filter.FixedFilterFactory;
+import org.skyllias.alomatia.filter.factory.FixedFilterFactory;
 import org.skyllias.alomatia.save.FileSaver;
 
 /** Application that executes a filter command.

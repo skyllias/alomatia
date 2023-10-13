@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 import org.skyllias.alomatia.preferences.SavePreferences;
-import org.skyllias.alomatia.ui.BarePanelComposer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 /* The destination dir changes cannot be tested because they involve a JFileChooser. */
 

@@ -57,7 +57,6 @@ public class DisplayOptionsDialogComposerTest
 
   private JDialog setUpUi()
   {
-    DisplayFrameController ownerDisplayFrame      = mock(DisplayFrameController.class);
     FilterSelector filterSelector                 = mock(FilterSelector.class);
     DisplayPanelController displayPanelController = mock(DisplayPanelController.class);
 
@@ -66,12 +65,10 @@ public class DisplayOptionsDialogComposerTest
       @Override
       public JDialog call() throws Exception
       {
-        when(ownerDisplayFrame.getOwnerFrame()).thenReturn(new Frame());
-        when(ownerDisplayFrame.getDisplayPanel()).thenReturn(displayPanelController);
         when(zoomSelectorComposer.getComponent(displayPanelController)).thenReturn(new JPanel());
         when(filterSelector.getComponent()).thenReturn(new JPanel());
 
-        return displayOptionsDialogComposer.getDialog(ownerDisplayFrame, filterSelector);
+        return displayOptionsDialogComposer.getDialog(new Frame(), displayPanelController, filterSelector);
       }
     });
     dialogFixture = new DialogFixture(optionsDialog);

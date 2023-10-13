@@ -14,9 +14,9 @@ import org.skyllias.alomatia.cli.exception.FilterNotFoundException;
 import org.skyllias.alomatia.cli.exception.InputFileException;
 import org.skyllias.alomatia.cli.exception.OutputFileException;
 import org.skyllias.alomatia.cli.exception.WrongParametersException;
-import org.skyllias.alomatia.filter.FilterFactory;
 import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.NamedFilter;
+import org.skyllias.alomatia.filter.factory.FilterFactory;
 import org.skyllias.alomatia.save.FileSaver;
 
 /** Command used by a CLI to apply one filter to an image from a file and save

@@ -7,7 +7,6 @@ import java.awt.image.RescaleOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.convolve.EdgeConvolvingComposedFilter;
-import org.skyllias.alomatia.filter.convolve.EmbossKernelDataFactory;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** Composition of filters that produce an embossing effect on pictures.

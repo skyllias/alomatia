@@ -21,6 +21,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 import org.skyllias.alomatia.ui.component.BorderedLabel;
 
 /** Composer of a panel to display the current language and to select the next one. */

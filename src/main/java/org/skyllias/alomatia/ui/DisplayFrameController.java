@@ -17,6 +17,8 @@ import java.awt.image.ImageFilter;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
@@ -30,7 +32,6 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.IconSupplier;
 import org.skyllias.alomatia.ui.filter.FilterSelector;
 import org.skyllias.alomatia.ui.filter.FilterSelectorComposer;
-import org.skyllias.alomatia.ui.frame.ClosingFrameListener;
 import org.skyllias.alomatia.ui.frame.FrameAdaptor;
 import org.skyllias.alomatia.ui.frame.FrameAdaptorFactory;
 import org.skyllias.alomatia.ui.save.ImageSaver;
@@ -49,7 +50,7 @@ import org.skyllias.alomatia.ui.save.ImageSaver;
  *  when clicked. */
 
 @SuppressWarnings("serial")
-public class DisplayFrameController implements ClosingFrameListener, FilterableDisplay
+public class DisplayFrameController implements FrameAdaptor.ClosingFrameListener, FilterableDisplay
 {
   private static final String DEFAULT_TITLE = "display.window.title";
   private static final String TITLE_PATTERN = "display.window.title.filtered";
@@ -98,7 +99,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
     frameAdaptor.setMaximized(false);
     frameAdaptor.setVisible(true);
 
-    JDialog optionsDialog = dialogComposer.getDialog(this, filterSelector);
+    JDialog optionsDialog = dialogComposer.getDialog(frameAdaptor.getOwnerFrame(),
+                                                     displayPanel, filterSelector);
     displayPanel.getComponent().addMouseListener(new DisplayPanelClickListener(optionsDialog));
   }
 
@@ -182,6 +184,9 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
     setUpNumberKeyListeners(filterSelector, 10, KeyEvent.SHIFT_DOWN_MASK);
     setUpNumberKeyListeners(filterSelector, 20, KeyEvent.ALT_DOWN_MASK);
     setUpNumberKeyListeners(filterSelector, 30, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK);
+
+    setUpArrowKeyListeners(filterSelector);
+    setUpArrowKeyAllListeners(filterSelector);
   }
 
 //------------------------------------------------------------------------------
@@ -206,6 +211,94 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
         public void actionPerformed(ActionEvent event) {filterSelector.selectFilterAt(index);}  // same as applyFilterAt(index)
       });
     }
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Modifies the frame's input and action maps so that the arrow keys can be
+   * used to change the selected filter. */
+
+  private void setUpArrowKeyListeners(final FilterSelector filterSelector)
+  {
+    setUpArrowKeyListener(filterSelector, "previousFilterSelector",
+                          getKeyEventWithControl(KeyEvent.VK_LEFT), -1);
+    setUpArrowKeyListener(filterSelector, "previousManyFilterSelector",
+                          getKeyEventWithControl(KeyEvent.VK_UP), -10);
+    setUpArrowKeyListener(filterSelector, "nextFilterSelector",
+                          getKeyEventWithControl(KeyEvent.VK_RIGHT), 1);
+    setUpArrowKeyListener(filterSelector, "nextManyFilterSelector",
+                          getKeyEventWithControl(KeyEvent.VK_DOWN), 10);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Returns the key stroke corresponding to the passed virtual key with the Ctrl modifier. */
+
+  private KeyStroke getKeyEventWithControl(int virtualKey)
+  {
+    return KeyStroke.getKeyStroke(virtualKey,
+                                  EventUtils.getSystemControlModifier());
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Modifies the frame's input and action maps so that the passed key can be
+   * used to change the selected filter by increment. */
+
+  private void setUpArrowKeyListener(final FilterSelector filterSelector,
+                                     String actionName, KeyStroke stroke,
+                                     int increment)
+  {
+    frameAdaptor.getInputMap().put(stroke, actionName);
+    frameAdaptor.getActionMap().put(actionName, new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event) {filterSelector.incrementSelectedIndex(increment);}
+    });
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up the key event handler to navigate over the filter list, no matter where the focus is.
+   * The procedure is different from setUpArrowKeyListeners because that one only
+   * applies when the frame has the focus. */
+
+  private void setUpArrowKeyAllListeners(final FilterSelector filterSelector)
+  {
+    setUpArrowKeyAllListener(filterSelector, KeyEvent.VK_LEFT, -1);
+    setUpArrowKeyAllListener(filterSelector, KeyEvent.VK_UP, -10);
+    setUpArrowKeyAllListener(filterSelector, KeyEvent.VK_RIGHT, 1);
+    setUpArrowKeyAllListener(filterSelector, KeyEvent.VK_DOWN, 10);
+  }
+
+//------------------------------------------------------------------------------
+
+  /* Sets up the key event handler to navigate over the filter list, no matter where the focus is.
+   * The procedure is different from setUpArrowKeyListener because that one only
+   * applies when the frame has the focus.
+   * The listener should be removed when the frame is disposed (onClosingFrame). */
+
+  private void setUpArrowKeyAllListener(final FilterSelector filterSelector,
+                                        int virtualKey, int increment)
+  {
+    KeyEventDispatcher keyEventDispatcher = new KeyEventDispatcher()
+    {
+      @Override
+      public boolean dispatchKeyEvent(KeyEvent e)
+      {
+        if(e.getID() == KeyEvent.KEY_PRESSED && EventUtils.isControlDown(e) && e.isShiftDown())
+        {
+          if (e.getKeyCode() == virtualKey)
+          {
+            filterSelector.incrementSelectedIndex(increment);
+          }
+        }
+        return false;                                                           // allow the event to be redispatched
+      }
+    };
+
+    state.eventDispatchers.add(keyEventDispatcher);
+    getKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
   }
 
 //------------------------------------------------------------------------------
@@ -277,7 +370,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
 
   private void setSaveAllKeyListeners()
   {
-    state.saveAllEventDispatcher = new KeyEventDispatcher()
+    KeyEventDispatcher keyEventDispatcher = new KeyEventDispatcher()
     {
       @Override
       public boolean dispatchKeyEvent(KeyEvent e)
@@ -294,7 +387,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
       }
     };
 
-    getKeyboardFocusManager().addKeyEventDispatcher(state.saveAllEventDispatcher);
+    state.eventDispatchers.add(keyEventDispatcher);
+    getKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
   }
 
 //------------------------------------------------------------------------------
@@ -344,7 +438,8 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   {
     for (DisplayFrameCloseListener currentListener : state.listeners) currentListener.onDisplayFrameClosed(this);
 
-    getKeyboardFocusManager().removeKeyEventDispatcher(state.saveAllEventDispatcher);
+    state.eventDispatchers.forEach(getKeyboardFocusManager()::removeKeyEventDispatcher);
+
     adaptor.dispose();
   }
 
@@ -356,7 +451,7 @@ public class DisplayFrameController implements ClosingFrameListener, FilterableD
   {
     final Collection<DisplayFrameCloseListener> listeners = new HashSet<>();
 
-    KeyEventDispatcher saveAllEventDispatcher;                                  // listener of the key combinations used to save all images, to be removed when the frame is disposed
+    List<KeyEventDispatcher> eventDispatchers = new LinkedList<>();             // listener of the key combinations used to perform actions on the frame wherever the focus is, to be removed when the frame is disposed
     String currentFilterName = "";
   }
 

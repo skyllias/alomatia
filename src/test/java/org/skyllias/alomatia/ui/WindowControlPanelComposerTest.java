@@ -34,6 +34,7 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.preferences.FramePolicyPreferences;
 import org.skyllias.alomatia.preferences.WindowControlPreferences;
 import org.skyllias.alomatia.ui.DisplayFrameManager.DisplayAmountChangeListener;
+import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 public class WindowControlPanelComposerTest
 {

@@ -1,10 +1,15 @@
 
-package org.skyllias.alomatia.filter.buffered.distortion;
+package org.skyllias.alomatia.filter.buffered.distortion.factory;
 
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.buffered.distortion.BilinearInterpolator;
+import org.skyllias.alomatia.filter.buffered.distortion.DistortingBufferedImageOperation;
+import org.skyllias.alomatia.filter.buffered.distortion.Distortion;
+import org.skyllias.alomatia.filter.buffered.distortion.DistortionChain;
+import org.skyllias.alomatia.filter.buffered.distortion.Interpolator;
 import org.skyllias.alomatia.filter.buffered.distortion.radial.MagnifierRadialDistortionProfile;
 import org.skyllias.alomatia.filter.buffered.distortion.radial.RadialDistortion;
 import org.skyllias.alomatia.filter.buffered.distortion.radial.RadialDistortionProfile;

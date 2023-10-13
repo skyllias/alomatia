@@ -10,7 +10,7 @@ import org.skyllias.alomatia.logo.IconSupplier;
 import org.springframework.stereotype.Component;
 
 /** Supplier of the main frame of the application.
- *  Only one frame exists per supplier. */
+ *  Only one such frame is expected per application. */
 
 @Component
 public class MainApplicationFrameSupplier
@@ -20,7 +20,7 @@ public class MainApplicationFrameSupplier
   private final LabelLocalizer labelLocalizer;
   private final IconSupplier iconSupplier;
 
-  private final JFrame mainFrame;
+  private JFrame mainFrame;
 
 //==============================================================================
 
@@ -29,19 +29,22 @@ public class MainApplicationFrameSupplier
   {
     this.labelLocalizer = labelLocalizer;
     this.iconSupplier   = iconSupplier;
-
-    mainFrame = getNewFrame();
   }
 
 //==============================================================================
 
-  public JFrame getMainFrame() {return mainFrame;}
+  public JFrame getMainFrame()
+  {
+    if (mainFrame == null) mainFrame = buildNewFrame();
+
+    return mainFrame;
+  }
 
 //------------------------------------------------------------------------------
 
   /* Returns an invisible frame with a logo and title already set. */
 
-  private JFrame getNewFrame()
+  private JFrame buildNewFrame()
   {
     JFrame frame = new JFrame();
     frame.setTitle(labelLocalizer.getString(DESKTOP_TITLE));

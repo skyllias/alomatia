@@ -5,7 +5,7 @@ import javax.swing.JComponent;
 import javax.swing.JRadioButton;
 
 import org.skyllias.alomatia.filter.NamedFilter;
-import org.skyllias.alomatia.ui.RadioSelector;
+import org.skyllias.alomatia.ui.radio.RadioSelector;
 
 /** Wrapper of a UI component that allows the selection of filters. */
 
@@ -38,6 +38,16 @@ public class FilterSelector
   public void selectFilterAt(int index)
   {
     radioSelector.setSelectionByIndex(index);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Changes the selection to the named filter at a position equal to the
+   *  currently selected one plus increment, considering index cycles. */
+
+  public void incrementSelectedIndex(int increment)
+  {
+    radioSelector.setSelectionByIndexIncrement(increment);
   }
 
 //------------------------------------------------------------------------------

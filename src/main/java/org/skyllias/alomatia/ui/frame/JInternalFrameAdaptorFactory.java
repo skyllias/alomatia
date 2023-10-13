@@ -29,7 +29,7 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 
   private final MainApplicationFrameSupplier mainApplicationFrameSupplier;
 
-  private final JDesktopPane desktopPane;
+  private JDesktopPane desktopPane;
 
 //==============================================================================
 
@@ -37,8 +37,6 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
                                       MainApplicationFrameSupplier mainApplicationFrameSupplier)
   {
     this.mainApplicationFrameSupplier = mainApplicationFrameSupplier;
-
-    desktopPane = createDesktopPane();
   }
 
 //==============================================================================
@@ -56,7 +54,7 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
     jInternalFrame.setSize(DEFAULT_SIZE);
     jInternalFrame.setLocation(getRandomLocation());                            // this prevents all the internal frames from stacking
 
-    desktopPane.add(jInternalFrame);
+    getDesktopPane().add(jInternalFrame);
 
     return new JInternalFrameAdaptor(jInternalFrame);
   }
@@ -68,7 +66,16 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
   @Override
   public Rectangle getRearrengementBounds()
   {
-    return new Rectangle(0, 0, desktopPane.getWidth(), desktopPane.getHeight());
+    return new Rectangle(0, 0, getDesktopPane().getWidth(), getDesktopPane().getHeight());
+  }
+
+//------------------------------------------------------------------------------
+
+  private JDesktopPane getDesktopPane()
+  {
+    if (desktopPane == null) desktopPane = createDesktopPane();
+
+    return desktopPane;
   }
 
 //------------------------------------------------------------------------------
@@ -97,8 +104,8 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 
   private Point getRandomLocation()
   {
-    int maxX = desktopPane.getWidth() - DEFAULT_SIZE.width;
-    int maxY = desktopPane.getHeight() - DEFAULT_SIZE.height;
+    int maxX = getDesktopPane().getWidth() - DEFAULT_SIZE.width;
+    int maxY = getDesktopPane().getHeight() - DEFAULT_SIZE.height;
     if (maxX < 1) maxX = 1;
     if (maxY < 1) maxY = 1;
 
