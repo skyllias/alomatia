@@ -28,6 +28,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
 import org.skyllias.alomatia.source.DirFileSource;
+import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 
 /** TODO find a way to test navigation with keys. */
 
@@ -37,7 +38,7 @@ public class DirFileSourceSelectionComposerTest
   @Mock
   private DirFileSource dirFileSource;
   @Mock
-  private JFileChooser fileChooser;
+  private FileChooserAdapter fileChooserAdapter;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 
@@ -85,7 +86,7 @@ public class DirFileSourceSelectionComposerTest
     getPathField().requireEmpty();
     getSelectButton().requireDisabled();
 
-    verify(fileChooser, never()).setSelectedFile(any());
+    verify(fileChooserAdapter, never()).setSelectedFile(any());
   }
 
   @Test
@@ -98,7 +99,7 @@ public class DirFileSourceSelectionComposerTest
     getPathField().requireText("/full/path");
     getSelectButton().requireDisabled();
 
-    verify(fileChooser).setSelectedFile(new File("/full/path"));
+    verify(fileChooserAdapter).setSelectedFile(new File("/full/path"));
   }
 
   @Test
@@ -117,7 +118,7 @@ public class DirFileSourceSelectionComposerTest
   public void shouldDoNothingWhenNoDirSelected()
   {
     when(dirFileSource.getCurrentDir()).thenReturn(Optional.empty());
-    when(fileChooser.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
+    when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
     SourceSelection sourceSelection = setUpUi();
 
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
@@ -134,8 +135,8 @@ public class DirFileSourceSelectionComposerTest
   public void shouldSetFileWhenFileSelected()
   {
     when(dirFileSource.getCurrentDir()).thenReturn(Optional.empty());
-    when(fileChooser.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
-    when(fileChooser.getSelectedFile()).thenReturn(new File("/full/path"));
+    when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
+    when(fileChooserAdapter.getSelectedFile()).thenReturn(new File("/full/path"));
     SourceSelection sourceSelection = setUpUi();
 
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));

@@ -15,6 +15,7 @@ import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
+import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -33,18 +34,18 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
   protected static final String BUTTON_NAME      = "select-button";
 
   private final SingleFileSource singleFileSource;
-  private final JFileChooser fileChooser;
+  private final FileChooserAdapter fileChooserAdapter;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public SingleFileSourceSelectionComposer(SingleFileSource singleFileSource,
-                                           @Qualifier("singleFileChooser") JFileChooser fileChooser,
+                                           @Qualifier("singleFileChooser") FileChooserAdapter fileChooserAdapter,
                                            LabelLocalizer labelLocalizer)
   {
-    this.singleFileSource = singleFileSource;
-    this.fileChooser      = fileChooser;
-    this.labelLocalizer   = labelLocalizer;
+    this.singleFileSource   = singleFileSource;
+    this.fileChooserAdapter = fileChooserAdapter;
+    this.labelLocalizer     = labelLocalizer;
   }
 
 //==============================================================================
@@ -101,7 +102,7 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
     private JButton buildSelectionButton(final PathTextField pathField)
     {
       singleFileSource.getSourceFile()
-                      .ifPresent(fileChooser::setSelectedFile);
+                      .ifPresent(fileChooserAdapter::setSelectedFile);
 
       JButton fileButton = new JButton(labelLocalizer.getString(SELECT_BUTTON_LABEL));
       fileButton.setEnabled(false);
@@ -110,9 +111,9 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
         @Override
         public void actionPerformed(ActionEvent e)
         {
-          if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+          if (fileChooserAdapter.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
           {
-            File selectedFile   = fileChooser.getSelectedFile();
+            File selectedFile   = fileChooserAdapter.getSelectedFile();
             String selectedPath = selectedFile.getAbsolutePath();
             singleFileSource.setFileSource(selectedFile);
             pathField.setText(selectedPath);
