@@ -18,6 +18,7 @@ import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
+import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -36,18 +37,18 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
   protected static final String BUTTON_NAME      = "select-button";
 
   private final DirFileSource dirFileSource;
-  private final JFileChooser fileChooser;
+  private final FileChooserAdapter fileChooserAdapter;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public DirFileSourceSelectionComposer(DirFileSource dirFileSource,
-                                        @Qualifier("dirFileChooser") JFileChooser fileChooser,
+                                        @Qualifier("dirFileChooser") FileChooserAdapter fileChooserAdapter,
                                         LabelLocalizer labelLocalizer)
   {
-    this.dirFileSource  = dirFileSource;
-    this.fileChooser    = fileChooser;
-    this.labelLocalizer = labelLocalizer;
+    this.dirFileSource      = dirFileSource;
+    this.fileChooserAdapter = fileChooserAdapter;
+    this.labelLocalizer     = labelLocalizer;
 
     addNavigationKeyListener();
   }
@@ -137,7 +138,7 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
     private JButton buildSelectionButton(final PathTextField pathField)
     {
       dirFileSource.getCurrentDir()
-                    .ifPresent(fileChooser::setSelectedFile);
+                    .ifPresent(fileChooserAdapter::setSelectedFile);
 
       JButton fileButton = new JButton(labelLocalizer.getString(SELECT_BUTTON_LABEL));
       fileButton.setEnabled(false);
@@ -146,9 +147,9 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
         @Override
         public void actionPerformed(ActionEvent e)
         {
-          if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+          if (fileChooserAdapter.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
           {
-            File selectedFile   = fileChooser.getSelectedFile();
+            File selectedFile   = fileChooserAdapter.getSelectedFile();
             String selectedPath = selectedFile.getAbsolutePath();
             dirFileSource.setFileSource(selectedFile);
             pathField.setText(selectedPath);
