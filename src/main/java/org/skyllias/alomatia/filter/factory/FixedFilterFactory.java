@@ -107,6 +107,15 @@ public class FixedFilterFactory implements FilterFactory
   private static final String NEGATIVE_FILTER_KEY      = "filter.rgb.invert";
   private static final String STREAK_BLACK_FILTER_KEY  = "filter.layered.streak.black";
   private static final String STREAK_WHITE_FILTER_KEY  = "filter.layered.streak.white";
+  private static final String VAPOUR_R_FILTER_KEY      = "filter.layered.vapour.red";
+  private static final String VAPOUR_G_FILTER_KEY      = "filter.layered.vapour.green";
+  private static final String VAPOUR_B_FILTER_KEY      = "filter.layered.vapour.blue";
+  private static final String VAPOUR_SKIN_FILTER_KEY   = "filter.layered.vapour.skin";
+  private static final String VAPOUR_LEAF_FILTER_KEY   = "filter.layered.vapour.leaf";
+  private static final String VAPOUR_SEA_FILTER_KEY    = "filter.layered.vapour.sea";
+  private static final String VAPOUR_SKY_FILTER_KEY    = "filter.layered.vapour.sky";
+  private static final String VAPOUR_BLACK_FILTER_KEY  = "filter.layered.vapour.black";
+  private static final String VAPOUR_WHITE_FILTER_KEY  = "filter.layered.vapour.white";
   private static final String DEC_SAT_XL_FILTER_KEY    = "filter.hsb.saturation-xl";
   private static final String DEC_SAT_L_FILTER_KEY     = "filter.hsb.saturation-l";
   private static final String DEC_SAT_M_FILTER_KEY     = "filter.hsb.saturation-m";
@@ -430,6 +439,16 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(255, 0, 0), new Color(255, 255, 255)),       TRITONE_NRW_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 255)),       TRITONE_NGW_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 255)),       TRITONE_NBW_FILTER_KEY));
+
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.RED, 200),                VAPOUR_R_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.GREEN, 200),              VAPOUR_G_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.BLUE, 200),               VAPOUR_B_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(235, 175, 145), 200), VAPOUR_SKIN_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(20, 150, 35), 200),   VAPOUR_LEAF_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(65, 130, 190), 200),  VAPOUR_SEA_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(145, 205, 250), 200), VAPOUR_SKY_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.BLACK, 200),              VAPOUR_BLACK_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.WHITE, 200),              VAPOUR_WHITE_FILTER_KEY));
 
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 4, new DiagonalMap()), AXE_S_S_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_KEY));
