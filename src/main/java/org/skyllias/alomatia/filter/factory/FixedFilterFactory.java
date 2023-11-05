@@ -11,6 +11,7 @@ import org.skyllias.alomatia.filter.affine.AffineFilterFactory;
 import org.skyllias.alomatia.filter.buffered.diffusion.DiffusionFilterFactory;
 import org.skyllias.alomatia.filter.buffered.distortion.factory.DistortingFilterFactory;
 import org.skyllias.alomatia.filter.buffered.hdr.naive.NaiveHdrFilterFactory;
+import org.skyllias.alomatia.filter.buffered.layered.LayeredFilterFactory;
 import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
@@ -104,6 +105,8 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MAGENTA_EQ_FILTER_KEY    = "filter.rgb.green+magenta";
   private static final String CYAN_EQ_FILTER_KEY       = "filter.rgb.red+cyan";
   private static final String NEGATIVE_FILTER_KEY      = "filter.rgb.invert";
+  private static final String STREAK_BLACK_FILTER_KEY  = "filter.layered.streak.black";
+  private static final String STREAK_WHITE_FILTER_KEY  = "filter.layered.streak.white";
   private static final String DEC_SAT_XL_FILTER_KEY    = "filter.hsb.saturation-xl";
   private static final String DEC_SAT_L_FILTER_KEY     = "filter.hsb.saturation-l";
   private static final String DEC_SAT_M_FILTER_KEY     = "filter.hsb.saturation-m";
@@ -494,6 +497,9 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(0.6),  INC_CCT_M_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(1),    INC_CCT_L_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(2),    INC_CCT_XL_FILTER_KEY));
+
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(150, Color.BLACK, 25), STREAK_BLACK_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(150, Color.WHITE, 25), STREAK_WHITE_FILTER_KEY));
 
     filters.add(new NamedFilter(NaiveHdrFilterFactory.forSmallBlur(3),  NAIVE_HDR_FILTER_KEY));
     filters.add(new NamedFilter(NaiveHdrFilterFactory.forSmallBlur(15), NAIVE_HDR_B_FILTER_KEY));
