@@ -200,7 +200,7 @@ public class ScreenSource implements ImageSource, ActionListener
 
     public GraphicsDevice getDevice() {return device;}
 
-    public Rectangle getBonuds() {return bounds;}
+    public Rectangle getBounds() {return bounds;}
   }
 
 //******************************************************************************

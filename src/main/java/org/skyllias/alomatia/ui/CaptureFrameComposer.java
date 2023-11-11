@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.IconSupplier;
+import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 import org.springframework.stereotype.Component;
 
@@ -22,19 +23,19 @@ public class CaptureFrameComposer
   private static final String TITLE        = "capture.window.title";
   private static final String BUTTON_LABEL = "capture.button.text";
 
-  private static final int INITIAL_FRAME_WIDTH  = 400;
-  private static final int INITIAL_FRAME_HEIGHT = 300;
-
+  private final SourcePreferences sourcePreferences;
   private final LabelLocalizer labelLocalizer;
   private final IconSupplier iconSupplier;
 
 //==============================================================================
 
-  public CaptureFrameComposer(LabelLocalizer localizer,
+  public CaptureFrameComposer(SourcePreferences sourcePreferences,
+                              LabelLocalizer localizer,
                               IconSupplier iconSupplier)
   {
-    labelLocalizer    = localizer;
-    this.iconSupplier = iconSupplier;
+    this.sourcePreferences = sourcePreferences;
+    labelLocalizer         = localizer;
+    this.iconSupplier      = iconSupplier;
   }
 
 //==============================================================================
@@ -49,14 +50,16 @@ public class CaptureFrameComposer
     JFrame frame = new JFrame(labelLocalizer.getString(TITLE));
 
     frame.setLocationRelativeTo(null);
-    frame.setSize(INITIAL_FRAME_WIDTH, INITIAL_FRAME_HEIGHT);
+
+    Rectangle initialRectangle = sourcePreferences.getScreenRectangle();
+    frame.setLocation(initialRectangle.x, initialRectangle.y);
+    frame.setSize(initialRectangle.width, initialRectangle.height);
 
     frame.setIconImage(iconSupplier.getIcon());
 
     Button captureButton = new Button(labelLocalizer.getString(BUTTON_LABEL));
     captureButton.addActionListener(new CaptureButtonListener(frame, listener));
     frame.add(captureButton);
-    frame.pack();
     frame.setVisible(true);
 
     return frame;
@@ -79,7 +82,7 @@ public class CaptureFrameComposer
   /* Listener to be invoked when the button is clicked, notifying the listener
    * and disposing the frame. */
 
-  private static class CaptureButtonListener implements ActionListener
+  private class CaptureButtonListener implements ActionListener
   {
     private JFrame frame;
     private CaptureBoundsListener boundsListener;
@@ -96,6 +99,8 @@ public class CaptureFrameComposer
       ScreenRectangle screenRectangle = getCaptureBounds();
       boundsListener.boundsSelected(screenRectangle);
       frame.dispose();                                                          // close the window and release its system resources
+
+      sourcePreferences.setScreenRectangle(screenRectangle.getBounds());
     }
 
     /* Returns the screen rectangle from which captures should take place. */
