@@ -31,6 +31,24 @@ public class SeparatedKernelDataFactoryBuilder
 
 //------------------------------------------------------------------------------
 
+  /** Returns a factory for a horizontal Gaussian profile and length. */
+
+  public KernelDataFactory createHorizontalGaussianKernelDataFactory(int length)
+  {
+    return new HorizontalKernelDataFactory(new CenteredGaussianBlurProfile().getProfile(length));
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Returns a factory for a vertical Gaussian profile and length. */
+
+  public KernelDataFactory createVerticalGaussianKernelDataFactory(int length)
+  {
+    return new VerticalKernelDataFactory(new CenteredGaussianBlurProfile().getProfile(length));
+  }
+
+//------------------------------------------------------------------------------
+
 //******************************************************************************
 
   private static class HorizontalKernelDataFactory implements KernelDataFactory

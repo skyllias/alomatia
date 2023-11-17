@@ -210,6 +210,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BLUR_SMALL_FILTER_KEY    = "filter.blur.small";
   private static final String BLUR_MED_FILTER_KEY      = "filter.blur.medium";
   private static final String BLUR_BIG_FILTER_KEY      = "filter.blur.big";
+  private static final String BLUR_HOR_S_FILTER_KEY    = "filter.blur.horizontal.small";
+  private static final String BLUR_HOR_M_FILTER_KEY    = "filter.blur.horizontal.medium";
+  private static final String BLUR_HOR_L_FILTER_KEY    = "filter.blur.horizontal.big";
+  private static final String BLUR_VER_S_FILTER_KEY    = "filter.blur.vertical.small";
+  private static final String BLUR_VER_M_FILTER_KEY    = "filter.blur.vertical.medium";
+  private static final String BLUR_VER_L_FILTER_KEY    = "filter.blur.vertical.big";
   private static final String MOTION_S0_FILTER_KEY     = "filter.blur.motion.slow.horizontal";
   private static final String MOTION_S90_FILTER_KEY    = "filter.blur.motion.slow.vertical";
   private static final String MOTION_S45_FILTER_KEY    = "filter.blur.motion.slow.oblique";
@@ -530,6 +536,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(BlurFilterFactory.forParaboloid(5), BLUR_SMALL_FILTER_KEY));
     filters.add(new NamedFilter(BlurFilterFactory.forGaussian(15),  BLUR_MED_FILTER_KEY));
     filters.add(new NamedFilter(BlurFilterFactory.forGaussian(31),  BLUR_BIG_FILTER_KEY));
+
+    filters.add(new NamedFilter(BlurFilterFactory.forHorizontralGaussian(31),  BLUR_HOR_S_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forHorizontralGaussian(81),  BLUR_HOR_M_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forHorizontralGaussian(171), BLUR_HOR_L_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(31),     BLUR_VER_S_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(81),     BLUR_VER_M_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(171),    BLUR_VER_L_FILTER_KEY));
 
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_KEY));
