@@ -17,6 +17,14 @@ public class BlurFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forHorizontralGaussian(int length) {return new EdgeConvolvingComposedFilter(new SeparatedKernelDataFactoryBuilder().createHorizontalGaussianKernelDataFactory(length));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forVerticalGaussian(int length) {return new EdgeConvolvingComposedFilter(new SeparatedKernelDataFactoryBuilder().createVerticalGaussianKernelDataFactory(length));}
+
+//------------------------------------------------------------------------------
+
   public static ImageFilter forSharpening() {return new EdgeConvolvingComposedFilter(new NeighbourSharpKernelDataFactory());}
 
 //------------------------------------------------------------------------------
