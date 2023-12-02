@@ -10,14 +10,19 @@ import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 public class EdgeDetectorFilterFactory
 {
-  public static ImageFilter forStandardEdgeDetection() {return new EdgeConvolvingComposedFilter(new EdgeDetectingKernelDataFactory());}
+  public static ImageFilter forStandardEdgeDetection()
+  {
+    EdgeConvolvingComposedFilter edgeConvolvingComposedFilter = new EdgeConvolvingComposedFilter(new EdgeDetectingKernelDataFactory());
+    return new ComposedFilter(edgeConvolvingComposedFilter, RgbFilterFactory.forMaxChannelGreyScale());
+  }
 
-  public static ImageFilter forDrawLikeEdgeDetection(float intensity)
+  public static ImageFilter forDrawLikeEdgeDetection(float intensity,
+                                                     ImageFilter greyFilter)
   {
     ImageFilter edgeDetectorFilter = new EdgeConvolvingComposedFilter(new EdgeDetectingKernelDataFactory(), new WhiteStainKernelDataFactory(intensity));
     ImageFilter negativeFilter     = RgbFilterFactory.forNegative();
 
-    return new ComposedFilter(edgeDetectorFilter, negativeFilter);
+    return new ComposedFilter(edgeDetectorFilter, negativeFilter, greyFilter);
   }
 
 }

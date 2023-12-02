@@ -556,11 +556,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(OperatorFilterFactory.forPrewitt(),      OPER_PREWITT_FILTER_KEY));
     filters.add(new NamedFilter(OperatorFilterFactory.forRobertsCross(), OPER_ROB_X_FILTER_KEY));
 
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                 EDGEDETECT_FILTER_KEY));
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f),             THICKEDGES_FILTER_KEY));
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(1),                THICKEDGEM_FILTER_KEY));
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2),                THICKEDGEL_FILTER_KEY));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()), NUCELAR_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                                                EDGEDETECT_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f, RgbFilterFactory.forMinChannelGreyScale()), THICKEDGES_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(1, RgbFilterFactory.forMedianChannelGreyScale()), THICKEDGEM_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2, RgbFilterFactory.forMaxChannelGreyScale()),    THICKEDGEL_FILTER_KEY));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()),                                NUCELAR_FILTER_KEY));
 
     filters.add(new NamedFilter(EmbossFilterFactory.forLayeredEmboss(), LAYEMBOSS_FILTER_KEY));
     filters.add(new NamedFilter(EmbossFilterFactory.forSmoothEmboss(),  SMTHEMBOSS_FILTER_KEY));
