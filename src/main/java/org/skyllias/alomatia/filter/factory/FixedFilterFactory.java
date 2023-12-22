@@ -11,6 +11,7 @@ import org.skyllias.alomatia.filter.affine.AffineFilterFactory;
 import org.skyllias.alomatia.filter.buffered.diffusion.DiffusionFilterFactory;
 import org.skyllias.alomatia.filter.buffered.distortion.factory.DistortingFilterFactory;
 import org.skyllias.alomatia.filter.buffered.hdr.naive.NaiveHdrFilterFactory;
+import org.skyllias.alomatia.filter.buffered.layered.LayeredFilterFactory;
 import org.skyllias.alomatia.filter.buffered.map.AngularMap;
 import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
@@ -104,6 +105,17 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MAGENTA_EQ_FILTER_KEY    = "filter.rgb.green+magenta";
   private static final String CYAN_EQ_FILTER_KEY       = "filter.rgb.red+cyan";
   private static final String NEGATIVE_FILTER_KEY      = "filter.rgb.invert";
+  private static final String STREAK_BLACK_FILTER_KEY  = "filter.layered.streak.black";
+  private static final String STREAK_WHITE_FILTER_KEY  = "filter.layered.streak.white";
+  private static final String VAPOUR_R_FILTER_KEY      = "filter.layered.vapour.red";
+  private static final String VAPOUR_G_FILTER_KEY      = "filter.layered.vapour.green";
+  private static final String VAPOUR_B_FILTER_KEY      = "filter.layered.vapour.blue";
+  private static final String VAPOUR_SKIN_FILTER_KEY   = "filter.layered.vapour.skin";
+  private static final String VAPOUR_LEAF_FILTER_KEY   = "filter.layered.vapour.leaf";
+  private static final String VAPOUR_SEA_FILTER_KEY    = "filter.layered.vapour.sea";
+  private static final String VAPOUR_SKY_FILTER_KEY    = "filter.layered.vapour.sky";
+  private static final String VAPOUR_BLACK_FILTER_KEY  = "filter.layered.vapour.black";
+  private static final String VAPOUR_WHITE_FILTER_KEY  = "filter.layered.vapour.white";
   private static final String DEC_SAT_XL_FILTER_KEY    = "filter.hsb.saturation-xl";
   private static final String DEC_SAT_L_FILTER_KEY     = "filter.hsb.saturation-l";
   private static final String DEC_SAT_M_FILTER_KEY     = "filter.hsb.saturation-m";
@@ -188,6 +200,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BNW_DARK_S_FILTER_KEY    = "filter.b&w.dark.s";
   private static final String BNW_DARK_M_FILTER_KEY    = "filter.b&w.dark.m";
   private static final String BNW_DARK_L_FILTER_KEY    = "filter.b&w.dark.l";
+  private static final String BNW_DYNAMIC_FILTER_KEY   = "filter.b&w.dynamic";
   private static final String BNW_BLACK_RED_FILTER_KEY = "filter.b&w.black&red";
   private static final String BNW_PRPL_YLW_FILTER_KEY  = "filter.b&w.purple&yellow";
   private static final String BNW_BLUE_ORNG_FILTER_KEY = "filter.b&w.blue&orange";
@@ -198,6 +211,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BLUR_SMALL_FILTER_KEY    = "filter.blur.small";
   private static final String BLUR_MED_FILTER_KEY      = "filter.blur.medium";
   private static final String BLUR_BIG_FILTER_KEY      = "filter.blur.big";
+  private static final String BLUR_HOR_S_FILTER_KEY    = "filter.blur.horizontal.small";
+  private static final String BLUR_HOR_M_FILTER_KEY    = "filter.blur.horizontal.medium";
+  private static final String BLUR_HOR_L_FILTER_KEY    = "filter.blur.horizontal.big";
+  private static final String BLUR_VER_S_FILTER_KEY    = "filter.blur.vertical.small";
+  private static final String BLUR_VER_M_FILTER_KEY    = "filter.blur.vertical.medium";
+  private static final String BLUR_VER_L_FILTER_KEY    = "filter.blur.vertical.big";
   private static final String MOTION_S0_FILTER_KEY     = "filter.blur.motion.slow.horizontal";
   private static final String MOTION_S90_FILTER_KEY    = "filter.blur.motion.slow.vertical";
   private static final String MOTION_S45_FILTER_KEY    = "filter.blur.motion.slow.oblique";
@@ -428,6 +447,16 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 255, 0), new Color(255, 255, 255)),       TRITONE_NGW_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forTritone(new Color(0, 0, 0), new Color(0, 0, 255), new Color(255, 255, 255)),       TRITONE_NBW_FILTER_KEY));
 
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.RED, 200),                VAPOUR_R_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.GREEN, 200),              VAPOUR_G_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.BLUE, 200),               VAPOUR_B_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(235, 175, 145), 200), VAPOUR_SKIN_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(20, 150, 35), 200),   VAPOUR_LEAF_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(65, 130, 190), 200),  VAPOUR_SEA_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, new Color(145, 205, 250), 200), VAPOUR_SKY_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.BLACK, 200),              VAPOUR_BLACK_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(200, Color.WHITE, 200),              VAPOUR_WHITE_FILTER_KEY));
+
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 4, new DiagonalMap()), AXE_S_S_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(4, 6, new CrossedMap()),  AXE_S_L_FILTER_KEY));
     filters.add(new NamedFilter(AxeColoursFilterFactory.forAxeColours(7, 4, new AngularMap()),  AXE_L_S_FILTER_KEY));
@@ -495,6 +524,9 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(1),    INC_CCT_L_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(2),    INC_CCT_XL_FILTER_KEY));
 
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(150, Color.BLACK, 25), STREAK_BLACK_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forStreakRemover(150, Color.WHITE, 25), STREAK_WHITE_FILTER_KEY));
+
     filters.add(new NamedFilter(NaiveHdrFilterFactory.forSmallBlur(3),  NAIVE_HDR_FILTER_KEY));
     filters.add(new NamedFilter(NaiveHdrFilterFactory.forSmallBlur(15), NAIVE_HDR_B_FILTER_KEY));
 
@@ -505,6 +537,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(BlurFilterFactory.forParaboloid(5), BLUR_SMALL_FILTER_KEY));
     filters.add(new NamedFilter(BlurFilterFactory.forGaussian(15),  BLUR_MED_FILTER_KEY));
     filters.add(new NamedFilter(BlurFilterFactory.forGaussian(31),  BLUR_BIG_FILTER_KEY));
+
+    filters.add(new NamedFilter(BlurFilterFactory.forHorizontralGaussian(31),  BLUR_HOR_S_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forHorizontralGaussian(81),  BLUR_HOR_M_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forHorizontralGaussian(171), BLUR_HOR_L_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(31),     BLUR_VER_S_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(81),     BLUR_VER_M_FILTER_KEY));
+    filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(171),    BLUR_VER_L_FILTER_KEY));
 
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_KEY));
@@ -518,11 +557,11 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(OperatorFilterFactory.forPrewitt(),      OPER_PREWITT_FILTER_KEY));
     filters.add(new NamedFilter(OperatorFilterFactory.forRobertsCross(), OPER_ROB_X_FILTER_KEY));
 
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                 EDGEDETECT_FILTER_KEY));
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f),             THICKEDGES_FILTER_KEY));
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(1),                THICKEDGEM_FILTER_KEY));
-    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2),                THICKEDGEL_FILTER_KEY));
-    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()), NUCELAR_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forStandardEdgeDetection(),                                                EDGEDETECT_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(0.5f, RgbFilterFactory.forMinChannelGreyScale()), THICKEDGES_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(1, RgbFilterFactory.forMedianChannelGreyScale()), THICKEDGEM_FILTER_KEY));
+    filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2, RgbFilterFactory.forMaxChannelGreyScale()),    THICKEDGEL_FILTER_KEY));
+    filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()),                                NUCELAR_FILTER_KEY));
 
     filters.add(new NamedFilter(EmbossFilterFactory.forLayeredEmboss(), LAYEMBOSS_FILTER_KEY));
     filters.add(new NamedFilter(EmbossFilterFactory.forSmoothEmboss(),  SMTHEMBOSS_FILTER_KEY));
@@ -556,6 +595,7 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, 0.6f, Color.BLACK, Color.WHITE),                   BNW_DARK_S_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, 0.7f, Color.BLACK, Color.WHITE),                   BNW_DARK_M_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, 0.8f, Color.BLACK, Color.WHITE),                   BNW_DARK_L_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forDynamicThresholdBlackAndWhite(15, Color.BLACK, Color.WHITE),               BNW_DYNAMIC_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, Color.BLACK, Color.RED),                           BNW_BLACK_RED_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, new Color(100, 32, 145), new Color(255, 255, 50)), BNW_PRPL_YLW_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, new Color(0, 0, 150), new Color(255, 111, 00)),    BNW_BLUE_ORNG_FILTER_KEY));

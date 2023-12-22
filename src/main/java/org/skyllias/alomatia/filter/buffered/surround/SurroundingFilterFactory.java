@@ -2,11 +2,14 @@
 package org.skyllias.alomatia.filter.buffered.surround;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
 import java.util.Random;
+import java.util.function.Function;
 
 import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.buffered.dynamic.DynamicFilterOperation;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
 
@@ -14,6 +17,9 @@ import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
 
 public class SurroundingFilterFactory
 {
+  private static final LightMeter lightMeter                                 = new LightMeter();
+  private static final DynamicThresholdCalculator dynamicThresholdCalculator = new DynamicThresholdCalculator(lightMeter);
+
 //==============================================================================
 
   public static ImageFilter forStrictBlackAndWhite(Color blackColor, Color whiteColor)
@@ -38,6 +44,22 @@ public class SurroundingFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forDynamicThresholdBlackAndWhite(int blurSize,
+                                                             Color blackColor, Color whiteColor)
+  {
+    Function<BufferedImage, Float> thresholdFunction = dynamicThresholdCalculator::getLight;
+    Function<Float, ImageFilter> filterFunction      = threshold -> forPreBlurredBlackAndWhite(blurSize,
+                                                                                               new StrictBlackOrWhiteSelector(threshold,
+                                                                                                                              blackColor,
+                                                                                                                              whiteColor));
+
+    DynamicFilterOperation<Float> dynamicThresholdedOperation = new DynamicFilterOperation<>(thresholdFunction,
+                                                                                             filterFunction);
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(dynamicThresholdedOperation));
+  }
+
+//------------------------------------------------------------------------------
+
   public static ImageFilter forProbabilisticBlackOrWhite(int blurSize)
   {
     return forPreBlurredBlackAndWhite(blurSize, new ProbabilisticBlackOrWhiteSelector(new Random()));
@@ -47,7 +69,7 @@ public class SurroundingFilterFactory
 
   private static ImageFilter forPreBlurredBlackAndWhite(int blurSize, BlackOrWhiteSelector blackOrWhiteSelector)
   {
-    LightCalculator lightCalculator = new LightCalculator(blackOrWhiteSelector);
+    LightCalculator lightCalculator = new LightCalculator(lightMeter, blackOrWhiteSelector);
     HintlessBufferedImageOp imageOp = new HintlessBufferedImageOp(new SurroundingColoursOperation(0, lightCalculator));
 
     SingleFrameBufferedImageFilter blackOrWhiteFilter = new SingleFrameBufferedImageFilter(imageOp);

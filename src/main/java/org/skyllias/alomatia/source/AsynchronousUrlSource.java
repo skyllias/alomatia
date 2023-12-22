@@ -1,28 +1,33 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.image.BufferedImage;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.springframework.stereotype.Component;
 
 /** ImageSource that retrieves the image from a URL.
  *  <p>
- *  To prevent blocking the interface, the connection is asynchronous. However,
- *  it does not support full cancellation due to the way blocking IO operations
- *  work. For that, heavier libraries (like Apache's HttpClient) should be
- *  considered.
+ *  To prevent blocking the interface, the connection is asynchronous. The inner
+ *  interface {@link DownloadListener} can be implemented in order to be
+ *  notified when the download completes, either successfully or not.
  *  <p>
  *  This is meant for "easily" accessible resources only. If proxy configuration,
  *  authentication, SSL validation, new protocols support, timeout control or
@@ -31,10 +36,7 @@ import org.springframework.stereotype.Component;
  *  HTTP/HTTPS will be the most common protocol, but this class does not enforce it.
  *  <p>
  *  A reactivation is passive in the sense that the previous download, if any,
- *  is not reattempted.
- *  <p>
- *  The inner interface DownloadListener can be implemented in order to be
- *  notified when the download completes, either successfully or not. */
+ *  is not reattempted. */
 
 @Component
 public class AsynchronousUrlSource implements ImageSource
@@ -72,7 +74,7 @@ public class AsynchronousUrlSource implements ImageSource
   {
     cancel(true);
 
-    currentDownload = new Downloader(url, listener);
+    currentDownload = new Downloader(url, imageDisplay, listener);
     executor.execute(currentDownload);
   }
 
@@ -99,51 +101,60 @@ public class AsynchronousUrlSource implements ImageSource
 
 //******************************************************************************
 
-  /* Opens a connection to currentUrl, retrieves its contents and passes the
+  /* Opens a connection to url, retrieves its contents and passes the
    * image to the display. Invokes onSuccess or onError of currentListener, if
    * not null.
-   * The cancel status is checked after openning the connection and after
-   * downloading the contents. */
+   * The cancel status is checked after openning the connection, after each
+   * buffer of bytes is read, and after the download completes.
+   * The contents of the URL are stored in a temporary file, which is
+   * automatically deleted. If the contents are huge, probably a memory problem
+   * will rise anyway, but ImageIO may be smart about it internally. */
 
-  private class Downloader implements Runnable
+  private static class Downloader implements Runnable
   {
-    private String url;
+    private static final int BUFFER_SIZE         = 4_096;
+    private static final String TEMP_FILE_PREFIX = "alomatia";
+    private static final Duration TIMEOUT        = Duration.ofSeconds(5);
+
+    private final String url;
+    private final ImageDisplay imageDisplay;
+
     private DownloadListener listener;
     private boolean cancelled = false;
 
-    public Downloader(String url, DownloadListener listener)
+    public Downloader(String url, ImageDisplay imageDisplay,
+                      DownloadListener listener)
     {
-      this.url      = url;
-      this.listener = listener;
+      this.url          = url;
+      this.imageDisplay = imageDisplay;
+      this.listener     = listener;
     }
 
     @Override
     public void run()
     {
       DownloadListener.ErrorType error = null;
-      InputStream resourceStream       = null;
       try                                                                       // TODO log exceptions
       {
-        URLConnection connection = new URL(url).openConnection();
-        connection.connect();
+        URLConnection connection = establishConnection();
 
         if (cancelled) error = DownloadListener.ErrorType.CANCEL;
         else
         {
-          resourceStream      = connection.getInputStream();
-          BufferedImage image = ImageIO.read(resourceStream);
+          Optional<Image> image = readImageWhileNotCancelled(connection);
+
           if (cancelled) error = DownloadListener.ErrorType.CANCEL;
           else
           {
-            if (image == null) error = DownloadListener.ErrorType.IMAGE;
-            else               imageDisplay.setOriginalImage(image);
+            if (image.isPresent()) imageDisplay.setOriginalImage(image.get());
+            else                   error = DownloadListener.ErrorType.IMAGE;
           }
         }
       }
-      catch (MalformedURLException mue) {error = DownloadListener.ErrorType.URL;}
-      catch (IOException ioe)           {error = DownloadListener.ErrorType.CONNECTION;}
-      catch (Exception e)               {error = DownloadListener.ErrorType.OTHER;}
-      finally {IOUtils.closeQuietly(resourceStream);}
+      catch (SocketTimeoutException ste) {error = DownloadListener.ErrorType.TIMEOUT;}
+      catch (MalformedURLException mue)  {error = DownloadListener.ErrorType.URL;}
+      catch (IOException ioe)            {error = DownloadListener.ErrorType.CONNECTION;}
+      catch (Exception e)                {error = DownloadListener.ErrorType.OTHER;}
 
       if (listener != null)
       {
@@ -156,6 +167,47 @@ public class AsynchronousUrlSource implements ImageSource
     {
       cancelled = true;
       if (silently) listener = null;
+    }
+
+    private URLConnection establishConnection() throws MalformedURLException, IOException
+    {
+      URLConnection connection = new URL(url).openConnection();
+      connection.setConnectTimeout((int) TIMEOUT.toMillis());
+      connection.setReadTimeout((int) TIMEOUT.toMillis());
+
+      connection.connect();
+
+      return connection;
+    }
+
+    private Optional<Image> readImageWhileNotCancelled(URLConnection connection) throws IOException
+    {
+      File tempFile = File.createTempFile(TEMP_FILE_PREFIX, null);
+      try
+      {
+        try (OutputStream tempFileStream = new FileOutputStream(tempFile))
+        {
+          copyWhileNotCancelled(connection, tempFileStream);
+        }
+
+        if (cancelled) return Optional.empty();
+        else           return Optional.ofNullable(ImageIO.read(tempFile));
+      }
+      finally {FileUtils.deleteQuietly(tempFile);}
+    }
+
+    private void copyWhileNotCancelled(URLConnection connection,
+                                       OutputStream destinationStream) throws IOException
+    {
+      try (InputStream resourceStream = connection.getInputStream())
+      {
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int amountRead;
+        while (!cancelled && (amountRead = resourceStream.read(buffer)) > 0)
+        {
+          destinationStream.write(buffer, 0, amountRead);
+        }
+      }
     }
   }
 
@@ -176,9 +228,14 @@ public class AsynchronousUrlSource implements ImageSource
 
       /** The network connection could not be established, for example due to
        *  firewalls, unavailable network interface, unknown host, unsupported
-       *  protocol, timeout, etc. */
+       *  protocol, etc. */
 
       CONNECTION,
+
+      /** The download could not be completed due to some timeout, either when
+       *  establishing the connection or when reading the data. */
+
+      TIMEOUT,
 
       /** The resource could be downloaded but it cannot be read as an image. */
 
