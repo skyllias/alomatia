@@ -200,6 +200,7 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BNW_DARK_S_FILTER_KEY    = "filter.b&w.dark.s";
   private static final String BNW_DARK_M_FILTER_KEY    = "filter.b&w.dark.m";
   private static final String BNW_DARK_L_FILTER_KEY    = "filter.b&w.dark.l";
+  private static final String BNW_DYNAMIC_FILTER_KEY   = "filter.b&w.dynamic";
   private static final String BNW_BLACK_RED_FILTER_KEY = "filter.b&w.black&red";
   private static final String BNW_PRPL_YLW_FILTER_KEY  = "filter.b&w.purple&yellow";
   private static final String BNW_BLUE_ORNG_FILTER_KEY = "filter.b&w.blue&orange";
@@ -594,6 +595,7 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, 0.6f, Color.BLACK, Color.WHITE),                   BNW_DARK_S_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, 0.7f, Color.BLACK, Color.WHITE),                   BNW_DARK_M_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, 0.8f, Color.BLACK, Color.WHITE),                   BNW_DARK_L_FILTER_KEY));
+    filters.add(new NamedFilter(SurroundingFilterFactory.forDynamicThresholdBlackAndWhite(15, Color.BLACK, Color.WHITE),               BNW_DYNAMIC_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, Color.BLACK, Color.RED),                           BNW_BLACK_RED_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, new Color(100, 32, 145), new Color(255, 255, 50)), BNW_PRPL_YLW_FILTER_KEY));
     filters.add(new NamedFilter(SurroundingFilterFactory.forStrictBlackAndWhite(15, new Color(0, 0, 150), new Color(255, 111, 00)),    BNW_BLUE_ORNG_FILTER_KEY));
