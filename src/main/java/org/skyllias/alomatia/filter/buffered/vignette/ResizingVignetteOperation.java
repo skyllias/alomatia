@@ -14,9 +14,9 @@ import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.simple.DyeOperation;
 
 /** {@link BufferedImageOperation} that paints a partially opaque, black
- *  rectangle in front of the source image. In opposition to {@link DyeOperation}, the
- *  transparency is different in each pixel, with darker edges. The profile of
- *  transparency is defined by a {@link VignetteProfile}.
+ *  rectangle in front of the source image. In opposition to {@link DyeOperation},
+ *  the transparency is different in each pixel, with darker edges. The profile
+ *  of transparency is defined by a {@link VignetteProfile}.
  *  The "Resizing" in the name refers to the fact that one single, squared
  *  profile is obtained only once, and then it is reshaped to match the
  *  destination image size. This means that the consuming operation of
@@ -116,18 +116,16 @@ public class ResizingVignetteOperation implements BufferedImageOperation
     float blue            = rgbComponents[2];
 
     BufferedImage result = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
-    Graphics2D graphics  = result.createGraphics();
 
     for (int x = 0; x < WIDTH; x++)
     {
       for (int y = 0; y < HEIGHT; y++)
       {
         float alpha = profile.getVignetteEffect(x, y, WIDTH, HEIGHT);
-        graphics.setColor(new Color(red, green, blue, alpha));
-        graphics.fillRect(x, y, 1, 1);                                          // isn't there a paintPixel(x, y)?
+        result.setRGB(x, y, new Color(red, green, blue, alpha).getRGB());
       }
     }
-    graphics.dispose();
+
     return result;
   }
 
