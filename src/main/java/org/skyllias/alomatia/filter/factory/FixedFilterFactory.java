@@ -217,6 +217,12 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BLUR_VER_S_FILTER_KEY    = "filter.blur.vertical.small";
   private static final String BLUR_VER_M_FILTER_KEY    = "filter.blur.vertical.medium";
   private static final String BLUR_VER_L_FILTER_KEY    = "filter.blur.vertical.big";
+  private static final String BLUR_RAD_F_S_FILTER_KEY  = "filter.blur.radial.fine.s";
+  private static final String BLUR_RAD_F_M_FILTER_KEY  = "filter.blur.radial.fine.m";
+  private static final String BLUR_RAD_F_L_FILTER_KEY  = "filter.blur.radial.fine.l";
+  private static final String BLUR_RAD_C_S_FILTER_KEY  = "filter.blur.radial.coarse.s";
+  private static final String BLUR_RAD_C_M_FILTER_KEY  = "filter.blur.radial.coarse.m";
+  private static final String BLUR_RAD_C_L_FILTER_KEY  = "filter.blur.radial.coarse.l";
   private static final String MOTION_S0_FILTER_KEY     = "filter.blur.motion.slow.horizontal";
   private static final String MOTION_S90_FILTER_KEY    = "filter.blur.motion.slow.vertical";
   private static final String MOTION_S45_FILTER_KEY    = "filter.blur.motion.slow.oblique";
@@ -544,6 +550,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(31),     BLUR_VER_S_FILTER_KEY));
     filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(81),     BLUR_VER_M_FILTER_KEY));
     filters.add(new NamedFilter(BlurFilterFactory.forVerticalGaussian(171),    BLUR_VER_L_FILTER_KEY));
+
+    filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(31, 0.75f),  BLUR_RAD_F_S_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(31, 0.5f),   BLUR_RAD_F_M_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(31, 0.25f),  BLUR_RAD_F_L_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(127, 0.75f), BLUR_RAD_C_S_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(127, 0.5f),  BLUR_RAD_C_M_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(127, 0.25f), BLUR_RAD_C_L_FILTER_KEY));
 
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_KEY));
