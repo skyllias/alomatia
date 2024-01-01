@@ -9,9 +9,10 @@ import org.skyllias.alomatia.filter.FilteredImageGenerator;
 import org.skyllias.alomatia.filter.buffered.BufferedImageOperation;
 import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
+import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
 
-/** Instantiator of filters that paint images with some dye. */
+/** Instantiator of filters that stack images to compose the result. */
 
 public class LayeredFilterFactory
 {
@@ -27,6 +28,16 @@ public class LayeredFilterFactory
 
 //------------------------------------------------------------------------------
 
+  public static ImageFilter forHeterogeneousBlur(int blurSize, float relativeRadius)
+  {
+    ImageFilter radialBlurFilter = fromSingleOperation(new RadialAlphaOperation(relativeRadius));
+    return fromOperations(new NoOperation(),
+                          fromFilter(new ComposedFilter(BlurFilterFactory.forGaussian(blurSize),
+                                                        radialBlurFilter)));
+  }
+
+//------------------------------------------------------------------------------
+
   private static BufferedImageOperation fromFilter(ImageFilter imageFilter)
   {
     return new ImageFilterApplyingOperation(filteredImageGenerator, imageFilter);
@@ -36,7 +47,14 @@ public class LayeredFilterFactory
 
   private static ImageFilter fromOperations(BufferedImageOperation... layerOperations)
   {
-    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(new LayeredBufferedImageOperation(layerOperations)));
+    return fromSingleOperation(new LayeredBufferedImageOperation(layerOperations));
+  }
+
+//------------------------------------------------------------------------------
+
+  private static ImageFilter fromSingleOperation(BufferedImageOperation operation)
+  {
+    return new SingleFrameBufferedImageFilter(new HintlessBufferedImageOp(operation));
   }
 
 //------------------------------------------------------------------------------
