@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceDirFilePreferences;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 
@@ -40,7 +40,7 @@ public class DirFileSourceSelectionComposerTest
   @Mock
   private FileChooserAdapter fileChooserAdapter;
   @Mock
-  private SourcePreferences sourcePreferences;
+  private SourceDirFilePreferences sourcePreferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 

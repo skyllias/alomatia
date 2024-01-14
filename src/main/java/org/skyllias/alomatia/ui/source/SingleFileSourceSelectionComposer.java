@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceSingleFilePreferences;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
@@ -37,20 +37,20 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
 
   private final SingleFileSource singleFileSource;
   private final FileChooserAdapter fileChooserAdapter;
-  private final SourcePreferences sourcePreferences;
+  private final SourceSingleFilePreferences sourceSingleFilePreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public SingleFileSourceSelectionComposer(SingleFileSource singleFileSource,
                                            @Qualifier("singleFileChooser") FileChooserAdapter fileChooserAdapter,
-                                           SourcePreferences sourcePreferences,
+                                           SourceSingleFilePreferences sourceSingleFilePreferences,
                                            LabelLocalizer labelLocalizer)
   {
-    this.singleFileSource   = singleFileSource;
-    this.fileChooserAdapter = fileChooserAdapter;
-    this.sourcePreferences  = sourcePreferences;
-    this.labelLocalizer     = labelLocalizer;
+    this.singleFileSource            = singleFileSource;
+    this.fileChooserAdapter          = fileChooserAdapter;
+    this.sourceSingleFilePreferences = sourceSingleFilePreferences;
+    this.labelLocalizer              = labelLocalizer;
   }
 
 //==============================================================================
@@ -121,7 +121,7 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
             singleFileSource.setFileSource(selectedFile);
             pathField.setText(selectedPath);
 
-            sourcePreferences.setDefaultFilePath(selectedPath);
+            sourceSingleFilePreferences.setDefaultFilePath(selectedPath);
           }
         }
       });
@@ -145,7 +145,7 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
 
   private void initSourceFile(PathTextField pathField)
   {
-    Optional.ofNullable(sourcePreferences.getDefaultFilePath())
+    Optional.ofNullable(sourceSingleFilePreferences.getDefaultFilePath())
             .map(File::new)
             .ifPresent(file ->
             {

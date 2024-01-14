@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceClipboardPreferences;
 import org.skyllias.alomatia.source.ClipboardSource;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,7 +29,7 @@ public class ClipboardSourceSelectionComposerTest
   @Mock
   private ClipboardSource clipboardSource;
   @Mock
-  private SourcePreferences sourcePreferences;
+  private SourceClipboardPreferences sourcePreferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 

@@ -11,7 +11,7 @@ import javax.swing.JRadioButton;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceCommandPreferences;
 import org.skyllias.alomatia.ui.component.BarePanelComposer;
 import org.skyllias.alomatia.ui.radio.RadioSelector;
 import org.skyllias.alomatia.ui.radio.RadioSelector.RadioSelectorListener;
@@ -37,12 +37,12 @@ public class SourceSelectorComposer
 
   public SourceSelectorComposer(List<SourceSelectionComposer> sourceSelectionComposers,
                                 LabelLocalizer localizer,
-                                SourcePreferences sourcePreferences,
+                                SourceCommandPreferences sourceCommandPreferences,
                                 BarePanelComposer panelComposer)
   {
     this.sourceSelectionComposers = sourceSelectionComposers;
     labelLocalizer                = localizer;
-    radioSelector                 = new SourceRadioSelector<>(JRadioButton.class, labelLocalizer, sourcePreferences);
+    radioSelector                 = new SourceRadioSelector<>(JRadioButton.class, labelLocalizer, sourceCommandPreferences);
     bareControlPanelComposer      = panelComposer;
   }
 
@@ -96,7 +96,7 @@ public class SourceSelectorComposer
   private static class SourceRadioSelector<RADIO extends AbstractButton> implements RadioSelectorListener<ImageSource>
   {
     private final RadioSelector<RADIO, ImageSource> radioSelector;
-    private final SourcePreferences sourcePreferences;
+    private final SourceCommandPreferences sourceCommandPreferences;
 
     private ImageSource previousSource;
 
@@ -106,10 +106,10 @@ public class SourceSelectorComposer
      *  and enable or disable the sources as the radio buttons are selected. */
 
     public SourceRadioSelector(Class<RADIO> radioClazz, LabelLocalizer localizer,
-                               SourcePreferences sourcePreferences)
+                               SourceCommandPreferences sourceCommandPreferences)
     {
-      radioSelector          = new RadioSelector<>(radioClazz, localizer, this);
-      this.sourcePreferences = sourcePreferences;
+      radioSelector                 = new RadioSelector<>(radioClazz, localizer, this);
+      this.sourceCommandPreferences = sourceCommandPreferences;
     }
 
 //==============================================================================
@@ -126,7 +126,7 @@ public class SourceSelectorComposer
     {
       RADIO radio = radioSelector.createRadioObject(actionCommand, source);
 
-      String previousSelectionCommand = sourcePreferences.getSourceCommandName();
+      String previousSelectionCommand = sourceCommandPreferences.getSourceCommandName();
       if (actionCommand.equals(previousSelectionCommand))
       {
         radioSelector.setSelectionByActionCommand(previousSelectionCommand);
@@ -153,7 +153,7 @@ public class SourceSelectorComposer
       }
       previousSource = selectedSource;
 
-      sourcePreferences.setSourceCommandName(radioSelector.getCurrentSelectionAsActionCommand());
+      sourceCommandPreferences.setSourceCommandName(radioSelector.getCurrentSelectionAsActionCommand());
     }
 
 //------------------------------------------------------------------------------

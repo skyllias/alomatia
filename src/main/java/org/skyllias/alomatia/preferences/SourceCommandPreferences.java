@@ -5,27 +5,27 @@ import java.util.prefs.Preferences;
 
 import org.springframework.stereotype.Component;
 
-/** Preferences for URL downloads. */
+/** Preferences for the active source. */
 
 @Component
-public class DownloadPreferences
+public class SourceCommandPreferences
 {
-  private static final String PREFKEY_LASTURL = "lastUrl";
+  private static final String PREFKEY_SOURCECOMMAND = "sourceCommandName";
 
   private final Preferences preferences = Preferences.userNodeForPackage(getClass());
 
 //==============================================================================
 
-  public String getLastUrl()
+  public String getSourceCommandName()
   {
-    return preferences.get(PREFKEY_LASTURL, null);
+    return preferences.get(PREFKEY_SOURCECOMMAND, null);
   }
 
 //------------------------------------------------------------------------------
 
-  public void setLastUrl(String lastUrl)
+  public void setSourceCommandName(String sourceCommandName)
   {
-    preferences.put(PREFKEY_LASTURL, lastUrl);
+    preferences.put(PREFKEY_SOURCECOMMAND, sourceCommandName);
   }
 
 //------------------------------------------------------------------------------

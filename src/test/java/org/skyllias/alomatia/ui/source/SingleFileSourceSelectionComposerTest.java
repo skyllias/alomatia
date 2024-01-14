@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceSingleFilePreferences;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 
@@ -38,7 +38,7 @@ public class SingleFileSourceSelectionComposerTest
   @Mock
   private FileChooserAdapter fileChooserAdapter;
   @Mock
-  private SourcePreferences sourcePreferences;
+  private SourceSingleFilePreferences sourcePreferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 

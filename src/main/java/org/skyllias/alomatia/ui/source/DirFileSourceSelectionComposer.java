@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceDirFilePreferences;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
@@ -40,20 +40,20 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
 
   private final DirFileSource dirFileSource;
   private final FileChooserAdapter fileChooserAdapter;
-  private final SourcePreferences sourcePreferences;
+  private final SourceDirFilePreferences sourceDirFilePreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public DirFileSourceSelectionComposer(DirFileSource dirFileSource,
                                         @Qualifier("dirFileChooser") FileChooserAdapter fileChooserAdapter,
-                                        SourcePreferences sourcePreferences,
+                                        SourceDirFilePreferences sourceDirFilePreferences,
                                         LabelLocalizer labelLocalizer)
   {
-    this.dirFileSource      = dirFileSource;
-    this.fileChooserAdapter = fileChooserAdapter;
-    this.sourcePreferences  = sourcePreferences;
-    this.labelLocalizer     = labelLocalizer;
+    this.dirFileSource            = dirFileSource;
+    this.fileChooserAdapter       = fileChooserAdapter;
+    this.sourceDirFilePreferences = sourceDirFilePreferences;
+    this.labelLocalizer           = labelLocalizer;
 
     addNavigationKeyListener();
   }
@@ -157,7 +157,7 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
             dirFileSource.setFileSource(selectedFile);
             pathField.setText(selectedPath);
 
-            sourcePreferences.setDefaultDirPath(selectedPath);
+            sourceDirFilePreferences.setDefaultDirPath(selectedPath);
           }
         }
       });
@@ -181,7 +181,7 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
 
   private void initSourceDir(PathTextField pathField)
   {
-    Optional.ofNullable(sourcePreferences.getDefaultDirPath())
+    Optional.ofNullable(sourceDirFilePreferences.getDefaultDirPath())
             .map(File::new)
             .ifPresent(dir ->
             {

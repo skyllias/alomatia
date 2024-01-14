@@ -14,7 +14,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceClipboardPreferences;
 import org.skyllias.alomatia.source.ClipboardSource;
 import org.skyllias.alomatia.ui.EventUtils;
 import org.springframework.core.annotation.Order;
@@ -33,18 +33,18 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
   protected static final String AUTOMODE_CHECKBOX_NAME = "checkbox.automode";
 
   private final ClipboardSource clipboardSource;
-  private final SourcePreferences sourcePreferences;
+  private final SourceClipboardPreferences sourceClipboardPreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public ClipboardSourceSelectionComposer(ClipboardSource clipboardSource,
-                                          SourcePreferences sourcePreferences,
+                                          SourceClipboardPreferences sourceClipboardPreferences,
                                           LabelLocalizer labelLocalizer)
   {
-    this.clipboardSource   = clipboardSource;
-    this.sourcePreferences = sourcePreferences;
-    this.labelLocalizer    = labelLocalizer;
+    this.clipboardSource            = clipboardSource;
+    this.sourceClipboardPreferences = sourceClipboardPreferences;
+    this.labelLocalizer             = labelLocalizer;
 
     addPasteKeyListener();
   }
@@ -100,7 +100,7 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
 
     public ClipboardSourceSelection()
     {
-      boolean autoMode = sourcePreferences.isClipboardAutoMode();
+      boolean autoMode = sourceClipboardPreferences.isClipboardAutoMode();
       clipboardSource.setAutoMode(autoMode);
 
       autoCheckbox = buildAutoCheckbox(autoMode);
@@ -142,7 +142,7 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
           boolean newAutoMode = checkbox.isSelected();
           clipboardSource.setAutoMode(newAutoMode);
 
-          sourcePreferences.setClipboardAutoMode(newAutoMode);
+          sourceClipboardPreferences.setClipboardAutoMode(newAutoMode);
         }
       });
 
