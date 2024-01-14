@@ -10,7 +10,6 @@ import java.awt.datatransfer.StringSelection;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
-import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.springframework.stereotype.Component;
 
 /** Source that extracts images from the system's clipboard. If the clipboard
@@ -27,20 +26,15 @@ public class ClipboardSource implements ImageSource, FlavorListener
 {
   private final ImageDisplay imageDisplay;
   private final Clipboard clipboard;
-  private final SourcePreferences sourcePreferences;
 
   private final State state = new State();
 
 //==============================================================================
 
-  public ClipboardSource(ImageDisplay imageDisplay, Clipboard clipboard,
-                         SourcePreferences sourcePreferences)
+  public ClipboardSource(ImageDisplay imageDisplay, Clipboard clipboard)
   {
-    this.imageDisplay      = imageDisplay;
-    this.clipboard         = clipboard;
-    this.sourcePreferences = sourcePreferences;
-
-    state.autoMode = sourcePreferences.isClipboardAutoMode();
+    this.imageDisplay = imageDisplay;
+    this.clipboard    = clipboard;
   }
 
 //==============================================================================
@@ -90,19 +84,9 @@ public class ClipboardSource implements ImageSource, FlavorListener
   /** Modifies the mode of the source, switching auto on or off.
    *  If true, the clipboard is listened to for changes, and images are removed
    *  after copy; else, the clipboard is only read upon external invocation.
-   *  This method can be called any time.
-   *  The new value is stored in the preferences. */
+   *  This method can be called any time. */
 
-  public void setAutoMode(boolean auto)
-  {
-    state.autoMode = auto;
-
-    sourcePreferences.setClipboardAutoMode(auto);
-  }
-
-//------------------------------------------------------------------------------
-
-  public boolean isAutoMode() {return state.autoMode;}
+  public void setAutoMode(boolean auto) {state.autoMode = auto;}
 
 //------------------------------------------------------------------------------
 

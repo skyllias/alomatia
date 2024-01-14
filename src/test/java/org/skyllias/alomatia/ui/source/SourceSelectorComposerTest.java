@@ -27,7 +27,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceCommandPreferences;
 import org.skyllias.alomatia.ui.component.BarePanelComposer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,7 +38,7 @@ public class SourceSelectorComposerTest
   @Mock
   private BarePanelComposer bareControlPanelComposer;
   @Mock
-  private SourcePreferences sourcePreferences;
+  private SourceCommandPreferences sourcePreferences;
 
   private SourceSelectorComposer sourceSelectorComposer;
 

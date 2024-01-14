@@ -1,8 +1,6 @@
 
 package org.skyllias.alomatia.source;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -15,12 +13,12 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.image.BufferedImage;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.ImageDisplay;
-import org.skyllias.alomatia.preferences.SourcePreferences;
 
 /** The system's clipboard cannot be used to generate the events because it is
  *  asynchronous. */
@@ -32,50 +30,20 @@ public class ClipboardSourceTest
   private ImageDisplay imageDisplay;
   @Mock
   private Clipboard clipboard;
-  @Mock
-  private SourcePreferences sourcePreferences;
 
   private ClipboardSource source;
 
-  private void setUp()
+  @Before
+  public void setUp()
   {
-    source = new ClipboardSource(imageDisplay, clipboard, sourcePreferences);
+    source = new ClipboardSource(imageDisplay, clipboard);
   }
 
 //------------------------------------------------------------------------------
 
   @Test
-  public void shouldHaveAutoModeOffAccordingToPreferences()
-  {
-    when(sourcePreferences.isClipboardAutoMode()).thenReturn(false);
-    setUp();
-
-    assertFalse(source.isAutoMode());
-  }
-
-  @Test
-  public void shouldHaveAutoModeOnAccordingToPreferences()
-  {
-    when(sourcePreferences.isClipboardAutoMode()).thenReturn(true);
-    setUp();
-
-    assertTrue(source.isAutoMode());
-  }
-
-  @Test
-  public void shouldSavePreferencesWhenAutoModeSet()
-  {
-    setUp();
-
-    source.setAutoMode(true);
-    verify(sourcePreferences).setClipboardAutoMode(true);
-  }
-
-  @Test
   public void shouldDoNothingWhenNothingCopiedInAutoMode()
   {
-    setUp();
-
     source.setActive(true);                                                     // order matters between setActive and setAutoMode
     source.setAutoMode(true);
 
@@ -88,8 +56,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldDoNothingWhenNothingCopied()
   {
-    setUp();
-
     source.setActive(true);
     source.setAutoMode(false);
 
@@ -101,8 +67,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldReadClipboardContentsWhenActivatedInAutoMode() throws Exception
   {
-    setUp();
-
     source.setAutoMode(true);
     source.setActive(true);
     verify(clipboard).getData(DataFlavor.imageFlavor);
@@ -111,8 +75,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldNotReadClipboardContentsWhenActivatedInNotAutoMode() throws Exception
   {
-    setUp();
-
     source.setAutoMode(false);
     source.setActive(true);
     verify(clipboard, never()).getData(DataFlavor.imageFlavor);
@@ -121,8 +83,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldRegisterListenerWhenActivated()
   {
-    setUp();
-
     source.setActive(true);
     verify(clipboard, atLeastOnce()).addFlavorListener(source);
   }
@@ -130,8 +90,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldUnregisterListenerWhenInactive() throws Exception
   {
-    setUp();
-
     source.setActive(false);
     verify(clipboard).removeFlavorListener(source);
   }
@@ -139,8 +97,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldDisplayImageWhenCopiedInAutoMode() throws Exception
   {
-    setUp();
-
     source.setActive(true);
     source.setAutoMode(true);
 
@@ -154,8 +110,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldNotDisplayImageWhenCopiedInNotAutoMode() throws Exception
   {
-    setUp();
-
     source.setActive(true);
     source.setAutoMode(false);
 
@@ -168,8 +122,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldNotDisplayImageWhenCopiedInAutoMode() throws Exception
   {
-    setUp();
-
     source.setActive(true);
     source.setAutoMode(true);
 
@@ -182,8 +134,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldDisplayImageWhenCopiedInNotAutoMode() throws Exception
   {
-    setUp();
-
     source.setAutoMode(false);
     source.setActive(true);
 
@@ -197,8 +147,6 @@ public class ClipboardSourceTest
   @Test
   public void shouldDisplaySubsequentImages() throws Exception
   {
-    setUp();
-
     source.setAutoMode(true);
     source.setActive(true);
 
