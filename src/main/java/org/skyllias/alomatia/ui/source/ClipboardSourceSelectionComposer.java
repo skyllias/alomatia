@@ -14,6 +14,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.skyllias.alomatia.source.ClipboardSource;
 import org.skyllias.alomatia.ui.EventUtils;
 import org.springframework.core.annotation.Order;
@@ -32,14 +33,17 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
   protected static final String AUTOMODE_CHECKBOX_NAME = "checkbox.automode";
 
   private final ClipboardSource clipboardSource;
+  private final SourcePreferences sourcePreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public ClipboardSourceSelectionComposer(ClipboardSource clipboardSource,
+                                          SourcePreferences sourcePreferences,
                                           LabelLocalizer labelLocalizer)
   {
     this.clipboardSource   = clipboardSource;
+    this.sourcePreferences = sourcePreferences;
     this.labelLocalizer    = labelLocalizer;
 
     addPasteKeyListener();
@@ -96,7 +100,10 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
 
     public ClipboardSourceSelection()
     {
-      autoCheckbox = buildAutoCheckbox(clipboardSource.isAutoMode());
+      boolean autoMode = sourcePreferences.isClipboardAutoMode();
+      clipboardSource.setAutoMode(autoMode);
+
+      autoCheckbox = buildAutoCheckbox(autoMode);
 
       controlsPanel = new JPanel();
       controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.X_AXIS));
@@ -134,6 +141,8 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
         {
           boolean newAutoMode = checkbox.isSelected();
           clipboardSource.setAutoMode(newAutoMode);
+
+          sourcePreferences.setClipboardAutoMode(newAutoMode);
         }
       });
 
