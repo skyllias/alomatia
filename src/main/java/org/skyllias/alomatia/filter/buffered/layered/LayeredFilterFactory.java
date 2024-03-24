@@ -11,12 +11,17 @@ import org.skyllias.alomatia.filter.buffered.HintlessBufferedImageOp;
 import org.skyllias.alomatia.filter.buffered.SingleFrameBufferedImageFilter;
 import org.skyllias.alomatia.filter.compose.ComposedFilter;
 import org.skyllias.alomatia.filter.convolve.BlurFilterFactory;
+import org.skyllias.alomatia.filter.convolve.EdgeDetectorFilterFactory;
+import org.skyllias.alomatia.filter.operator.OperatorFilterFactory;
+import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 
 /** Instantiator of filters that stack images to compose the result. */
 
 public class LayeredFilterFactory
 {
   private static final FilteredImageGenerator filteredImageGenerator = new FilteredImageGenerator();
+
+  private static final ImageFilter blackAlphaFilter = new ColourFilter(new BlackAlphaConverter());
 
 //==============================================================================
 
@@ -34,6 +39,43 @@ public class LayeredFilterFactory
     return fromOperations(new NoOperation(),
                           fromFilter(new ComposedFilter(BlurFilterFactory.forGaussian(blurSize),
                                                         radialBlurFilter)));
+  }
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forBordersOnImage(int blurSize, float intensity)
+  {
+    return fromOperations(new NoOperation(),
+                          fromFilter(new ComposedFilter(BlurFilterFactory.forGaussian(blurSize),
+                                                        OperatorFilterFactory.forScharr(),
+                                                        EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(intensity, RgbFilterFactory.forMinChannelGreyScale()),
+                                                        blackAlphaFilter)));
+  }
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forBordersOnImageBlurFirst(int blurSize, int amountOfBuckets)
+  {
+    final float intensity = 1f;
+
+    return fromOperations(new NoOperation(),
+                          fromFilter(new ComposedFilter(BlurFilterFactory.forGaussian(blurSize),
+                                                        RgbFilterFactory.forPosterizer(amountOfBuckets),
+                                                        OperatorFilterFactory.forScharr(),
+                                                        EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(intensity, RgbFilterFactory.forMinChannelGreyScale()),
+                                                        blackAlphaFilter)));
+  }
+
+  public static ImageFilter forBordersOnImagePosterFirst(int blurSize, int amountOfBuckets)
+  {
+    final float intensity = 1f;
+
+    return fromOperations(new NoOperation(),
+                          fromFilter(new ComposedFilter(RgbFilterFactory.forPosterizer(amountOfBuckets),
+                                                        BlurFilterFactory.forGaussian(blurSize),
+                                                        OperatorFilterFactory.forScharr(),
+                                                        EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(intensity, RgbFilterFactory.forMinChannelGreyScale()),
+                                                        blackAlphaFilter)));
   }
 
 //------------------------------------------------------------------------------
