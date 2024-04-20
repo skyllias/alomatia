@@ -238,6 +238,15 @@ public class FixedFilterFactory implements FilterFactory
   private static final String THICKEDGES_FILTER_KEY    = "filter.convolve.edgedetection.thick.s";
   private static final String THICKEDGEM_FILTER_KEY    = "filter.convolve.edgedetection.thick.m";
   private static final String THICKEDGEL_FILTER_KEY    = "filter.convolve.edgedetection.thick.l";
+  private static final String BORDER_FINE_FILTER_KEY   = "filter.layered.borders.finer";
+  private static final String BORDER_MED_FILTER_KEY    = "filter.layered.borders.medium";
+  private static final String BORDER_COARSE_FILTER_KEY = "filter.layered.borders.coarser";
+  private static final String SCRIB_FINE_FILTER_KEY    = "filter.layered.scribble.fine";
+  private static final String SCRIB_COARSE_FILTER_KEY  = "filter.layered.scribble.coarse";
+  private static final String HORROR_VAC_S_FILTER_KEY  = "filter.layered.horror-vacui.s";
+  private static final String HORROR_VAC_M_FILTER_KEY  = "filter.layered.horror-vacui.m";
+  private static final String HORROR_VAC_L_FILTER_KEY  = "filter.layered.horror-vacui.l";
+  private static final String HORROR_VAC_XL_FILTER_KEY = "filter.layered.horror-vacui.xl";
   private static final String NUCELAR_FILTER_KEY       = "filter.convolve.nucelarwash";
   private static final String LAYEMBOSS_FILTER_KEY     = "filter.convolve.emboss.layered";
   private static final String SMTHEMBOSS_FILTER_KEY    = "filter.convolve.emboss.smooth";
@@ -575,6 +584,16 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(1, RgbFilterFactory.forMedianChannelGreyScale()), THICKEDGEM_FILTER_KEY));
     filters.add(new NamedFilter(EdgeDetectorFilterFactory.forDrawLikeEdgeDetection(2, RgbFilterFactory.forMaxChannelGreyScale()),    THICKEDGEL_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new NucelarWashKernelDataFactory()),                                NUCELAR_FILTER_KEY));
+
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImage(7, 0.85f),  BORDER_COARSE_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImage(11, 2f),    BORDER_MED_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImage(15, 2.25f), BORDER_FINE_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImageBlurFirst(15, 6), SCRIB_FINE_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImageBlurFirst(61, 4), SCRIB_COARSE_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImagePosterFirst(5, 6),   HORROR_VAC_XL_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImagePosterFirst(5, 16),  HORROR_VAC_L_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImagePosterFirst(11, 4),  HORROR_VAC_M_FILTER_KEY));
+    filters.add(new NamedFilter(LayeredFilterFactory.forBordersOnImagePosterFirst(11, 12), HORROR_VAC_S_FILTER_KEY));
 
     filters.add(new NamedFilter(EmbossFilterFactory.forLayeredEmboss(), LAYEMBOSS_FILTER_KEY));
     filters.add(new NamedFilter(EmbossFilterFactory.forSmoothEmboss(),  SMTHEMBOSS_FILTER_KEY));
