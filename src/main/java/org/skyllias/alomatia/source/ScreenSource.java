@@ -9,32 +9,25 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-
-import javax.swing.Timer;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.springframework.stereotype.Component;
 
-/** Source of periodic screenshots.
+/** Source of screenshots.
  *  <p>
  *  For it to produce images, the portion of screen to take them from must be
  *  provided first by means of {@link #setScreenBounds(ScreenRectangle)}.
- *  The speed at which they are produced can be tuned externally too by means
- *  of {@link #setFrequency(int)}. */
+ *
+ *  The capture of each screenshot is driven externally by calls to capture(). */
 
 @Component
-public class ScreenSource implements ImageSource, ActionListener
+public class ScreenSource implements ImageSource
 {
-  private static final int DEFAULT_PERIOD_MS = 40;                              // slow enough for old machines to work, fast enough for an active refreshment
-
   private static final boolean showPointer = true;                              // if true, a pointer is added to the image right over the position of the mouse on the source. Someday this could be externally set
 
   private final ImageDisplay imageDisplay;
-  private final Timer captureTimer;
 
   private final State state = new State();
 
@@ -46,31 +39,12 @@ public class ScreenSource implements ImageSource, ActionListener
   public ScreenSource(ImageDisplay imageDisplay)
   {
     this.imageDisplay = imageDisplay;
-
-    captureTimer = new Timer(DEFAULT_PERIOD_MS, this);
   }
 
 //==============================================================================
 
-  /** Starts or stops the capture timer. */
-
   @Override
-  public void setActive(boolean active)
-  {
-    if (active) captureTimer.start();
-    else        captureTimer.stop();
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the amount of milliseconds between screenshots.
-   *  <p>
-   *  The amount should be greater than 0.
-   *  <p>
-   *  The name is a little misleading because the frequency is the inverse of
-   *  the period, but it is a more usual word. */
-
-  public void setFrequency(int millis) {captureTimer.setDelay(millis);}
+  public void setActive(boolean active) {state.active = active;}
 
 //------------------------------------------------------------------------------
 
@@ -89,13 +63,11 @@ public class ScreenSource implements ImageSource, ActionListener
 //------------------------------------------------------------------------------
 
   /** If there is a display and a device set, a new screenshot of the current
-   *  bounds is taken and passed to it.
-   *  Expected to be invoked by a timer. */
+   *  bounds is taken and passed to it. */
 
-  @Override
-  public void actionPerformed(ActionEvent event)
+  public void capture()
   {
-    if (state.graphDevice != null)                                              // this also ensures that captureRobot != null
+    if (state.active && state.graphDevice != null)                              // this also ensures that captureRobot != null
     {
       PointerInfo pointerInfo     = MouseInfo.getPointerInfo();                 // this is taken before the capture because it is expected to be faster, but probably there would be no difference
       BufferedImage capturedImage = state.captureRobot.createScreenCapture(state.sourceRectangle);
@@ -207,6 +179,7 @@ public class ScreenSource implements ImageSource, ActionListener
 
   private static class State
   {
+    boolean active;
     Rectangle sourceRectangle = new Rectangle(0, 0, 450, 700);
     GraphicsDevice graphDevice;                                                 // the graphics device from which captures must be taken
     Robot captureRobot;
