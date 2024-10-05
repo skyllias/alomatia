@@ -1,6 +1,5 @@
 package org.skyllias.alomatia.ui.source;
 
-import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -147,12 +146,8 @@ public class ScreenSourceSelectionComposer implements SourceSelectionComposer, A
     @Override
     public void boundsSelected(ScreenRectangle bounds)
     {
-      try
-      {
-        screenSource.setScreenBounds(bounds);
-        timer.start();
-      }
-      catch (AWTException awte) {awte.printStackTrace();}                       // TODO log
+      screenSource.setScreenBounds(bounds);
+      timer.start();
     }
   }
 

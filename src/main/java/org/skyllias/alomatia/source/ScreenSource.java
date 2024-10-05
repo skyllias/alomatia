@@ -1,18 +1,17 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
-import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
+import org.skyllias.alomatia.source.screen.MouseLocator;
+import org.skyllias.alomatia.source.screen.ScreenCapturer;
 import org.springframework.stereotype.Component;
 
 /** Source of screenshots.
@@ -28,6 +27,8 @@ public class ScreenSource implements ImageSource
   private static final boolean showPointer = true;                              // if true, a pointer is added to the image right over the position of the mouse on the source. Someday this could be externally set
 
   private final ImageDisplay imageDisplay;
+  private final ScreenCapturer screenCapturer;
+  private final MouseLocator mouseLocator;
 
   private final State state = new State();
 
@@ -36,9 +37,12 @@ public class ScreenSource implements ImageSource
   /** Creates a new instance ready to get the display and screen bundle set
    *  before producing images. */
 
-  public ScreenSource(ImageDisplay imageDisplay)
+  public ScreenSource(ImageDisplay imageDisplay, ScreenCapturer screenCapturer,
+                      MouseLocator mouseLocator)
   {
-    this.imageDisplay = imageDisplay;
+    this.imageDisplay   = imageDisplay;
+    this.screenCapturer = screenCapturer;
+    this.mouseLocator   = mouseLocator;
   }
 
 //==============================================================================
@@ -49,15 +53,11 @@ public class ScreenSource implements ImageSource
 //------------------------------------------------------------------------------
 
   /** Sets the device from which captures are to be taken and the rectangle of
-   *  it that are to be taken in each capture.
-   *  <p>
-   *  If the device is null, the default screen device is used.
-   * @throws AWTException seldom, since it should have been thrown in the constructor. */
+   *  it that are to be taken in each capture. */
 
-  public void setScreenBounds(ScreenRectangle screenRectangle) throws AWTException
+  public void setScreenBounds(ScreenRectangle screenRectangle)
   {
-    setScreenBounds(screenRectangle.bounds);
-    setDevice(screenRectangle.device);
+    state.currentScreenRectangle = screenRectangle;
   }
 
 //------------------------------------------------------------------------------
@@ -67,37 +67,23 @@ public class ScreenSource implements ImageSource
 
   public void capture()
   {
-    if (state.active && state.graphDevice != null)                              // this also ensures that captureRobot != null
+    if (state.active && state.currentScreenRectangle != null)
     {
-      PointerInfo pointerInfo     = MouseInfo.getPointerInfo();                 // this is taken before the capture because it is expected to be faster, but probably there would be no difference
-      BufferedImage capturedImage = state.captureRobot.createScreenCapture(state.sourceRectangle);
-      if (pointerInfo != null)
+      try
       {
-        boolean sameDevice = pointerInfo.getDevice().equals(state.graphDevice);
-        if (sameDevice) paintMousePointer(capturedImage, state.sourceRectangle,
-                                          pointerInfo.getLocation());
+        PointerInfo pointerInfo     = mouseLocator.getMouseInfo();              // this is taken before the capture because it is expected to be faster, but probably there would be no difference
+        BufferedImage capturedImage = screenCapturer.capture(state.currentScreenRectangle);
+        if (pointerInfo != null)
+        {
+          boolean sameDevice = pointerInfo.getDevice().equals(state.currentScreenRectangle.device);
+          if (sameDevice) paintMousePointer(capturedImage, state.currentScreenRectangle.bounds,
+                                            pointerInfo.getLocation());
+        }
+
+        imageDisplay.setOriginalImage(capturedImage);
       }
-
-      imageDisplay.setOriginalImage(capturedImage);
+      catch (Exception e) {e.printStackTrace();}                                // screnshots are not allowed. TODO log it
     }
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets the bounds of screen that are to be taken in each capture, keeping
-   * the same graphics device. */
-
-  private void setScreenBounds(Rectangle rectangle) {state.sourceRectangle = rectangle;}
-
-//------------------------------------------------------------------------------
-
-  /* Sets the passed device and a new robot instance for it. */
-
-  private void setDevice(GraphicsDevice device) throws AWTException
-  {
-    state.graphDevice = device;
-
-    state.captureRobot = new Robot(state.graphDevice);
   }
 
 //------------------------------------------------------------------------------
@@ -180,8 +166,6 @@ public class ScreenSource implements ImageSource
   private static class State
   {
     boolean active;
-    Rectangle sourceRectangle = new Rectangle(0, 0, 450, 700);
-    GraphicsDevice graphDevice;                                                 // the graphics device from which captures must be taken
-    Robot captureRobot;
+    ScreenRectangle currentScreenRectangle;
   }
 }
