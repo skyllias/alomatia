@@ -16,22 +16,32 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.image.BufferedImage;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.ImageDisplay;
 
 /** Events have to be mocked because their construction is too complex. */
 
+@RunWith(MockitoJUnitRunner.class)
 public class DropSourceTest
 {
+  @Mock
+  private ImageDisplay imageDisplay;
+
+  @InjectMocks
+  private DropSource dropSource;
+
+
   @Test
   public void shouldDoNothingWhenDropOnInactive()
   {
     DropTargetDropEvent event = mock(DropTargetDropEvent.class);
-    ImageDisplay imageDisplay = mock(ImageDisplay.class);
 
-    DropSource dropSource = new DropSource(imageDisplay);
     dropSource.setActive(false);
-
     dropSource.drop(event);
+
     verify(imageDisplay, never()).setOriginalImage(any(Image.class));
   }
 
@@ -45,13 +55,10 @@ public class DropSourceTest
     DropTargetDropEvent event = mock(DropTargetDropEvent.class);
     when(event.getTransferable()).thenReturn(transferable);
 
-    ImageDisplay display = mock(ImageDisplay.class);
-
-    DropSource dropSource = new DropSource(display);
     dropSource.setActive(true);
-
     dropSource.drop(event);
-    verify(display, times(1)).setOriginalImage(image);
+
+    verify(imageDisplay, times(1)).setOriginalImage(image);
   }
 
   // TODO test drop file, which needs a real file with an image
@@ -64,12 +71,9 @@ public class DropSourceTest
   {
     DropTargetDragEvent event = mock(DropTargetDragEvent.class);
 
-    ImageDisplay display = mock(ImageDisplay.class);
-
-    DropSource dropSource = new DropSource(display);
     dropSource.setActive(false);
-
     dropSource.dragEnter(event);
+
     verify(event).rejectDrag();
   }
 
@@ -81,12 +85,9 @@ public class DropSourceTest
     DropTargetDragEvent event = mock(DropTargetDragEvent.class);
     when(event.getTransferable()).thenReturn(transferable);
 
-    ImageDisplay display = mock(ImageDisplay.class);
-
-    DropSource dropSource = new DropSource(display);
     dropSource.setActive(true);
-
     dropSource.dragEnter(event);
+
     verify(event).rejectDrag();
   }
 
@@ -98,12 +99,9 @@ public class DropSourceTest
     DropTargetDragEvent event = mock(DropTargetDragEvent.class);
     when(event.getTransferable()).thenReturn(transferable);
 
-    ImageDisplay display = mock(ImageDisplay.class);
-
-    DropSource dropSource = new DropSource(display);
     dropSource.setActive(true);
-
     dropSource.dragEnter(event);
+
     verify(event, never()).rejectDrag();
   }
 }

@@ -13,8 +13,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -43,7 +44,7 @@ import org.springframework.stereotype.Component;
 public class AsynchronousUrlSource implements ImageSource
 {
   private final ImageDisplay imageDisplay;
-  private final Executor executor = Executors.newCachedThreadPool();
+  private final ExecutorService executor = Executors.newCachedThreadPool();
 
   private Downloader currentDownload;
 
@@ -96,6 +97,21 @@ public class AsynchronousUrlSource implements ImageSource
   private void cancel(boolean silently)
   {
     if (currentDownload != null) currentDownload.cancel(silently);
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Blocks until the current download complete in any state.
+   *  Meant only for testing purposes. */
+
+  protected void awaitTermination()
+  {
+    try
+    {
+      executor.shutdown();
+      executor.awaitTermination(1, TimeUnit.MINUTES);
+    }
+    catch (Exception e) {throw new RuntimeException(e);}
   }
 
 //------------------------------------------------------------------------------
@@ -228,8 +244,8 @@ public class AsynchronousUrlSource implements ImageSource
       URL,
 
       /** The network connection could not be established, for example due to
-       *  firewalls, unavailable network interface, unknown host, unsupported
-       *  protocol, etc. */
+       *  unavailable network interface, unknown host, unsupported protocol,
+       *  unsuccessful HTTP response, etc. */
 
       CONNECTION,
 
