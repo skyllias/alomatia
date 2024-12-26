@@ -25,6 +25,14 @@ public class LayeredFilterFactory
 
 //==============================================================================
 
+  public static ImageFilter forColourReplacing(Color from, Color to, int similarityFactor)
+  {
+    return fromOperations(new SingleColourOperation(to),
+                          fromFilter(new ColourFilter(new SimilarColourTransparencyConverter(from, similarityFactor))));
+  }
+
+//------------------------------------------------------------------------------
+
   public static ImageFilter forStreakRemover(int blurSize, Color target, int similarityFactor)
   {
     return fromOperations(fromFilter(BlurFilterFactory.forGaussian(blurSize)),
