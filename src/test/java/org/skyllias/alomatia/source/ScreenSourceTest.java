@@ -3,7 +3,6 @@ package org.skyllias.alomatia.source;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -12,7 +11,6 @@ import static org.skyllias.alomatia.test.matchers.AlomatiaMatchers.sameImage;
 
 import java.awt.GraphicsDevice;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -28,6 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 import org.skyllias.alomatia.source.screen.MouseLocator;
+import org.skyllias.alomatia.source.screen.PointerData;
 import org.skyllias.alomatia.source.screen.ScreenCapturer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,8 +75,7 @@ public class ScreenSourceTest
   {
     ScreenRectangle screenRectangle = new ScreenRectangle(buildGraphicsDevice(),
                                                           buildRectangle());
-    PointerInfo pointerInfo = buildPointerInfo(buildGraphicsDevice(),
-                                               new Point(75, 200));
+    PointerData pointerInfo = new PointerData(buildGraphicsDevice(), new Point(75, 200));
     when(screenCapturer.capture(screenRectangle)).thenReturn(buildInputImage());
     when(mouseLocator.getMouseInfo()).thenReturn(pointerInfo);
 
@@ -95,8 +93,7 @@ public class ScreenSourceTest
     GraphicsDevice graphicsDevice = buildGraphicsDevice();
     ScreenRectangle screenRectangle = new ScreenRectangle(graphicsDevice,
                                                           buildRectangle());
-    PointerInfo pointerInfo = buildPointerInfo(graphicsDevice,
-                                               new Point(25, 200));
+    PointerData pointerInfo = new PointerData(graphicsDevice, new Point(25, 200));
     when(screenCapturer.capture(screenRectangle)).thenReturn(buildInputImage());
     when(mouseLocator.getMouseInfo()).thenReturn(pointerInfo);
 
@@ -114,8 +111,7 @@ public class ScreenSourceTest
     GraphicsDevice graphicsDevice = buildGraphicsDevice();
     ScreenRectangle screenRectangle = new ScreenRectangle(graphicsDevice,
                                                           buildRectangle());
-    PointerInfo pointerInfo = buildPointerInfo(graphicsDevice,
-                                               new Point(75, 200));
+    PointerData pointerInfo = new PointerData(graphicsDevice, new Point(75, 200));
     when(screenCapturer.capture(screenRectangle)).thenReturn(buildInputImage());
     when(mouseLocator.getMouseInfo()).thenReturn(pointerInfo);
 
@@ -142,18 +138,6 @@ public class ScreenSourceTest
   private Rectangle buildRectangle()
   {
     return new Rectangle(50, 100, 150, 200);
-  }
-
-  /* PointerInfo does not allow instantiation from other packages. */
-
-  private PointerInfo buildPointerInfo(GraphicsDevice device, Point location)
-  {
-    PointerInfo pointerInfo = mock(PointerInfo.class);
-
-    lenient().when(pointerInfo.getDevice()).thenReturn(device);
-    lenient().when(pointerInfo.getLocation()).thenReturn(location);
-
-    return pointerInfo;
   }
 
   private BufferedImage buildImageWithCursor()

@@ -7,7 +7,7 @@ import java.awt.PointerInfo;
 import org.skyllias.alomatia.source.ScreenSource;
 import org.springframework.stereotype.Component;
 
-/** Provider of {@link PointerInfo} instances about the system's mouse position.
+/** Provider of {@link PointerData} instances about the system's mouse position.
  *  Extracted from {@link ScreenSource} for testability purposes. */
 
 @Component
@@ -17,9 +17,11 @@ public class MouseLocator
 
   /** Returns the current location of the mouse. */
 
-  public PointerInfo getMouseInfo()
+  public PointerData getMouseInfo()
   {
-    return MouseInfo.getPointerInfo();
+    PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+
+    return new PointerData(pointerInfo.getDevice(), pointerInfo.getLocation());
   }
 
 //------------------------------------------------------------------------------

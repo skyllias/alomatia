@@ -4,13 +4,13 @@ package org.skyllias.alomatia.source;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.source.screen.MouseLocator;
+import org.skyllias.alomatia.source.screen.PointerData;
 import org.skyllias.alomatia.source.screen.ScreenCapturer;
 import org.springframework.stereotype.Component;
 
@@ -71,7 +71,7 @@ public class ScreenSource implements ImageSource
     {
       try
       {
-        PointerInfo pointerInfo     = mouseLocator.getMouseInfo();              // this is taken before the capture because it is expected to be faster, but probably there would be no difference
+        PointerData pointerInfo     = mouseLocator.getMouseInfo();              // this is taken before the capture because it is expected to be faster, but probably there would be no difference
         BufferedImage capturedImage = screenCapturer.capture(state.currentScreenRectangle);
         if (pointerInfo != null)
         {
