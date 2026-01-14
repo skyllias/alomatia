@@ -4,11 +4,14 @@ import static org.assertj.swing.fixture.Containers.showInFrame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.awt.GraphicsDevice;
 import java.awt.Rectangle;
 import java.util.concurrent.Callable;
+
+import javax.swing.Timer;
 
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -35,6 +38,8 @@ public class ScreenSourceSelectionComposerTest
 {
   @Mock
   private ScreenSource screenSource;
+  @Mock
+  private Timer timer;
   @Mock
   private CaptureFrameComposer captureFrameComposer;
   @Spy
@@ -92,7 +97,8 @@ public class ScreenSourceSelectionComposerTest
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
 
     getCaptureButton().requireEnabled();
-    verify(screenSource, never()).setActive(true);
+    verify(timer).start();
+    verify(timer, never()).stop();
   }
 
   @Test
@@ -103,7 +109,6 @@ public class ScreenSourceSelectionComposerTest
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(false));
 
     getCaptureButton().requireDisabled();
-    verify(screenSource).setActive(false);
   }
 
   @Test
@@ -112,8 +117,12 @@ public class ScreenSourceSelectionComposerTest
     SourceSelection sourceSelection = setUpUi();
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
 
+    verify(timer).start();
+    verify(timer, never()).stop();
+
     getCaptureButton().click();
-    verify(screenSource).setActive(false);
+
+    verify(timer).stop();
     verify(captureFrameComposer).openNewFrame(any());
   }
 
@@ -128,8 +137,9 @@ public class ScreenSourceSelectionComposerTest
     verify(captureFrameComposer).openNewFrame(captureBoundsListenerCaptor.capture());
     ScreenRectangle screenRectangle = new ScreenRectangle(mock(GraphicsDevice.class), new Rectangle());
     captureBoundsListenerCaptor.getValue().boundsSelected(screenRectangle);
+
     verify(screenSource).setScreenBounds(screenRectangle);
-    verify(screenSource).setActive(true);
+    verify(timer, times(2)).start();
   }
 
 

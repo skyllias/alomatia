@@ -5,14 +5,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
-import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
-import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.springframework.stereotype.Component;
 
 /** Source from a directory.
@@ -26,19 +24,14 @@ import org.springframework.stereotype.Component;
 public class DirFileSource implements ImageSource
 {
   private final ImageDisplay imageDisplay;
-  private final SourcePreferences sourcePreferences;
 
   private final State state = new State();
 
 //==============================================================================
 
-  public DirFileSource(ImageDisplay imageDisplay,
-                       SourcePreferences sourcePreferences)
+  public DirFileSource(ImageDisplay imageDisplay)
   {
-    this.imageDisplay      = imageDisplay;
-    this.sourcePreferences = sourcePreferences;
-
-    initCurrentDir();
+    this.imageDisplay = imageDisplay;
   }
 
 //==============================================================================
@@ -64,15 +57,8 @@ public class DirFileSource implements ImageSource
         state.currentFileIndex = 0;
         setCurrentImageFile();
       }
-
-      state.currentDir = imageDir;
-      sourcePreferences.setDefaultDirPath(imageDir.getAbsolutePath());
     }
   }
-
-//------------------------------------------------------------------------------
-
-  public Optional<File> getCurrentDir() {return Optional.ofNullable(state.currentDir);}
 
 //------------------------------------------------------------------------------
 
@@ -150,26 +136,11 @@ public class DirFileSource implements ImageSource
 
 //------------------------------------------------------------------------------
 
-  /* Initializes currentDir from the preferences. */
-
-  private void initCurrentDir()
-  {
-    String defaultDirPath = sourcePreferences.getDefaultDirPath();
-    if (defaultDirPath != null)
-    {
-      state.currentDir = new File(defaultDirPath);
-      setFileSource(state.currentDir);
-    }
-  }
-
-//------------------------------------------------------------------------------
-
 //******************************************************************************
 
   private static class State
   {
     boolean active;
-    File currentDir;
     File[] sourceDirContents = new File[0];                                     // never null
     int currentFileIndex;
   }

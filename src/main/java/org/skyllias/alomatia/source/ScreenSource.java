@@ -1,40 +1,34 @@
 
 package org.skyllias.alomatia.source;
 
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
-import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-
-import javax.swing.Timer;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
+import org.skyllias.alomatia.source.screen.MouseLocator;
+import org.skyllias.alomatia.source.screen.PointerData;
+import org.skyllias.alomatia.source.screen.ScreenCapturer;
 import org.springframework.stereotype.Component;
 
-/** Source of periodic screenshots.
+/** Source of screenshots.
  *  <p>
  *  For it to produce images, the portion of screen to take them from must be
  *  provided first by means of {@link #setScreenBounds(ScreenRectangle)}.
- *  The speed at which they are produced can be tuned externally too by means
- *  of {@link #setFrequency(int)}. */
+ *
+ *  The capture of each screenshot is driven externally by calls to capture(). */
 
 @Component
-public class ScreenSource implements ImageSource, ActionListener
+public class ScreenSource implements ImageSource
 {
-  private static final int DEFAULT_PERIOD_MS = 40;                              // slow enough for old machines to work, fast enough for an active refreshment
-
   private static final boolean showPointer = true;                              // if true, a pointer is added to the image right over the position of the mouse on the source. Someday this could be externally set
 
   private final ImageDisplay imageDisplay;
-  private final Timer captureTimer;
+  private final ScreenCapturer screenCapturer;
+  private final MouseLocator mouseLocator;
 
   private final State state = new State();
 
@@ -43,89 +37,53 @@ public class ScreenSource implements ImageSource, ActionListener
   /** Creates a new instance ready to get the display and screen bundle set
    *  before producing images. */
 
-  public ScreenSource(ImageDisplay imageDisplay)
+  public ScreenSource(ImageDisplay imageDisplay, ScreenCapturer screenCapturer,
+                      MouseLocator mouseLocator)
   {
-    this.imageDisplay = imageDisplay;
-
-    captureTimer = new Timer(DEFAULT_PERIOD_MS, this);
+    this.imageDisplay   = imageDisplay;
+    this.screenCapturer = screenCapturer;
+    this.mouseLocator   = mouseLocator;
   }
 
 //==============================================================================
 
-  /** Starts or stops the capture timer. */
-
   @Override
-  public void setActive(boolean active)
-  {
-    if (active) captureTimer.start();
-    else        captureTimer.stop();
-  }
-
-//------------------------------------------------------------------------------
-
-  /** Sets the amount of milliseconds between screenshots.
-   *  <p>
-   *  The amount should be greater than 0.
-   *  <p>
-   *  The name is a little misleading because the frequency is the inverse of
-   *  the period, but it is a more usual word. */
-
-  public void setFrequency(int millis) {captureTimer.setDelay(millis);}
+  public void setActive(boolean active) {state.active = active;}
 
 //------------------------------------------------------------------------------
 
   /** Sets the device from which captures are to be taken and the rectangle of
-   *  it that are to be taken in each capture.
-   *  <p>
-   *  If the device is null, the default screen device is used.
-   * @throws AWTException seldom, since it should have been thrown in the constructor. */
+   *  it that are to be taken in each capture. */
 
-  public void setScreenBounds(ScreenRectangle screenRectangle) throws AWTException
+  public void setScreenBounds(ScreenRectangle screenRectangle)
   {
-    setScreenBounds(screenRectangle.bounds);
-    setDevice(screenRectangle.device);
+    state.currentScreenRectangle = screenRectangle;
   }
 
 //------------------------------------------------------------------------------
 
   /** If there is a display and a device set, a new screenshot of the current
-   *  bounds is taken and passed to it.
-   *  Expected to be invoked by a timer. */
+   *  bounds is taken and passed to it. */
 
-  @Override
-  public void actionPerformed(ActionEvent event)
+  public void capture()
   {
-    if (state.graphDevice != null)                                              // this also ensures that captureRobot != null
+    if (state.active && state.currentScreenRectangle != null)
     {
-      PointerInfo pointerInfo     = MouseInfo.getPointerInfo();                 // this is taken before the capture because it is expected to be faster, but probably there would be no difference
-      BufferedImage capturedImage = state.captureRobot.createScreenCapture(state.sourceRectangle);
-      if (pointerInfo != null)
+      try
       {
-        boolean sameDevice = pointerInfo.getDevice().equals(state.graphDevice);
-        if (sameDevice) paintMousePointer(capturedImage, state.sourceRectangle,
-                                          pointerInfo.getLocation());
+        PointerData pointerInfo     = mouseLocator.getMouseInfo();              // this is taken before the capture because it is expected to be faster, but probably there would be no difference
+        BufferedImage capturedImage = screenCapturer.capture(state.currentScreenRectangle);
+        if (pointerInfo != null)
+        {
+          boolean sameDevice = pointerInfo.getDevice().equals(state.currentScreenRectangle.device);
+          if (sameDevice) paintMousePointer(capturedImage, state.currentScreenRectangle.bounds,
+                                            pointerInfo.getLocation());
+        }
+
+        imageDisplay.setOriginalImage(capturedImage);
       }
-
-      imageDisplay.setOriginalImage(capturedImage);
+      catch (Exception e) {e.printStackTrace();}                                // screnshots are not allowed. TODO log it
     }
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Sets the bounds of screen that are to be taken in each capture, keeping
-   * the same graphics device. */
-
-  private void setScreenBounds(Rectangle rectangle) {state.sourceRectangle = rectangle;}
-
-//------------------------------------------------------------------------------
-
-  /* Sets the passed device and a new robot instance for it. */
-
-  private void setDevice(GraphicsDevice device) throws AWTException
-  {
-    state.graphDevice = device;
-
-    state.captureRobot = new Robot(state.graphDevice);
   }
 
 //------------------------------------------------------------------------------
@@ -207,8 +165,7 @@ public class ScreenSource implements ImageSource, ActionListener
 
   private static class State
   {
-    Rectangle sourceRectangle = new Rectangle(0, 0, 450, 700);
-    GraphicsDevice graphDevice;                                                 // the graphics device from which captures must be taken
-    Robot captureRobot;
+    boolean active;
+    ScreenRectangle currentScreenRectangle;
   }
 }

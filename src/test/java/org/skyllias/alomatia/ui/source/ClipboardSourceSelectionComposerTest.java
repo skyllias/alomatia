@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.preferences.SourceClipboardPreferences;
 import org.skyllias.alomatia.source.ClipboardSource;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,6 +28,8 @@ public class ClipboardSourceSelectionComposerTest
 {
   @Mock
   private ClipboardSource clipboardSource;
+  @Mock
+  private SourceClipboardPreferences sourcePreferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 
@@ -67,7 +70,7 @@ public class ClipboardSourceSelectionComposerTest
   @Test
   public void shouldStartDisabled()
   {
-    when(clipboardSource.isAutoMode()).thenReturn(false);
+    when(sourcePreferences.isClipboardAutoMode()).thenReturn(false);
     setUpUi();
 
     getAutoModeCheckbox().requireDisabled();
@@ -77,7 +80,7 @@ public class ClipboardSourceSelectionComposerTest
   @Test
   public void shouldStartCheckedAccordingToSource()
   {
-    when(clipboardSource.isAutoMode()).thenReturn(true);
+    when(sourcePreferences.isClipboardAutoMode()).thenReturn(true);
     setUpUi();
 
     getAutoModeCheckbox().requireDisabled();
@@ -112,7 +115,9 @@ public class ClipboardSourceSelectionComposerTest
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
 
     getAutoModeCheckbox().check();
+
     verify(clipboardSource, atLeastOnce()).setAutoMode(true);
+    verify(sourcePreferences, atLeastOnce()).setClipboardAutoMode(true);
   }
 
   @Test
@@ -122,7 +127,9 @@ public class ClipboardSourceSelectionComposerTest
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
 
     getAutoModeCheckbox().uncheck();
+
     verify(clipboardSource, atLeastOnce()).setAutoMode(false);
+    verify(sourcePreferences, atLeastOnce()).setClipboardAutoMode(false);
   }
 
 

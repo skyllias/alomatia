@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
-import org.skyllias.alomatia.preferences.DownloadPreferences;
+import org.skyllias.alomatia.preferences.SourceDownloadPreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.AsynchronousUrlSource.DownloadListener;
 import org.skyllias.alomatia.source.AsynchronousUrlSource.DownloadListener.ErrorType;
@@ -43,7 +43,7 @@ public class UrlDownloadSourceSelectionComposerTest
   @Mock
   private AsynchronousUrlSource urlSource;
   @Mock
-  private DownloadPreferences preferences;
+  private SourceDownloadPreferences preferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 

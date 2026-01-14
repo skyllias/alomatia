@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.logo.IconSupplier;
-import org.skyllias.alomatia.preferences.SourcePreferences;
+import org.skyllias.alomatia.preferences.SourceScreenPreferences;
 import org.skyllias.alomatia.source.ScreenSource.ScreenRectangle;
 import org.springframework.stereotype.Component;
 
@@ -23,19 +23,19 @@ public class CaptureFrameComposer
   private static final String TITLE        = "capture.window.title";
   private static final String BUTTON_LABEL = "capture.button.text";
 
-  private final SourcePreferences sourcePreferences;
+  private final SourceScreenPreferences sourceScreenPreferences;
   private final LabelLocalizer labelLocalizer;
   private final IconSupplier iconSupplier;
 
 //==============================================================================
 
-  public CaptureFrameComposer(SourcePreferences sourcePreferences,
+  public CaptureFrameComposer(SourceScreenPreferences sourceScreenPreferences,
                               LabelLocalizer localizer,
                               IconSupplier iconSupplier)
   {
-    this.sourcePreferences = sourcePreferences;
-    labelLocalizer         = localizer;
-    this.iconSupplier      = iconSupplier;
+    this.sourceScreenPreferences = sourceScreenPreferences;
+    labelLocalizer               = localizer;
+    this.iconSupplier            = iconSupplier;
   }
 
 //==============================================================================
@@ -51,7 +51,7 @@ public class CaptureFrameComposer
 
     frame.setLocationRelativeTo(null);
 
-    Rectangle initialRectangle = sourcePreferences.getScreenRectangle();
+    Rectangle initialRectangle = sourceScreenPreferences.getScreenRectangle();
     frame.setLocation(initialRectangle.x, initialRectangle.y);
     frame.setSize(initialRectangle.width, initialRectangle.height);
 
@@ -100,7 +100,7 @@ public class CaptureFrameComposer
       boundsListener.boundsSelected(screenRectangle);
       frame.dispose();                                                          // close the window and release its system resources
 
-      sourcePreferences.setScreenRectangle(screenRectangle.getBounds());
+      sourceScreenPreferences.setScreenRectangle(screenRectangle.getBounds());
     }
 
     /* Returns the screen rectangle from which captures should take place. */

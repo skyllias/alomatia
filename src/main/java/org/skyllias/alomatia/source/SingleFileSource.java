@@ -3,13 +3,11 @@ package org.skyllias.alomatia.source;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
 import org.skyllias.alomatia.ImageDisplay;
 import org.skyllias.alomatia.ImageSource;
-import org.skyllias.alomatia.preferences.SourcePreferences;
 import org.springframework.stereotype.Component;
 
 /** Source from a fixed file in disk. */
@@ -18,19 +16,14 @@ import org.springframework.stereotype.Component;
 public class SingleFileSource implements ImageSource
 {
   private final ImageDisplay imageDisplay;
-  private final SourcePreferences sourcePreferences;
 
   private final State state = new State();
 
 //==============================================================================
 
-  public SingleFileSource(ImageDisplay imageDisplay,
-                          SourcePreferences sourcePreferences)
+  public SingleFileSource(ImageDisplay imageDisplay)
   {
-    this.imageDisplay      = imageDisplay;
-    this.sourcePreferences = sourcePreferences;
-
-    initSourceFile();
+    this.imageDisplay = imageDisplay;
   }
 
 //==============================================================================
@@ -46,10 +39,6 @@ public class SingleFileSource implements ImageSource
 
 //------------------------------------------------------------------------------
 
-  public Optional<File> getSourceFile() {return Optional.ofNullable(state.sourceFile);}
-
-//------------------------------------------------------------------------------
-
   /** Sets the file whose contents are to be used as source image, and tries
    *  and displays it. */
 
@@ -58,8 +47,6 @@ public class SingleFileSource implements ImageSource
     state.sourceFile = imageFile;
 
     setImageFromFile(state.sourceFile);
-
-    sourcePreferences.setDefaultFilePath(state.sourceFile.getAbsolutePath());
   }
 
 //------------------------------------------------------------------------------
@@ -78,16 +65,6 @@ public class SingleFileSource implements ImageSource
       }
       catch (Exception e) {e.printStackTrace();}                                // the file must be wrong, not critical. TODO log it
     }
-  }
-
-//------------------------------------------------------------------------------
-
-  /* Initializes sourceFile from the preferences. */
-
-  private void initSourceFile()
-  {
-    String defaultFilePath = sourcePreferences.getDefaultFilePath();
-    if (defaultFilePath != null) state.sourceFile = new File(defaultFilePath);
   }
 
 //------------------------------------------------------------------------------

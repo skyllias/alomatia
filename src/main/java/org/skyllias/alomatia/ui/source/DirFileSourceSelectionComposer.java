@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.Optional;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ import javax.swing.JPanel;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SourceDirFilePreferences;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
@@ -38,17 +40,20 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
 
   private final DirFileSource dirFileSource;
   private final FileChooserAdapter fileChooserAdapter;
+  private final SourceDirFilePreferences sourceDirFilePreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public DirFileSourceSelectionComposer(DirFileSource dirFileSource,
                                         @Qualifier("dirFileChooser") FileChooserAdapter fileChooserAdapter,
+                                        SourceDirFilePreferences sourceDirFilePreferences,
                                         LabelLocalizer labelLocalizer)
   {
-    this.dirFileSource      = dirFileSource;
-    this.fileChooserAdapter = fileChooserAdapter;
-    this.labelLocalizer     = labelLocalizer;
+    this.dirFileSource            = dirFileSource;
+    this.fileChooserAdapter       = fileChooserAdapter;
+    this.sourceDirFilePreferences = sourceDirFilePreferences;
+    this.labelLocalizer           = labelLocalizer;
 
     addNavigationKeyListener();
   }
@@ -101,6 +106,8 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
 
 //******************************************************************************
 
+  /* Too similar to SingleFileSourceSelectionComposer.SingleFileSourceSelection. */
+
   private class DirFileSourceSelection implements SourceSelection
   {
     private final JButton selectButton;
@@ -110,12 +117,11 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
     {
       final PathTextField pathField = new PathTextField();
       pathField.setName(PATH_FIELD_NAME);
-      dirFileSource.getCurrentDir()
-                   .map(File::getAbsolutePath)
-                   .ifPresent(pathField::setText);
 
       selectButton  = buildSelectionButton(pathField);
       controlsPanel = buildControlsPanel(pathField, selectButton);
+
+      initSourceDir(pathField);
     }
 
     @Override
@@ -137,9 +143,6 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
 
     private JButton buildSelectionButton(final PathTextField pathField)
     {
-      dirFileSource.getCurrentDir()
-                    .ifPresent(fileChooserAdapter::setSelectedFile);
-
       JButton fileButton = new JButton(labelLocalizer.getString(SELECT_BUTTON_LABEL));
       fileButton.setEnabled(false);
       fileButton.addActionListener(new ActionListener()
@@ -153,6 +156,8 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
             String selectedPath = selectedFile.getAbsolutePath();
             dirFileSource.setFileSource(selectedFile);
             pathField.setText(selectedPath);
+
+            sourceDirFilePreferences.setDefaultDirPath(selectedPath);
           }
         }
       });
@@ -172,5 +177,17 @@ public class DirFileSourceSelectionComposer implements SourceSelectionComposer
 
       return panel;
     }
+  }
+
+  private void initSourceDir(PathTextField pathField)
+  {
+    Optional.ofNullable(sourceDirFilePreferences.getDefaultDirPath())
+            .map(File::new)
+            .ifPresent(dir ->
+            {
+              pathField.setText(dir.getAbsolutePath());
+              fileChooserAdapter.setSelectedFile(dir);
+              dirFileSource.setFileSource(dir);
+            });
   }
 }

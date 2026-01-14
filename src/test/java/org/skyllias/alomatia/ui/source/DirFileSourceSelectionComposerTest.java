@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import javax.swing.JFileChooser;
@@ -27,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.preferences.SourceDirFilePreferences;
 import org.skyllias.alomatia.source.DirFileSource;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 
@@ -39,6 +39,8 @@ public class DirFileSourceSelectionComposerTest
   private DirFileSource dirFileSource;
   @Mock
   private FileChooserAdapter fileChooserAdapter;
+  @Mock
+  private SourceDirFilePreferences sourcePreferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 
@@ -79,7 +81,7 @@ public class DirFileSourceSelectionComposerTest
   @Test
   public void shouldNotCrashIfNoDirSelectedPreviously()
   {
-    when(dirFileSource.getCurrentDir()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultDirPath()).thenReturn(null);
     setUpUi();
 
     getPathField().requireNotEditable();
@@ -87,12 +89,13 @@ public class DirFileSourceSelectionComposerTest
     getSelectButton().requireDisabled();
 
     verify(fileChooserAdapter, never()).setSelectedFile(any());
+    verify(dirFileSource, never()).setFileSource(any());
   }
 
   @Test
   public void shouldUsePathIfDirSelectedPreviously()
   {
-    when(dirFileSource.getCurrentDir()).thenReturn(Optional.of(new File("/full/path")));
+    when(sourcePreferences.getDefaultDirPath()).thenReturn("/full/path");
     setUpUi();
 
     getPathField().requireNotEditable();
@@ -100,12 +103,13 @@ public class DirFileSourceSelectionComposerTest
     getSelectButton().requireDisabled();
 
     verify(fileChooserAdapter).setSelectedFile(new File("/full/path"));
+    verify(dirFileSource).setFileSource(new File("/full/path"));
   }
 
   @Test
   public void shouldEnableButtonIfSourceActivated()
   {
-    when(dirFileSource.getCurrentDir()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultDirPath()).thenReturn(null);
     SourceSelection sourceSelection = setUpUi();
 
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
@@ -117,7 +121,7 @@ public class DirFileSourceSelectionComposerTest
   @Test
   public void shouldDoNothingWhenNoDirSelected()
   {
-    when(dirFileSource.getCurrentDir()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultDirPath()).thenReturn(null);
     when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
     SourceSelection sourceSelection = setUpUi();
 
@@ -129,12 +133,13 @@ public class DirFileSourceSelectionComposerTest
     getSelectButton().requireEnabled();
 
     verify(dirFileSource, never()).setFileSource(any());
+    verify(sourcePreferences, never()).setDefaultDirPath(any());
   }
 
   @Test
   public void shouldSetFileWhenFileSelected()
   {
-    when(dirFileSource.getCurrentDir()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultDirPath()).thenReturn(null);
     when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
     when(fileChooserAdapter.getSelectedFile()).thenReturn(new File("/full/path"));
     SourceSelection sourceSelection = setUpUi();
@@ -147,6 +152,7 @@ public class DirFileSourceSelectionComposerTest
     getSelectButton().requireEnabled();
 
     verify(dirFileSource).setFileSource(new File("/full/path"));
+    verify(sourcePreferences).setDefaultDirPath("/full/path");
   }
 
 

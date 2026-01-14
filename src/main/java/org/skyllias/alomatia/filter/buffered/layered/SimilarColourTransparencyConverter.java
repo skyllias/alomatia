@@ -51,8 +51,8 @@ public class SimilarColourTransparencyConverter implements ColourConverter
     int blueDifference  = target.getBlue() - original.getBlue();
 
     int accumulatedDifference = redDifference * redDifference +
-                                greenDifference * greenDifference
-                                + blueDifference * blueDifference;
+                                greenDifference * greenDifference +
+                                blueDifference * blueDifference;
     return Math.min(255, accumulatedDifference / similarityFactor);
   }
 

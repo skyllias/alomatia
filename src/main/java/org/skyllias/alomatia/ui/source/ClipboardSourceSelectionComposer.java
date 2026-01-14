@@ -14,6 +14,7 @@ import javax.swing.event.ChangeListener;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SourceClipboardPreferences;
 import org.skyllias.alomatia.source.ClipboardSource;
 import org.skyllias.alomatia.ui.EventUtils;
 import org.springframework.core.annotation.Order;
@@ -32,15 +33,18 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
   protected static final String AUTOMODE_CHECKBOX_NAME = "checkbox.automode";
 
   private final ClipboardSource clipboardSource;
+  private final SourceClipboardPreferences sourceClipboardPreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public ClipboardSourceSelectionComposer(ClipboardSource clipboardSource,
+                                          SourceClipboardPreferences sourceClipboardPreferences,
                                           LabelLocalizer labelLocalizer)
   {
-    this.clipboardSource   = clipboardSource;
-    this.labelLocalizer    = labelLocalizer;
+    this.clipboardSource            = clipboardSource;
+    this.sourceClipboardPreferences = sourceClipboardPreferences;
+    this.labelLocalizer             = labelLocalizer;
 
     addPasteKeyListener();
   }
@@ -96,7 +100,10 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
 
     public ClipboardSourceSelection()
     {
-      autoCheckbox = buildAutoCheckbox(clipboardSource.isAutoMode());
+      boolean autoMode = sourceClipboardPreferences.isClipboardAutoMode();
+      clipboardSource.setAutoMode(autoMode);
+
+      autoCheckbox = buildAutoCheckbox(autoMode);
 
       controlsPanel = new JPanel();
       controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.X_AXIS));
@@ -134,6 +141,8 @@ public class ClipboardSourceSelectionComposer implements SourceSelectionComposer
         {
           boolean newAutoMode = checkbox.isSelected();
           clipboardSource.setAutoMode(newAutoMode);
+
+          sourceClipboardPreferences.setClipboardAutoMode(newAutoMode);
         }
       });
 

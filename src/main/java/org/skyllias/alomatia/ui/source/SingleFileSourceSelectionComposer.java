@@ -4,6 +4,7 @@ package org.skyllias.alomatia.ui.source;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Optional;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
+import org.skyllias.alomatia.preferences.SourceSingleFilePreferences;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.ui.component.PathTextField;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
@@ -35,17 +37,20 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
 
   private final SingleFileSource singleFileSource;
   private final FileChooserAdapter fileChooserAdapter;
+  private final SourceSingleFilePreferences sourceSingleFilePreferences;
   private final LabelLocalizer labelLocalizer;
 
 //==============================================================================
 
   public SingleFileSourceSelectionComposer(SingleFileSource singleFileSource,
                                            @Qualifier("singleFileChooser") FileChooserAdapter fileChooserAdapter,
+                                           SourceSingleFilePreferences sourceSingleFilePreferences,
                                            LabelLocalizer labelLocalizer)
   {
-    this.singleFileSource   = singleFileSource;
-    this.fileChooserAdapter = fileChooserAdapter;
-    this.labelLocalizer     = labelLocalizer;
+    this.singleFileSource            = singleFileSource;
+    this.fileChooserAdapter          = fileChooserAdapter;
+    this.sourceSingleFilePreferences = sourceSingleFilePreferences;
+    this.labelLocalizer              = labelLocalizer;
   }
 
 //==============================================================================
@@ -65,6 +70,8 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
 
 //******************************************************************************
 
+  /* Too similar to DirFileSourceSelectionComposer.DirFileSourceSelection. */
+
   private class SingleFileSourceSelection implements SourceSelection
   {
     private final JButton selectButton;
@@ -74,12 +81,11 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
     {
       final PathTextField pathField = new PathTextField();
       pathField.setName(PATH_FIELD_NAME);
-      singleFileSource.getSourceFile()
-                      .map(File::getAbsolutePath)
-                      .ifPresent(pathField::setText);
 
       selectButton  = buildSelectionButton(pathField);
       controlsPanel = buildControlsPanel(pathField, selectButton);
+
+      initSourceFile(pathField);
     }
 
     @Override
@@ -101,9 +107,6 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
 
     private JButton buildSelectionButton(final PathTextField pathField)
     {
-      singleFileSource.getSourceFile()
-                      .ifPresent(fileChooserAdapter::setSelectedFile);
-
       JButton fileButton = new JButton(labelLocalizer.getString(SELECT_BUTTON_LABEL));
       fileButton.setEnabled(false);
       fileButton.addActionListener(new ActionListener()
@@ -117,6 +120,8 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
             String selectedPath = selectedFile.getAbsolutePath();
             singleFileSource.setFileSource(selectedFile);
             pathField.setText(selectedPath);
+
+            sourceSingleFilePreferences.setDefaultFilePath(selectedPath);
           }
         }
       });
@@ -137,4 +142,17 @@ public class SingleFileSourceSelectionComposer implements SourceSelectionCompose
       return panel;
     }
   }
+
+  private void initSourceFile(PathTextField pathField)
+  {
+    Optional.ofNullable(sourceSingleFilePreferences.getDefaultFilePath())
+            .map(File::new)
+            .ifPresent(file ->
+            {
+              pathField.setText(file.getAbsolutePath());
+              fileChooserAdapter.setSelectedFile(file);
+              singleFileSource.setFileSource(file);
+            });
+  }
+
 }

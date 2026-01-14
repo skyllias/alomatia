@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import javax.swing.JFileChooser;
@@ -27,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.skyllias.alomatia.i18n.KeyLabelLocalizer;
+import org.skyllias.alomatia.preferences.SourceSingleFilePreferences;
 import org.skyllias.alomatia.source.SingleFileSource;
 import org.skyllias.alomatia.ui.file.FileChooserAdapter;
 
@@ -37,6 +37,8 @@ public class SingleFileSourceSelectionComposerTest
   private SingleFileSource singleFileSource;
   @Mock
   private FileChooserAdapter fileChooserAdapter;
+  @Mock
+  private SourceSingleFilePreferences sourcePreferences;
   @Spy
   private KeyLabelLocalizer labelLocalizer;
 
@@ -77,7 +79,7 @@ public class SingleFileSourceSelectionComposerTest
   @Test
   public void shouldNotCrashIfNoFileSelectedPreviously()
   {
-    when(singleFileSource.getSourceFile()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultFilePath()).thenReturn(null);
     setUpUi();
 
     getPathField().requireNotEditable();
@@ -85,12 +87,13 @@ public class SingleFileSourceSelectionComposerTest
     getSelectButton().requireDisabled();
 
     verify(fileChooserAdapter, never()).setSelectedFile(any());
+    verify(singleFileSource, never()).setFileSource(any());
   }
 
   @Test
   public void shouldUsePathIfFileSelectedPreviously()
   {
-    when(singleFileSource.getSourceFile()).thenReturn(Optional.of(new File("/full/path/file.png")));
+    when(sourcePreferences.getDefaultFilePath()).thenReturn("/full/path/file.png");
     setUpUi();
 
     getPathField().requireNotEditable();
@@ -98,12 +101,13 @@ public class SingleFileSourceSelectionComposerTest
     getSelectButton().requireDisabled();
 
     verify(fileChooserAdapter).setSelectedFile(new File("/full/path/file.png"));
+    verify(singleFileSource).setFileSource(new File("/full/path/file.png"));
   }
 
   @Test
   public void shouldEnableButtonIfSourceActivated()
   {
-    when(singleFileSource.getSourceFile()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultFilePath()).thenReturn(null);
     SourceSelection sourceSelection = setUpUi();
 
     GuiActionRunner.execute(() -> sourceSelection.getSource().setActive(true));
@@ -115,7 +119,7 @@ public class SingleFileSourceSelectionComposerTest
   @Test
   public void shouldDoNothingWhenNoFileSelected()
   {
-    when(singleFileSource.getSourceFile()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultFilePath()).thenReturn(null);
     when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.CANCEL_OPTION);
     SourceSelection sourceSelection = setUpUi();
 
@@ -127,12 +131,13 @@ public class SingleFileSourceSelectionComposerTest
     getSelectButton().requireEnabled();
 
     verify(singleFileSource, never()).setFileSource(any());
+    verify(sourcePreferences, never()).setDefaultFilePath(any());
   }
 
   @Test
   public void shouldSetFileWhenFileSelected()
   {
-    when(singleFileSource.getSourceFile()).thenReturn(Optional.empty());
+    when(sourcePreferences.getDefaultFilePath()).thenReturn(null);
     when(fileChooserAdapter.showOpenDialog(null)).thenReturn(JFileChooser.APPROVE_OPTION);
     when(fileChooserAdapter.getSelectedFile()).thenReturn(new File("/full/path/file.png"));
     SourceSelection sourceSelection = setUpUi();
@@ -145,6 +150,7 @@ public class SingleFileSourceSelectionComposerTest
     getSelectButton().requireEnabled();
 
     verify(singleFileSource).setFileSource(new File("/full/path/file.png"));
+    verify(sourcePreferences).setDefaultFilePath("/full/path/file.png");
   }
 
 

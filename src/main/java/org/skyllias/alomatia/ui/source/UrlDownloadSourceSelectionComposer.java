@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.skyllias.alomatia.ImageSource;
 import org.skyllias.alomatia.i18n.LabelLocalizer;
-import org.skyllias.alomatia.preferences.DownloadPreferences;
+import org.skyllias.alomatia.preferences.SourceDownloadPreferences;
 import org.skyllias.alomatia.source.AsynchronousUrlSource;
 import org.skyllias.alomatia.source.AsynchronousUrlSource.DownloadListener;
 import org.skyllias.alomatia.ui.component.PathTextField;
@@ -37,13 +37,13 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
 
   private final AsynchronousUrlSource urlSource;
   private final LabelLocalizer labelLocalizer;
-  private final DownloadPreferences preferences;
+  private final SourceDownloadPreferences preferences;
 
 //==============================================================================
 
   public UrlDownloadSourceSelectionComposer(AsynchronousUrlSource urlSource,
                                             LabelLocalizer labelLocalizer,
-                                            DownloadPreferences preferences)
+                                            SourceDownloadPreferences preferences)
   {
     this.urlSource      = urlSource;
     this.labelLocalizer = labelLocalizer;
