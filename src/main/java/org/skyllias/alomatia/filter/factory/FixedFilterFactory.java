@@ -95,6 +95,9 @@ public class FixedFilterFactory implements FilterFactory
   private static final String MAX_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.max";
   private static final String MED_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.median";
   private static final String MIN_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.min";
+  private static final String RED_CH_GREY_FILTER_KEY   = "filter.rgb.greys.channel.red";
+  private static final String GREEN_CH_GREY_FILTER_KEY = "filter.rgb.greys.channel.green";
+  private static final String BLUE_CH_GREY_FILTER_KEY  = "filter.rgb.greys.channel.blue";
   private static final String REDONLY_FILTER_KEY       = "filter.rgb.redonly";
   private static final String GREENONLY_FILTER_KEY     = "filter.rgb.greenonly";
   private static final String BLUEONLY_FILTER_KEY      = "filter.rgb.blueonly";
@@ -693,6 +696,9 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(RgbFilterFactory.forMaxChannelGreyScale(),     MAX_CH_GREY_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forMedianChannelGreyScale(),  MED_CH_GREY_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forMinChannelGreyScale(),     MIN_CH_GREY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forRedToGreyScale(),          RED_CH_GREY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forGreenToGreyScale(),        GREEN_CH_GREY_FILTER_KEY));
+    filters.add(new NamedFilter(RgbFilterFactory.forBlueToGreyScale(),         BLUE_CH_GREY_FILTER_KEY));
 
     filters.add(new NamedFilter(DiffusionFilterFactory.forHueDiffusion(31), HUE_DIFFUSION_FILTER_KEY));
 
