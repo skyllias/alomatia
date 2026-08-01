@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.apache.commons.lang.StringUtils;
 import org.skyllias.alomatia.ImageSource;
@@ -93,6 +95,8 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
       Action urlAction = new UrlAction(this);
       button.addActionListener(urlAction);
       urlField.addActionListener(urlAction);                                    // a JTextField action listener is automatically fired when the enter key is pressed
+
+      configureUrlFieldListeners();
     }
 
     @Override
@@ -152,6 +156,8 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
             String errorKey = ERROR_TOOLTIP_PREFIX + type.toString().toLowerCase();
             urlField.setToolTipText(labelLocalizer.getString(errorKey));
           }
+
+          flagError();
         }
       });
     }
@@ -162,6 +168,8 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
     {
       button.setEnabled(active);
       urlField.setEnabled(active);
+
+      unflagError();
     }
 
     /* Clears any tooltip from the text field. */
@@ -192,6 +200,38 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
       urlField.requestFocusInWindow();                                            // this will not have any effect when this method is called from setEnabled(false)
     }
 
+    private void configureUrlFieldListeners()
+    {
+      urlField.getDocument().addDocumentListener(new DocumentListener()
+      {
+        @Override
+        public void removeUpdate(DocumentEvent e) {unflagError();}
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {unflagError();}
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {unflagError();}
+      });
+    }
+
+    /* Changes the style of the text field to highlight that the download
+       from the URL it contains has failed.
+       The current implementation depends on the UIManager.lookAndFeel. */
+
+    private void flagError()
+    {
+      urlField.putClientProperty("JComponent.outline", "error");
+    }
+
+    /* Changes the style of the text field to highlight that the download
+       from the URL it contains has not failed.
+       The current implementation depends on the UIManager.lookAndFeel. */
+
+    private void unflagError()
+    {
+      urlField.putClientProperty("JComponent.outline", null);
+    }
   }
 
 //******************************************************************************
