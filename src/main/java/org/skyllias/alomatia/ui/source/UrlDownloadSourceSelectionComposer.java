@@ -121,7 +121,7 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
       enableComponents(active);
 
       if (active) startDownload();
-      else        cancelDownload();
+      else        cancelDownload(false);
     }
 
     /** Changes the button label and the downloading status. */
@@ -191,13 +191,13 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
       }
     }
 
-    private void cancelDownload()
+    private void cancelDownload(boolean focusOnUrlField)
     {
       button.setText(labelLocalizer.getString(BUTTON_READY_LABEL));
       state.isDownloading = false;
       urlSource.cancel();
 
-      urlField.requestFocusInWindow();                                            // this will not have any effect when this method is called from setEnabled(false)
+      if (focusOnUrlField) urlField.requestFocusInWindow();
     }
 
     private void configureUrlFieldListeners()
@@ -254,7 +254,7 @@ public class UrlDownloadSourceSelectionComposer implements SourceSelectionCompos
     @Override
     public void actionPerformed(ActionEvent e)
     {
-      if (urlSourceSelection.state.isDownloading) urlSourceSelection.cancelDownload();
+      if (urlSourceSelection.state.isDownloading) urlSourceSelection.cancelDownload(true);
       else                                        urlSourceSelection.startDownload();
     }
   }
