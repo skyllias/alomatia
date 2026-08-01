@@ -37,7 +37,7 @@ public class SwingAlomatia
         {
           JFrame.setDefaultLookAndFeelDecorated(true);
           JDialog.setDefaultLookAndFeelDecorated(true);
-          UIManager.setLookAndFeel(new FlatIntelliJLaf());
+          UIManager.setLookAndFeel(new FlatIntelliJLaf());                      // the style of UrlDownloadSourceSelectionComposer depends on this L&F, so review that class if this ever changes
 
           controlFrameController.get().createControlFrame();
         }
