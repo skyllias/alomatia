@@ -160,14 +160,14 @@ public class WindowControlPanelComposer implements DisplayFrameCloseListener
 
 //------------------------------------------------------------------------------
 
-  /* Instantiates a new frame through the manager and adds its panel to the
-   * repeater, so that it receives images from sources.
-   * This composer is added as close listener in order to remove the panels from
-   * the repeater when their window is closed.
-   * A drop target is created so that images can be dropped to the display frame
-   * too if there is a drop listener. */
+  /** Instantiates a new frame through the manager and adds its panel to the
+   *  repeater, so that it receives images from sources.
+   *  This composer is added as close listener in order to remove the panels 
+   *  from the repeater when their window is closed.
+   *  A drop target is created so that images can be dropped to the display 
+   *  frame too if there is a drop listener. */
 
-  private void createNewDisplayFrame()
+  public void createNewDisplayFrame()
   {
     DisplayFrameController frame        = manager.createDisplayFrame(state.applySequentialFilters);
     DisplayPanelController displayPanel = frame.getDisplayPanel();
