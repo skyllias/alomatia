@@ -39,6 +39,7 @@ import org.skyllias.alomatia.filter.hsb.function.PitStepHueFunction;
 import org.skyllias.alomatia.filter.hsb.function.PositiveFilteringHueFunction;
 import org.skyllias.alomatia.filter.hsb.pole.DistantAttraction;
 import org.skyllias.alomatia.filter.hsb.pole.LinearRepulsion;
+import org.skyllias.alomatia.filter.hsl.factory.HslFilterFactory;
 import org.skyllias.alomatia.filter.operator.OperatorFilterFactory;
 import org.skyllias.alomatia.filter.rgb.RgbFilterFactory;
 import org.skyllias.alomatia.filter.rgb.lookup.ChannelLookupFilterFactory;
@@ -129,6 +130,16 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_SAT_M_FILTER_KEY     = "filter.hsb.saturation+m";
   private static final String INC_SAT_S_FILTER_KEY     = "filter.hsb.saturation+s";
   private static final String INC_SAT_XS_FILTER_KEY    = "filter.hsb.saturation+xs";
+  private static final String DEC_LSAT_XL_FILTER_KEY   = "filter.hsl.saturation-xl";
+  private static final String DEC_LSAT_L_FILTER_KEY    = "filter.hsl.saturation-l";
+  private static final String DEC_LSAT_M_FILTER_KEY    = "filter.hsl.saturation-m";
+  private static final String DEC_LSAT_S_FILTER_KEY    = "filter.hsl.saturation-s";
+  private static final String DEC_LSAT_XS_FILTER_KEY   = "filter.hsl.saturation-xs";
+  private static final String INC_LSAT_XL_FILTER_KEY   = "filter.hsl.saturation+xl";
+  private static final String INC_LSAT_L_FILTER_KEY    = "filter.hsl.saturation+l";
+  private static final String INC_LSAT_M_FILTER_KEY    = "filter.hsl.saturation+m";
+  private static final String INC_LSAT_S_FILTER_KEY    = "filter.hsl.saturation+s";
+  private static final String INC_LSAT_XS_FILTER_KEY   = "filter.hsl.saturation+xs";
   private static final String FIX_HUE_RED_FILTER_KEY   = "filter.hsb.hue.fixed.red";
   private static final String FIX_HUE_YELW_FILTER_KEY  = "filter.hsb.hue.fixed.yellow";
   private static final String FIX_HUE_GREEN_FILTER_KEY = "filter.hsb.hue.fixed.green";
@@ -155,6 +166,16 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_BRI_M_FILTER_KEY     = "filter.hsb.brightness+m";
   private static final String INC_BRI_S_FILTER_KEY     = "filter.hsb.brightness+s";
   private static final String INC_BRI_XS_FILTER_KEY    = "filter.hsb.brightness+xs";
+  private static final String DEC_LGT_XL_FILTER_KEY    = "filter.hsl.lightness-xl";
+  private static final String DEC_LGT_L_FILTER_KEY     = "filter.hsl.lightness-l";
+  private static final String DEC_LGT_M_FILTER_KEY     = "filter.hsl.lightness-m";
+  private static final String DEC_LGT_S_FILTER_KEY     = "filter.hsl.lightness-s";
+  private static final String DEC_LGT_XS_FILTER_KEY    = "filter.hsl.lightness-xs";
+  private static final String INC_LGT_XL_FILTER_KEY    = "filter.hsl.lightness+xl";
+  private static final String INC_LGT_L_FILTER_KEY     = "filter.hsl.lightness+l";
+  private static final String INC_LGT_M_FILTER_KEY     = "filter.hsl.lightness+m";
+  private static final String INC_LGT_S_FILTER_KEY     = "filter.hsl.lightness+s";
+  private static final String INC_LGT_XS_FILTER_KEY    = "filter.hsl.lightness+xs";
   private static final String DEC_CTR_XL_FILTER_KEY    = "filter.hsb.lightcontrast-xl";
   private static final String DEC_CTR_L_FILTER_KEY     = "filter.hsb.lightcontrast-l";
   private static final String DEC_CTR_M_FILTER_KEY     = "filter.hsb.lightcontrast-m";
@@ -165,18 +186,40 @@ public class FixedFilterFactory implements FilterFactory
   private static final String INC_CTR_M_FILTER_KEY     = "filter.hsb.lightcontrast+m";
   private static final String INC_CTR_S_FILTER_KEY     = "filter.hsb.lightcontrast+s";
   private static final String INC_CTR_XS_FILTER_KEY    = "filter.hsb.lightcontrast+xs";
+  private static final String DEC_LCTR_XL_FILTER_KEY   = "filter.hsl.lightcontrast-xl";
+  private static final String DEC_LCTR_L_FILTER_KEY    = "filter.hsl.lightcontrast-l";
+  private static final String DEC_LCTR_M_FILTER_KEY    = "filter.hsl.lightcontrast-m";
+  private static final String DEC_LCTR_S_FILTER_KEY    = "filter.hsl.lightcontrast-s";
+  private static final String DEC_LCTR_XS_FILTER_KEY   = "filter.hsl.lightcontrast-xs";
+  private static final String INC_LCTR_XL_FILTER_KEY   = "filter.hsl.lightcontrast+xl";
+  private static final String INC_LCTR_L_FILTER_KEY    = "filter.hsl.lightcontrast+l";
+  private static final String INC_LCTR_M_FILTER_KEY    = "filter.hsl.lightcontrast+m";
+  private static final String INC_LCTR_S_FILTER_KEY    = "filter.hsl.lightcontrast+s";
+  private static final String INC_LCTR_XS_FILTER_KEY   = "filter.hsl.lightcontrast+xs";
   private static final String INC_RED_BR_FILTER_KEY    = "filter.hsb.red.brightness.up";
   private static final String DEC_RED_BR_FILTER_KEY    = "filter.hsb.red.brightness.down";
   private static final String INC_GRN_BR_FILTER_KEY    = "filter.hsb.green.brightness.up";
   private static final String DEC_GRN_BR_FILTER_KEY    = "filter.hsb.green.brightness.down";
   private static final String INC_BLU_BR_FILTER_KEY    = "filter.hsb.blue.brightness.up";
   private static final String DEC_BLU_BR_FILTER_KEY    = "filter.hsb.blue.brightness.down";
+  private static final String INC_RED_LG_FILTER_KEY    = "filter.hsl.red.lightness.up";
+  private static final String DEC_RED_LG_FILTER_KEY    = "filter.hsl.red.lightness.down";
+  private static final String INC_GRN_LG_FILTER_KEY    = "filter.hsl.green.lightness.up";
+  private static final String DEC_GRN_LG_FILTER_KEY    = "filter.hsl.green.lightness.down";
+  private static final String INC_BLU_LG_FILTER_KEY    = "filter.hsl.blue.lightness.up";
+  private static final String DEC_BLU_LG_FILTER_KEY    = "filter.hsl.blue.lightness.down";
   private static final String INC_RED_SA_FILTER_KEY    = "filter.hsb.red.saturation.up";
   private static final String DEC_RED_SA_FILTER_KEY    = "filter.hsb.red.saturation.down";
   private static final String INC_GRN_SA_FILTER_KEY    = "filter.hsb.green.saturation.up";
   private static final String DEC_GRN_SA_FILTER_KEY    = "filter.hsb.green.saturation.down";
   private static final String INC_BLU_SA_FILTER_KEY    = "filter.hsb.blue.saturation.up";
   private static final String DEC_BLU_SA_FILTER_KEY    = "filter.hsb.blue.saturation.down";
+  private static final String INC_RED_LS_FILTER_KEY    = "filter.hsl.red.saturation.up";
+  private static final String DEC_RED_LS_FILTER_KEY    = "filter.hsl.red.saturation.down";
+  private static final String INC_GRN_LS_FILTER_KEY    = "filter.hsl.green.saturation.up";
+  private static final String DEC_GRN_LS_FILTER_KEY    = "filter.hsl.green.saturation.down";
+  private static final String INC_BLU_LS_FILTER_KEY    = "filter.hsl.blue.saturation.up";
+  private static final String DEC_BLU_LS_FILTER_KEY    = "filter.hsl.blue.saturation.down";
   private static final String REVERSE_ORANG_FILTER_KEY = "filter.hsb.hue.reverse.orange-azure";
   private static final String REVERSE_TEAL_FILTER_KEY  = "filter.hsb.hue.reverse.teal-crimson";
   private static final String REVERSE_VIOLE_FILTER_KEY = "filter.hsb.hue.reverse.violet-chartreuse";
@@ -337,7 +380,13 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BPOSTER_M_FILTER_KEY     = "filter.hsb.posterize.brightness.m";
   private static final String BPOSTER_S_FILTER_KEY     = "filter.hsb.posterize.brightness.s";
   private static final String BPOSTER_XS_FILTER_KEY    = "filter.hsb.posterize.brightness.xs";
+  private static final String LPOSTER_XL_FILTER_KEY    = "filter.hsl.posterize.lightness.xl";
+  private static final String LPOSTER_L_FILTER_KEY     = "filter.hsl.posterize.lightness.l";
+  private static final String LPOSTER_M_FILTER_KEY     = "filter.hsl.posterize.lightness.m";
+  private static final String LPOSTER_S_FILTER_KEY     = "filter.hsl.posterize.lightness.s";
+  private static final String LPOSTER_XS_FILTER_KEY    = "filter.hsl.posterize.lightness.xs";
   private static final String SATPOSTER_FILTER_KEY     = "filter.hsb.posterize.saturation";
+  private static final String LSATPOSTER_FILTER_KEY    = "filter.hsl.posterize.saturation";
   private static final String HPOSTER_L0_FILTER_KEY    = "filter.hsb.posterize.hue.l0";
   private static final String HPOSTER_L1_FILTER_KEY    = "filter.hsb.posterize.hue.l1";
   private static final String HPOSTER_M0_FILTER_KEY    = "filter.hsb.posterize.hue.m0";
@@ -354,11 +403,16 @@ public class FixedFilterFactory implements FilterFactory
   private static final String PIXEL_M_FILTER_KEY       = "filter.pixelize.m";
   private static final String PIXEL_L_FILTER_KEY       = "filter.pixelize.l";
   private static final String PIXEL_XL_FILTER_KEY      = "filter.pixelize.xl";
-  private static final String HIGHSRED_FILTER_KEY      = "filter.highlight.saturation.red";
-  private static final String HIGHSYELOW_FILTER_KEY    = "filter.highlight.saturation.yellow";
-  private static final String HIGHSGREEN_FILTER_KEY    = "filter.highlight.saturation.green";
-  private static final String HIGHSBLUE_FILTER_KEY     = "filter.highlight.saturation.blue";
-  private static final String HIGHSPURPL_FILTER_KEY    = "filter.highlight.saturation.purple";
+  private static final String HIGHS_RED_FILTER_KEY     = "filter.hsb.highlight.saturation.red";
+  private static final String HIGHS_YELLOW_FILTER_KEY  = "filter.hsb.highlight.saturation.yellow";
+  private static final String HIGHS_GREEN_FILTER_KEY   = "filter.hsb.highlight.saturation.green";
+  private static final String HIGHS_BLUE_FILTER_KEY    = "filter.hsb.highlight.saturation.blue";
+  private static final String HIGHS_PURPLE_FILTER_KEY  = "filter.hsb.highlight.saturation.purple";
+  private static final String WASH_RED_FILTER_KEY      = "filter.hsl.highlight.saturation.red";
+  private static final String WASH_YELLOW_FILTER_KEY   = "filter.hsl.highlight.saturation.yellow";
+  private static final String WASH_GREEN_FILTER_KEY    = "filter.hsl.highlight.saturation.green";
+  private static final String WASH_BLUE_FILTER_KEY     = "filter.hsl.highlight.saturation.blue";
+  private static final String WASH_PURPLE_FILTER_KEY   = "filter.hsl.highlight.saturation.purple";
   private static final String H_BY_B_B_R_FILTER_KEY    = "filter.hsb.hue-by-brightness.blue-red";
   private static final String H_BY_B_R_B_FILTER_KEY    = "filter.hsb.hue-by-brightness.red-blue";
   private static final String H_BY_B_G_B_FILTER_KEY    = "filter.hsb.hue-by-brightness.green-blue";
@@ -370,17 +424,39 @@ public class FixedFilterFactory implements FilterFactory
   private static final String DARK_C_BRIT_M_FILTER_KEY = "filter.hsb.dark-bright.cyan-magenta";
   private static final String DARK_M_BRIT_Y_FILTER_KEY = "filter.hsb.dark-bright.magenta-yellow";
   private static final String DARK_Y_BRIT_C_FILTER_KEY = "filter.hsb.dark-bright.yellow-cyan";
+  private static final String DIM_G_PALE_B_FILTER_KEY  = "filter.hsl.dim-pale.green-blue";
+  private static final String DIM_B_PALE_R_FILTER_KEY  = "filter.hsl.dim-pale.blue-red";
+  private static final String DIM_R_PALE_G_FILTER_KEY  = "filter.hsl.dim-pale.red-green";
+  private static final String DIM_C_PALE_M_FILTER_KEY  = "filter.hsl.dim-pale.cyan-magenta";
+  private static final String DIM_M_PALE_Y_FILTER_KEY  = "filter.hsl.dim-pale.magenta-yellow";
+  private static final String DIM_Y_PALE_C_FILTER_KEY  = "filter.hsl.dim-pale.yellow-cyan";
   private static final String H_BY_B_G_R_FILTER_KEY    = "filter.hsb.hue-by-brightness.green-red";
-  private static final String PSYSCHED_XS_FILTER_KEY   = "filter.psychedelic.xs";
-  private static final String PSYSCHED_S_FILTER_KEY    = "filter.psychedelic.s";
-  private static final String PSYSCHED_M_FILTER_KEY    = "filter.psychedelic.m";
-  private static final String PSYSCHED_L_FILTER_KEY    = "filter.psychedelic.l";
-  private static final String PSYSCHED_XL_FILTER_KEY   = "filter.psychedelic.xl";
+  private static final String H_BY_L_B_R_FILTER_KEY    = "filter.hsl.hue-by-lightness.blue-red";
+  private static final String H_BY_L_R_B_FILTER_KEY    = "filter.hsl.hue-by-lightness.red-blue";
+  private static final String H_BY_L_G_B_FILTER_KEY    = "filter.hsl.hue-by-lightness.green-blue";
+  private static final String H_BY_L_B_G_FILTER_KEY    = "filter.hsl.hue-by-lightness.blue-green";
+  private static final String H_BY_L_R_G_FILTER_KEY    = "filter.hsl.hue-by-lightness.red-green";
+  private static final String H_BY_L_G_R_FILTER_KEY    = "filter.hsl.hue-by-lightness.green-red";
+  private static final String PSYSCHED_XS_FILTER_KEY   = "filter.psychedelic.b.xs";
+  private static final String PSYSCHED_S_FILTER_KEY    = "filter.psychedelic.b.s";
+  private static final String PSYSCHED_M_FILTER_KEY    = "filter.psychedelic.b.m";
+  private static final String PSYSCHED_L_FILTER_KEY    = "filter.psychedelic.b.l";
+  private static final String PSYSCHED_XL_FILTER_KEY   = "filter.psychedelic.b.xl";
+  private static final String LPSYCHED_XS_FILTER_KEY   = "filter.psychedelic.l.xs";
+  private static final String LPSYCHED_S_FILTER_KEY    = "filter.psychedelic.l.s";
+  private static final String LPSYCHED_M_FILTER_KEY    = "filter.psychedelic.l.m";
+  private static final String LPSYCHED_L_FILTER_KEY    = "filter.psychedelic.l.l";
+  private static final String LPSYCHED_XL_FILTER_KEY   = "filter.psychedelic.l.xl";
   private static final String HIGHBRED_FILTER_KEY      = "filter.highlight.brightness.red";
   private static final String HIGHBYELOW_FILTER_KEY    = "filter.highlight.brightness.yellow";
   private static final String HIGHBGREEN_FILTER_KEY    = "filter.highlight.brightness.green";
   private static final String HIGHBBLUE_FILTER_KEY     = "filter.highlight.brightness.blue";
   private static final String HIGHBPURPL_FILTER_KEY    = "filter.highlight.brightness.purple";
+  private static final String DIMRED_FILTER_KEY        = "filter.hsl.highlight.lightness.red";
+  private static final String DIMYELOW_FILTER_KEY      = "filter.hsl.highlight.lightness.yellow";
+  private static final String DIMGREEN_FILTER_KEY      = "filter.hsl.highlight.lightness.green";
+  private static final String DIMBLUE_FILTER_KEY       = "filter.hsl.highlight.lightness.blue";
+  private static final String DIMPURPL_FILTER_KEY      = "filter.hsl.highlight.lightness.purple";
   private static final String VIGNETTE_R_FILTER_KEY    = "filter.vignette.round";
   private static final String VIGNETTE_C_FILTER_KEY    = "filter.vignette.cross";
   private static final String VIGNETTE_E_FILTER_KEY    = "filter.vignette.edges";
@@ -590,6 +666,17 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forSaturation(1),    INC_SAT_L_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forSaturation(2),    INC_SAT_XL_FILTER_KEY));
 
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(-2),   DEC_LSAT_XL_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(-1),   DEC_LSAT_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(-0.6), DEC_LSAT_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(-0.3), DEC_LSAT_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(-0.1), DEC_LSAT_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(0.1),  INC_LSAT_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(0.3),  INC_LSAT_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(0.6),  INC_LSAT_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(1),    INC_LSAT_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturation(2),    INC_LSAT_XL_FILTER_KEY));
+
     filters.add(new NamedFilter(HsbFilterFactory.forBrightness(-1.5),  DEC_BRI_XL_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightness(-0.8),  DEC_BRI_L_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightness(-0.4),  DEC_BRI_M_FILTER_KEY));
@@ -601,6 +688,17 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forBrightness(0.8),   INC_BRI_L_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightness(1.5),   INC_BRI_XL_FILTER_KEY));
 
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(-1.5),  DEC_LGT_XL_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(-0.8),  DEC_LGT_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(-0.4),  DEC_LGT_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(-0.1),  DEC_LGT_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(-0.05), DEC_LGT_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(0.05),  INC_LGT_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(0.1),   INC_LGT_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(0.4),   INC_LGT_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(0.8),   INC_LGT_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightness(1.5),   INC_LGT_XL_FILTER_KEY));
+
     filters.add(new NamedFilter(HsbFilterFactory.forContrast(-2),   DEC_CTR_XL_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forContrast(-1),   DEC_CTR_L_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forContrast(-0.6), DEC_CTR_M_FILTER_KEY));
@@ -611,6 +709,17 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forContrast(0.6),  INC_CTR_M_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forContrast(1),    INC_CTR_L_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forContrast(2),    INC_CTR_XL_FILTER_KEY));
+
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(-2),   DEC_LCTR_XL_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(-1),   DEC_LCTR_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(-0.6), DEC_LCTR_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(-0.3), DEC_LCTR_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(-0.1), DEC_LCTR_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(0.1),  INC_LCTR_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(0.3),  INC_LCTR_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(0.6),  INC_LCTR_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(1),    INC_LCTR_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forContrast(2),    INC_LCTR_XL_FILTER_KEY));
 
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-2),   DEC_CCT_XL_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forColourContrast(-1),   DEC_CCT_L_FILTER_KEY));
@@ -791,11 +900,24 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7))),                               INC_BLU_BR_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7)), -1)), DEC_BLU_BR_FILTER_KEY));
 
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7))),                                    INC_RED_LG_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0, 1, -7)), -1)),      DEC_RED_LG_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PositiveFilteringHueFunction(new CosineHueFunction(0.333f, 1, -7))),                               INC_GRN_LG_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.333f, 1, -7)), -1)), DEC_GRN_LG_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7))),                               INC_BLU_LG_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new MultiplyingHueFactor(new PositiveFilteringHueFunction(new CosineHueFunction(0.666f, 1, -7)), -1)), DEC_BLU_LG_FILTER_KEY));
+
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PitStepHueFunction(0.9f, 0.1f)), HIGHBRED_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PitStepHueFunction(0.1f, 0.3f)), HIGHBYELOW_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PitStepHueFunction(0.3f, 0.5f)), HIGHBGREEN_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PitStepHueFunction(0.5f, 0.7f)), HIGHBBLUE_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingBrightness(new PitStepHueFunction(0.7f, 0.9f)), HIGHBPURPL_FILTER_KEY));
+
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PitStepHueFunction(0.9f, 0.1f)), DIMRED_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PitStepHueFunction(0.1f, 0.3f)), DIMYELOW_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PitStepHueFunction(0.3f, 0.5f)), DIMGREEN_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PitStepHueFunction(0.5f, 0.7f)), DIMBLUE_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingLightness(new PitStepHueFunction(0.7f, 0.9f)), DIMPURPL_FILTER_KEY));
 
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(0.5, 0.95f, 0.05f)),  INC_RED_SA_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(-0.5, 0.9f, 0.1f)),   DEC_RED_SA_FILTER_KEY));
@@ -804,11 +926,24 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_SA_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_SA_FILTER_KEY));
 
-    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.9f, 0.1f)), HIGHSRED_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.1f, 0.3f)), HIGHSYELOW_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.3f, 0.5f)), HIGHSGREEN_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.5f, 0.7f)), HIGHSBLUE_FILTER_KEY));
-    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.7f, 0.9f)), HIGHSPURPL_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(0.5, 0.95f, 0.05f)),  INC_RED_LS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(-0.5, 0.9f, 0.1f)),   DEC_RED_LS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(0.5, 0.25f, 0.4f)),   INC_GRN_LS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(-0.5, 0.2f, 0.45f)),  DEC_GRN_LS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(0.5, 0.5f, 0.7f)),    INC_BLU_LS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new FlatStepHueFunction(-0.5, 0.45f, 0.75f)), DEC_BLU_LS_FILTER_KEY));
+
+    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.9f, 0.1f)), HIGHS_RED_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.1f, 0.3f)), HIGHS_YELLOW_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.3f, 0.5f)), HIGHS_GREEN_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.5f, 0.7f)), HIGHS_BLUE_FILTER_KEY));
+    filters.add(new NamedFilter(HsbFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.7f, 0.9f)), HIGHS_PURPLE_FILTER_KEY));
+
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.9f, 0.1f)), WASH_RED_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.1f, 0.3f)), WASH_YELLOW_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.3f, 0.5f)), WASH_GREEN_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.5f, 0.7f)), WASH_BLUE_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forHueDependingSaturation(new PitStepHueFunction(0.7f, 0.9f)), WASH_PURPLE_FILTER_KEY));
 
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0.33f, 0.66f, 2.5f),  DARK_G_BRIT_B_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-0.33f, 0f, 2.5f),    DARK_B_BRIT_R_FILTER_KEY));
@@ -817,6 +952,13 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-0.17f, 0.16f, 2.5f), DARK_M_BRIT_Y_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0.17f, 0.5f, 2.5f),   DARK_Y_BRIT_C_FILTER_KEY));
 
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.33f, 0.66f, 2.5f),  DIM_G_PALE_B_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-0.33f, 0f, 2.5f),    DIM_B_PALE_R_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0f, 0.33f, 2.5f),     DIM_R_PALE_G_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.5f, 0.83f, 2.5f),   DIM_C_PALE_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-0.17f, 0.16f, 2.5f), DIM_M_PALE_Y_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.17f, 0.5f, 2.5f),   DIM_Y_PALE_C_FILTER_KEY));
+
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0.33f, 1f, 0f),     H_BY_B_B_R_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0.33f, -0.33f, 0f), H_BY_B_R_B_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0f, 0.66f, 0f),     H_BY_B_G_B_FILTER_KEY));
@@ -824,11 +966,24 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0.66f, 1.33f, 0f),  H_BY_B_R_G_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(0.66f, 0f, 0f),     H_BY_B_G_R_FILTER_KEY));
 
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.33f, 1f, 0f),     H_BY_L_B_R_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.33f, -0.33f, 0f), H_BY_L_R_B_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0f, 0.66f, 0f),     H_BY_L_G_B_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0f, -0.66f, 0f),    H_BY_L_B_G_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.66f, 1.33f, 0f),  H_BY_L_R_G_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(0.66f, 0f, 0f),     H_BY_L_G_R_FILTER_KEY));
+
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-0.5f, 0.5f, 0), PSYSCHED_XS_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-1f, 1f, 0),     PSYSCHED_S_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-1.5f, 1.5f, 0), PSYSCHED_M_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-2f, 2f, 0),     PSYSCHED_L_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessDependingHue(-2.5f, 2.5f, 0), PSYSCHED_XL_FILTER_KEY));
+
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-0.5f, 0.5f, 0), LPSYCHED_XS_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-1f, 1f, 0),     LPSYCHED_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-1.5f, 1.5f, 0), LPSYCHED_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-2f, 2f, 0),     LPSYCHED_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessDependingHue(-2.5f, 2.5f, 0), LPSYCHED_XL_FILTER_KEY));
 
     filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.25f, 4f), MAGNIFY_XS_FILTER_KEY));
     filters.add(new NamedFilter(DistortingFilterFactory.forMagnifier(0.25f, 6f), MAGNIFY_S_FILTER_KEY));
@@ -896,6 +1051,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessPosterizer(10, false), BPOSTER_S_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forBrightnessPosterizer(20, false), BPOSTER_XS_FILTER_KEY));
 
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessPosterizer(2, false),  LPOSTER_XL_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessPosterizer(3, false),  LPOSTER_L_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessPosterizer(6, false),  LPOSTER_M_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessPosterizer(10, false), LPOSTER_S_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forLightnessPosterizer(20, false), LPOSTER_XS_FILTER_KEY));
+
     filters.add(new NamedFilter(HsbFilterFactory.forHuePosterizer(3, 0),         HPOSTER_L0_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHuePosterizer(3, 0.16667f),  HPOSTER_L1_FILTER_KEY));
     filters.add(new NamedFilter(HsbFilterFactory.forHuePosterizer(6, 0),         HPOSTER_M0_FILTER_KEY));
@@ -904,6 +1065,7 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(HsbFilterFactory.forHuePosterizer(12, 0.04167f), HPOSTER_S1_FILTER_KEY));
 
     filters.add(new NamedFilter(HsbFilterFactory.forSaturationPosterizer(2, false), SATPOSTER_FILTER_KEY));
+    filters.add(new NamedFilter(HslFilterFactory.forSaturationPosterizer(2, false), LSATPOSTER_FILTER_KEY));
 
     filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(2),   MAXONLY_XL_FILTER_KEY));
     filters.add(new NamedFilter(RgbFilterFactory.forMaxOnly(16),  MAXONLY_L_FILTER_KEY));
