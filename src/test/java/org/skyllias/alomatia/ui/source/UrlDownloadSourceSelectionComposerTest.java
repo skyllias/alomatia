@@ -154,6 +154,7 @@ public class UrlDownloadSourceSelectionComposerTest
     verify(urlSource, never()).cancel();
     verify(preferences).setLastUrl("url to download");
     getButton().requireText("source.selector.url.button.cancel");
+    getButton().requireFocused();
     getField().requireToolTip((String) null);
   }
 
@@ -170,6 +171,7 @@ public class UrlDownloadSourceSelectionComposerTest
     verify(urlSource, never()).cancel();
     verify(preferences).setLastUrl("url to download");
     getButton().requireText("source.selector.url.button.cancel");
+    getButton().requireFocused();
     getField().requireToolTip((String) null);
   }
 
@@ -203,6 +205,7 @@ public class UrlDownloadSourceSelectionComposerTest
     downloadListenerCaptor.getValue().onSuccess();
 
     getButton().requireText("source.selector.url.button.ready");
+    getButton().requireFocused();
     getField().requireToolTip((String) null);
   }
 

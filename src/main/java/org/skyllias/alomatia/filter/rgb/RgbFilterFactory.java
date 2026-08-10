@@ -5,12 +5,15 @@ import java.awt.Color;
 import java.awt.image.ImageFilter;
 
 import org.skyllias.alomatia.filter.ColourFilter;
+import org.skyllias.alomatia.filter.rgb.grey.BlueToGreyShadeProvider;
 import org.skyllias.alomatia.filter.rgb.grey.EqualChannelWeights;
+import org.skyllias.alomatia.filter.rgb.grey.GreenToGreyShadeProvider;
 import org.skyllias.alomatia.filter.rgb.grey.GreyConverter;
 import org.skyllias.alomatia.filter.rgb.grey.HumanSensitiveChannelWeights;
 import org.skyllias.alomatia.filter.rgb.grey.MaxChannelGreyShadeProvider;
 import org.skyllias.alomatia.filter.rgb.grey.MedianChannelGreyShadeProvider;
 import org.skyllias.alomatia.filter.rgb.grey.MinChannelGreyShadeProvider;
+import org.skyllias.alomatia.filter.rgb.grey.RedToGreyShadeProvider;
 import org.skyllias.alomatia.filter.rgb.grey.WeighedGreyShadeProvider;
 
 /** Instantiator of filters that play with the RGB components of colours. */
@@ -96,6 +99,18 @@ public class RgbFilterFactory
 //------------------------------------------------------------------------------
 
   public static ImageFilter forMinChannelGreyScale() {return new ColourFilter(new GreyConverter(new MinChannelGreyShadeProvider()));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forRedToGreyScale() {return new ColourFilter(new GreyConverter(new RedToGreyShadeProvider()));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forGreenToGreyScale() {return new ColourFilter(new GreyConverter(new GreenToGreyShadeProvider()));}
+
+//------------------------------------------------------------------------------
+
+  public static ImageFilter forBlueToGreyScale() {return new ColourFilter(new GreyConverter(new BlueToGreyShadeProvider()));}
 
 //------------------------------------------------------------------------------
 
