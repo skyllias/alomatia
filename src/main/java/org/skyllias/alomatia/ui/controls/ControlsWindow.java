@@ -1,7 +1,6 @@
 
 package org.skyllias.alomatia.ui.controls;
 
-import java.awt.Component;
 import java.awt.Container;
 
 /** Abstraction of a frame and a dialog, with the methods required to set them up.
@@ -10,8 +9,6 @@ import java.awt.Container;
 
 public interface ControlsWindow
 {
-  Component getComponent();
-
   void setTitle(String title);
 
   Container getContentPane();

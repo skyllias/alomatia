@@ -14,24 +14,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /** ControlsWindowFactory implementation for display on a dialog that opens
- *  when Ctrl + P is pressed.
- *  <p>
- *  Since the main frame only contains the display frames in this mode, it also
- *  gets the menu bar with the window management actions. */
+ *  when Ctrl + P is pressed. */
 
 @Component
 @Profile(Profiles.INTERNAL_WINDOWS)
 public class DialogControlsWindowFactory implements ControlsWindowFactory
 {
-  private final DesktopMenuBarComposer desktopMenuBarComposer;
-
-//==============================================================================
-
-  public DialogControlsWindowFactory(DesktopMenuBarComposer desktopMenuBarComposer)
-  {
-    this.desktopMenuBarComposer = desktopMenuBarComposer;
-  }
-
 //==============================================================================
 
   @Override
@@ -40,10 +28,7 @@ public class DialogControlsWindowFactory implements ControlsWindowFactory
     JDialog dialog = new JDialog(mainFrame);
     addPreferencesVisibleKeyListener(dialog);
 
-    ControlsWindow controlsWindow = new DialogControlsWindow(dialog);
-    mainFrame.setJMenuBar(desktopMenuBarComposer.createComponent(controlsWindow));
-
-    return controlsWindow;
+    return new DialogControlsWindow(dialog);
   }
 
 //------------------------------------------------------------------------------

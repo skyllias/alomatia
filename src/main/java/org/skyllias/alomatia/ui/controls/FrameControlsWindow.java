@@ -1,6 +1,5 @@
 package org.skyllias.alomatia.ui.controls;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
 
@@ -22,9 +21,6 @@ public class FrameControlsWindow implements ControlsWindow
   }
 
 //==============================================================================
-
-  @Override
-  public Component getComponent() {return frame;}
 
   @Override
   public void setTitle(String title) {frame.setTitle(title);}
