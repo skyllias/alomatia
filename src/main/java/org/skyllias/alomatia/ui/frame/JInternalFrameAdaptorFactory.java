@@ -14,7 +14,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.WindowConstants;
 
 import org.skyllias.alomatia.dependency.Profiles;
-import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -33,13 +32,22 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 
 //==============================================================================
 
-  public JInternalFrameAdaptorFactory(LabelLocalizer labelLocalizer,
-                                      MainApplicationFrameSupplier mainApplicationFrameSupplier)
+  public JInternalFrameAdaptorFactory(MainApplicationFrameSupplier mainApplicationFrameSupplier)
   {
     this.mainApplicationFrameSupplier = mainApplicationFrameSupplier;
   }
 
 //==============================================================================
+
+  /** Puts the desktop pane inside the main application frame, if not done yet.
+   *  It must be invoked from the event dispatch thread. */
+
+  public void addDesktopPane()
+  {
+    getDesktopPane();
+  }
+
+//------------------------------------------------------------------------------
 
   @Override
   public FrameAdaptor getNewFrame(JComponent displayPanel)
@@ -80,18 +88,15 @@ public class JInternalFrameAdaptorFactory implements FrameAdaptorFactory
 
 //------------------------------------------------------------------------------
 
-  /* Creates and returns a JDesktopPane inside the main application frame,
-   * which is also tuned. */
+  /* Creates and returns a JDesktopPane inside the main application frame. */
 
   private JDesktopPane createDesktopPane()
   {
     JFrame mainApplicationFrame = mainApplicationFrameSupplier.getMainFrame();
 
     JDesktopPane desktopPane = new JDesktopPane();
+    desktopPane.setPreferredSize(DEFAULT_SIZE);
     mainApplicationFrame.getContentPane().add(desktopPane, BorderLayout.CENTER);
-
-    mainApplicationFrame.setSize(DEFAULT_SIZE.width, DEFAULT_SIZE.height);
-    mainApplicationFrame.setVisible(true);                                      // do this at the end, when the size has been fixed
 
     return desktopPane;
   }

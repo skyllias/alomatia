@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.skyllias.alomatia.dependency.BeanFactoryLoader;
-import org.skyllias.alomatia.ui.controls.ControlsFrameManager;
+import org.skyllias.alomatia.ui.start.StartupWindowOpener;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -22,10 +22,10 @@ public class SwingAlomatia
 
   public static void main(String[] args)
   {
-    Future<ControlsFrameManager> controlFrameController = Executors.newSingleThreadExecutor().submit(() ->
+    Future<StartupWindowOpener> startupWindowOpener = Executors.newSingleThreadExecutor().submit(() ->
     {
       BeanFactoryLoader beanFactoryLoader = new BeanFactoryLoader();
-      return beanFactoryLoader.getLoadedBean(ControlsFrameManager.class);
+      return beanFactoryLoader.getLoadedBean(StartupWindowOpener.class);
     });
 
     SwingUtilities.invokeLater(new Runnable()
@@ -39,7 +39,7 @@ public class SwingAlomatia
           JDialog.setDefaultLookAndFeelDecorated(true);
           UIManager.setLookAndFeel(new FlatIntelliJLaf());                      // the style of UrlDownloadSourceSelectionComposer depends on this L&F, so review that class if this ever changes
 
-          controlFrameController.get().createControlFrame();
+          startupWindowOpener.get().openStartupWindows();
         }
         catch (Exception e) {e.printStackTrace();}                              // TODO log
       }

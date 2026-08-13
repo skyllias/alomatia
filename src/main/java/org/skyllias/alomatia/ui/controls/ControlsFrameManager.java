@@ -9,9 +9,7 @@ import org.skyllias.alomatia.i18n.LabelLocalizer;
 import org.skyllias.alomatia.ui.frame.MainApplicationFrameSupplier;
 import org.springframework.stereotype.Component;
 
-/** Logic for the main windows of the application.
- *  <p>
- *  Only one instance is expected in a given application. */
+/** Logic for the window containing the controls of the application. */
 
 @Component
 public class ControlsFrameManager
@@ -22,6 +20,8 @@ public class ControlsFrameManager
   private final ControlsWindowFactory controlsWindowFactory;
   private final MainApplicationFrameSupplier mainApplicationFrameSupplier;
   private final ControlsPaneComposer controlsPaneComposer;
+
+  private ControlsWindow controlsWindow;
 
 //==============================================================================
 
@@ -38,28 +38,35 @@ public class ControlsFrameManager
 
 //==============================================================================
 
-  public void createControlFrame()
-  {
-    JFrame mainFrame = mainApplicationFrameSupplier.getMainFrame();
+  /** Returns the window with the controls, creating it if required.
+   *  It is packed and not resizable, but not necessarily visible.
+   *  It must be invoked from the event dispatch thread. */
 
-    ControlsWindow controlsWindow = controlsWindowFactory.createControlsWindow(mainFrame);
-    setUpControlsFrame(controlsWindow);
+  public ControlsWindow getControlsWindow()
+  {
+    if (controlsWindow == null) controlsWindow = buildNewControlsWindow();
+
+    return controlsWindow;
   }
 
 //------------------------------------------------------------------------------
 
-  /* Shows ownerContainer as non resizable and packed, with all the controls. */
+  /* Returns a new invisible window, packed and non resizable, with all the controls. */
 
-  private void setUpControlsFrame(ControlsWindow ownerContainer)
+  private ControlsWindow buildNewControlsWindow()
   {
-    ownerContainer.setTitle(labelLocalizer.getString(CONTROL_TITLE));
+    JFrame mainFrame = mainApplicationFrameSupplier.getMainFrame();
 
-    ownerContainer.getContentPane().add(controlsPaneComposer.createComponent(),
-                                        BorderLayout.CENTER);
+    ControlsWindow newControlsWindow = controlsWindowFactory.createControlsWindow(mainFrame);
+    newControlsWindow.setTitle(labelLocalizer.getString(CONTROL_TITLE));
 
-    ownerContainer.pack();
-    ownerContainer.setResizable(false);
-    ownerContainer.setVisible(true);                                            // do this at the end, when the size has been fixed
+    newControlsWindow.getContentPane().add(controlsPaneComposer.createComponent(),
+                                           BorderLayout.CENTER);
+
+    newControlsWindow.pack();
+    newControlsWindow.setResizable(false);
+
+    return newControlsWindow;
   }
 
 //------------------------------------------------------------------------------

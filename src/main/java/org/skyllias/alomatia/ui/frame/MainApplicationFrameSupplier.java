@@ -10,7 +10,11 @@ import org.skyllias.alomatia.logo.IconSupplier;
 import org.springframework.stereotype.Component;
 
 /** Supplier of the main frame of the application.
- *  Only one such frame is expected per application. */
+ *  Only one such frame is expected per application.
+ *
+ *  This just provides a frame with a title and a logo but nothing in its
+ *  content pane. Others are responsible for deciding what content goes into
+ *  the main frame. */
 
 @Component
 public class MainApplicationFrameSupplier
@@ -38,6 +42,19 @@ public class MainApplicationFrameSupplier
     if (mainFrame == null) mainFrame = buildNewFrame();
 
     return mainFrame;
+  }
+
+//------------------------------------------------------------------------------
+
+  /** Makes the main frame visible, with the size derived from the contents
+   *  added to it so far. */
+
+  public void showMainFrame()
+  {
+    JFrame frame = getMainFrame();
+
+    frame.pack();
+    frame.setVisible(true);                                                     // do this at the end, when the size has been fixed
   }
 
 //------------------------------------------------------------------------------

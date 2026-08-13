@@ -1,7 +1,6 @@
 
 package org.skyllias.alomatia.ui.controls;
 
-import java.awt.Component;
 import java.awt.Container;
 
 import javax.swing.JDialog;
@@ -20,9 +19,6 @@ public class DialogControlsWindow implements ControlsWindow
   }
 
 //==============================================================================
-
-  @Override
-  public Component getComponent() {return dialog;}
 
   @Override
   public void setTitle(String title) {dialog.setTitle(title);}
