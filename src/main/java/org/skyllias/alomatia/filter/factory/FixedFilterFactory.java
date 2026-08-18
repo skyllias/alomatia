@@ -17,6 +17,7 @@ import org.skyllias.alomatia.filter.buffered.map.CrossedMap;
 import org.skyllias.alomatia.filter.buffered.map.DiagonalMap;
 import org.skyllias.alomatia.filter.buffered.map.RadialMap;
 import org.skyllias.alomatia.filter.buffered.patch.AxeColoursFilterFactory;
+import org.skyllias.alomatia.filter.buffered.resize.ResizingBlurFilterFactory;
 import org.skyllias.alomatia.filter.buffered.simple.DyeFilterFactory;
 import org.skyllias.alomatia.filter.buffered.simple.PixelizerFilterFactory;
 import org.skyllias.alomatia.filter.buffered.spectrum.SpectrumFilterFactory;
@@ -269,6 +270,11 @@ public class FixedFilterFactory implements FilterFactory
   private static final String BLUR_RAD_C_S_FILTER_KEY  = "filter.blur.radial.coarse.s";
   private static final String BLUR_RAD_C_M_FILTER_KEY  = "filter.blur.radial.coarse.m";
   private static final String BLUR_RAD_C_L_FILTER_KEY  = "filter.blur.radial.coarse.l";
+  private static final String BLUR_RSZ_XS_FILTER_KEY   = "filter.blur.resize.xs";
+  private static final String BLUR_RSZ_S_FILTER_KEY    = "filter.blur.resize.s";
+  private static final String BLUR_RSZ_M_FILTER_KEY    = "filter.blur.resize.m";
+  private static final String BLUR_RSZ_L_FILTER_KEY    = "filter.blur.resize.l";
+  private static final String BLUR_RSZ_XL_FILTER_KEY   = "filter.blur.resize.xl";
   private static final String MOTION_S0_FILTER_KEY     = "filter.blur.motion.slow.horizontal";
   private static final String MOTION_S90_FILTER_KEY    = "filter.blur.motion.slow.vertical";
   private static final String MOTION_S45_FILTER_KEY    = "filter.blur.motion.slow.oblique";
@@ -759,6 +765,12 @@ public class FixedFilterFactory implements FilterFactory
     filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(127, 0.75f), BLUR_RAD_C_S_FILTER_KEY));
     filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(127, 0.5f),  BLUR_RAD_C_M_FILTER_KEY));
     filters.add(new NamedFilter(LayeredFilterFactory.forHeterogeneousBlur(127, 0.25f), BLUR_RAD_C_L_FILTER_KEY));
+
+    filters.add(new NamedFilter(ResizingBlurFilterFactory.forShortestLength(20), BLUR_RSZ_XS_FILTER_KEY));
+    filters.add(new NamedFilter(ResizingBlurFilterFactory.forShortestLength(10), BLUR_RSZ_S_FILTER_KEY));
+    filters.add(new NamedFilter(ResizingBlurFilterFactory.forShortestLength(5),  BLUR_RSZ_M_FILTER_KEY));
+    filters.add(new NamedFilter(ResizingBlurFilterFactory.forShortestLength(3),  BLUR_RSZ_L_FILTER_KEY));
+    filters.add(new NamedFilter(ResizingBlurFilterFactory.forShortestLength(2),  BLUR_RSZ_XL_FILTER_KEY));
 
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, 0)),                                        MOTION_S0_FILTER_KEY));
     filters.add(new NamedFilter(new EdgeConvolvingComposedFilter(new LinearBlurKernelDataFactory(20, -Math.PI / 4)),                             MOTION_S45_FILTER_KEY));
