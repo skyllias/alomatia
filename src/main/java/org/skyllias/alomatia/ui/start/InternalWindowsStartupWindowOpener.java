@@ -7,9 +7,9 @@ import org.skyllias.alomatia.dependency.Profiles;
 import org.skyllias.alomatia.ui.WindowControlPanelComposer;
 import org.skyllias.alomatia.ui.controls.ControlsFrameManager;
 import org.skyllias.alomatia.ui.controls.ControlsWindow;
-import org.skyllias.alomatia.ui.controls.DesktopMenuBarComposer;
 import org.skyllias.alomatia.ui.frame.JInternalFrameAdaptorFactory;
 import org.skyllias.alomatia.ui.frame.MainApplicationFrameSupplier;
+import org.skyllias.alomatia.ui.menu.MenuBarComposer;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class InternalWindowsStartupWindowOpener implements StartupWindowOpener
   private final ControlsFrameManager controlsFrameManager;
   private final MainApplicationFrameSupplier mainApplicationFrameSupplier;
   private final JInternalFrameAdaptorFactory internalFrameAdaptorFactory;
-  private final DesktopMenuBarComposer desktopMenuBarComposer;
+  private final MenuBarComposer menuBarComposer;
   private final WindowControlPanelComposer windowControlPanelComposer;
 
 //==============================================================================
@@ -34,13 +34,13 @@ public class InternalWindowsStartupWindowOpener implements StartupWindowOpener
   public InternalWindowsStartupWindowOpener(ControlsFrameManager controlsFrameManager,
                                             MainApplicationFrameSupplier mainApplicationFrameSupplier,
                                             JInternalFrameAdaptorFactory internalFrameAdaptorFactory,
-                                            DesktopMenuBarComposer desktopMenuBarComposer,
+                                            MenuBarComposer menuBarComposer,
                                             WindowControlPanelComposer windowControlPanelComposer)
   {
     this.controlsFrameManager         = controlsFrameManager;
     this.mainApplicationFrameSupplier = mainApplicationFrameSupplier;
     this.internalFrameAdaptorFactory  = internalFrameAdaptorFactory;
-    this.desktopMenuBarComposer       = desktopMenuBarComposer;
+    this.menuBarComposer              = menuBarComposer;
     this.windowControlPanelComposer   = windowControlPanelComposer;
   }
 
@@ -52,7 +52,7 @@ public class InternalWindowsStartupWindowOpener implements StartupWindowOpener
     ControlsWindow controlsWindow = controlsFrameManager.getControlsWindow();
 
     mainApplicationFrameSupplier.getMainFrame()
-        .setJMenuBar(desktopMenuBarComposer.createComponent(controlsWindow));
+                                .setJMenuBar(menuBarComposer.createComponentForInternalDisplays(controlsWindow));
     internalFrameAdaptorFactory.addDesktopPane();
     mainApplicationFrameSupplier.showMainFrame();
 
